@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Negotiate — {{ listing.title }}{% endblock %}
+{% block content %}
+<p><a href="/listing/{{ listing.id }}">← back to listing</a></p>
+<h2>Negotiate: {{ listing.title }}</h2>
+<p class="muted">Asking {{ listing.asking_price_cents | dollars }}
+  {% if valuation %}· AI as-is {{ valuation.est_asis_value_cents | dollars }}{% endif %}</p>
+
+<div class="detail">
+  <div class="panel">
+    <form method="post" action="/listing/{{ listing.id }}/negotiate">
+      <label>Paste the seller's latest message
+        <textarea name="seller_message" rows="4" style="width:100%" placeholder="e.g. Still available, firm on price">{{ "" }}</textarea>
+      </label>
+      <div class="slider-row" style="margin:.8rem 0">
+        <span class="muted">aggressive</span>
+        <input type="range" name="posture" min="0" max="100" value="{{ thread.posture }}" style="flex:1">
+        <span class="muted">must-have-it</span>
+      </div>
+      <label>Your walk-away price ($)
+        <input type="number" name="target_price" step="1"
+               value="{{ '%.0f' % (thread.target_price_cents / 100) if thread.target_price_cents else '' }}">
+      </label>
+      <div style="margin-top:.8rem"><button type="submit">Draft reply</button></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>Candidate replies</h3>
+    {% if drafts %}
+      {% for d in drafts %}
+        <div class="draft">
+          <div class="reply-text">{{ d.text }}</div>
+          <div class="rationale">{{ d.rationale }}</div>
+          <div style="margin-top:.5rem; display:flex; gap:.5rem">
+            <button type="button" class="secondary" onclick="copyText(this)">Copy</button>
+            <form method="post" action="/listing/{{ listing.id }}/negotiate/sent">
+              <input type="hidden" name="text" value="{{ d.text }}">
+              <button type="submit">I sent this</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted">Paste a message (or leave blank for an opener) and hit “Draft reply”.</p>
+    {% endif %}
+
+    {% if thread.messages %}
+      <h4 style="margin-top:1.2rem">Thread history</h4>
+      <table>
+        {% for m in thread.messages | sort(attribute='created_at') %}
+          <tr><td class="muted">{{ m.role.value }}</td><td>{{ m.content }}</td></tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function copyText(btn) {
+  const text = btn.closest('.draft').querySelector('.reply-text').innerText;
+  navigator.clipboard.writeText(text).then(() => { btn.textContent = 'Copied ✓'; });
+}
+</script>
+{% endblock %}
