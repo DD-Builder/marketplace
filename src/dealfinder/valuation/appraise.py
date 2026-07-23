@@ -29,14 +29,21 @@ _MEDIA_TYPES = {
 }
 
 _SYSTEM = (
-    "You are an expert furniture appraiser advising a restoration reseller. From the "
-    "photos and text of a Facebook Marketplace listing, identify the piece (style, era, "
-    "maker, materials), assess its condition and what restoration it needs, and estimate: "
-    "its as-is value, its resale value once restored, the cost of materials/parts to "
-    "restore it, and the hands-on hours of effort. Be realistic and conservative — these "
-    "estimates drive real buying decisions. All monetary values are in US cents. "
-    "confidence is 0.0-1.0. deal_score is your own 0-100 gut read (the app computes its "
-    "own authoritative score separately)."
+    "You are an expert appraiser advising a restoration reseller. From the photos and text "
+    "of a marketplace listing, identify the piece (style, era, maker, materials), assess "
+    "its condition and what restoration it needs, and estimate: its as-is value, its resale "
+    "value once restored, the cost of materials/parts to restore it, and the hands-on hours "
+    "of effort. Be realistic and conservative — these estimates drive real buying decisions. "
+    "\n\n"
+    "Value the restored piece at what it would REALISTICALLY sell for in a regional "
+    "second-hand market (local marketplace, a good booth, eBay sold prices) — NOT at "
+    "aspirational dealer listing prices. Sites like 1stDibs list museum-grade refurbishments "
+    "at multiples of real resale; treat any such reference as a soft ceiling to discount "
+    "heavily, never as the market comp. When unsure of the maker or model, say so and lower "
+    "your confidence rather than assuming the optimistic identification. "
+    "\n\n"
+    "All monetary values are in US cents. confidence is 0.0-1.0. deal_score is your own "
+    "0-100 gut read (the app computes its own authoritative score separately)."
 )
 
 
@@ -71,14 +78,17 @@ def appraise(
     image_paths: list[Path] | None = None,
     image_urls: list[str] | None = None,
     comps: list[Comp] | None = None,
+    guidance: str = "",
 ) -> tuple[AppraisalResult, int, int]:
     """Return (appraisal, input_tokens, output_tokens).
 
     Provide ``image_paths`` (local files, used by the live pipeline) and/or ``image_urls``
-    (remote, used by the measurement pilot straight off the scraper's JSON).
+    (remote, used by the measurement pilot straight off the scraper's JSON). ``guidance`` is
+    the active vertical's category-specific instruction, appended to the system prompt.
     """
     client = get_client()
     model = get_settings().appraise_model
+    system = f"{_SYSTEM}\n\n{guidance}" if guidance else _SYSTEM
 
     content: list[dict] = []
     for p in (image_paths or [])[:_MAX_IMAGES]:
@@ -108,7 +118,7 @@ def appraise(
         model=model,
         max_tokens=8000,
         thinking={"type": "adaptive"},
-        system=_SYSTEM,
+        system=system,
         messages=[{"role": "user", "content": content}],
         output_format=AppraisalResult,
     )

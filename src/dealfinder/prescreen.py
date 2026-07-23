@@ -2,7 +2,10 @@
 
 Kills the obvious junk (flat-pack, particleboard, no photos, absurd prices) so the paid
 triage/appraisal only ever sees plausible candidates. Pure string/number rules, zero cost.
-Tunable — this is where you encode your own niche and your market's junk.
+
+The *what-counts-as-junk* knowledge lives in a :class:`~dealfinder.verticals.Vertical`, so
+the same machinery screens furniture, art, electronics, or any niche you add — just pass a
+different vertical.
 """
 
 from __future__ import annotations
@@ -12,26 +15,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 
 from dealfinder.core.schemas import RawListing
-
-# Signals that a piece is plausibly worth restoring/flipping.
-POSITIVE = {
-    "solid wood", "solid oak", "teak", "walnut", "mahogany", "rosewood", "oak",
-    "maple", "cherry", "mid century", "mid-century", "mcm", "danish", "antique",
-    "vintage", "dovetail", "brass", "marble", "cast iron", "wrought iron", "burl",
-    "handmade", "hardwood", "art deco",
-}
-# Known makers punch above generic keywords.
-MAKERS = {
-    "eames", "herman miller", "knoll", "drexel", "henredon", "broyhill", "brasilia",
-    "thomasville", "stickley", "ercol", "g plan", "g-plan", "lane", "dux", "baker",
-    "kittinger", "widdicomb", "heywood", "bassett", "milo baughman", "kroehler",
-}
-# Signals of low-value fast furniture / non-restorable.
-NEGATIVE = {
-    "ikea", "particle board", "particleboard", "mdf", "laminate", "faux",
-    "pressboard", "press board", "wayfair", "fast furniture", "flat pack",
-    "flat-pack", "melamine", "veneer peeling", "water damaged beyond", "mold",
-}
+from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
 
 
 @dataclass
@@ -49,22 +33,22 @@ def _term_re(term: str) -> re.Pattern:
     return re.compile(rf"\b{re.escape(term)}\b")
 
 
-def _hits(text: str, terms: set[str]) -> list[str]:
+def _hits(text: str, terms: frozenset[str] | set[str]) -> list[str]:
     return sorted(t for t in terms if _term_re(t).search(text))
 
 
 def prescreen(
     listing: RawListing,
+    vertical: Vertical = DEFAULT_VERTICAL,
     *,
-    min_price_cents: int = 500,       # below this is usually a typo/scam/"free pile"
-    max_price_cents: int = 300_000,   # above this it's not a flip, it's a purchase
     require_photo: bool = True,
 ) -> PreScreenResult:
+    """Score a listing against a vertical's junk/signal rules. Zero cost, pure heuristics."""
     text = f"{listing.title}\n{listing.description}".lower()
     reasons: list[str] = []
     score = 0
 
-    neg = _hits(text, NEGATIVE)
+    neg = _hits(text, vertical.negative)
     if neg:
         return PreScreenResult(False, -10, [f"negative:{t}" for t in neg])
 
@@ -73,19 +57,20 @@ def prescreen(
 
     price = listing.asking_price_cents
     if price is not None:
-        if price < min_price_cents:
+        if price < vertical.min_price_cents:
             reasons.append("price implausibly low")
-        elif price > max_price_cents:
+        elif price > vertical.max_price_cents:
             return PreScreenResult(False, 0, ["price above flip range"])
 
-    pos = _hits(text, POSITIVE)
-    makers = _hits(text, MAKERS)
+    pos = _hits(text, vertical.positive)
+    makers = _hits(text, vertical.makers)
     score += len(pos) + 2 * len(makers)
     reasons += [f"+{t}" for t in pos] + [f"maker:{t}" for t in makers]
 
     # Keep anything with a positive signal, OR anything with a photo and a real price —
     # because the juiciest deals are *mistitled* pieces the seller described badly, and a
-    # keyword filter alone would throw those away. Vision triage catches those downstream.
+    # keyword filter alone would throw those away. Vision triage catches those downstream
+    # (these zero-score keeps are the "wildcard" pool the selection stage samples from).
     keep = score >= 1 or (bool(listing.photos) and price is not None)
     if not reasons:
         reasons.append("no strong signal — kept for vision triage")
