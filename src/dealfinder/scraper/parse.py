@@ -36,21 +36,26 @@ def _iter_json_blobs(html: str) -> Iterator[Any]:
             continue
 
 
-def _walk(obj: Any) -> Iterator[dict]:
-    """Yield every dict nested anywhere inside ``obj``."""
+_MAX_DEPTH = 60  # Facebook payloads are deep; guard against runaway recursion (B10).
+
+
+def _walk(obj: Any, depth: int = 0) -> Iterator[dict]:
+    """Yield every dict nested anywhere inside ``obj``, bounded by a depth limit."""
+    if depth > _MAX_DEPTH:
+        return
     if isinstance(obj, dict):
         yield obj
         for value in obj.values():
-            yield from _walk(value)
+            yield from _walk(value, depth + 1)
     elif isinstance(obj, list):
         for item in obj:
-            yield from _walk(item)
+            yield from _walk(item, depth + 1)
 
 
 def _is_listing_node(node: dict) -> bool:
-    return "marketplace_listing_title" in node or (
-        "id" in node and "listing_price" in node
-    )
+    # Require the marketplace title so generic id-bearing nodes aren't mistaken for
+    # listings (finding B10). Real Marketplace cards carry this field.
+    return "marketplace_listing_title" in node and _listing_id(node) is not None
 
 
 def _price_to_cents(price: Any) -> int | None:

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
 from pathlib import Path
 
 import pytest
@@ -24,8 +23,6 @@ def temp_db(tmp_path, monkeypatch):
     config.get_settings.cache_clear()
     db_mod._engine = None
     db_mod._SessionLocal = None
-    importlib.reload  # noqa: B018 — keep import warm; no reload needed
-
     db_mod.init_db()
     yield db_mod
     db_mod._engine = None

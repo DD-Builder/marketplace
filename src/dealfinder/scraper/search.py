@@ -16,7 +16,7 @@ from dealfinder.core.schemas import RawListing
 from dealfinder.logging import get_logger
 from dealfinder.scraper import parse
 from dealfinder.scraper.pacing import RateGovernor, human_pause
-from dealfinder.scraper.session import fetch_html
+from dealfinder.scraper.session import BrowserSession
 
 log = get_logger(__name__)
 
@@ -69,7 +69,9 @@ def item_url(fb_id: str) -> str:
     return f"{_BASE}/item/{fb_id}/"
 
 
-async def enumerate_ids(target: SearchTarget, governor: RateGovernor) -> list[str]:
+async def enumerate_ids(
+    target: SearchTarget, session: BrowserSession, governor: RateGovernor
+) -> list[str]:
     """Return all distinct listing IDs in the target window, across price bands."""
     all_ids: list[str] = []
     seen: set[str] = set()
@@ -78,11 +80,7 @@ async def enumerate_ids(target: SearchTarget, governor: RateGovernor) -> list[st
     ):
         await governor.acquire()
         url = build_search_url(target, band_min, band_max)
-        try:
-            html = await fetch_html(url)
-        except Exception as exc:  # noqa: BLE001 — let the pipeline record/handle it
-            log.warning("enumerate_band_failed", url=url, error=str(exc))
-            raise
+        html = await session.fetch_html(url)
         for fb_id in parse.parse_search_ids(html):
             if fb_id not in seen:
                 seen.add(fb_id)
@@ -92,9 +90,11 @@ async def enumerate_ids(target: SearchTarget, governor: RateGovernor) -> list[st
     return all_ids
 
 
-async def scrape_detail(fb_id: str, governor: RateGovernor) -> RawListing:
+async def scrape_detail(
+    fb_id: str, session: BrowserSession, governor: RateGovernor
+) -> RawListing:
     """Fetch and parse a single listing's detail page."""
     await governor.acquire()
     url = item_url(fb_id)
-    html = await fetch_html(url)
+    html = await session.fetch_html(url)
     return parse.parse_listing_detail(html, url=url)

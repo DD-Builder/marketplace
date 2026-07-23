@@ -6,7 +6,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -33,8 +33,22 @@ def get_engine() -> Engine:
         _ensure_sqlite_dir(url)
         connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
         _engine = create_engine(url, connect_args=connect_args, future=True)
+        if url.startswith("sqlite"):
+            _enable_sqlite_wal(_engine)
         _SessionLocal = sessionmaker(bind=_engine, expire_on_commit=False, future=True)
     return _engine
+
+
+def _enable_sqlite_wal(engine: Engine) -> None:
+    """WAL + a busy timeout so the web and worker processes don't trip 'database is
+    locked' when they write the same SQLite file concurrently (finding O1)."""
+
+    @event.listens_for(engine, "connect")
+    def _set_pragmas(dbapi_conn, _record):  # pragma: no cover - trivial
+        cur = dbapi_conn.cursor()
+        cur.execute("PRAGMA journal_mode=WAL")
+        cur.execute("PRAGMA busy_timeout=5000")
+        cur.close()
 
 
 def init_db() -> None:

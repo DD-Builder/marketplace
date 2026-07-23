@@ -11,9 +11,13 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+import enum as _enum
+from typing import TypeVar
+
 from sqlalchemy import (
     Boolean,
     DateTime,
+    Enum as SAEnum,
     Float,
     ForeignKey,
     Integer,
@@ -30,6 +34,20 @@ from dealfinder.core.enums import (
     ScrapeRunStatus,
     ValuationTier,
 )
+
+_E = TypeVar("_E", bound=_enum.Enum)
+
+
+def enum_col(enum_cls: type[_E]):
+    """A string-backed Enum column that stores the member *value* and reads it back
+    as the enum member (so ``.value`` works on read — see audit finding B2)."""
+    return SAEnum(
+        enum_cls,
+        native_enum=False,
+        length=16,
+        values_callable=lambda e: [m.value for m in e],
+        validate_strings=True,
+    )
 
 
 def _utcnow() -> datetime:
@@ -76,7 +94,7 @@ class Listing(Base):
     seller_profile_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     url: Mapped[str] = mapped_column(String(500), default="")
     status: Mapped[ListingStatus] = mapped_column(
-        String(16), default=ListingStatus.NEW
+        enum_col(ListingStatus), default=ListingStatus.NEW
     )
     raw_json: Mapped[dict] = mapped_column(JSON, default=dict)
     first_seen_at: Mapped[datetime] = mapped_column(
@@ -134,7 +152,7 @@ class Valuation(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     listing_id: Mapped[str] = mapped_column(ForeignKey("listings.id"))
-    tier: Mapped[ValuationTier] = mapped_column(String(16))
+    tier: Mapped[ValuationTier] = mapped_column(enum_col(ValuationTier))
     model_id: Mapped[str] = mapped_column(String(64), default="")
 
     identified_item: Mapped[str] = mapped_column(String(300), default="")
@@ -157,6 +175,9 @@ class Valuation(Base):
 
     model_deal_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     deal_score: Mapped[float | None] = mapped_column(Float, nullable=True)  # computed
+    # True for the single most-recent appraisal per listing; the feed ranks on this so
+    # a re-appraisal supersedes the old score instead of both competing (finding B3).
+    is_current: Mapped[bool] = mapped_column(Boolean, default=False)
     reasoning: Mapped[str] = mapped_column(Text, default="")
 
     input_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -208,7 +229,7 @@ class NegotiationMessage(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     thread_id: Mapped[int] = mapped_column(ForeignKey("negotiation_threads.id"))
-    role: Mapped[MessageRole] = mapped_column(String(16))
+    role: Mapped[MessageRole] = mapped_column(enum_col(MessageRole))
     content: Mapped[str] = mapped_column(Text, default="")
     # A future auto-send flips a chosen ai_draft to user_sent and dispatches it.
     chosen: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -238,6 +259,6 @@ class ScrapeRun(Base):
     new_listings: Mapped[int] = mapped_column(Integer, default=0)
     appraised: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[ScrapeRunStatus] = mapped_column(
-        String(16), default=ScrapeRunStatus.OK
+        enum_col(ScrapeRunStatus), default=ScrapeRunStatus.OK
     )
     notes: Mapped[str] = mapped_column(Text, default="")

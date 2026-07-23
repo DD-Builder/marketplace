@@ -60,7 +60,8 @@ def reappraise(listing_id: str) -> RedirectResponse:
         computed = scoring.compute_deal_score(
             appraisal, listing.asking_price_cents, settings.hourly_rate_cents
         )
-        db.add(
+        repository.add_appraisal(
+            db,
             Valuation(
                 listing_id=listing.id,
                 tier=ValuationTier.APPRAISE,
@@ -80,6 +81,6 @@ def reappraise(listing_id: str) -> RedirectResponse:
                 reasoning=appraisal.reasoning,
                 input_tokens=in_tok,
                 output_tokens=out_tok,
-            )
+            ),
         )
     return RedirectResponse(url=f"/listing/{listing_id}", status_code=303)

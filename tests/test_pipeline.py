@@ -20,17 +20,24 @@ def _fake_raw() -> RawListing:
     return parse.parse_listing_detail(load_fixture("listing_detail.html"))
 
 
+class _FakeBrowser:
+    """Stands in for BrowserSession — no real Chrome in tests."""
+
+    async def fetch_bytes(self, url):
+        return None
+
+
 def test_run_target_populates_feed(temp_db, monkeypatch):
     raw = _fake_raw()
 
-    async def fake_enumerate(target, governor):
+    async def fake_enumerate(target, session, governor):
         return [raw.fb_listing_id]
 
-    async def fake_scrape(fb_id, governor):
+    async def fake_scrape(fb_id, session, governor):
         return raw
 
-    async def fake_download(urls):
-        return []  # skip real photo downloads
+    async def fake_fetch_and_store(session, url):
+        return None  # skip real photo downloads
 
     def fake_triage(listing):
         return TriageResult(promising=True, rough_category="sideboard")
@@ -54,15 +61,16 @@ def test_run_target_populates_feed(temp_db, monkeypatch):
 
     monkeypatch.setattr(pipeline.search, "enumerate_ids", fake_enumerate)
     monkeypatch.setattr(pipeline.search, "scrape_detail", fake_scrape)
-    monkeypatch.setattr(pipeline.photos, "download_all", fake_download)
+    monkeypatch.setattr(pipeline.photos, "fetch_and_store", fake_fetch_and_store)
     monkeypatch.setattr(pipeline.triage, "triage_listing", fake_triage)
     monkeypatch.setattr(pipeline.appraise_mod, "appraise", fake_appraise)
 
+    browser = _FakeBrowser()
     with temp_db.session_scope() as session:
         target = SearchTarget(name="test", category="furniture", location="nyc")
         session.add(target)
         session.flush()
-        run = asyncio.run(pipeline.run_target(session, target))
+        run = asyncio.run(pipeline.run_target(session, target, browser=browser))
         assert run.new_listings == 1
         assert run.appraised == 1
 
@@ -77,5 +85,5 @@ def test_run_target_populates_feed(temp_db, monkeypatch):
     # A second run dedups — no new listings, no new appraisal.
     with temp_db.session_scope() as session:
         target = session.query(SearchTarget).one()
-        run2 = asyncio.run(pipeline.run_target(session, target))
+        run2 = asyncio.run(pipeline.run_target(session, target, browser=browser))
         assert run2.new_listings == 0

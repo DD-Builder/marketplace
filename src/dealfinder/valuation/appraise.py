@@ -90,10 +90,12 @@ def appraise(
     content.append({"type": "text", "text": text})
 
     # Effort defaults to "high" on Opus 4.8, so it isn't set explicitly here — passing
-    # output_config alongside parse's output_format would collide.
+    # output_config alongside parse's output_format would collide. max_tokens is generous
+    # because adaptive thinking spends from the same budget and would otherwise truncate
+    # the structured output (finding B9).
     response = client.messages.parse(
         model=model,
-        max_tokens=4096,
+        max_tokens=8000,
         thinking={"type": "adaptive"},
         system=_SYSTEM,
         messages=[{"role": "user", "content": content}],

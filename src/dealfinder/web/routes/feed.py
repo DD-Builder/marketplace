@@ -28,11 +28,13 @@ def feed(
     page: int = 0,
     db: Session = Depends(get_db),
 ) -> HTMLResponse:
-    # Latest appraisal per listing, joined to the listing, sorted by deal_score.
+    # Exactly one row per listing — its current appraisal — so pagination is exact and
+    # a superseded valuation never ranks (finding B3).
     stmt = (
         select(Listing, Valuation)
         .join(Valuation, Valuation.listing_id == Listing.id)
         .where(Valuation.tier == ValuationTier.APPRAISE)
+        .where(Valuation.is_current.is_(True))
         .where(Valuation.deal_score >= min_score)
     )
     if hide_sold:
@@ -44,16 +46,7 @@ def feed(
         page * _PAGE_SIZE
     )
 
-    rows = db.execute(stmt).all()
-    # Collapse to the most recent appraisal per listing (query may surface older ones).
-    best: dict[str, tuple[Listing, Valuation]] = {}
-    for listing, val in rows:
-        prev = best.get(listing.id)
-        if prev is None or (val.created_at or datetime.min) > (
-            prev[1].created_at or datetime.min
-        ):
-            best[listing.id] = (listing, val)
-    items = sorted(best.values(), key=lambda lv: lv[1].deal_score or 0, reverse=True)
+    items = db.execute(stmt).all()
 
     return templates.TemplateResponse(
         request,
@@ -64,6 +57,6 @@ def feed(
             "new_today": new_today,
             "hide_sold": hide_sold,
             "page": page,
-            "has_next": len(rows) == _PAGE_SIZE,
+            "has_next": len(items) == _PAGE_SIZE,
         },
     )

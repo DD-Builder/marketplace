@@ -9,7 +9,7 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -29,6 +29,8 @@ class Settings(BaseSettings):
 
     # Economics
     hourly_rate_cents: int = Field(default=3000, alias="HOURLY_RATE_CENTS")
+    # Cap on Opus vision appraisals per scrape cycle — bounds spend on broad targets.
+    max_appraisals_per_run: int = Field(default=25, alias="MAX_APPRAISALS_PER_RUN")
 
     # Scraper / pacing
     rate_max_actions_per_hour: int = Field(default=60, alias="RATE_MAX_ACTIONS_PER_HOUR")
@@ -44,6 +46,14 @@ class Settings(BaseSettings):
     database_url: str = Field(default="sqlite:///data/app.db", alias="DATABASE_URL")
     photo_dir: str = Field(default="data/photos", alias="PHOTO_DIR")
     session_dir: str = Field(default="data/sessions", alias="SESSION_DIR")
+
+    @field_validator("quiet_hours_start", "quiet_hours_end", mode="before")
+    @classmethod
+    def _blank_to_none(cls, v):
+        """Treat an empty/whitespace env value (as shipped in .env.example) as unset."""
+        if v is None or (isinstance(v, str) and v.strip() == ""):
+            return None
+        return v
 
     @property
     def photo_path(self) -> Path:

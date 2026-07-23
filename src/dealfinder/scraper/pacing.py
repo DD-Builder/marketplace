@@ -19,14 +19,19 @@ log = get_logger(__name__)
 
 
 class RateGovernor:
-    """A simple token bucket: ``max_actions`` refill evenly over one hour."""
+    """A token bucket capping total scraper actions/hour across all targets.
+
+    Deliberately lock-free: this is a single-process, approximate limiter, and avoiding
+    an ``asyncio.Lock`` lets one instance be shared across event loops (the worker's
+    scheduler loop and the web routes' per-request ``asyncio.run`` loops) without the
+    "bound to a different event loop" error.
+    """
 
     def __init__(self, max_actions_per_hour: int) -> None:
         self.capacity = float(max(1, max_actions_per_hour))
         self.tokens = self.capacity
         self.refill_per_sec = self.capacity / 3600.0
         self._last = time.monotonic()
-        self._lock = asyncio.Lock()
 
     def _refill(self) -> None:
         now = time.monotonic()
@@ -36,16 +41,26 @@ class RateGovernor:
 
     async def acquire(self) -> None:
         """Block until a token is available, then consume one."""
-        async with self._lock:
-            while True:
-                self._refill()
-                if self.tokens >= 1.0:
-                    self.tokens -= 1.0
-                    return
-                deficit = 1.0 - self.tokens
-                wait = deficit / self.refill_per_sec
-                log.debug("rate_governor_wait", seconds=round(wait, 1))
-                await asyncio.sleep(min(wait, 30.0))
+        while True:
+            self._refill()
+            if self.tokens >= 1.0:
+                self.tokens -= 1.0
+                return
+            deficit = 1.0 - self.tokens
+            wait = deficit / self.refill_per_sec
+            log.debug("rate_governor_wait", seconds=round(wait, 1))
+            await asyncio.sleep(min(wait, 30.0))
+
+
+_governor: RateGovernor | None = None
+
+
+def get_governor() -> RateGovernor:
+    """The single process-wide governor — the real global ban-avoidance lever (B4)."""
+    global _governor
+    if _governor is None:
+        _governor = RateGovernor(get_settings().rate_max_actions_per_hour)
+    return _governor
 
 
 async def human_pause() -> None:
