@@ -1,0 +1,153 @@
+"""The engine: one call runs the whole funnel and hands back a ranked, priced board.
+
+``run_valuation`` composes every piece built so far —
+
+    records -> cost-control plan (dedup / seen-diff / cap)
+            -> appraise the survivors (via the configured provider)
+            -> deterministic deal score
+            -> authenticity check
+            -> provisional resale suggestion (if you bought at ask and restored it)
+            -> liquidity / heat / priority / badges
+            -> sorted board + a full audit of what it cost to get here
+
+It is provider-agnostic (pass any ``ValuationProvider``) and source-agnostic (pass Apify
+records or already-built listings), so it is exercised end-to-end in tests with a stub
+provider on synthetic data — no network, no AI spend.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Callable, Iterable, Mapping
+from dataclasses import dataclass, field
+
+from dealfinder.appraiser import ValuationProvider
+from dealfinder.authenticity import AuthenticityAssessment, assess_authenticity
+from dealfinder.core.schemas import AppraisalResult, RawListing
+from dealfinder.logging import get_logger
+from dealfinder.ranking import (
+    Badge,
+    badges,
+    heat_score,
+    is_killer_deal,
+    liquidity_score,
+    roi_to_score,
+    viewing_priority,
+)
+from dealfinder.resale import PieceCosts, ResaleSuggestion, suggest_resale_price
+from dealfinder.selection import AppraisalPlan, plan_appraisals
+from dealfinder.sources.apify import records_to_listings
+from dealfinder.valuation.scoring import compute_deal_score
+from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
+
+log = get_logger(__name__)
+
+
+@dataclass
+class EvaluatedPiece:
+    listing: RawListing
+    appraisal: AppraisalResult
+    authenticity: AuthenticityAssessment
+    deal_score: float
+    cash_margin_cents: int
+    resale: ResaleSuggestion
+    liquidity: float
+    heat: float
+    priority: float
+    is_killer: bool
+    price_dropped: bool
+    out_of_radius: bool
+    badges: list[Badge] = field(default_factory=list)
+
+
+@dataclass
+class RunResult:
+    pieces: list[EvaluatedPiece]      # sorted by viewing priority, best first
+    plan: AppraisalPlan               # cost-control audit (what was scraped/skipped/appraised)
+
+    @property
+    def killers(self) -> list[EvaluatedPiece]:
+        return [p for p in self.pieces if p.is_killer]
+
+
+def _price_dropped(listing: RawListing) -> bool:
+    was = listing.raw_json.get("_was_price_cents")
+    cur = listing.asking_price_cents
+    return bool(was) and cur is not None and cur < was
+
+
+def run_valuation(
+    source: Iterable[dict] | Iterable[RawListing],
+    seen: Mapping[str, int | None] | None = None,
+    *,
+    provider: ValuationProvider,
+    vertical: Vertical = DEFAULT_VERTICAL,
+    hourly_rate_cents: int = 3000,
+    top_n: int = 20,
+    wildcards: int = 5,
+    in_radius: Callable[[str], bool] | None = None,
+) -> RunResult:
+    """Run the funnel over a batch and return a ranked, priced board.
+
+    ``source`` may be raw Apify records or ready ``RawListing`` objects. ``seen`` is the
+    cross-run ledger (``{id: last_price_cents}``) so already-evaluated pieces are skipped.
+    ``in_radius(location_text) -> bool`` flags distance; omit to treat everything as in-range.
+    """
+    items = list(source)
+    listings = (
+        records_to_listings(items) if items and isinstance(items[0], dict) else list(items)
+    )
+
+    plan = plan_appraisals(
+        listings, seen or {}, vertical=vertical, top_n=top_n, wildcards=wildcards
+    )
+
+    pieces: list[EvaluatedPiece] = []
+    for listing in plan.to_appraise:
+        try:
+            appr = provider.appraise(listing, vertical)
+        except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
+            log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
+            continue
+
+        auth = assess_authenticity(listing)
+        ask = listing.asking_price_cents or 0
+        deal = compute_deal_score(appr, listing.asking_price_cents, hourly_rate_cents)
+        cash_margin = appr.est_restored_resale_value_cents - ask - appr.est_restoration_cost_cents
+        dropped = _price_dropped(listing)
+        oor = bool(in_radius) and not in_radius(listing.location_text)
+
+        # Provisional resale target: if you bought at ask and restored per the estimate.
+        provisional_costs = PieceCosts(
+            acquisition_cents=ask,
+            materials_cents=appr.est_restoration_cost_cents,
+            labor_hours=appr.est_restoration_effort_hours,
+        )
+        resale = suggest_resale_price(appr, provisional_costs, hourly_rate_cents)
+
+        liq = liquidity_score(
+            maker_guess=appr.maker_guess, confidence=appr.confidence,
+            identified_item=appr.identified_item, authenticity=auth,
+        )
+        heat = heat_score(
+            text=f"{listing.title} {listing.description}",
+            prescreen_score=0, price_dropped=dropped,
+        )
+        roi = roi_to_score(appr.est_restored_resale_value_cents, ask + appr.est_restoration_cost_cents)
+        killer = is_killer_deal(
+            deal_score=deal, confidence=appr.confidence, authenticity=auth,
+            net_margin_cents=cash_margin, asking_price_cents=listing.asking_price_cents,
+        )
+        prio = viewing_priority(
+            deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
+            roi_score=roi, out_of_radius=oor,
+        )
+        pieces.append(EvaluatedPiece(
+            listing=listing, appraisal=appr, authenticity=auth, deal_score=deal,
+            cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
+            priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
+            badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
+                          authenticity=auth, out_of_radius=oor),
+        ))
+
+    pieces.sort(key=lambda p: p.priority, reverse=True)
+    return RunResult(pieces=pieces, plan=plan)

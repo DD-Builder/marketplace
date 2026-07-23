@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     triage_model: str = Field(default="claude-haiku-4-5", alias="TRIAGE_MODEL")
     appraise_model: str = Field(default="claude-opus-4-8", alias="APPRAISE_MODEL")
     negotiation_model: str = Field(default="claude-opus-4-8", alias="NEGOTIATION_MODEL")
+    # Which valuation backend to use. 'claude-code' bills your Max subscription via the
+    # Claude Code CLI; 'claude-api' uses the metered API; 'openai'/'gemini'/'grok' are seams.
+    appraiser_provider: str = Field(default="claude-code", alias="APPRAISER_PROVIDER")
+
+    # Apify scraping (the on-demand source). Token from apify.com; empty = not configured.
+    apify_token: str = Field(default="", alias="APIFY_TOKEN")
+    apify_actor: str = Field(default="apify~facebook-marketplace-scraper", alias="APIFY_ACTOR")
 
     # Economics
     hourly_rate_cents: int = Field(default=3000, alias="HOURLY_RATE_CENTS")
