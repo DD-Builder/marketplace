@@ -60,22 +60,33 @@ def _comps_block(comps: list[Comp]) -> str:
     return "\n\nRecent comparable sales:\n" + "\n".join(lines)
 
 
+def _image_url_block(url: str) -> dict:
+    return {"type": "image", "source": {"type": "url", "url": url}}
+
+
 def appraise(
     *,
     description: str,
     asking_price_cents: int | None,
-    image_paths: list[Path],
+    image_paths: list[Path] | None = None,
+    image_urls: list[str] | None = None,
     comps: list[Comp] | None = None,
 ) -> tuple[AppraisalResult, int, int]:
-    """Return (appraisal, input_tokens, output_tokens)."""
+    """Return (appraisal, input_tokens, output_tokens).
+
+    Provide ``image_paths`` (local files, used by the live pipeline) and/or ``image_urls``
+    (remote, used by the measurement pilot straight off the scraper's JSON).
+    """
     client = get_client()
     model = get_settings().appraise_model
 
     content: list[dict] = []
-    for p in image_paths[:_MAX_IMAGES]:
+    for p in (image_paths or [])[:_MAX_IMAGES]:
         block = _image_block(p)
         if block is not None:
             content.append(block)
+    for u in (image_urls or [])[: _MAX_IMAGES - len(content)]:
+        content.append(_image_url_block(u))
 
     price = (
         f"${asking_price_cents / 100:.0f}"
