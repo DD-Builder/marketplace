@@ -32,15 +32,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from dealfinder.core.schemas import RawListing, RawPhoto  # noqa: E402
 from dealfinder.prescreen import prescreen  # noqa: E402
 
-# --- Tolerant adapter: Apify actors vary in field names -------------------
+# --- Adapter for the Facebook Marketplace actor schema --------------------
+# Verified against a real 91-listing export from apify/facebook-marketplace-scraper.
+# Real records nest almost everything: title is a flat string, but price, description
+# and location are objects, and photos are doubly nested ({image: {uri}}). We still
+# fall back to a few common aliases so a different actor doesn't break the pilot.
 
-_TITLE_KEYS = ["title", "name", "marketplaceListingTitle"]
-_PRICE_KEYS = ["price", "listingPrice", "amount", "priceAmount"]
+_TITLE_KEYS = ["listingTitle", "title", "name", "marketplaceListingTitle"]
+_PRICE_KEYS = ["listingPrice", "price", "amount", "priceAmount"]
 _DESC_KEYS = ["description", "redactedDescription", "desc"]
-_LOC_KEYS = ["location", "locationText", "city", "locationName"]
-_URL_KEYS = ["listingUrl", "url", "link", "facebookUrl"]
+_LOC_KEYS = ["locationText", "location", "city", "locationName"]
+_URL_KEYS = ["itemUrl", "listingUrl", "url", "link", "facebookUrl"]
 _ID_KEYS = ["id", "listingId", "itemId", "fbid"]
-_IMG_KEYS = ["images", "photos", "imageUrls", "primaryPhotoUrls", "photo_urls"]
+_IMG_KEYS = ["listingPhotos", "images", "photos", "imageUrls", "primaryPhotoUrls"]
 
 
 def _first(rec: dict, keys: list[str]):
@@ -50,16 +54,27 @@ def _first(rec: dict, keys: list[str]):
     return None
 
 
+def _text(v) -> str:
+    """Flatten a field that may be a bare string or a {'text': ...} object."""
+    if v is None:
+        return ""
+    if isinstance(v, dict):
+        return str(v.get("text") or v.get("label") or "")
+    return str(v)
+
+
 def _to_cents(v) -> int | None:
     if v is None:
         return None
-    if isinstance(v, dict):  # e.g. {"amount": "120"} or {"amount_with_offset": "12000"}
-        if v.get("amount_with_offset"):
+    if isinstance(v, dict):
+        # This actor gives the value already in minor units (cents) here.
+        raw = v.get("amount_with_offset_in_currency") or v.get("amount_with_offset")
+        if raw:
             try:
-                return int(str(v["amount_with_offset"]))
+                return int(str(raw))
             except ValueError:
                 pass
-        v = v.get("amount")
+        v = v.get("amount")  # e.g. "80.00" (dollars)
     try:
         return int(round(float(str(v).replace("$", "").replace(",", "")) * 100))
     except (TypeError, ValueError):
@@ -74,9 +89,17 @@ def _images(rec: dict) -> list[str]:
             if isinstance(item, str):
                 urls.append(item)
             elif isinstance(item, dict):
-                u = item.get("uri") or item.get("url") or item.get("src")
+                # listingPhotos => {"image": {"uri": ...}}; other actors flatten it.
+                img = item.get("image") if isinstance(item.get("image"), dict) else item
+                u = img.get("uri") or img.get("url") or img.get("src")
                 if u:
                     urls.append(u)
+    # Fall back to the primary thumbnail if the gallery field was empty.
+    if not urls:
+        prim = rec.get("primaryListingPhoto") or {}
+        u = prim.get("photo_image_url") or prim.get("uri")
+        if u:
+            urls.append(u)
     return urls
 
 
@@ -85,11 +108,11 @@ def to_raw(rec: dict, idx: int) -> RawListing:
     imgs = _images(rec)
     return RawListing(
         fb_listing_id=fb_id,
-        title=str(_first(rec, _TITLE_KEYS) or ""),
-        description=str(_first(rec, _DESC_KEYS) or ""),
+        title=_text(_first(rec, _TITLE_KEYS)),
+        description=_text(_first(rec, _DESC_KEYS)),
         asking_price_cents=_to_cents(_first(rec, _PRICE_KEYS)),
-        location_text=str(_first(rec, _LOC_KEYS) or ""),
-        url=str(_first(rec, _URL_KEYS) or ""),
+        location_text=_text(_first(rec, _LOC_KEYS)),
+        url=_text(_first(rec, _URL_KEYS)),
         photos=[RawPhoto(remote_url=u, position=i) for i, u in enumerate(imgs)],
         raw_json=rec,
     )

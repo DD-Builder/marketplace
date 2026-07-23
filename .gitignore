@@ -20,5 +20,9 @@ venv/
 data/
 !data/.gitkeep
 
+# Local pilot inputs/outputs (your own scraped data — never commit)
+pilot/*.json
+pilot/*.csv
+
 # OS
 .DS_Store

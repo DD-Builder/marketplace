@@ -44,3 +44,14 @@ def test_keeps_mistitled_piece_for_vision():
 
 def test_rejects_out_of_range_price():
     assert not prescreen(_listing(title="teak", price=5_000_000)).keep
+
+
+def test_molding_is_not_a_mold_reject():
+    # "crown molding" is a desirable antique feature; the substring "mold" must
+    # not trip the NEGATIVE filter. (Regression: real Lexington scrape, 2026.)
+    r = prescreen(_listing(title="Oak cabinet", desc="fluted pilasters and crown molding"))
+    assert r.keep
+
+
+def test_still_rejects_real_mold():
+    assert not prescreen(_listing(title="dresser", desc="has mold on the back")).keep

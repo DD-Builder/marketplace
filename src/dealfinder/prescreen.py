@@ -7,7 +7,9 @@ Tunable — this is where you encode your own niche and your market's junk.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from dealfinder.core.schemas import RawListing
 
@@ -39,8 +41,16 @@ class PreScreenResult:
     reasons: list[str] = field(default_factory=list)
 
 
+@lru_cache(maxsize=None)
+def _term_re(term: str) -> re.Pattern:
+    # Word-boundary match so "mold" doesn't fire on "crown molding" and "oak"
+    # doesn't fire inside unrelated words. \b sits fine against spaces/hyphens,
+    # so multi-word terms like "particle board" and "mid-century" still match.
+    return re.compile(rf"\b{re.escape(term)}\b")
+
+
 def _hits(text: str, terms: set[str]) -> list[str]:
-    return [t for t in terms if t in text]
+    return sorted(t for t in terms if _term_re(t).search(text))
 
 
 def prescreen(
