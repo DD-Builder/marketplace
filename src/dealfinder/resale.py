@@ -79,6 +79,11 @@ class ResaleSuggestion:
     rationale: str
     viable: bool = True          # False when the piece can't clear its own costs
     warning: str = ""            # why it isn't viable, when it isn't
+    # 'ok'          — clears cash costs and pays your hourly rate
+    # 'thin'        — makes cash, but the hours don't pay your rate; fine for a hobbyist,
+    #                 a poor use of a working day. Not a skip.
+    # 'underwater'  — loses money out of pocket. A real skip.
+    status: str = "ok"
 
 
 def suggest_resale_price(
@@ -117,19 +122,35 @@ def suggest_resale_price(
     # Never list below the walk-away floor (covers money out + your time + margin).
     list_price = max(base, floor)
 
-    # If the floor sits above what the piece is actually worth, no price works: you'd have
-    # to ask more than the market pays just to break even. Say so plainly rather than
-    # printing an unreachable "target" — that would talk you into buying a loser.
-    viable = floor <= market + premium
+    # Two very different failure modes, previously collapsed into one "underwater" label:
+    #
+    #   * cash-negative — the piece sells for less than you paid plus materials. A real
+    #     skip at any hourly rate.
+    #   * labour-thin — it makes cash, but the estimated hours don't pay your rate. Worth
+    #     surfacing, yet emphatically NOT a skip for someone who enjoys the bench: a $20
+    #     armoire that resells at $200 is a good buy even if it takes a slow weekend.
+    cash_out = cash_outlay_cents(costs)
+    cash_margin = market - cash_out
     warning = ""
-    if not viable:
+    if cash_margin <= 0:
+        status = "underwater"
         warning = (
-            f"Underwater: breaking even needs {floor / 100:.0f} but the piece is only "
-            f"worth about {market / 100:.0f} restored. Pay less, cut the restoration, "
-            "or skip it."
+            f"Loses money: you'd have ${cash_out / 100:.0f} in it and it's only worth "
+            f"about ${market / 100:.0f} restored."
         )
-    elif list_price == floor and base < floor:
-        why += " Raised to your cost-plus floor."
+    elif floor > market + premium:
+        status = "thin"
+        labour = round(costs.labor_hours * hourly_rate_cents)
+        warning = (
+            f"Makes ${cash_margin / 100:.0f} cash, but {costs.labor_hours:.0f}h at "
+            f"${hourly_rate_cents / 100:.0f}/hr is ${labour / 100:.0f} of your time. "
+            "Fine if you enjoy the work; poor pay if you don't."
+        )
+    else:
+        status = "ok"
+        if list_price == floor and base < floor:
+            why += " Raised to your cost-plus floor."
+    viable = status != "underwater"
 
     return ResaleSuggestion(
         list_price_cents=list_price,
@@ -139,6 +160,7 @@ def suggest_resale_price(
         rationale=why,
         viable=viable,
         warning=warning,
+        status=status,
     )
 
 
