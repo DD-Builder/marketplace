@@ -30,6 +30,7 @@ from dealfinder.appraiser import get_appraiser
 from dealfinder.board import BoardMeta, write_site
 from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
+from dealfinder.pieces import costs_by_id, load_ledger
 from dealfinder.selection import plan_appraisals
 from dealfinder.sources.apify import records_to_listings, run_and_fetch
 from dealfinder.sources.scrape import SearchFilters, scrape
@@ -194,6 +195,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="persistent catalogue: seen-ledger + stored appraisals")
     ap.add_argument("--seen", default="docs/seen.json",
                     help="legacy flat ledger; read once to seed a missing catalogue")
+    ap.add_argument("--pieces", default="docs/pieces.json",
+                    help="your books: price paid, materials, hours, sale price")
     ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "60")),
                     help="listings to request per search URL (drives most of the scrape cost)")
     ap.add_argument("--max-appraisals", type=int,
@@ -209,6 +212,8 @@ def main(argv: list[str] | None = None) -> int:
     catalog_path = Path(args.catalog)
     catalog = _open_catalog(catalog_path, Path(args.seen))
     seen = catalog_mod.seen_view(catalog)
+    ledger = load_ledger(Path(args.pieces))
+    logged = costs_by_id(ledger)
     vertical = get_vertical(args.vertical)
 
     # Check credentials before spending a scrape. A missing one otherwise surfaces as
@@ -344,7 +349,8 @@ def main(argv: list[str] | None = None) -> int:
         try:
             board_pieces.append(
                 evaluate_piece(entry.to_listing(), entry.appraisal,
-                               hourly_rate_cents=hourly, in_radius=in_radius)
+                               hourly_rate_cents=hourly, in_radius=in_radius,
+                               logged_costs=logged.get(entry.id))
             )
         except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
             log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])

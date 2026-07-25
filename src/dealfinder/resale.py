@@ -196,3 +196,85 @@ def realized(
         effective_hourly_cents=eff_hourly,
         return_on_cash_pct=round(roc, 1) if roc is not None else None,
     )
+
+
+# --- two-tier pricing --------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class YourNumbers:
+    """The same piece, priced against *your* books rather than the market's.
+
+    Separated deliberately: what a restored walnut credenza fetches around here has nothing
+    to do with how long you spent on it. Folding your hours into the asking price is how you
+    end up listing a $450 table at $978 and never selling it.
+    """
+
+    costs: PieceCosts
+    cash_outlay_cents: int          # money out of pocket
+    loaded_cost_cents: int          # money out + your hours at your rate
+    floor_price_cents: int          # walk-away: loaded cost + your minimum margin
+    projected: RealizedOutcome      # what you'd make selling at the market list price
+    status: str                     # ok | thin | underwater
+    warning: str = ""
+    logged: bool = False            # True = your real entries; False = estimated for you
+
+
+@dataclass(frozen=True)
+class ResalePlan:
+    """Both answers at once: what it's worth, and what it's worth *to you*."""
+
+    market: ResaleSuggestion
+    yours: YourNumbers
+
+    @property
+    def headline_cents(self) -> int:
+        """The number on the card. Always the market's, never your cost basis."""
+        return self.market.list_price_cents
+
+    @property
+    def range_cents(self) -> tuple[int, int]:
+        """A defensible ask-range: the plain estimate up to the posture-adjusted list."""
+        low = min(self.market.market_anchor_cents, self.market.list_price_cents)
+        return (low, self.market.list_price_cents)
+
+
+def price_piece(
+    appraisal: AppraisalResult,
+    *,
+    asking_price_cents: int | None = None,
+    logged_costs: PieceCosts | None = None,
+    hourly_rate_cents: int = 3000,
+    **kwargs,
+) -> ResalePlan:
+    """Price a piece two ways — as the market sees it, and as your books see it.
+
+    Tier 1 is computed with *no* costs at all, so it is genuinely independent of you and
+    cannot drift when you log a long weekend of sanding. Tier 2 uses ``logged_costs`` when
+    you've entered them, and otherwise estimates from the appraisal (buy at ask, restore per
+    the estimate) so a piece you haven't touched yet still shows honest economics.
+    """
+    market = suggest_resale_price(appraisal, PieceCosts(acquisition_cents=0), hourly_rate_cents,
+                                  **kwargs)
+
+    costs = logged_costs or PieceCosts(
+        acquisition_cents=asking_price_cents or 0,
+        materials_cents=appraisal.est_restoration_cost_cents,
+        labor_hours=appraisal.est_restoration_effort_hours,
+    )
+    # Reuse the full cost-aware pass purely for its status/warning/floor verdict — the list
+    # price it returns is the market's and is already carried by tier 1.
+    verdict = suggest_resale_price(appraisal, costs, hourly_rate_cents, **kwargs)
+
+    return ResalePlan(
+        market=market,
+        yours=YourNumbers(
+            costs=costs,
+            cash_outlay_cents=cash_outlay_cents(costs),
+            loaded_cost_cents=loaded_cost_cents(costs, hourly_rate_cents),
+            floor_price_cents=verdict.floor_price_cents,
+            projected=realized(market.list_price_cents, costs, hourly_rate_cents),
+            status=verdict.status,
+            warning=verdict.warning,
+            logged=logged_costs is not None,
+        ),
+    )

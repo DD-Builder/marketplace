@@ -125,3 +125,88 @@ def test_thin_piece_lists_at_market_not_an_unreachable_floor():
     # Priced off the market (posture markup allowed), never off the unreachable floor.
     assert s.list_price_cents < s.floor_price_cents
     assert s.floor_price_cents > s.market_anchor_cents  # floor stays visible as advice
+
+
+# --- two-tier pricing -----------------------------------------------------------------
+
+def test_the_market_number_never_moves_when_you_log_your_time():
+    """The whole point of splitting the two: a buyer doesn't care that you spent a
+    weekend on it, so the headline price must not budge."""
+    from dealfinder.resale import price_piece
+
+    appraisal = _appraisal(restored=45000, conf=0.9, maker="Lane")
+    bare = price_piece(appraisal, asking_price_cents=12000, hourly_rate_cents=RATE)
+    logged = price_piece(
+        appraisal, asking_price_cents=12000, hourly_rate_cents=RATE,
+        logged_costs=PieceCosts(acquisition_cents=12000, materials_cents=4000, labor_hours=6.0),
+    )
+    assert bare.headline_cents == logged.headline_cents
+    assert bare.market == logged.market
+    # ...but everything personal does move.
+    assert logged.yours.cash_outlay_cents == 16000
+    assert logged.yours.loaded_cost_cents == 16000 + 6 * RATE
+    assert logged.yours.floor_price_cents != bare.yours.floor_price_cents
+    assert logged.yours.logged and not bare.yours.logged
+
+
+def test_the_market_tier_is_computed_without_any_of_your_costs():
+    from dealfinder.resale import price_piece
+
+    plan = price_piece(_appraisal(restored=40000), asking_price_cents=39000,
+                       hourly_rate_cents=RATE)
+    # 40000 market + 10% premium, whatever you paid.
+    assert plan.market.list_price_cents == 44000
+    assert plan.market.floor_price_cents == 0        # no costs went into it
+    assert plan.market.status == "ok"
+
+
+def test_your_tier_projects_profit_and_an_effective_hourly_wage():
+    from dealfinder.resale import price_piece
+
+    plan = price_piece(
+        _appraisal(restored=40000, conf=0.9, maker="Lane"),
+        hourly_rate_cents=RATE,
+        logged_costs=PieceCosts(acquisition_cents=8000, materials_cents=4000, labor_hours=6.0),
+    )
+    y = plan.yours
+    assert plan.headline_cents == 44000
+    assert y.projected.cash_profit_cents == 44000 - 12000
+    assert y.projected.net_profit_cents == 44000 - (12000 + 6 * RATE)
+    assert y.projected.effective_hourly_cents == round(32000 / 6)
+    assert y.status == "ok"
+
+
+def test_an_unlogged_piece_is_estimated_as_bought_at_ask():
+    from dealfinder.resale import price_piece
+
+    appraisal = _appraisal(restored=40000)           # restoration: $20 materials, 3h
+    plan = price_piece(appraisal, asking_price_cents=9000, hourly_rate_cents=RATE)
+    assert not plan.yours.logged
+    assert plan.yours.costs == PieceCosts(
+        acquisition_cents=9000, materials_cents=2000, labor_hours=3.0
+    )
+
+
+def test_the_underwater_verdict_still_reaches_the_personal_tier():
+    from dealfinder.resale import price_piece
+
+    plan = price_piece(
+        _appraisal(restored=32000, conf=0.3, maker=None), hourly_rate_cents=RATE,
+        logged_costs=PieceCosts(acquisition_cents=40000, materials_cents=4000, labor_hours=6.0),
+    )
+    assert plan.yours.status == "underwater" and plan.yours.warning
+    assert plan.market.list_price_cents > 0          # the piece is still worth what it's worth
+
+
+def test_the_range_spans_the_plain_estimate_to_the_posture_adjusted_ask():
+    from dealfinder.resale import price_piece
+
+    low, high = price_piece(_appraisal(restored=40000), hourly_rate_cents=RATE).range_cents
+    assert (low, high) == (40000, 44000)
+
+    ceiling = price_piece(
+        _appraisal(restored=40000, asis=10000, conf=0.4, maker=None), hourly_rate_cents=RATE
+    )
+    assert ceiling.market.posture is Posture.CEILING_TEST
+    assert ceiling.range_cents == (40000, ceiling.market.list_price_cents)
+    assert ceiling.market.list_price_cents > 44000   # priced above market to test demand

@@ -33,7 +33,7 @@ from dealfinder.ranking import (
     roi_to_score,
     viewing_priority,
 )
-from dealfinder.resale import PieceCosts, ResaleSuggestion, suggest_resale_price
+from dealfinder.resale import PieceCosts, ResalePlan, price_piece
 from dealfinder.selection import AppraisalPlan, plan_appraisals
 from dealfinder.sources.apify import records_to_listings
 from dealfinder.valuation.scoring import compute_deal_score
@@ -49,7 +49,7 @@ class EvaluatedPiece:
     authenticity: AuthenticityAssessment
     deal_score: float
     cash_margin_cents: int
-    resale: ResaleSuggestion
+    resale: ResalePlan
     liquidity: float
     heat: float
     priority: float
@@ -131,6 +131,7 @@ def evaluate_piece(
     *,
     hourly_rate_cents: int = 3000,
     in_radius: Callable[[str], bool] | None = None,
+    logged_costs: PieceCosts | None = None,
 ) -> EvaluatedPiece:
     """Score one listing against an appraisal — no AI, no I/O, pure computation.
 
@@ -149,13 +150,15 @@ def evaluate_piece(
     dropped = _price_dropped(listing)
     oor = bool(in_radius) and not in_radius(listing.location_text)
 
-    # Provisional resale target: if you bought at ask and restored per the estimate.
-    provisional_costs = PieceCosts(
-        acquisition_cents=ask,
-        materials_cents=appraisal.est_restoration_cost_cents,
-        labor_hours=appraisal.est_restoration_effort_hours,
+    # Both resale answers: the market's number (independent of you) and what it means
+    # for your books. ``logged_costs`` arrives once you've actually bought and worked on
+    # the piece; until then tier 2 is estimated as "bought at ask, restored per estimate".
+    resale = price_piece(
+        appraisal,
+        asking_price_cents=ask,
+        logged_costs=logged_costs,
+        hourly_rate_cents=hourly_rate_cents,
     )
-    resale = suggest_resale_price(appraisal, provisional_costs, hourly_rate_cents)
 
     liq = liquidity_score(
         maker_guess=appraisal.maker_guess, confidence=appraisal.confidence,

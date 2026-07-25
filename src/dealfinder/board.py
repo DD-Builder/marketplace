@@ -34,32 +34,66 @@ class BoardMeta:
     note: str = ""
 
 
+def _your_numbers(p: EvaluatedPiece) -> str:
+    """The second tier: the same piece measured against your books.
+
+    Folded away by default. The market number is what a buyer will pay and shouldn't move
+    because you spent a long weekend on it; these are the numbers that tell you whether the
+    weekend was worth it.
+    """
+    y = p.resale.yours
+    hours = y.costs.labor_hours
+    wage = y.projected.effective_hourly_cents
+    basis = "your logged costs" if y.logged else "estimated: bought at ask, restored per estimate"
+    rows = [
+        ("Cost basis", _money(y.cash_outlay_cents)),
+        ("With your time", f"{_money(y.loaded_cost_cents)} · {hours:.0f}h"),
+        ("Profit at target", _money(y.projected.cash_profit_cents)),
+        ("Your rate", f"{_money(wage)}/hr" if wage is not None else "—"),
+        ("Walk away below", _money(y.floor_price_cents)),
+    ]
+    cells = "".join(
+        f'<div class="yn"><span class="k">{html.escape(k)}</span>'
+        f'<span class="v">{html.escape(v)}</span></div>'
+        for k, v in rows
+    )
+    note = f'<p class="basis">{html.escape(basis)}</p>'
+    warn = f'<p class="reason">{html.escape(y.warning)}</p>' if y.warning else ""
+    return (
+        '<details class="yours"><summary>Your numbers</summary>'
+        f'<div class="yngrid">{cells}</div>{warn}{note}</details>'
+    )
+
+
 def _resale_row(p: EvaluatedPiece) -> str:
-    """The sell-side line.
+    """The sell-side line: the market's number, headline.
 
     Always shows the target price — even on a thin piece, since knowing what it fetches is
     the point — and states *why* when the economics are marginal. Showing a bare "skip"
     next to a positive margin reads as a broken card.
     """
+    market, yours = p.resale.market, p.resale.yours
+    low, high = p.resale.range_cents
+    span = f'<span class="span">{_money(low)}–{_money(high)}</span>' if low != high else ""
     reason = (
-        f'<div class="reason">{html.escape(p.resale.warning)}</div>'
-        if p.resale.warning
-        else ""
+        f'<div class="reason">{html.escape(yours.warning)}</div>' if yours.warning else ""
     )
-    if p.resale.status == "underwater":
-        return (
+    if yours.status == "underwater":
+        head = (
             f'<div class="resale bad"><b>Don\'t buy at this price</b>'
-            f'<span class="posture bad">loses money</span></div>{reason}'
+            f'<span class="posture bad">loses money</span></div>'
         )
-    if p.resale.status == "thin":
-        return (
-            f'<div class="resale">Sell target <b>{_money(p.resale.list_price_cents)}</b>'
-            f'<span class="posture thin">thin for the hours</span></div>{reason}'
+    elif yours.status == "thin":
+        head = (
+            f'<div class="resale">Sell target <b>{_money(p.resale.headline_cents)}</b>{span}'
+            f'<span class="posture thin">thin for the hours</span></div>'
         )
-    return (
-        f'<div class="resale">Sell target <b>{_money(p.resale.list_price_cents)}</b>'
-        f'<span class="posture">{_POSTURE_LABEL[p.resale.posture]}</span></div>'
-    )
+    else:
+        head = (
+            f'<div class="resale">Sell target <b>{_money(p.resale.headline_cents)}</b>{span}'
+            f'<span class="posture">{_POSTURE_LABEL[market.posture]}</span></div>'
+        )
+    return head + reason + _your_numbers(p)
 
 
 def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
@@ -272,6 +306,18 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
 .resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
 .resale .posture.thin{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
 .reason{font-size:11.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.4}
+.resale .span{font-size:11px;color:var(--soft)}
+.yours{margin:-2px 0 9px}
+.yours summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
+.yours summary::-webkit-details-marker{display:none}
+.yours summary::before{content:"▸ ";color:var(--brass)}
+.yours[open] summary::before{content:"▾ "}
+.yngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:5px 12px;
+  margin:7px 0 0;padding:8px 10px;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.yn{display:flex;flex-direction:column;gap:1px}
+.yn .k{font-size:9.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.yn .v{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.basis{font-size:10.5px;color:var(--soft);margin:6px 0 0;font-style:italic}
 .meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
 .meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
 .meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}

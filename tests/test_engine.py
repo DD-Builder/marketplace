@@ -49,7 +49,7 @@ def test_engine_runs_and_ranks():
     assert res.pieces[0].priority >= res.pieces[1].priority
     # Each piece carries a resale suggestion and a deal score.
     for p in res.pieces:
-        assert p.resale.list_price_cents > 0
+        assert p.resale.headline_cents > 0
         assert 0 <= p.priority <= 100
 
 
@@ -98,7 +98,7 @@ def test_evaluate_piece_matches_run_valuation():
     for f in ("deal_score", "cash_margin_cents", "liquidity", "heat", "priority",
               "is_killer", "price_dropped", "out_of_radius"):
         assert getattr(stored, f) == getattr(live, f), f
-    assert stored.resale.list_price_cents == live.resale.list_price_cents
+    assert stored.resale.headline_cents == live.resale.headline_cents
     assert [b.label for b in stored.badges] == [b.label for b in live.badges]
 
 
@@ -123,3 +123,22 @@ def test_thin_and_full_records_are_distinguishable():
                               "listingPhotos": [{"image": {"uri": "u"}}]})
     assert not thin.detail_fetched and full.detail_fetched
     assert thin.photos  # primary photo fallback still gives prescreen something to keep
+
+
+def test_the_board_headline_is_the_market_price_not_your_cost_basis():
+    """AUDIT 4: logging six hours and $40 of materials must change only your numbers."""
+    from dealfinder.engine import evaluate_piece
+    from dealfinder.resale import PieceCosts
+
+    listing = _l("q1", title="Lane walnut credenza", price=6000)
+    appraisal = StubProvider().appraise(listing, None)
+
+    bare = evaluate_piece(listing, appraisal, hourly_rate_cents=3000)
+    logged = evaluate_piece(
+        listing, appraisal, hourly_rate_cents=3000,
+        logged_costs=PieceCosts(acquisition_cents=6000, materials_cents=4000, labor_hours=6.0),
+    )
+    assert bare.resale.headline_cents == logged.resale.headline_cents
+    assert bare.priority == logged.priority          # ranking is market-driven too
+    assert logged.resale.yours.cash_outlay_cents == 10000
+    assert logged.resale.yours.costs.labor_hours == 6.0
