@@ -112,6 +112,24 @@ def _load_seen(path: Path) -> dict[str, int | None]:
     return {}
 
 
+def _check_credentials(provider: str) -> int:
+    """Return a non-zero exit code (and explain) if the chosen appraiser can't authenticate."""
+    if provider == "claude-code" and not os.getenv("CLAUDE_CODE_OAUTH_TOKEN", "").strip():
+        print(
+            "CLAUDE_CODE_OAUTH_TOKEN is empty — the subscription appraiser cannot "
+            "authenticate, so every valuation would fail.\n"
+            "Fix: add a repository SECRET (not a variable) named exactly "
+            "CLAUDE_CODE_OAUTH_TOKEN, holding the sk-ant-oat... value printed by "
+            "`claude setup-token`.",
+            file=sys.stderr,
+        )
+        return 3
+    if provider == "claude-api" and not os.getenv("ANTHROPIC_API_KEY", "").strip():
+        print("APPRAISER_PROVIDER=claude-api but ANTHROPIC_API_KEY is empty.", file=sys.stderr)
+        return 3
+    return 0
+
+
 def _search_urls(raw: str) -> list[str]:
     parts = [p.strip() for chunk in raw.split("\n") for p in chunk.split(",")]
     return [p for p in parts if p.startswith("http")]
@@ -136,6 +154,14 @@ def main(argv: list[str] | None = None) -> int:
     seen_path = Path(args.seen)
     seen = _load_seen(seen_path)
     vertical = get_vertical(args.vertical)
+
+    # Check credentials before spending a scrape. A missing one otherwise surfaces as
+    # every appraisal failing one by one — which reads like a model problem rather than a
+    # configuration mistake, and by then the Apify credit is already gone.
+    if not args.dry_run:
+        rc = _check_credentials(_env("APPRAISER_PROVIDER", "claude-code"))
+        if rc:
+            return rc
 
     # 1. Get listings — from Apify, or a local export for testing.
     if args.from_json:
@@ -229,6 +255,17 @@ def main(argv: list[str] | None = None) -> int:
 
     print(plan.summary())
     print(f"appraised {len(result.pieces)} · {len(result.killers)} killers · wrote {page}")
+
+    # A run that selected pieces but valued none of them is a failure, even though each
+    # individual error is caught so one bad listing can't sink the batch. Reporting success
+    # here published an empty board and hid a missing credential.
+    if plan.to_appraise and not result.pieces and not args.dry_run:
+        print(
+            f"\nAll {len(plan.to_appraise)} appraisals failed — the board is empty. "
+            "See the appraisal_failed warnings above for the reason.",
+            file=sys.stderr,
+        )
+        return 4
     return 0
 
 
