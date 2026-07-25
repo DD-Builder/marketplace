@@ -32,7 +32,11 @@ from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
 from dealfinder.pieces import costs_by_id, load_ledger
 from dealfinder.selection import plan_appraisals
-from dealfinder.sources.apify import records_to_listings, run_and_fetch
+from dealfinder.sources.apify import (
+    records_to_listings,
+    recover_runs,
+    run_and_fetch,
+)
 from dealfinder.sources.scrape import SearchFilters, scrape
 from dealfinder.verticals import get_vertical
 
@@ -205,7 +209,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--wildcards", type=int, default=int(_env("WILDCARDS", "3")))
     ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
     ap.add_argument("--from-json", default="", help="use a local JSON export instead of scraping")
+    ap.add_argument("--recover", action="store_true",
+                    help="re-read the datasets your past Apify runs already produced "
+                         "instead of scraping. Reading a stored dataset starts no actor "
+                         "and costs no credit — use this to rescue a scrape you paid for")
+    ap.add_argument("--recover-limit", type=int, default=20,
+                    help="how many recent runs to pull back with --recover")
     ap.add_argument("--dry-run", action="store_true", help="skip AI; render pre-screen only")
+    ap.add_argument("--no-photos", action="store_true",
+                    help="value from text alone (for networks that can't reach the photo "
+                         "CDN); such valuations are marked blind and redone later")
     args = ap.parse_args(argv)
 
     out_dir = Path(args.out)
@@ -229,6 +242,32 @@ def main(argv: list[str] | None = None) -> int:
     if args.from_json:
         records = json.loads(Path(args.from_json).read_text())
         listings = records_to_listings(records)
+    elif args.recover:
+        token = os.getenv("APIFY_TOKEN", "").strip()
+        if not token:
+            print("APIFY_TOKEN is not set — cannot reach your past runs.", file=sys.stderr)
+            return 2
+        listings, report = recover_runs(
+            token=token, actor=_env("APIFY_ACTOR", "") or None, limit=args.recover_limit,
+        )
+        for run in report:
+            log.info("recovered_run", run=run["id"], started=run["started_at"],
+                     status=run["status"], listings=run["recovered"],
+                     error=run["error"] or None)
+        expired = [r for r in report if r["error"] or not r["recovered"]]
+        print(
+            f"recovered {len(listings)} listings from {len(report) - len(expired)} of "
+            f"{len(report)} past runs"
+            + (f" ({len(expired)} expired or empty)" if expired else "")
+        )
+        if not listings:
+            print(
+                "Nothing came back. Apify keeps a run's dataset for a limited time — "
+                "these have most likely expired, so the data is gone and only a fresh "
+                "scrape will replace it.",
+                file=sys.stderr,
+            )
+            return 5
     else:
         token = os.getenv("APIFY_TOKEN", "").strip()
         if not token:
@@ -280,16 +319,23 @@ def main(argv: list[str] | None = None) -> int:
     top_n = max(args.max_appraisals - args.wildcards, 1)
     backfill = catalog_mod.unappraised_live(catalog)
     # A price drop on a piece we already valued re-ranks for free — the object didn't
-    # change, only what it costs us. Only a thin record that just gained a description and
-    # photos is worth a second look.
-    valued = catalog_mod.already_valued(catalog, exclude=obs.detail_upgrades)
+    # change, only what it costs us. Two things do earn a second look: a thin record that
+    # just gained a description, and a piece we valued blind now that we can show the
+    # model a photograph.
+    redo = list(obs.detail_upgrades)
+    if not args.no_photos:
+        redo += list(catalog_mod.blind_appraisals(catalog))
+    valued = catalog_mod.already_valued(catalog, exclude=redo)
     plan = plan_appraisals(
         listings, seen, vertical=vertical,
         top_n=top_n, wildcards=args.wildcards, backfill=backfill, already_valued=valued,
     )
     log.info("plan", summary=plan.summary())
 
-    photos = {} if args.dry_run else _download_photos(plan.to_appraise, out_dir / "_photos")
+    photos = (
+        {} if args.dry_run or args.no_photos
+        else _download_photos(plan.to_appraise, out_dir / "_photos")
+    )
 
     # 4. Appraise (or stub in dry-run) and rank.
     if args.dry_run:
@@ -336,6 +382,7 @@ def main(argv: list[str] | None = None) -> int:
     catalog_mod.record_appraisals(
         catalog, result.pieces, appraiser=provider.name,
         photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}" for lid, p in cover.items()},
+        saw_photos=photos.keys(),
     )
     pruned = catalog_mod.prune(catalog)
     for gone_id in pruned.removed_ids:

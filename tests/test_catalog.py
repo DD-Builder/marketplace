@@ -287,3 +287,62 @@ def test_prune_drops_unappraised_dead_entries_sooner():
     c.listings["a"].state = "gone"
     c.listings["a"].last_seen = cat._now() - timedelta(days=40)
     assert cat.prune(c).removed_ids == ["a"]
+
+
+# --- blind valuations ---------------------------------------------------------------------
+
+def test_a_valuation_made_without_photos_is_redone_once_photos_exist():
+    """Otherwise the first thin guess is locked in forever: the record is already
+    'detailed', so nothing would ever trigger a second look."""
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", desc="solid oak dresser", detail=True)])
+    res = run_valuation([_l("a")], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces, saw_photos=[])       # the CDN was unreachable
+
+    entry = c.listings["a"]
+    assert not entry.appraised_with_photos
+    assert cat.blind_appraisals(c) == {"a"}
+    assert cat.needs_reappraisal(entry, _l("a", detail=True), has_photos=True)
+    assert not cat.needs_reappraisal(entry, _l("a", detail=True), has_photos=False)
+
+    # Re-valued with a photo this time, it stops being offered.
+    cat.record_appraisals(c, res.pieces, saw_photos=["a"])
+    assert c.listings["a"].appraised_with_photos
+    assert cat.blind_appraisals(c) == set()
+    assert not cat.needs_reappraisal(c.listings["a"], _l("a", detail=True), has_photos=True)
+
+
+def test_blind_pieces_are_excluded_from_already_valued_so_they_win_budget():
+    from dealfinder.selection import plan_appraisals
+
+    c = cat.Catalog()
+    cat.observe(c, [_l("blind"), _l("seen")])
+    res = run_valuation([_l("blind"), _l("seen")], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces, saw_photos=["seen"])
+
+    valued = cat.already_valued(c, exclude=cat.blind_appraisals(c))
+    assert valued == {"seen"}
+    plan = plan_appraisals(
+        [_l("blind"), _l("seen")], cat.seen_view(c),
+        backfill=[e.to_listing() for e in c.listings.values()], already_valued=valued,
+    )
+    assert [x.fb_listing_id for x in plan.to_appraise] == ["blind"]
+
+
+def test_a_seeded_catalogue_still_blocks_re_scraping_and_re_appraisal():
+    """The point of seeding from a scrape you already paid for."""
+    from dealfinder.sources.scrape import select_for_detail
+
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", price=5000, detail=True), _l("b", price=5000, detail=True)])
+    res = run_valuation([_l("a", price=5000)], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces, saw_photos=["a"])
+
+    # Nothing to fetch again...
+    assert select_for_detail(
+        [_l("a", price=5000, detail=True), _l("b", price=5000, detail=True)],
+        cat.seen_view(c), already_detailed=cat.detailed_ids(c),
+    ) == []
+    # ...and 'a' is not re-valued, while the never-valued 'b' still is.
+    assert cat.already_valued(c, exclude=cat.blind_appraisals(c)) == {"a"}
+    assert {x.fb_listing_id for x in cat.unappraised_live(c)} == {"b"}

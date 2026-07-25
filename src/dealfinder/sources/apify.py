@@ -224,3 +224,56 @@ def fetch_dataset(dataset_id: str, *, token: str, timeout: float = 120.0) -> lis
     url = f"{_API_BASE}/datasets/{dataset_id}/items?{q}"
     records = _get_json(url, timeout)
     return records_to_listings(records)
+
+
+def list_runs(
+    *, token: str, actor: str | None = None, limit: int = 20, timeout: float = 60.0
+) -> list[dict]:
+    """Your recent actor runs, newest first, each with the dataset it produced.
+
+    The point of this is recovery. A run you already paid for keeps its results in an
+    Apify dataset, and *reading* that dataset is not another run — no actor starts, no
+    compute is billed. So a scrape whose output got lost (or which failed downstream, as
+    the first real run here did) can be pulled back for nothing.
+
+    Datasets are not kept forever — unnamed ones expire, typically within days on the free
+    plan — so recovery is worth doing promptly, and an expired dataset simply returns no
+    items rather than an error.
+    """
+    q = urllib.parse.urlencode({"token": token, "desc": "true", "limit": limit})
+    path = f"acts/{actor}/runs" if actor else "actor-runs"
+    payload = _get_json(f"{_API_BASE}/{path}?{q}", timeout)
+    items = (payload or {}).get("data", {}).get("items", []) if isinstance(payload, dict) else []
+    return [
+        {
+            "id": r.get("id"),
+            "actor_id": r.get("actId"),
+            "status": r.get("status"),
+            "started_at": r.get("startedAt"),
+            "finished_at": r.get("finishedAt"),
+            "dataset_id": r.get("defaultDatasetId"),
+        }
+        for r in items
+        if r.get("defaultDatasetId")
+    ]
+
+
+def recover_runs(
+    *, token: str, actor: str | None = None, limit: int = 20, timeout: float = 120.0
+) -> tuple[list[RawListing], list[dict]]:
+    """Pull back every listing from your recent runs. Returns (listings, per-run report).
+
+    Deliberately tolerant: one expired or unreadable dataset must not stop the others
+    from being recovered.
+    """
+    listings: list[RawListing] = []
+    report: list[dict] = []
+    for run in list_runs(token=token, actor=actor, limit=limit):
+        try:
+            got = fetch_dataset(run["dataset_id"], token=token, timeout=timeout)
+        except Exception as exc:  # noqa: BLE001 — an expired dataset is normal, not fatal
+            report.append({**run, "recovered": 0, "error": str(exc)[:200]})
+            continue
+        listings += got
+        report.append({**run, "recovered": len(got), "error": ""})
+    return listings, report

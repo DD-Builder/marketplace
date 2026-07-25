@@ -15,6 +15,11 @@ on:
         type: boolean
         required: false
         default: false
+      recover:
+        description: "Re-read past Apify runs instead of scraping (costs no credit)"
+        type: boolean
+        required: false
+        default: false
   schedule:
     # Daily at 13:00 UTC (~8-9am Eastern). Counter-intuitively this is the *cheap*
     # cadence: measured on a real export, a daily re-run finds ~30% new listings and
@@ -73,6 +78,8 @@ jobs:
             --out docs \
             --catalog docs/catalog.json \
             --seen docs/seen.json \
+            --pieces docs/pieces.json \
+            ${{ inputs.recover && '--recover' || '' }} \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
       - name: Publish the board

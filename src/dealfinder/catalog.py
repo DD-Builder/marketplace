@@ -69,6 +69,10 @@ class CatalogEntry(BaseModel):
     appraised_at: datetime | None = None
     appraised_price_cents: int | None = None
     appraiser: str = ""
+    #: Whether the appraiser could actually see the piece. A text-only valuation is a
+    #: guess from a title, and the model says so by hedging its confidence — so it must be
+    #: redone once photos exist, or the first thin valuation is locked in forever.
+    appraised_with_photos: bool = False
 
     def to_listing(self) -> RawListing:
         """Rebuild a listing good enough to re-score against today's price."""
@@ -182,6 +186,14 @@ def live_entries(catalog: Catalog, *, appraised_only: bool = True) -> list[Catal
     if appraised_only:
         out = [e for e in out if e.appraisal is not None]
     return out
+
+
+def blind_appraisals(catalog: Catalog) -> set[str]:
+    """Pieces valued without ever being seen — first in line when photos become available."""
+    return {
+        e.id for e in catalog.listings.values()
+        if e.appraisal is not None and not e.appraised_with_photos
+    }
 
 
 def already_valued(catalog: Catalog, *, exclude: Iterable[str] = ()) -> set[str]:
@@ -305,11 +317,23 @@ def record_capability(catalog: Catalog, supported: bool | None, *, now: datetime
     catalog.meta.last_probe_at = now or _now()
 
 
-def needs_reappraisal(entry: CatalogEntry, listing: RawListing) -> bool:
-    """Re-appraise only on genuinely new evidence — i.e. we previously had thin data and
-    now have a description and photos. A price change alone never justifies a new AI call:
-    :func:`evaluate_piece` re-scores it for free."""
-    return entry.appraisal is not None and not entry.detail_fetched and listing.detail_fetched
+def needs_reappraisal(
+    entry: CatalogEntry, listing: RawListing, *, has_photos: bool = False
+) -> bool:
+    """Re-appraise only on genuinely new evidence.
+
+    Two cases qualify, and only two:
+
+    * we had a thin grid record and now have a description and gallery;
+    * we valued it blind and can now show the model a photograph.
+
+    A price change never qualifies — :func:`evaluate_piece` re-scores it for free.
+    """
+    if entry.appraisal is None:
+        return False
+    if not entry.detail_fetched and listing.detail_fetched:
+        return True
+    return has_photos and not entry.appraised_with_photos
 
 
 def record_appraisals(
@@ -319,9 +343,11 @@ def record_appraisals(
     now: datetime | None = None,
     appraiser: str = "",
     photo_rel: Mapping[str, str] | None = None,
+    saw_photos: Iterable[str] = (),
 ) -> None:
     now = now or _now()
     photo_rel = photo_rel or {}
+    seen_photos = set(saw_photos)
     for piece in pieces:
         entry = catalog.listings.get(piece.listing.fb_listing_id)
         if entry is None:
@@ -330,6 +356,7 @@ def record_appraisals(
         entry.appraised_at = now
         entry.appraised_price_cents = piece.listing.asking_price_cents
         entry.appraiser = appraiser
+        entry.appraised_with_photos = piece.listing.fb_listing_id in seen_photos
         rel = photo_rel.get(entry.id)
         if rel:
             entry.photo_rel = rel
