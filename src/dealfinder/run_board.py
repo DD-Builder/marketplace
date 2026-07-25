@@ -40,6 +40,13 @@ _DEFAULT_RADIUS_TOWNS = (
     "mackville,wilmore,midway,stamping ground,sadieville,keene,athens"
 )
 
+# Searches to run when SEARCH_URLS isn't configured, so a fresh repo works out of the
+# box. Overlap between these is free — results are deduped before anything is paid for.
+_DEFAULT_SEARCH_URLS = (
+    "https://www.facebook.com/marketplace/lexington/search/?query=dresser\n"
+    "https://www.facebook.com/marketplace/lexington/search/?query=mid%20century"
+)
+
 
 def _env(name: str, default: str) -> str:
     """Read an env var, treating empty/whitespace as unset.
@@ -139,9 +146,9 @@ def main(argv: list[str] | None = None) -> int:
         if not token:
             print("APIFY_TOKEN is not set — cannot scrape.", file=sys.stderr)
             return 2
-        urls = _search_urls(_env("SEARCH_URLS", ""))
+        urls = _search_urls(_env("SEARCH_URLS", _DEFAULT_SEARCH_URLS))
         if not urls:
-            print("SEARCH_URLS is not set — nothing to scrape.", file=sys.stderr)
+            print("SEARCH_URLS is set but contains no http(s) URLs.", file=sys.stderr)
             return 2
         listings = []
         for url in urls:
