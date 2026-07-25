@@ -40,12 +40,11 @@ _DEFAULT_RADIUS_TOWNS = (
     "mackville,wilmore,midway,stamping ground,sadieville,keene,athens"
 )
 
-# Searches to run when SEARCH_URLS isn't configured, so a fresh repo works out of the
-# box. Overlap between these is free — results are deduped before anything is paid for.
-_DEFAULT_SEARCH_URLS = (
-    "https://www.facebook.com/marketplace/lexington/search/?query=dresser\n"
-    "https://www.facebook.com/marketplace/lexington/search/?query=mid%20century"
-)
+# One search by default. Each additional search is a separate billed scrape, and the
+# starting budget here is Apify's $5/month free credit — two searches at 150 results
+# exhausted a whole month's allowance in two runs. Add more via SEARCH_URLS once you know
+# what a run actually costs you.
+_DEFAULT_SEARCH_URLS = "https://www.facebook.com/marketplace/lexington/search/?query=dresser"
 
 
 def _env(name: str, default: str) -> str:
@@ -113,8 +112,17 @@ def _load_seen(path: Path) -> dict[str, int | None]:
 
 
 def _check_credentials(provider: str) -> int:
-    """Return a non-zero exit code (and explain) if the chosen appraiser can't authenticate."""
-    if provider == "claude-code" and not os.getenv("CLAUDE_CODE_OAUTH_TOKEN", "").strip():
+    """Return a non-zero exit code (and explain) if the chosen appraiser can't authenticate.
+
+    Only enforced in CI. Locally the Claude Code CLI carries its own stored login, so
+    demanding the env var there would reject a perfectly working setup.
+    """
+    in_ci = os.getenv("GITHUB_ACTIONS", "").strip().lower() == "true"
+    if (
+        in_ci
+        and provider == "claude-code"
+        and not os.getenv("CLAUDE_CODE_OAUTH_TOKEN", "").strip()
+    ):
         print(
             "CLAUDE_CODE_OAUTH_TOKEN is empty — the subscription appraiser cannot "
             "authenticate, so every valuation would fail.\n"
@@ -139,8 +147,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Scrape, appraise, and publish the deal board")
     ap.add_argument("--out", default="docs", help="site output dir (GitHub Pages serves this)")
     ap.add_argument("--seen", default="docs/seen.json", help="cross-run ledger path")
-    ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "150")),
-                    help="listings to request per search URL")
+    ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "60")),
+                    help="listings to request per search URL (drives most of the scrape cost)")
     ap.add_argument("--max-appraisals", type=int,
                     default=int(_env("MAX_APPRAISALS", "12")),
                     help="hard cap on AI calls this run")
