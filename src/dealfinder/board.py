@@ -156,11 +156,16 @@ def write_site(
     *,
     meta: BoardMeta | None = None,
     photo_files: dict[str, Path] | None = None,
+    extra_photo_map: dict[str, str] | None = None,
 ) -> Path:
-    """Write index.html (and copy photos) into ``out_dir``; return the page path."""
+    """Write index.html (and copy photos) into ``out_dir``; return the page path.
+
+    ``extra_photo_map`` carries already-committed photos for pieces appraised on earlier
+    runs, so they render without being copied again.
+    """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    photo_map: dict[str, str] = {}
+    photo_map: dict[str, str] = dict(extra_photo_map or {})
     if photo_files:
         pdir = out_dir / "photos"
         pdir.mkdir(exist_ok=True)
@@ -169,7 +174,10 @@ def write_site(
             if not src.exists():
                 continue
             dest = pdir / f"{listing_id}{src.suffix or '.jpg'}"
-            shutil.copyfile(src, dest)
+            # A catalogue photo handed back as its own source would raise SameFileError —
+            # and would do so on the *second* run, not the first.
+            if src.resolve() != dest.resolve():
+                shutil.copyfile(src, dest)
             photo_map[listing_id] = f"photos/{dest.name}"
     page = out_dir / "index.html"
     page.write_text(render_board(result, meta=meta, photo_map=photo_map))

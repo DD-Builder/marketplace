@@ -17,7 +17,7 @@ provider on synthetic data — no network, no AI spend.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass, field
 
 from dealfinder.appraiser import ValuationProvider
@@ -86,6 +86,8 @@ def run_valuation(
     wildcards: int = 5,
     in_radius: Callable[[str], bool] | None = None,
     image_paths_by_id: Mapping[str, list] | None = None,
+    backfill: Iterable[RawListing] = (),
+    already_valued: Collection[str] = (),
 ) -> RunResult:
     """Run the funnel over a batch and return a ranked, priced board.
 
@@ -101,7 +103,8 @@ def run_valuation(
     )
 
     plan = plan_appraisals(
-        listings, seen or {}, vertical=vertical, top_n=top_n, wildcards=wildcards
+        listings, seen or {}, vertical=vertical, top_n=top_n, wildcards=wildcards,
+        backfill=backfill, already_valued=already_valued,
     )
 
     pieces: list[EvaluatedPiece] = []

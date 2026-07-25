@@ -22,7 +22,7 @@ map; persistence wires into the repository at the pipeline layer.
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Collection, Iterable, Mapping
 from dataclasses import dataclass, field
 
 from dealfinder.core.schemas import RawListing
@@ -164,14 +164,21 @@ class AppraisalPlan:
     skipped_seen: int = 0
     dropped_by_prescreen: int = 0
     over_cap: int = 0
+    backfilled: int = 0
+    skipped_already_valued: int = 0
 
     def summary(self) -> str:
+        extra = f" + {self.backfilled} backfilled" if self.backfilled else ""
+        valued = (
+            f", {self.skipped_already_valued} re-ranked free" if self.skipped_already_valued
+            else ""
+        )
         return (
             f"{self.total_scraped} scraped -> {self.after_dedup} after dedup -> "
             f"{self.new} new + {self.price_dropped} price-drops "
-            f"({self.skipped_seen} already-seen, skipped) -> "
+            f"({self.skipped_seen} already-seen, skipped{valued}) -> "
             f"{len(self.to_appraise)} appraised "
-            f"({len(self.strong)} strong + {len(self.wildcards)} wildcards; "
+            f"({len(self.strong)} strong + {len(self.wildcards)} wildcards{extra}; "
             f"{self.dropped_by_prescreen} junked, {self.over_cap} over cap)"
         )
 
@@ -183,20 +190,52 @@ def plan_appraisals(
     vertical: Vertical = DEFAULT_VERTICAL,
     top_n: int = 20,
     wildcards: int = 5,
+    backfill: Iterable[RawListing] = (),
+    already_valued: Collection[str] = (),
 ) -> AppraisalPlan:
     """Run the whole cost-control pipeline: dedup -> seen-diff -> pre-screen -> cap.
 
     Returns the exact (small) set to pay for, plus counts at every stage so the dashboard
     can show what was skipped rather than silently capping.
+
+    ``backfill`` offers pieces we already know about but have never valued (e.g. everything
+    inherited when the catalogue was first seeded). They only consume budget the new and
+    price-dropped listings didn't use, so today's finds always come first.
+
+    ``already_valued`` holds ids whose appraisal we still have on file. They drop out of the
+    paid workload even when the seller cut the price: an appraisal describes the object, and
+    the object didn't change — the new price is applied for free when the board is scored.
     """
     raw = list(listings)
     deduped = dedup_listings(raw)
     diff = diff_new_and_changed(deduped, seen)
+
+    valued = set(already_valued)
+    actionable = [lst for lst in diff.actionable if lst.fb_listing_id not in valued]
+    skipped_valued = len(diff.actionable) - len(actionable)
+
     sel = select_for_appraisal(
-        diff.actionable, vertical=vertical, top_n=top_n, wildcards=wildcards
+        actionable, vertical=vertical, top_n=top_n, wildcards=wildcards
     )
+
+    chosen = list(sel.to_appraise)
+    backfilled = 0
+    budget = (top_n + wildcards) - len(chosen)
+    if budget > 0:
+        already = {lst.fb_listing_id for lst in chosen} | valued
+        pool = [lst for lst in backfill if lst.fb_listing_id not in already]
+        # Strong signal first, then wildcards — passing the full budget to both and
+        # truncating keeps that order while making sure leftover budget is actually used.
+        # With ``wildcards=0`` the backfill stalled once the signalled pieces ran out, and
+        # the board simply stopped growing.
+        extra = select_for_appraisal(
+            pool, vertical=vertical, top_n=budget, wildcards=budget
+        ).to_appraise[:budget]
+        chosen += extra
+        backfilled = len(extra)
+
     return AppraisalPlan(
-        to_appraise=sel.to_appraise,
+        to_appraise=chosen,
         strong=sel.strong,
         wildcards=sel.wildcards,
         total_scraped=len(raw),
@@ -206,4 +245,6 @@ def plan_appraisals(
         skipped_seen=len(diff.unchanged),
         dropped_by_prescreen=sel.dropped_by_prescreen,
         over_cap=sel.over_cap,
+        backfilled=backfilled,
+        skipped_already_valued=skipped_valued,
     )

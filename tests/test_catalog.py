@@ -1,0 +1,289 @@
+"""The catalogue is what makes runs accumulate — these tests pin that behaviour.
+
+The three things that must hold, because breaking any one of them silently costs money or
+silently empties the board:
+
+1. a stored appraisal survives a round-trip through JSON and re-scores identically;
+2. an unchanged listing is never re-appraised;
+3. a listing missing from one truncated scan is *not* declared gone.
+"""
+
+from __future__ import annotations
+
+from datetime import timedelta
+
+from dealfinder import catalog as cat
+from dealfinder.core.schemas import AppraisalResult, RawListing, RawPhoto
+from dealfinder.engine import evaluate_piece, run_valuation
+from dealfinder.selection import diff_new_and_changed
+
+from tests.test_engine import StubProvider
+
+
+def _l(id_, title="solid oak dresser", price=4000, photos=1, desc="", detail=False, sold=None):
+    return RawListing(
+        fb_listing_id=id_, title=title, asking_price_cents=price, description=desc,
+        url=f"https://fb.com/{id_}", location_text="Lexington, KY",
+        photos=[RawPhoto(remote_url=f"u{i}", position=i) for i in range(photos)],
+        detail_fetched=detail, is_sold=sold,
+    )
+
+
+def _cov(url="s1", truncated=False, count=10):
+    return {url: cat.SearchCoverage(url=url, last_count=count, truncated=truncated)}
+
+
+# --- observe ---------------------------------------------------------------------------
+
+def test_observe_records_new_listings_and_price_history():
+    c = cat.Catalog()
+    rep = cat.observe(c, [_l("a", price=5000)])
+    assert rep.new == 1 and c.listings["a"].asking_price_cents == 5000
+
+    rep = cat.observe(c, [_l("a", price=3000)])
+    assert rep.new == 0 and rep.price_drops == 1
+    entry = c.listings["a"]
+    assert entry.asking_price_cents == 3000
+    assert [p.cents for p in entry.price_history] == [5000, 3000]
+
+
+def test_observe_does_not_mark_gone_on_a_truncated_scan():
+    """resultsLimit routinely hides live pieces. Treating absence as death would delete
+    the board every time a search filled its quota."""
+    c = cat.Catalog()
+    cat.observe(c, [_l("a"), _l("b")])
+    for _ in range(5):
+        cat.observe(c, [_l("a")], coverage=_cov(truncated=True))
+    assert c.listings["b"].state == "live"
+    assert c.listings["b"].misses == 5
+
+
+def test_observe_marks_gone_after_two_misses_on_full_coverage():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a"), _l("b")])
+    cat.observe(c, [_l("a")], coverage=_cov(truncated=False))
+    assert c.listings["b"].state == "live"          # one miss is not evidence
+    rep = cat.observe(c, [_l("a")], coverage=_cov(truncated=False))
+    assert c.listings["b"].state == "gone" and rep.marked_gone == 1
+
+    back = cat.observe(c, [_l("a"), _l("b")])
+    assert c.listings["b"].state == "live" and back.returned_to_live == 1
+
+
+def test_observe_falls_back_to_age_when_coverage_is_always_truncated():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a"), _l("b")])
+    c.listings["b"].last_seen = c.listings["b"].last_seen - timedelta(days=20)
+    cat.observe(c, [_l("a")], coverage=_cov(truncated=True))
+    assert c.listings["b"].state == "gone"
+
+
+def test_observe_marks_sold():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", price=5000)])
+    rep = cat.observe(c, [_l("a", price=5000, sold=True)])
+    assert rep.marked_sold == 1
+    assert c.listings["a"].state == "sold" and c.listings["a"].sold_price_cents == 5000
+
+
+def test_observe_upgrades_a_thin_record_when_details_arrive():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", desc="", detail=False)])
+    assert not c.listings["a"].detail_fetched
+    cat.observe(c, [_l("a", desc="solid walnut, dovetailed", detail=True)])
+    assert c.listings["a"].detail_fetched
+    assert "dovetailed" in c.listings["a"].description
+
+
+# --- the seen-ledger hinge --------------------------------------------------------------
+
+def test_seen_view_drives_the_existing_diff_unchanged():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", price=5000), _l("b", price=2000)])
+    diff = diff_new_and_changed(
+        [_l("a", price=5000), _l("b", price=1000), _l("c", price=900)],
+        cat.seen_view(c),
+    )
+    assert [x.fb_listing_id for x in diff.new] == ["c"]
+    assert [x.fb_listing_id for x in diff.price_dropped] == ["b"]
+    assert [x.fb_listing_id for x in diff.unchanged] == ["a"]
+
+
+# --- appraisal storage ------------------------------------------------------------------
+
+def test_stored_appraisal_round_trips_and_rescores_identically(tmp_path):
+    """The heart of it: value once, re-rank for free forever."""
+    listing = _l("p1", title="Lane walnut credenza", price=6000)
+    c = cat.Catalog()
+    cat.observe(c, [listing])
+    res = run_valuation([listing], seen={}, provider=StubProvider(), hourly_rate_cents=3000)
+    cat.record_appraisals(c, res.pieces, appraiser="stub")
+
+    path = tmp_path / "catalog.json"
+    cat.save_catalog(c, path)
+    reloaded = cat.load_catalog(path)
+
+    entry = reloaded.listings["p1"]
+    assert entry.appraiser == "stub" and entry.appraisal is not None
+    rescored = evaluate_piece(entry.to_listing(), entry.appraisal, hourly_rate_cents=3000)
+    live = res.pieces[0]
+    for f in ("deal_score", "cash_margin_cents", "liquidity", "heat", "priority", "is_killer"):
+        assert getattr(rescored, f) == getattr(live, f), f
+
+
+def test_a_price_drop_on_a_catalogued_piece_costs_nothing(tmp_path):
+    listing = _l("p2", title="solid oak dresser", price=8000)
+    c = cat.Catalog()
+    cat.observe(c, [listing])
+    res = run_valuation([listing], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces, appraiser="stub")
+    before = evaluate_piece(c.listings["p2"].to_listing(), c.listings["p2"].appraisal)
+
+    cat.observe(c, [_l("p2", title="solid oak dresser", price=3000)])
+    entry = c.listings["p2"]
+    after = evaluate_piece(entry.to_listing(), entry.appraisal)
+
+    assert entry.appraisal is not None          # no re-appraisal happened
+    assert after.cash_margin_cents > before.cash_margin_cents
+    assert after.priority >= before.priority
+
+
+def test_a_price_drop_on_a_valued_piece_buys_no_new_ai_call():
+    """AUDIT 2 caught this: the seen-diff rightly calls a price drop actionable, but an
+    appraisal describes the *object*, which a discount does not change."""
+    from dealfinder.selection import plan_appraisals
+
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", price=8000), _l("b", price=8000)])
+    res = run_valuation([_l("a", price=8000)], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces)
+
+    cheaper = [_l("a", price=3000), _l("b", price=3000)]
+    obs = cat.observe(c, cheaper)
+    assert obs.price_drops == 2
+
+    plan = plan_appraisals(
+        cheaper, {"a": 8000, "b": 8000},
+        already_valued=cat.already_valued(c, exclude=obs.detail_upgrades),
+    )
+    assert [x.fb_listing_id for x in plan.to_appraise] == ["b"]   # 'a' is free to re-rank
+    assert plan.price_dropped == 2 and plan.skipped_already_valued == 1
+    assert "1 re-ranked free" in plan.summary()
+
+
+def test_a_thin_record_that_gains_detail_is_worth_re_valuing():
+    from dealfinder.selection import plan_appraisals
+
+    c = cat.Catalog()
+    cat.observe(c, [_l("a", price=8000, desc="", detail=False)])
+    res = run_valuation([_l("a", price=8000)], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces)
+
+    full = [_l("a", price=3000, desc="solid walnut, dovetail drawers", detail=True)]
+    obs = cat.observe(c, full)
+    assert obs.detail_upgrades == ["a"]
+
+    plan = plan_appraisals(
+        full, {"a": 8000},
+        already_valued=cat.already_valued(c, exclude=obs.detail_upgrades),
+    )
+    assert [x.fb_listing_id for x in plan.to_appraise] == ["a"]
+    # ...and only once: the upgrade isn't reported again on the next scan.
+    assert cat.observe(c, full).detail_upgrades == []
+
+
+def test_backfill_never_reoffers_an_already_valued_piece():
+    from dealfinder.selection import plan_appraisals
+
+    c = cat.Catalog()
+    cat.observe(c, [_l("a"), _l("b")])
+    res = run_valuation([_l("a")], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces)
+
+    plan = plan_appraisals(
+        [_l("a"), _l("b")], cat.seen_view(c),
+        backfill=[e.to_listing() for e in c.listings.values()],
+        already_valued=cat.already_valued(c),
+    )
+    assert [x.fb_listing_id for x in plan.to_appraise] == ["b"]
+    assert plan.backfilled == 1
+
+
+def test_needs_reappraisal_only_on_genuinely_new_evidence():
+    entry = cat.CatalogEntry(
+        id="a", first_seen=cat._now(), last_seen=cat._now(), detail_fetched=False,
+        appraisal=AppraisalResult(
+            identified_item="dresser", est_asis_value_cents=1,
+            est_restored_resale_value_cents=2, est_restoration_cost_cents=0,
+            est_restoration_effort_hours=0.0, deal_score=1.0, confidence=0.5,
+        ),
+    )
+    assert cat.needs_reappraisal(entry, _l("a", detail=True))
+    assert not cat.needs_reappraisal(entry, _l("a", detail=False))
+    entry.detail_fetched = True
+    assert not cat.needs_reappraisal(entry, _l("a", detail=True))
+    unvalued = entry.model_copy(update={"appraisal": None})
+    assert not cat.needs_reappraisal(unvalued, _l("a", detail=True))
+
+
+# --- views, backfill, persistence -------------------------------------------------------
+
+def test_live_entries_and_backfill_pool_are_complements():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a"), _l("b"), _l("c")])
+    res = run_valuation([_l("a")], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces)
+    c.listings["c"].state = "gone"
+
+    assert [e.id for e in cat.live_entries(c)] == ["a"]
+    assert {x.fb_listing_id for x in cat.unappraised_live(c)} == {"b"}
+
+
+def test_migrate_from_seen_preserves_prices_so_nothing_is_re_appraised():
+    c = cat.migrate_from_seen({"a": 5000, "b": None})
+    assert cat.seen_view(c) == {"a": 5000, "b": None}
+    diff = diff_new_and_changed([_l("a", price=5000)], cat.seen_view(c))
+    assert not diff.actionable
+
+
+def test_load_catalog_degrades_instead_of_killing_the_run(tmp_path):
+    path = tmp_path / "catalog.json"
+    path.write_text("{ this is not json")
+    assert cat.load_catalog(path).listings == {}
+    assert cat.load_catalog(tmp_path / "missing.json").listings == {}
+
+
+def test_save_catalog_is_deterministic(tmp_path):
+    c = cat.Catalog()
+    cat.observe(c, [_l("b"), _l("a")])
+    p1, p2 = tmp_path / "1.json", tmp_path / "2.json"
+    cat.save_catalog(c, p1)
+    cat.save_catalog(cat.load_catalog(p1), p2)
+    # Only updated_at may differ; the listing block must be byte-identical and sorted.
+    import json
+    assert json.loads(p1.read_text())["listings"] == json.loads(p2.read_text())["listings"]
+    assert list(json.loads(p1.read_text())["listings"]) == ["a", "b"]
+
+
+def test_prune_bounds_the_file_but_never_drops_a_live_piece():
+    c = cat.Catalog()
+    cat.observe(c, [_l("live"), _l("old_gone"), _l("old_sold"), _l("fresh_gone")])
+    now = cat._now()
+    for cid, state, days in (
+        ("old_gone", "gone", 100), ("old_sold", "sold", 200), ("fresh_gone", "gone", 3),
+    ):
+        c.listings[cid].state = state
+        c.listings[cid].last_seen = now - timedelta(days=days)
+    c.listings["live"].last_seen = now - timedelta(days=400)
+
+    rep = cat.prune(c)
+    assert set(rep.removed_ids) == {"old_gone", "old_sold"}
+    assert set(c.listings) == {"live", "fresh_gone"}
+
+
+def test_prune_drops_unappraised_dead_entries_sooner():
+    c = cat.Catalog()
+    cat.observe(c, [_l("a")])
+    c.listings["a"].state = "gone"
+    c.listings["a"].last_seen = cat._now() - timedelta(days=40)
+    assert cat.prune(c).removed_ids == ["a"]

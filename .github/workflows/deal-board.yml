@@ -61,6 +61,7 @@ jobs:
         run: |
           python -m dealfinder.run_board \
             --out docs \
+            --catalog docs/catalog.json \
             --seen docs/seen.json \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 

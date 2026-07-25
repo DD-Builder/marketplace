@@ -9,8 +9,10 @@ the workflow file stays trivial and no secrets live in the repo:
     SEARCH_URLS               newline/comma separated Marketplace search URLs
     MAX_APPRAISALS            hard cap on AI calls per run (cost control)
 
-The seen-ledger is a JSON file committed alongside the site, so a later run skips listings
-already evaluated and only spends on genuinely new pieces or price drops.
+State lives in ``docs/catalog.json``, committed alongside the site. It is both the
+cost-control ledger (so a later run skips listings already evaluated and only spends on
+genuinely new pieces or price drops) *and* the archive of every appraisal, so the board
+shows everything still for sale — not just the dozen pieces this particular run valued.
 """
 
 from __future__ import annotations
@@ -23,11 +25,12 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dealfinder import catalog as catalog_mod
 from dealfinder.appraiser import get_appraiser
 from dealfinder.board import BoardMeta, write_site
-from dealfinder.engine import run_valuation
+from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
-from dealfinder.selection import update_seen
+from dealfinder.selection import plan_appraisals
 from dealfinder.sources.apify import records_to_listings, run_and_fetch
 from dealfinder.verticals import get_vertical
 
@@ -111,6 +114,21 @@ def _load_seen(path: Path) -> dict[str, int | None]:
     return {}
 
 
+def _open_catalog(catalog_path: Path, seen_path: Path) -> catalog_mod.Catalog:
+    """Load the catalogue, seeding it from the old flat ledger the first time.
+
+    Without the migration the switch-over would treat every previously-seen listing as
+    brand new and re-appraise the lot — one silent run costing a whole cap of AI calls.
+    """
+    if catalog_path.exists():
+        return catalog_mod.load_catalog(catalog_path)
+    legacy = _load_seen(seen_path)
+    if legacy:
+        log.info("catalog_migrated_from_seen", entries=len(legacy))
+        return catalog_mod.migrate_from_seen(legacy)
+    return catalog_mod.Catalog()
+
+
 def _check_credentials(provider: str) -> int:
     """Return a non-zero exit code (and explain) if the chosen appraiser can't authenticate.
 
@@ -146,7 +164,10 @@ def _search_urls(raw: str) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Scrape, appraise, and publish the deal board")
     ap.add_argument("--out", default="docs", help="site output dir (GitHub Pages serves this)")
-    ap.add_argument("--seen", default="docs/seen.json", help="cross-run ledger path")
+    ap.add_argument("--catalog", default="docs/catalog.json",
+                    help="persistent catalogue: seen-ledger + stored appraisals")
+    ap.add_argument("--seen", default="docs/seen.json",
+                    help="legacy flat ledger; read once to seed a missing catalogue")
     ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "60")),
                     help="listings to request per search URL (drives most of the scrape cost)")
     ap.add_argument("--max-appraisals", type=int,
@@ -159,8 +180,9 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     out_dir = Path(args.out)
-    seen_path = Path(args.seen)
-    seen = _load_seen(seen_path)
+    catalog_path = Path(args.catalog)
+    catalog = _open_catalog(catalog_path, Path(args.seen))
+    seen = catalog_mod.seen_view(catalog)
     vertical = get_vertical(args.vertical)
 
     # Check credentials before spending a scrape. A missing one otherwise surfaces as
@@ -210,19 +232,31 @@ def main(argv: list[str] | None = None) -> int:
             return 5
     log.info("scraped", count=len(listings))
 
-    # 2. Cost-controlled selection happens inside the engine; but photos must be fetched
-    #    for the pieces that will actually be appraised, so we plan first.
-    from dealfinder.selection import plan_appraisals
+    # 2. Fold the scan into the catalogue *before* planning, so price history, sold/gone
+    #    state and first-seen dates are recorded even for listings we never pay to value.
+    #    `seen` was snapshotted above, so the diff still sees pre-scan prices.
+    obs = catalog_mod.observe(catalog, listings)
+    log.info("observed", new=obs.new, price_drops=obs.price_drops, gone=obs.marked_gone,
+             sold=obs.marked_sold)
 
+    # 3. Cost-controlled selection happens inside the engine; but photos must be fetched
+    #    for the pieces that will actually be appraised, so we plan first. `plan_appraisals`
+    #    is pure, so this plan is identical to the one the engine computes.
+    top_n = max(args.max_appraisals - args.wildcards, 1)
+    backfill = catalog_mod.unappraised_live(catalog)
+    # A price drop on a piece we already valued re-ranks for free — the object didn't
+    # change, only what it costs us. Only a thin record that just gained a description and
+    # photos is worth a second look.
+    valued = catalog_mod.already_valued(catalog, exclude=obs.detail_upgrades)
     plan = plan_appraisals(
         listings, seen, vertical=vertical,
-        top_n=max(args.max_appraisals - args.wildcards, 1), wildcards=args.wildcards,
+        top_n=top_n, wildcards=args.wildcards, backfill=backfill, already_valued=valued,
     )
     log.info("plan", summary=plan.summary())
 
     photos = {} if args.dry_run else _download_photos(plan.to_appraise, out_dir / "_photos")
 
-    # 3. Appraise (or stub in dry-run) and rank.
+    # 4. Appraise (or stub in dry-run) and rank.
     if args.dry_run:
         from dealfinder.core.schemas import AppraisalResult
 
@@ -247,34 +281,66 @@ def main(argv: list[str] | None = None) -> int:
         provider = get_appraiser(_env("APPRAISER_PROVIDER", "claude-code"))
     log.info("appraiser", provider=provider.name)
 
+    hourly = int(_env("HOURLY_RATE_CENTS", "3000"))
+    in_radius = _radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS))
     result = run_valuation(
         listings, seen,
         provider=provider,
         vertical=vertical,
-        hourly_rate_cents=int(_env("HOURLY_RATE_CENTS", "3000")),
-        top_n=max(args.max_appraisals - args.wildcards, 1),
+        hourly_rate_cents=hourly,
+        top_n=top_n,
         wildcards=args.wildcards,
-        in_radius=_radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS)),
+        in_radius=in_radius,
         image_paths_by_id={k: v for k, v in photos.items()} if photos else None,
+        backfill=backfill,
+        already_valued=valued,
     )
 
-    # 4. Render the site and advance the ledger.
-    now = datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC")
+    # 5. Store this run's appraisals, then render the *accumulated* board.
     cover = {lid: paths[0] for lid, paths in photos.items() if paths}
+    catalog_mod.record_appraisals(
+        catalog, result.pieces, appraiser=provider.name,
+        photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}" for lid, p in cover.items()},
+    )
+    pruned = catalog_mod.prune(catalog)
+    for gone_id in pruned.removed_ids:
+        for stale in (out_dir / "photos").glob(f"{gone_id}.*"):
+            stale.unlink(missing_ok=True)
+
+    # Every live, appraised piece — not just this run's dozen — re-scored against today's
+    # price. This is why a piece found last week is still on the board this week.
+    board_pieces = []
+    for entry in catalog_mod.live_entries(catalog):
+        try:
+            board_pieces.append(
+                evaluate_piece(entry.to_listing(), entry.appraisal,
+                               hourly_rate_cents=hourly, in_radius=in_radius)
+            )
+        except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
+            log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])
+    board_pieces.sort(key=lambda p: p.priority, reverse=True)
+    board_pieces = board_pieces[: int(_env("MAX_CARDS", "150"))]
+
+    now = datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC")
     page = write_site(
-        result, out_dir,
+        RunResult(pieces=board_pieces, plan=plan), out_dir,
         meta=BoardMeta(
             region=_env("REGION_LABEL", "Lexington · 40 mi"),
             generated_at=f"updated {now}",
             note=f"Valued by {provider.name}. Photos and prices as scraped; verify before buying.",
         ),
         photo_files=cover,
+        extra_photo_map={
+            e.id: e.photo_rel for e in catalog_mod.live_entries(catalog) if e.photo_rel
+        },
     )
-    seen_path.parent.mkdir(parents=True, exist_ok=True)
-    seen_path.write_text(json.dumps(update_seen(seen, listings), indent=0, sort_keys=True))
+    catalog_mod.save_catalog(catalog, catalog_path)
 
     print(plan.summary())
-    print(f"appraised {len(result.pieces)} · {len(result.killers)} killers · wrote {page}")
+    print(
+        f"appraised {len(result.pieces)} this run · catalogue {len(catalog.listings)} "
+        f"({len(board_pieces)} on board) · {len(result.killers)} killers · wrote {page}"
+    )
 
     # A run that selected pieces but valued none of them is a failure, even though each
     # individual error is caught so one bad listing can't sink the batch. Reporting success
