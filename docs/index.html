@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Bench">
+<meta name="theme-color" content="#e7e4dc" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#181712" media="(prefers-color-scheme:dark)">
+<title>The Bench — deal board</title>
+<style>
+:root{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;--line:#d3cfc4;
+  --brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;--warn-bg:#f3e6cd;
+  --crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
+@media (prefers-color-scheme:dark){:root{--paper:#181712;--card:#22201b;--ink:#ece8de;
+  --soft:#9a9384;--line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;
+  --warn:#d0a24e;--warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;
+  --shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}}
+:root[data-theme="light"]{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;
+  --line:#d3cfc4;--brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;
+  --warn-bg:#f3e6cd;--crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
+:root[data-theme="dark"]{--paper:#181712;--card:#22201b;--ink:#ece8de;--soft:#9a9384;
+  --line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;--warn:#d0a24e;
+  --warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;--shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.4}
+.num,.v,.was,.rank,.meter b,.resale b{font-variant-numeric:tabular-nums;
+  font-family:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace}
+header.top{padding:26px 18px 14px;max-width:1120px;margin:0 auto}
+.brandrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:650}
+.sub{color:var(--soft);font-size:12.5px}
+.tag{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--brass);
+  border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.summary{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:9px 13px;box-shadow:var(--shadow);min-width:90px}
+.stat .n{font-size:21px;font-weight:650;font-variant-numeric:tabular-nums}
+.stat .l{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
+.stat.killer .n{color:var(--star)} .stat.fake .n{color:var(--crit)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px auto 0;max-width:1120px;padding:0 18px}
+.controls button{background:var(--card);border:1px solid var(--line);color:var(--ink);
+  border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer}
+.controls button[aria-pressed="true"]{background:var(--brass);border-color:var(--brass);color:#fff}
+:root[data-theme="dark"] .controls button[aria-pressed="true"]{color:#0c1a16}
+.legend{max-width:1120px;margin:11px auto 0;padding:0 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.legend .legend-note{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
+.grid{max-width:1120px;margin:16px auto 50px;padding:0 18px;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+.card{position:relative;display:grid;grid-template-columns:104px 1fr;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.card.killer{border-color:var(--star);box-shadow:0 0 0 1px var(--star),var(--shadow)}
+.card.flagged{border-left:4px solid var(--crit)}
+.rank{position:absolute;top:8px;left:8px;z-index:2;background:#0007;color:#fff;
+  font-size:11px;padding:2px 7px;border-radius:999px}
+img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:block;background:var(--brass-soft)}
+.thumb.ph{background:repeating-linear-gradient(115deg,#0000 0 7px,#00000008 7px 8px),
+  linear-gradient(160deg,var(--brass-soft),var(--card));display:flex;align-items:center;
+  justify-content:center;padding:6px;text-align:center}
+.thumb.ph span{font-size:12px;font-weight:600;color:var(--brass);opacity:.85;
+  text-transform:uppercase;letter-spacing:.05em;line-height:1.15}
+.body{padding:12px 14px 14px;min-width:0}
+.head h2{font-size:15px;margin:0 0 2px;line-height:1.25;font-weight:600;overflow:hidden;
+  text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.loc{font-size:12px;color:var(--soft)}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.chip{font-size:11px;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--line);
+  display:inline-flex;align-items:center;gap:4px;background:var(--paper)}
+.chip.good{color:var(--good);border-color:var(--good)}
+.chip.warn{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
+.chip.info{color:var(--brass)}
+.authwarn{font-size:11.5px;color:var(--crit);background:var(--crit-bg);border-radius:8px;padding:6px 9px;margin:6px 0 2px}
+.figs{display:flex;gap:14px;margin:10px 0 4px;border-top:1px solid var(--line);padding-top:10px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .k{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+.fig .v{font-size:15px;font-weight:600}
+.fig.net .v{color:var(--good)}
+.was{font-size:11px;color:var(--soft);text-decoration:line-through;font-weight:400}
+.resale{font-size:12px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.resale b{color:var(--ink);font-size:13px}
+.resale .posture{font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--brass);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.resale.bad b{color:var(--crit)}
+.resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
+.meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
+.meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
+.meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.meter .bar{height:6px;background:var(--paper);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.meter .bar i{display:block;height:100%;background:var(--brass);border-radius:999px}
+.meter .bar.sub i{background:var(--soft);opacity:.6}
+.meter b{font-size:12px;text-align:right}
+.why{margin:0 0 9px}
+.why summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
+.why summary::-webkit-details-marker{display:none}
+.why summary::before{content:"▸ ";color:var(--brass)}
+.why[open] summary::before{content:"▾ "}
+.why p{font-size:12px;color:var(--soft);margin:6px 0 0;line-height:1.45}
+.view{display:inline-block;font-size:13.5px;color:var(--brass);text-decoration:none;font-weight:600}
+.foot{max-width:1120px;margin:0 auto 46px;padding:0 18px;color:var(--soft);font-size:11.5px;line-height:1.6}
+.hide{display:none!important}
+@media (max-width:420px){.card{grid-template-columns:84px 1fr}img.thumb{width:84px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brandrow">
+    <h1>The Bench</h1>
+    <span class="tag">Lexington · 40 mi</span>
+    <span class="sub">updated Jul 25, 2026 · 16:13 UTC</span>
+  </div>
+  <div class="summary">
+    <div class="stat"><div class="n num">0</div><div class="l">Candidates</div></div>
+    <div class="stat killer"><div class="n num">0</div><div class="l">★ Killers</div></div>
+    <div class="stat"><div class="n num">0</div><div class="l">▼ Price drops</div></div>
+    <div class="stat fake"><div class="n num">0</div><div class="l">⚠ Look-alikes</div></div>
+    <div class="stat"><div class="n num">0</div><div class="l">In radius</div></div>
+  </div>
+</header>
+<div class="controls">
+  <button id="f-all" aria-pressed="true">All</button>
+  <button id="f-radius" aria-pressed="false">In radius only</button>
+  <button id="f-clean" aria-pressed="false">Hide look-alikes</button>
+  <button id="f-star" aria-pressed="false">★ Killers only</button>
+</div>
+<div class="legend">
+  <span class="chip good"><span class="ico">★</span>Killer deal</span>
+  <span class="chip warn"><span class="ico">⚠</span>Look-alike</span>
+  <span class="chip good"><span class="ico">▼</span>Price drop</span>
+  <span class="chip info"><span class="ico">◉</span>Hot</span>
+  <span class="chip info"><span class="ico">≈</span>Sells fast</span>
+  <span class="chip warn"><span class="ico">⤢</span>Out of radius</span>
+  <span class="legend-note">what the flags mean</span>
+</div>
+<main class="grid" id="grid">
+
+</main>
+<p class="foot">257 scraped -&gt; 256 after dedup -&gt; 256 new + 0 price-drops (0 already-seen, skipped) -&gt; 20 appraised (17 strong + 3 wildcards; 16 junked, 110 over cap)<br>Valued by claude-code. Photos and prices as scraped; verify before buying.</p>
+<script>
+const grid=document.getElementById('grid');
+const cards=[...grid.children];
+const btns=['f-all','f-radius','f-clean','f-star'];
+function apply(mode){
+  btns.forEach(x=>document.getElementById(x).setAttribute('aria-pressed',String(x===mode)));
+  cards.forEach(c=>{
+    const oor=[...c.querySelectorAll('.chip.warn')].some(e=>e.textContent.includes('Out of radius'));
+    const fake=c.classList.contains('flagged');
+    const star=c.classList.contains('killer');
+    let show=true;
+    if(mode==='f-radius'&&oor)show=false;
+    if(mode==='f-clean'&&fake)show=false;
+    if(mode==='f-star'&&!star)show=false;
+    c.classList.toggle('hide',!show);
+  });
+}
+btns.forEach(id=>document.getElementById(id).addEventListener('click',()=>apply(id)));
+</script>
+</body>
+</html>
