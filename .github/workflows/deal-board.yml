@@ -1,0 +1,75 @@
+name: Deal board
+
+# Runs the whole pipeline on GitHub's free compute and publishes the board to
+# GitHub Pages. Trigger it from the GitHub app on your iPad (Actions -> Deal board
+# -> Run workflow), or let the schedule fire it.
+on:
+  workflow_dispatch:
+    inputs:
+      max_appraisals:
+        description: "Hard cap on AI valuations this run (cost control)"
+        required: false
+        default: "12"
+      dry_run:
+        description: "Skip AI entirely (free pre-screen only)"
+        type: boolean
+        required: false
+        default: false
+  schedule:
+    # Mondays and Thursdays at 13:00 UTC (~8-9am Eastern) — catches the weekend
+    # price-drops on Monday and the fresh pre-weekend listings on Thursday.
+    - cron: "0 13 * * 1,4"
+
+# Let the job commit the regenerated site back to the branch.
+permissions:
+  contents: write
+
+concurrency:
+  group: deal-board
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the app
+        run: pip install -e .
+
+      - name: Install Claude Code
+        if: ${{ !inputs.dry_run }}
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the pipeline
+        env:
+          # Your Max subscription drives the valuations — no metered API bill.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APPRAISER_PROVIDER: claude-code
+          SEARCH_URLS: ${{ vars.SEARCH_URLS }}
+          REGION_LABEL: ${{ vars.REGION_LABEL }}
+          IN_RADIUS_TOWNS: ${{ vars.IN_RADIUS_TOWNS }}
+          RESULTS_LIMIT: ${{ vars.RESULTS_LIMIT }}
+          HOURLY_RATE_CENTS: ${{ vars.HOURLY_RATE_CENTS }}
+          MAX_APPRAISALS: ${{ inputs.max_appraisals || '12' }}
+        run: |
+          python -m dealfinder.run_board \
+            --out docs \
+            --seen docs/seen.json \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Publish the board
+        run: |
+          # Working photos are an intermediate; only the cover images ship with the site.
+          rm -rf docs/_photos
+          git config user.name "deal-board"
+          git config user.email "deal-board@users.noreply.github.com"
+          git add docs
+          git diff --staged --quiet || git commit -m "Update deal board [skip ci]"
+          git push

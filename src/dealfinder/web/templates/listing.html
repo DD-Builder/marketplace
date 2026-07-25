@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }} — Deal Finder{% endblock %}
+{% block content %}
+<p><a href="/">← back to deals</a></p>
+<div class="detail">
+  <div>
+    <div class="gallery">
+      {% for photo in listing.photos %}
+        {% if photo.local_path %}
+          <img src="{{ photo.local_path | photo_url }}" alt="">
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="panel" style="margin-top:1rem">
+      <h3>{{ listing.title }}</h3>
+      <p class="row">
+        <span class="price" style="font-size:1.2rem">{{ listing.asking_price_cents | dollars }}</span>
+        <a href="{{ listing.url }}" target="_blank" rel="noopener">view on Facebook →</a>
+      </p>
+      <p class="muted">{{ listing.location_text }} · seller {{ listing.seller_name or "unknown" }}</p>
+      <p style="white-space:pre-wrap">{{ listing.description }}</p>
+      {% if history %}
+        <h4>Price history</h4>
+        <table>
+          <tr><th>When</th><th>Price</th></tr>
+          {% for h in history %}
+            <tr><td>{{ h.observed_at.strftime('%Y-%m-%d') }}</td><td>{{ h.price_cents | dollars }}</td></tr>
+          {% endfor %}
+        </table>
+      {% endif %}
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      {% if valuation %}
+        <div class="row">
+          <h3 style="margin:0">AI valuation</h3>
+          <span class="score" style="background: {{ valuation.deal_score | score_color }}; font-size:1rem">
+            score {{ '%.0f' % (valuation.deal_score or 0) }}
+          </span>
+        </div>
+        <dl class="kv">
+          <dt>Identified</dt><dd>{{ valuation.identified_item }}</dd>
+          <dt>Style / era</dt><dd>{{ valuation.style_era or "—" }}</dd>
+          <dt>Maker</dt><dd>{{ valuation.maker_guess or "—" }}</dd>
+          <dt>Materials</dt><dd>{{ valuation.materials | join(", ") if valuation.materials else "—" }}</dd>
+          <dt>As-is value</dt><dd>{{ valuation.est_asis_value_cents | dollars }}</dd>
+          <dt>Restored resale</dt><dd>{{ valuation.est_restored_resale_value_cents | dollars }}</dd>
+          <dt>Restoration cost</dt><dd>{{ valuation.est_restoration_cost_cents | dollars }}</dd>
+          <dt>Effort</dt><dd>{{ valuation.est_restoration_effort_hours }} h</dd>
+          <dt>Confidence</dt><dd>{{ '%.0f' % ((valuation.confidence or 0) * 100) }}%</dd>
+        </dl>
+        <h4>Condition</h4>
+        <p>{{ valuation.condition_assessment }}</p>
+        <h4>Reasoning</h4>
+        <p class="muted" style="white-space:pre-wrap">{{ valuation.reasoning }}</p>
+      {% else %}
+        <p class="muted">No appraisal yet for this listing.</p>
+      {% endif %}
+      <form method="post" action="/listing/{{ listing.id }}/reappraise" style="margin-top:.8rem">
+        <button type="submit">Re-appraise</button>
+      </form>
+    </div>
+    <div class="panel" style="margin-top:1rem">
+      <h3>Negotiate</h3>
+      <p class="muted">Draft posture-tuned replies to the seller (you send them yourself).</p>
+      <a href="/listing/{{ listing.id }}/negotiate"><button type="button">Open negotiation panel →</button></a>
+    </div>
+  </div>
+</div>
+{% endblock %}

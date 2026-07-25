@@ -1,0 +1,162 @@
+"""Apify Facebook-Marketplace source: pull listings over the REST API — no copy-paste.
+
+Two entry points:
+
+* :func:`records_to_listings` — the *adapter*, verified against a real 91-listing export.
+  The actor nests almost everything (price/description/location are objects, photos are
+  doubly nested ``{image:{uri}}``), so this maps the real field names into ``RawListing``.
+* :func:`run_and_fetch` — trigger the actor and get its dataset back in one authenticated
+  call (``run-sync-get-dataset-items``). This is what makes the pipeline hands-off: the
+  engine calls Apify itself on a schedule; the JSON never touches a human.
+
+Network calls use urllib (stdlib) so the package pulls in no HTTP dependency. Apify's host
+is unreachable from some sandboxes — that's an environment limit, not a code one; the
+adapter is exercised by tests on a captured record either way.
+"""
+
+from __future__ import annotations
+
+import json
+import urllib.parse
+import urllib.request
+from typing import Any, Iterable
+
+from dealfinder.core.schemas import RawListing, RawPhoto
+
+_API_BASE = "https://api.apify.com/v2"
+_DEFAULT_ACTOR = "apify~facebook-marketplace-scraper"
+
+# --- Adapter (verified against a real apify/facebook-marketplace-scraper export) ---------
+
+_TITLE_KEYS = ["listingTitle", "title", "name", "marketplaceListingTitle"]
+_PRICE_KEYS = ["listingPrice", "price", "amount", "priceAmount"]
+_DESC_KEYS = ["description", "redactedDescription", "desc"]
+_LOC_KEYS = ["locationText", "location", "city", "locationName"]
+_URL_KEYS = ["itemUrl", "listingUrl", "url", "link", "facebookUrl"]
+_ID_KEYS = ["id", "listingId", "itemId", "fbid"]
+_IMG_KEYS = ["listingPhotos", "images", "photos", "imageUrls", "primaryPhotoUrls"]
+
+
+def _first(rec: dict, keys: list[str]) -> Any:
+    for k in keys:
+        if k in rec and rec[k] not in (None, "", []):
+            return rec[k]
+    return None
+
+
+def _text(v: Any) -> str:
+    """Flatten a field that may be a bare string or a {'text': ...} / {'label': ...} object."""
+    if v is None:
+        return ""
+    if isinstance(v, dict):
+        return str(v.get("text") or v.get("label") or "")
+    return str(v)
+
+
+def _to_cents(v: Any) -> int | None:
+    if v is None:
+        return None
+    if isinstance(v, dict):
+        raw = v.get("amount_with_offset_in_currency") or v.get("amount_with_offset")
+        if raw:
+            try:
+                return int(str(raw))
+            except ValueError:
+                pass
+        v = v.get("amount")  # e.g. "80.00" (dollars)
+    try:
+        return int(round(float(str(v).replace("$", "").replace(",", "")) * 100))
+    except (TypeError, ValueError):
+        return None
+
+
+def _images(rec: dict) -> list[str]:
+    val = _first(rec, _IMG_KEYS) or []
+    urls: list[str] = []
+    if isinstance(val, list):
+        for item in val:
+            if isinstance(item, str):
+                urls.append(item)
+            elif isinstance(item, dict):
+                img = item.get("image") if isinstance(item.get("image"), dict) else item
+                u = img.get("uri") or img.get("url") or img.get("src")
+                if u:
+                    urls.append(u)
+    if not urls:
+        prim = rec.get("primaryListingPhoto") or {}
+        u = prim.get("photo_image_url") or prim.get("uri")
+        if u:
+            urls.append(u)
+    return urls
+
+
+def record_to_listing(rec: dict, idx: int = 0) -> RawListing:
+    fb_id = str(_first(rec, _ID_KEYS) or f"row-{idx}")
+    imgs = _images(rec)
+    price = _first(rec, _PRICE_KEYS)
+    prev = rec.get("strikethroughPrice")  # a present strikethrough = an already-dropped price
+    raw = dict(rec)
+    if prev:
+        raw["_was_price_cents"] = _to_cents(prev)
+    return RawListing(
+        fb_listing_id=fb_id,
+        title=_text(_first(rec, _TITLE_KEYS)),
+        description=_text(_first(rec, _DESC_KEYS)),
+        asking_price_cents=_to_cents(price),
+        location_text=_text(_first(rec, _LOC_KEYS)),
+        url=_text(_first(rec, _URL_KEYS)),
+        photos=[RawPhoto(remote_url=u, position=i) for i, u in enumerate(imgs)],
+        raw_json=raw,
+    )
+
+
+def records_to_listings(records: Iterable[dict]) -> list[RawListing]:
+    return [record_to_listing(r, i) for i, r in enumerate(records)]
+
+
+# --- REST client ------------------------------------------------------------------------
+
+def _post_json(url: str, payload: dict, timeout: float) -> Any:
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url, data=data, headers={"Content-Type": "application/json"}, method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (trusted host)
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def _get_json(url: str, timeout: float) -> Any:
+    with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def run_and_fetch(
+    run_input: dict,
+    *,
+    token: str,
+    actor: str = _DEFAULT_ACTOR,
+    timeout: float = 300.0,
+) -> list[RawListing]:
+    """Trigger the actor and return its dataset items as RawListings, in one call.
+
+    ``run_input`` is the actor's input JSON, e.g.::
+
+        {"startUrls": [{"url": "https://www.facebook.com/marketplace/lexington/search/?query=dresser"}],
+         "resultsLimit": 200, "includeListingDetails": True}
+
+    Requires an Apify API token. Raises on network/HTTP error — the caller decides retry.
+    """
+    q = urllib.parse.urlencode({"token": token})
+    url = f"{_API_BASE}/acts/{actor}/run-sync-get-dataset-items?{q}"
+    records = _post_json(url, run_input, timeout)
+    if isinstance(records, dict):  # some responses wrap items
+        records = records.get("items") or records.get("data") or []
+    return records_to_listings(records)
+
+
+def fetch_dataset(dataset_id: str, *, token: str, timeout: float = 120.0) -> list[RawListing]:
+    """Fetch an already-produced dataset by id (e.g. to re-process a prior run)."""
+    q = urllib.parse.urlencode({"token": token, "format": "json", "clean": "true"})
+    url = f"{_API_BASE}/datasets/{dataset_id}/items?{q}"
+    records = _get_json(url, timeout)
+    return records_to_listings(records)

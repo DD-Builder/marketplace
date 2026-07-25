@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Targets — Deal Finder{% endblock %}
+{% block content %}
+<div class="panel">
+  <h3>Add a search target</h3>
+  <form method="post" action="/targets" class="filters" style="box-shadow:none;border:none;padding:0">
+    <label>Name<input name="name" required placeholder="MCM dressers, Brooklyn"></label>
+    <label>Location<input name="location" required placeholder="nyc or 40.7,-74.0"></label>
+    <label>Category<input name="category" placeholder="furniture"></label>
+    <label>Keyword<input name="query" placeholder="dresser"></label>
+    <label>Radius (km)<input name="radius_km" type="number" value="40"></label>
+    <label>Min $<input name="min_price" type="number" step="1"></label>
+    <label>Max $<input name="max_price" type="number" step="1"></label>
+    <label>Focused
+      <select name="focused">
+        <option value="false">No</option>
+        <option value="true">Yes (scrape often)</option>
+      </select>
+    </label>
+    <button type="submit">Add target</button>
+  </form>
+</div>
+
+<div class="panel" style="margin-top:1.2rem">
+  <h3>Targets</h3>
+  {% if not targets %}
+    <p class="muted">No targets yet — add one above.</p>
+  {% else %}
+    <table>
+      <tr><th>Name</th><th>Location</th><th>Keyword</th><th>Price</th><th>Enabled</th><th></th></tr>
+      {% for t in targets %}
+      <tr>
+        <td>{{ t.name }}{% if t.focused %} <span class="badge">focused</span>{% endif %}</td>
+        <td>{{ t.location }} ({{ t.radius_km }}km)</td>
+        <td>{{ t.query or "—" }}</td>
+        <td>{{ t.min_price_cents | dollars }}–{{ t.max_price_cents | dollars }}</td>
+        <td>{{ "yes" if t.enabled else "no" }}</td>
+        <td style="display:flex; gap:.4rem">
+          <form method="post" action="/targets/{{ t.id }}/scrape"><button type="submit">Scrape now</button></form>
+          <form method="post" action="/targets/{{ t.id }}/toggle"><button class="secondary" type="submit">{{ "Disable" if t.enabled else "Enable" }}</button></form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+</div>
+{% endblock %}
