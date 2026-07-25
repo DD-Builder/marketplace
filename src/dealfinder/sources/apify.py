@@ -17,6 +17,7 @@ adapter is exercised by tests on a captured record either way.
 from __future__ import annotations
 
 import json
+import urllib.error
 import urllib.parse
 import urllib.request
 from typing import Any, Iterable
@@ -116,18 +117,49 @@ def records_to_listings(records: Iterable[dict]) -> list[RawListing]:
 
 # --- REST client ------------------------------------------------------------------------
 
+class ApifyError(RuntimeError):
+    """An Apify API call failed, carrying whatever explanation Apify returned."""
+
+
+def _raise_with_body(exc: urllib.error.HTTPError, what: str) -> None:
+    """Re-raise an HTTPError with Apify's own error text, which explains the cause.
+
+    A bare 'HTTP Error 400: Bad Request' is useless — Apify puts the actual reason
+    (bad input, exhausted credit, actor failure, rate limit) in the response body.
+    """
+    try:
+        body = exc.read().decode("utf-8", "replace")
+    except Exception:  # noqa: BLE001
+        body = ""
+    detail = body
+    try:
+        parsed = json.loads(body)
+        err = parsed.get("error") if isinstance(parsed, dict) else None
+        if isinstance(err, dict):
+            detail = f"{err.get('type', '')}: {err.get('message', '')}".strip(": ")
+    except json.JSONDecodeError:
+        pass
+    raise ApifyError(f"{what} failed with HTTP {exc.code}. Apify said: {detail[:500]}") from exc
+
+
 def _post_json(url: str, payload: dict, timeout: float) -> Any:
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         url, data=data, headers={"Content-Type": "application/json"}, method="POST"
     )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (trusted host)
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (trusted host)
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        _raise_with_body(exc, "Apify actor run")
 
 
 def _get_json(url: str, timeout: float) -> Any:
-    with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        _raise_with_body(exc, "Apify dataset fetch")
 
 
 def run_and_fetch(
