@@ -157,3 +157,64 @@ def test_pieces_appraised_on_earlier_runs_keep_their_committed_photos(tmp_path):
     result = RunResult(pieces=[_piece("old")], plan=AppraisalPlan())
     write_site(result, tmp_path / "site", extra_photo_map={"old": "photos/old.jpg"})
     assert 'src="photos/old.jpg"' in (tmp_path / "site" / "index.html").read_text()
+
+
+# --- the photo placeholder ----------------------------------------------------------------
+
+def test_a_sentence_length_item_name_does_not_break_the_thumbnail():
+    """A real appraisal names the piece in a full sentence. Rendered raw, it spilled out
+    of the 104px thumbnail column and across the whole card."""
+    from dealfinder.board import _short_label
+
+    assert _short_label(
+        "mixed furniture lot: 5-drawer light-wood dresser, dark-wood media console"
+    ) == "Mixed Furniture Lot"
+    assert _short_label("walnut credenza") == "Walnut Credenza"
+    # A hyphen is part of the name, not a clause break.
+    assert _short_label("three-piece bedroom set: large dresser") == "Three-Piece Bedroom Set"
+    assert _short_label("white-painted 2-drawer nightstand, MCM-style legs") \
+        == "White-Painted 2-Drawer Nightstand"
+    # Long single clauses are cut on a word boundary, and nothing renders empty.
+    assert len(_short_label("a " * 60)) <= 45
+    assert _short_label("") == "No Photo"
+
+
+def test_the_placeholder_is_clipped_in_css_too():
+    page = _page()
+    assert ".thumb.ph{" in page and "overflow:hidden" in page
+    assert "-webkit-line-clamp:6" in page
+
+
+def test_an_underwater_piece_says_do_not_buy_instead_of_a_sell_target():
+    """9 of 24 cards hit this path on a real run, so it needs pinning."""
+    from dealfinder.core.schemas import AppraisalResult
+
+    listing = RawListing(fb_listing_id="bad", title="oak dresser", asking_price_cents=50000)
+    appraisal = AppraisalResult(
+        identified_item="dresser", est_asis_value_cents=50000,
+        est_restored_resale_value_cents=20000,      # worth less than you'd pay
+        est_restoration_cost_cents=5000, est_restoration_effort_hours=4.0,
+        confidence=0.5, deal_score=5.0,
+    )
+    piece = evaluate_piece(listing, appraisal, hourly_rate_cents=3000)
+    page = _page([piece])
+    assert "Don't buy at this price" in page and "loses money" in page
+    assert "Sell target" not in page
+    # ...but the personal panel still shows the numbers behind that verdict.
+    assert "<summary>Your numbers</summary>" in page
+
+
+def test_a_warning_is_printed_once_per_card_not_twice():
+    """It was rendered by both the resale row and the personal panel."""
+    from dealfinder.core.schemas import AppraisalResult
+
+    listing = RawListing(fb_listing_id="thin", title="oak dresser", asking_price_cents=5000)
+    appraisal = AppraisalResult(
+        identified_item="dresser", est_asis_value_cents=5000,
+        est_restored_resale_value_cents=15000, est_restoration_cost_cents=2000,
+        est_restoration_effort_hours=4.0, confidence=0.5, deal_score=40.0,
+    )
+    piece = evaluate_piece(listing, appraisal, hourly_rate_cents=3000)
+    assert piece.resale.yours.warning                      # this piece does warn
+    page = _page([piece])
+    assert page.count("Fine if you enjoy the work") == 1

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,6 +26,22 @@ _POSTURE_LABEL = {
 
 def _money(cents: int | None) -> str:
     return f"${(cents or 0) / 100:,.0f}"
+
+
+def _short_label(identified_item: str, limit: int = 42) -> str:
+    """A thumbnail-sized name for a piece with no photo.
+
+    ``identified_item`` comes back from a real appraisal as a descriptive sentence —
+    "mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console
+    with open shelving, and ..." — so take the first clause and cut it short.
+    """
+    # The hyphen is deliberately not a separator: "three-piece bedroom set" is one clause,
+    # and splitting on it left cards labelled just "Three".
+    head = re.split(r"[:;(\u2014]|,\s", identified_item.strip(), maxsplit=1)[0].strip()
+    head = head or identified_item.strip() or "no photo"
+    if len(head) > limit:
+        head = head[:limit].rsplit(" ", 1)[0] + "\u2026"
+    return head.title()
 
 
 @dataclass
@@ -66,11 +83,12 @@ def _your_numbers(p: EvaluatedPiece) -> str:
         f'<span class="v">{html.escape(v)}</span></div>'
         for k, v in rows
     )
+    # No warning here: _resale_row already prints it directly above, and showing the same
+    # sentence twice on one card reads as a rendering bug.
     note = f'<p class="basis">{html.escape(basis)}</p>'
-    warn = f'<p class="reason">{html.escape(y.warning)}</p>' if y.warning else ""
     return (
         '<details class="yours"><summary>Your numbers</summary>'
-        f'<div class="yngrid">{cells}</div>{warn}{note}</details>'
+        f'<div class="yngrid">{cells}</div>{note}</details>'
     )
 
 
@@ -166,7 +184,7 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
         f'<img class="thumb" src="{html.escape(photo_rel)}" alt="" loading="lazy">'
         if photo_rel
         else f'<div class="thumb ph" aria-hidden="true"><span>'
-        f"{html.escape(p.appraisal.identified_item.title())}</span></div>"
+        f"{html.escape(_short_label(p.appraisal.identified_item))}</span></div>"
     )
     klass = (
         "card killer"
@@ -345,9 +363,12 @@ h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:650}
 img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:block;background:var(--brass-soft)}
 .thumb.ph{background:repeating-linear-gradient(115deg,#0000 0 7px,#00000008 7px 8px),
   linear-gradient(160deg,var(--brass-soft),var(--card));display:flex;align-items:center;
-  justify-content:center;padding:6px;text-align:center}
+  justify-content:center;padding:6px;text-align:center;overflow:hidden}
+/* A real appraisal names the piece in a full sentence, so this has to clip hard —
+   unclipped it spilled out of the 104px column and across the whole card. */
 .thumb.ph span{font-size:12px;font-weight:600;color:var(--brass);opacity:.85;
-  text-transform:uppercase;letter-spacing:.05em;line-height:1.15}
+  text-transform:uppercase;letter-spacing:.05em;line-height:1.15;overflow:hidden;
+  overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}
 .body{padding:12px 14px 14px;min-width:0}
 .head h2{font-size:15px;margin:0 0 2px;line-height:1.25;font-weight:600;overflow:hidden;
   text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -407,7 +428,7 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
 .tool input,.tool textarea{font:inherit;font-size:13px;padding:5px 7px;border-radius:6px;
   border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;
   box-sizing:border-box}
-.tool input[type=range]{padding:0}
+.tool input[type=range]{padding:0;accent-color:var(--brass)}
 .tool button{font:inherit;font-size:12.5px;padding:6px 13px;border-radius:999px;
   border:1px solid var(--brass);background:var(--brass-soft);color:var(--brass);
   cursor:pointer;flex:0 0 auto;align-self:flex-end}
