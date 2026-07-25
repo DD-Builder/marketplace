@@ -161,7 +161,10 @@ def _parse_cli_json(stdout: str) -> AppraisalResult:
         env = json.loads(stdout)
         if isinstance(env, dict):
             if env.get("is_error"):
-                raise RuntimeError(f"claude CLI reported an error: {str(env)[:300]}")
+                # The envelope's leading fields are noise; `result` carries the real
+                # reason (bad credentials, rate limit, refusal). Surface that.
+                detail = env.get("result") or env.get("error") or "no detail given"
+                raise RuntimeError(f"claude CLI error: {str(detail)[:300]}")
             text = env.get("result") or env.get("text") or stdout
     except json.JSONDecodeError:
         pass
