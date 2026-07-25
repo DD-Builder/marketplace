@@ -90,3 +90,13 @@ def test_badges_surface_star_and_warning():
     b = badges(killer=True, heat=70, liquidity=80, price_dropped=True, authenticity=FAKE)
     labels = {x.label for x in b}
     assert "Killer deal" in labels and "Look-alike" in labels and "Price drop" in labels
+
+
+def test_near_free_junk_does_not_dominate_on_roi():
+    from dealfinder.ranking import roi_to_score
+    # $1 listing worth $50: a huge multiple but a trivial $49 margin. Must not outrank
+    # a solid piece with real money in it. (Regression: a $1 Indianapolis spam listing
+    # ranked first on a real board.)
+    junk = roi_to_score(5000, 100)
+    real = roi_to_score(60000, 20000)
+    assert junk < real
