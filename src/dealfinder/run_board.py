@@ -41,6 +41,16 @@ _DEFAULT_RADIUS_TOWNS = (
 )
 
 
+def _env(name: str, default: str) -> str:
+    """Read an env var, treating empty/whitespace as unset.
+
+    GitHub Actions substitutes an unset repository variable as an empty string rather
+    than omitting it, so ``os.getenv(name, default)`` returns "" and never the default —
+    which then blows up ``int("")``. Anything optional must go through here.
+    """
+    return (os.getenv(name) or "").strip() or default
+
+
 def _radius_check(towns: str):
     names = [t.strip().lower() for t in towns.split(",") if t.strip()]
 
@@ -104,13 +114,13 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Scrape, appraise, and publish the deal board")
     ap.add_argument("--out", default="docs", help="site output dir (GitHub Pages serves this)")
     ap.add_argument("--seen", default="docs/seen.json", help="cross-run ledger path")
-    ap.add_argument("--limit", type=int, default=int(os.getenv("RESULTS_LIMIT", "150")),
+    ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "150")),
                     help="listings to request per search URL")
     ap.add_argument("--max-appraisals", type=int,
-                    default=int(os.getenv("MAX_APPRAISALS", "12")),
+                    default=int(_env("MAX_APPRAISALS", "12")),
                     help="hard cap on AI calls this run")
-    ap.add_argument("--wildcards", type=int, default=int(os.getenv("WILDCARDS", "3")))
-    ap.add_argument("--vertical", default=os.getenv("VERTICAL", "furniture"))
+    ap.add_argument("--wildcards", type=int, default=int(_env("WILDCARDS", "3")))
+    ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
     ap.add_argument("--from-json", default="", help="use a local JSON export instead of scraping")
     ap.add_argument("--dry-run", action="store_true", help="skip AI; render pre-screen only")
     args = ap.parse_args(argv)
@@ -129,7 +139,7 @@ def main(argv: list[str] | None = None) -> int:
         if not token:
             print("APIFY_TOKEN is not set — cannot scrape.", file=sys.stderr)
             return 2
-        urls = _search_urls(os.getenv("SEARCH_URLS", ""))
+        urls = _search_urls(_env("SEARCH_URLS", ""))
         if not urls:
             print("SEARCH_URLS is not set — nothing to scrape.", file=sys.stderr)
             return 2
@@ -143,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
                     "includeListingDetails": True,
                 },
                 token=token,
-                actor=os.getenv("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+                actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
             )
     log.info("scraped", count=len(listings))
 
@@ -181,17 +191,17 @@ def main(argv: list[str] | None = None) -> int:
 
         provider = _Dry()
     else:
-        provider = get_appraiser(os.getenv("APPRAISER_PROVIDER", "claude-code"))
+        provider = get_appraiser(_env("APPRAISER_PROVIDER", "claude-code"))
     log.info("appraiser", provider=provider.name)
 
     result = run_valuation(
         listings, seen,
         provider=provider,
         vertical=vertical,
-        hourly_rate_cents=int(os.getenv("HOURLY_RATE_CENTS", "3000")),
+        hourly_rate_cents=int(_env("HOURLY_RATE_CENTS", "3000")),
         top_n=max(args.max_appraisals - args.wildcards, 1),
         wildcards=args.wildcards,
-        in_radius=_radius_check(os.getenv("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS)),
+        in_radius=_radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS)),
         image_paths_by_id={k: v for k, v in photos.items()} if photos else None,
     )
 
@@ -201,7 +211,7 @@ def main(argv: list[str] | None = None) -> int:
     page = write_site(
         result, out_dir,
         meta=BoardMeta(
-            region=os.getenv("REGION_LABEL", "Lexington · 40 mi"),
+            region=_env("REGION_LABEL", "Lexington · 40 mi"),
             generated_at=f"updated {now}",
             note=f"Valued by {provider.name}. Photos and prices as scraped; verify before buying.",
         ),
