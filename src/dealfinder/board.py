@@ -35,12 +35,26 @@ class BoardMeta:
 
 
 def _resale_row(p: EvaluatedPiece) -> str:
-    """The sell-side line. When a piece can't clear its own costs, say so instead of
-    printing a target price nobody would pay."""
-    if not p.resale.viable:
+    """The sell-side line.
+
+    Always shows the target price — even on a thin piece, since knowing what it fetches is
+    the point — and states *why* when the economics are marginal. Showing a bare "skip"
+    next to a positive margin reads as a broken card.
+    """
+    reason = (
+        f'<div class="reason">{html.escape(p.resale.warning)}</div>'
+        if p.resale.warning
+        else ""
+    )
+    if p.resale.status == "underwater":
         return (
-            f'<div class="resale bad"><b>Skip at this price</b>'
-            f'<span class="posture bad">underwater</span></div>'
+            f'<div class="resale bad"><b>Don\'t buy at this price</b>'
+            f'<span class="posture bad">loses money</span></div>{reason}'
+        )
+    if p.resale.status == "thin":
+        return (
+            f'<div class="resale">Sell target <b>{_money(p.resale.list_price_cents)}</b>'
+            f'<span class="posture thin">thin for the hours</span></div>{reason}'
         )
     return (
         f'<div class="resale">Sell target <b>{_money(p.resale.list_price_cents)}</b>'
@@ -248,6 +262,8 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
   color:var(--brass);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
 .resale.bad b{color:var(--crit)}
 .resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
+.resale .posture.thin{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
+.reason{font-size:11.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.4}
 .meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
 .meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
 .meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}

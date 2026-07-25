@@ -73,14 +73,24 @@ def test_list_price_never_below_cost_floor():
     assert s.floor_price_cents >= loaded_cost_cents(costs, RATE)
 
 
-def test_underwater_piece_is_flagged_not_given_a_fantasy_target():
-    # Break-even needs far more than the piece is worth restored -> don't pretend a
-    # sell target exists. (Regression: a real run suggested a $632 target on a piece
-    # the appraiser valued at $220.)
-    costs = PieceCosts(acquisition_cents=7500, materials_cents=4000, labor_hours=6.0)
-    s = suggest_resale_price(_appraisal(restored=22000, conf=0.3, maker=None), costs, RATE)
-    assert not s.viable
-    assert "underwater" in s.warning.lower()
+def test_cash_negative_piece_is_a_real_skip():
+    # Sells for less than you'd have in it out of pocket -> don't buy at any hourly rate.
+    costs = PieceCosts(acquisition_cents=40000, materials_cents=4000, labor_hours=6.0)
+    s = suggest_resale_price(_appraisal(restored=32000, conf=0.3, maker=None), costs, RATE)
+    assert s.status == "underwater" and not s.viable
+    assert "loses money" in s.warning.lower()
+
+
+def test_cash_positive_but_slow_is_thin_not_a_skip():
+    # A $20 piece worth $200 restored makes real cash even if the hours don't pay $30/hr.
+    # Flagging this as "skip" would talk a hobbyist out of a genuinely good buy.
+    # (Regression: a real run labelled a +$250-margin table "underwater".)
+    costs = PieceCosts(acquisition_cents=2000, materials_cents=1500, labor_hours=20.0)
+    s = suggest_resale_price(_appraisal(restored=20000, conf=0.4, maker=None), costs, RATE)
+    assert s.status == "thin"
+    assert s.viable  # still worth buying
+    assert s.list_price_cents > 0  # and we still tell you what to ask
+    assert "cash" in s.warning.lower()
 
 
 def test_healthy_piece_stays_viable():
