@@ -65,12 +65,15 @@ def test_ambiguous_but_not_desirable_stays_at_market():
     assert s.posture is Posture.MARKET
 
 
-def test_list_price_never_below_cost_floor():
-    # Market value is low, but costs+labor are high -> floor protects you.
+def test_floor_is_advisory_not_the_asking_price():
+    # Costs+labour far exceed what the piece is worth. The floor is still reported (it's
+    # the walk-away), but it must NOT become the list price — pricing to your costs rather
+    # than the market just means it never sells.
     costs = PieceCosts(acquisition_cents=6000, materials_cents=3000, labor_hours=5.0)
     s = suggest_resale_price(_appraisal(restored=5000, conf=0.9, maker="Lane"), costs, RATE)
-    assert s.list_price_cents == s.floor_price_cents
-    assert s.floor_price_cents >= loaded_cost_cents(costs, RATE)
+    assert s.floor_price_cents >= loaded_cost_cents(costs, RATE)  # still surfaced
+    assert s.list_price_cents < s.floor_price_cents               # but priced to market
+    assert s.status == "underwater"
 
 
 def test_cash_negative_piece_is_a_real_skip():
@@ -111,3 +114,14 @@ def test_realized_profit_and_hourly_wage():
 def test_realized_handles_zero_labor():
     out = realized(20000, PieceCosts(acquisition_cents=5000), RATE)
     assert out.effective_hourly_cents is None  # no hours logged -> no wage
+
+
+def test_thin_piece_lists_at_market_not_an_unreachable_floor():
+    # A $450 piece must not be listed at $978 because the labour was expensive —
+    # it would simply never sell. (Regression from a real run.)
+    costs = PieceCosts(acquisition_cents=5000, materials_cents=15000, labor_hours=20.0)
+    s = suggest_resale_price(_appraisal(restored=45000, conf=0.4, maker=None), costs, RATE)
+    assert s.status == "thin"
+    # Priced off the market (posture markup allowed), never off the unreachable floor.
+    assert s.list_price_cents < s.floor_price_cents
+    assert s.floor_price_cents > s.market_anchor_cents  # floor stays visible as advice
