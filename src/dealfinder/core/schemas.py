@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -11,7 +13,13 @@ class RawPhoto(BaseModel):
 
 
 class RawListing(BaseModel):
-    """A listing as extracted by the scraper, before persistence."""
+    """A listing as extracted by the scraper, before persistence.
+
+    A record may be *thin* (from a cheap search-grid scan) or *full* (from a paid detail
+    page). Only ``description`` and the full photo set require the detail page; everything
+    else below is free in the grid. ``detail_fetched`` records which kind this is, so the
+    pipeline can avoid paying twice for the same listing.
+    """
 
     fb_listing_id: str
     title: str = ""
@@ -24,6 +32,12 @@ class RawListing(BaseModel):
     url: str = ""
     photos: list[RawPhoto] = Field(default_factory=list)
     raw_json: dict = Field(default_factory=dict)
+
+    # Provenance and grid-level state (all free — no detail-page fetch required).
+    detail_fetched: bool = False
+    is_sold: bool | None = None
+    is_live: bool | None = None
+    posted_at: datetime | None = None
 
 
 class TriageResult(BaseModel):

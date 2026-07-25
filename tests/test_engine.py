@@ -85,3 +85,41 @@ def test_engine_accepts_apify_records():
 def test_provider_factory():
     assert "claude-api" in available_providers()
     assert get_appraiser("claude-api").name == "claude-api"
+
+
+def test_evaluate_piece_matches_run_valuation():
+    """A stored appraisal must re-score identically to the live loop — this is what makes
+    the catalogue trustworthy (scores are recomputed, never persisted)."""
+    from dealfinder.engine import evaluate_piece
+    listing = _l("p1", title="solid walnut credenza", price=6000)
+    res = run_valuation([listing], seen={}, provider=StubProvider(), hourly_rate_cents=3000)
+    live = res.pieces[0]
+    stored = evaluate_piece(listing, live.appraisal, hourly_rate_cents=3000)
+    for f in ("deal_score", "cash_margin_cents", "liquidity", "heat", "priority",
+              "is_killer", "price_dropped", "out_of_radius"):
+        assert getattr(stored, f) == getattr(live, f), f
+    assert stored.resale.list_price_cents == live.resale.list_price_cents
+    assert [b.label for b in stored.badges] == [b.label for b in live.badges]
+
+
+def test_price_drop_rescores_without_any_ai_call():
+    """The cost fix in one test: re-ranking a price drop must not invoke the provider."""
+    from dealfinder.engine import evaluate_piece
+    listing = _l("p2", title="solid oak dresser", price=8000)
+    appraisal = StubProvider().appraise(listing, None)
+    before = evaluate_piece(listing, appraisal)
+    cheaper = listing.model_copy(update={"asking_price_cents": 3000})
+    after = evaluate_piece(cheaper, appraisal)
+    assert after.cash_margin_cents > before.cash_margin_cents
+    assert after.priority >= before.priority
+
+
+def test_thin_and_full_records_are_distinguishable():
+    from dealfinder.sources.apify import record_to_listing
+    thin = record_to_listing({"id": "a", "listingTitle": "Dresser",
+                              "primaryListingPhoto": {"photo_image_url": "u"}})
+    full = record_to_listing({"id": "a", "listingTitle": "Dresser",
+                              "description": {"text": "solid oak"},
+                              "listingPhotos": [{"image": {"uri": "u"}}]})
+    assert not thin.detail_fetched and full.detail_fetched
+    assert thin.photos  # primary photo fallback still gives prescreen something to keep

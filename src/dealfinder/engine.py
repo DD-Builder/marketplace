@@ -112,46 +112,71 @@ def run_valuation(
         except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
             log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
             continue
-
-        auth = assess_authenticity(listing)
-        ask = listing.asking_price_cents or 0
-        deal = compute_deal_score(appr, listing.asking_price_cents, hourly_rate_cents)
-        cash_margin = appr.est_restored_resale_value_cents - ask - appr.est_restoration_cost_cents
-        dropped = _price_dropped(listing)
-        oor = bool(in_radius) and not in_radius(listing.location_text)
-
-        # Provisional resale target: if you bought at ask and restored per the estimate.
-        provisional_costs = PieceCosts(
-            acquisition_cents=ask,
-            materials_cents=appr.est_restoration_cost_cents,
-            labor_hours=appr.est_restoration_effort_hours,
+        pieces.append(
+            evaluate_piece(
+                listing, appr, hourly_rate_cents=hourly_rate_cents, in_radius=in_radius
+            )
         )
-        resale = suggest_resale_price(appr, provisional_costs, hourly_rate_cents)
-
-        liq = liquidity_score(
-            maker_guess=appr.maker_guess, confidence=appr.confidence,
-            identified_item=appr.identified_item, authenticity=auth,
-        )
-        heat = heat_score(
-            text=f"{listing.title} {listing.description}",
-            prescreen_score=0, price_dropped=dropped,
-        )
-        roi = roi_to_score(appr.est_restored_resale_value_cents, ask + appr.est_restoration_cost_cents)
-        killer = is_killer_deal(
-            deal_score=deal, confidence=appr.confidence, authenticity=auth,
-            net_margin_cents=cash_margin, asking_price_cents=listing.asking_price_cents,
-        )
-        prio = viewing_priority(
-            deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
-            roi_score=roi, out_of_radius=oor,
-        )
-        pieces.append(EvaluatedPiece(
-            listing=listing, appraisal=appr, authenticity=auth, deal_score=deal,
-            cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
-            priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
-            badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
-                          authenticity=auth, out_of_radius=oor),
-        ))
 
     pieces.sort(key=lambda p: p.priority, reverse=True)
     return RunResult(pieces=pieces, plan=plan)
+
+
+def evaluate_piece(
+    listing: RawListing,
+    appraisal: AppraisalResult,
+    *,
+    hourly_rate_cents: int = 3000,
+    in_radius: Callable[[str], bool] | None = None,
+) -> EvaluatedPiece:
+    """Score one listing against an appraisal — no AI, no I/O, pure computation.
+
+    Separating this from :func:`run_valuation` is what makes a stored appraisal reusable:
+    an appraisal answers "what is this object and what is it worth restored", which does
+    not change when the seller cuts the price. So a price drop can be re-ranked against
+    today's asking price for zero cost, and improvements to scoring or resale logic apply
+    retroactively to every piece already in the catalogue.
+    """
+    auth = assess_authenticity(listing)
+    ask = listing.asking_price_cents or 0
+    deal = compute_deal_score(appraisal, listing.asking_price_cents, hourly_rate_cents)
+    cash_margin = (
+        appraisal.est_restored_resale_value_cents - ask - appraisal.est_restoration_cost_cents
+    )
+    dropped = _price_dropped(listing)
+    oor = bool(in_radius) and not in_radius(listing.location_text)
+
+    # Provisional resale target: if you bought at ask and restored per the estimate.
+    provisional_costs = PieceCosts(
+        acquisition_cents=ask,
+        materials_cents=appraisal.est_restoration_cost_cents,
+        labor_hours=appraisal.est_restoration_effort_hours,
+    )
+    resale = suggest_resale_price(appraisal, provisional_costs, hourly_rate_cents)
+
+    liq = liquidity_score(
+        maker_guess=appraisal.maker_guess, confidence=appraisal.confidence,
+        identified_item=appraisal.identified_item, authenticity=auth,
+    )
+    heat = heat_score(
+        text=f"{listing.title} {listing.description}",
+        prescreen_score=0, price_dropped=dropped,
+    )
+    roi = roi_to_score(
+        appraisal.est_restored_resale_value_cents, ask + appraisal.est_restoration_cost_cents
+    )
+    killer = is_killer_deal(
+        deal_score=deal, confidence=appraisal.confidence, authenticity=auth,
+        net_margin_cents=cash_margin, asking_price_cents=listing.asking_price_cents,
+    )
+    prio = viewing_priority(
+        deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
+        roi_score=roi, out_of_radius=oor,
+    )
+    return EvaluatedPiece(
+        listing=listing, appraisal=appraisal, authenticity=auth, deal_score=deal,
+        cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
+        priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
+        badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
+                      authenticity=auth, out_of_radius=oor),
+    )
