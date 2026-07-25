@@ -16,9 +16,11 @@ on:
         required: false
         default: false
   schedule:
-    # Mondays and Thursdays at 13:00 UTC (~8-9am Eastern) — catches the weekend
-    # price-drops on Monday and the fresh pre-weekend listings on Thursday.
-    - cron: "0 13 * * 1,4"
+    # Daily at 13:00 UTC (~8-9am Eastern). Counter-intuitively this is the *cheap*
+    # cadence: measured on a real export, a daily re-run finds ~30% new listings and
+    # ~70% already seen, and the two-stage scrape only pays for the 30%. Running twice
+    # a week means a bigger new-fraction each time, for the same index cost.
+    - cron: "0 13 * * *"
 
 # Let the job commit the regenerated site back to the branch.
 permissions:
@@ -56,6 +58,14 @@ jobs:
           REGION_LABEL: ${{ vars.REGION_LABEL }}
           IN_RADIUS_TOWNS: ${{ vars.IN_RADIUS_TOWNS }}
           RESULTS_LIMIT: ${{ vars.RESULTS_LIMIT }}
+          # Pushed into the Marketplace search URL, so listings you'd never buy are
+          # never billed. All optional — unset means no filter.
+          MIN_PRICE_DOLLARS: ${{ vars.MIN_PRICE_DOLLARS }}
+          MAX_PRICE_DOLLARS: ${{ vars.MAX_PRICE_DOLLARS }}
+          DAYS_SINCE_LISTED: ${{ vars.DAYS_SINCE_LISTED }}
+          SEARCH_RADIUS_KM: ${{ vars.SEARCH_RADIUS_KM }}
+          # Only needed if the main actor turns out not to fetch item detail pages.
+          APIFY_DETAIL_ACTOR: ${{ vars.APIFY_DETAIL_ACTOR }}
           HOURLY_RATE_CENTS: ${{ vars.HOURLY_RATE_CENTS }}
           MAX_APPRAISALS: ${{ inputs.max_appraisals || '12' }}
         run: |

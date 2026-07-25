@@ -293,6 +293,18 @@ def observe(
     return rep
 
 
+def record_capability(catalog: Catalog, supported: bool | None, *, now: datetime | None = None) -> None:
+    """Remember whether the actor can fetch item detail pages.
+
+    Finding out costs a real (small) scrape, so the verdict is persisted: an actor that
+    can't do it is discovered once, not once per run.
+    """
+    if supported is None:
+        return
+    catalog.meta.detail_fetch_supported = supported
+    catalog.meta.last_probe_at = now or _now()
+
+
 def needs_reappraisal(entry: CatalogEntry, listing: RawListing) -> bool:
     """Re-appraise only on genuinely new evidence — i.e. we previously had thin data and
     now have a description and photos. A price change alone never justifies a new AI call:

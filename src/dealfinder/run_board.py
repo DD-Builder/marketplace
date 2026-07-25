@@ -32,6 +32,7 @@ from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
 from dealfinder.selection import plan_appraisals
 from dealfinder.sources.apify import records_to_listings, run_and_fetch
+from dealfinder.sources.scrape import SearchFilters, scrape
 from dealfinder.verticals import get_vertical
 
 log = get_logger(__name__)
@@ -58,6 +59,31 @@ def _env(name: str, default: str) -> str:
     which then blows up ``int("")``. Anything optional must go through here.
     """
     return (os.getenv(name) or "").strip() or default
+
+
+def _int_env(name: str) -> int | None:
+    raw = _env(name, "")
+    try:
+        return int(raw) if raw else None
+    except ValueError:
+        log.warning("bad_int_env", name=name, value=raw)
+        return None
+
+
+def _filters() -> SearchFilters:
+    """Search-URL filters, from the environment.
+
+    Nearly a fifth of the measured scrape was spent on listings outside the price range or
+    radius — money billed before we could throw the rows away. These push the cut back to
+    Facebook. Defaults are deliberately wide; narrow them once you know your run's cost.
+    """
+    return SearchFilters(
+        min_price_dollars=_int_env("MIN_PRICE_DOLLARS"),
+        max_price_dollars=_int_env("MAX_PRICE_DOLLARS"),
+        days_since_listed=_int_env("DAYS_SINCE_LISTED"),
+        radius_km=_int_env("SEARCH_RADIUS_KM"),
+        newest_first=_env("SORT_NEWEST_FIRST", "1") not in ("0", "false", "no"),
+    )
 
 
 def _radius_check(towns: str):
@@ -194,6 +220,7 @@ def main(argv: list[str] | None = None) -> int:
             return rc
 
     # 1. Get listings — from Apify, or a local export for testing.
+    coverage: dict[str, catalog_mod.SearchCoverage] = {}
     if args.from_json:
         records = json.loads(Path(args.from_json).read_text())
         listings = records_to_listings(records)
@@ -206,27 +233,30 @@ def main(argv: list[str] | None = None) -> int:
         if not urls:
             print("SEARCH_URLS is set but contains no http(s) URLs.", file=sys.stderr)
             return 2
-        listings = []
-        failures: list[str] = []
-        for url in urls:
-            log.info("scraping", url=url)
-            try:
-                listings += run_and_fetch(
-                    {
-                        "startUrls": [{"url": url}],
-                        "resultsLimit": args.limit,
-                        "includeListingDetails": True,
-                    },
-                    token=token,
-                    actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
-                )
-            except Exception as exc:  # noqa: BLE001 — one bad search shouldn't sink the run
-                log.warning("scrape_failed", url=url, error=str(exc)[:400])
-                failures.append(f"{url}: {exc}")
-        if failures and not listings:
+        def fetch(run_input: dict, actor_id: str):
+            return run_and_fetch(run_input, token=token, actor=actor_id)
+
+        scraped = scrape(
+            urls, seen,
+            fetch=fetch,
+            already_detailed=catalog_mod.detailed_ids(catalog),
+            actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+            detail_actor=_env("APIFY_DETAIL_ACTOR", "") or None,
+            results_limit=args.limit,
+            # Over-fetch the appraisal cap: pre-screening on a thin record is imperfect, so
+            # a slightly wider detail net keeps good pieces from being cut on a bad title.
+            detail_cap=int(args.max_appraisals * 1.5) + 2,
+            detail_supported=catalog.meta.detail_fetch_supported,
+            filters=_filters(),
+        )
+        listings = scraped.listings
+        coverage = scraped.coverage
+        catalog_mod.record_capability(catalog, scraped.detail_supported)
+        log.info("scrape", summary=scraped.summary())
+        if scraped.searches_failed and not listings:
             print(
                 "Every search failed, so there is nothing to appraise:\n  "
-                + "\n  ".join(failures),
+                + "\n  ".join(scraped.searches_failed),
                 file=sys.stderr,
             )
             return 5
@@ -235,7 +265,7 @@ def main(argv: list[str] | None = None) -> int:
     # 2. Fold the scan into the catalogue *before* planning, so price history, sold/gone
     #    state and first-seen dates are recorded even for listings we never pay to value.
     #    `seen` was snapshotted above, so the diff still sees pre-scan prices.
-    obs = catalog_mod.observe(catalog, listings)
+    obs = catalog_mod.observe(catalog, listings, coverage=coverage)
     log.info("observed", new=obs.new, price_drops=obs.price_drops, gone=obs.marked_gone,
              sold=obs.marked_sold)
 
