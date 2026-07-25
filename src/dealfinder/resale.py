@@ -119,8 +119,12 @@ def suggest_resale_price(
         base = market + premium
         why = "Standard piece; price at market plus your premium."
 
-    # Never list below the walk-away floor (covers money out + your time + margin).
-    list_price = max(base, floor)
+    # Price to the market, never to your costs. The floor (money out + your time + margin)
+    # is what you *need*, not what a buyer will pay: listing a $450 table at $978 because
+    # the hours were expensive just means it never sells. So the floor stays advisory —
+    # reported for the walk-away decision, and surfaced as the "thin" warning below when
+    # the market can't reach it.
+    list_price = base
 
     # Two very different failure modes, previously collapsed into one "underwater" label:
     #
@@ -148,8 +152,6 @@ def suggest_resale_price(
         )
     else:
         status = "ok"
-        if list_price == floor and base < floor:
-            why += " Raised to your cost-plus floor."
     viable = status != "underwater"
 
     return ResaleSuggestion(

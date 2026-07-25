@@ -62,13 +62,29 @@ def heat_score(*, text: str, prescreen_score: int, price_dropped: bool) -> float
     return round(max(0.0, min(100.0, score)), 1)
 
 
-def roi_to_score(restored_cents: int, cash_outlay_cents: int, *, cap: float = 6.0) -> float:
-    """0-100 from return multiple (restored / money-in). Lets a cheap 10x flip rank like
-    the killer it is, instead of losing to a bulky piece with more *absolute* dollars."""
+def roi_to_score(
+    restored_cents: int,
+    cash_outlay_cents: int,
+    *,
+    cap: float = 6.0,
+    meaningful_margin_cents: int = 15000,
+) -> float:
+    """0-100 from return multiple (restored / money-in).
+
+    Lets a cheap 10x flip rank like the killer it is instead of losing to a bulky piece
+    with more *absolute* dollars — but a near-free item would otherwise post an enormous
+    multiple on a trivial profit and dominate the feed. (A real run had a $1 listing worth
+    $50 ranking first.) The multiple is therefore scaled down until the actual margin is
+    worth a trip.
+    """
     if cash_outlay_cents <= 0:
         return 100.0
     mult = restored_cents / cash_outlay_cents
-    return round(100.0 * min(mult, cap) / cap, 1)
+    raw = 100.0 * min(mult, cap) / cap
+    margin = restored_cents - cash_outlay_cents
+    if margin < meaningful_margin_cents:
+        raw *= max(0.0, margin) / meaningful_margin_cents
+    return round(raw, 1)
 
 
 def viewing_priority(
