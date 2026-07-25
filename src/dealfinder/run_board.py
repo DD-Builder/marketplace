@@ -177,17 +177,29 @@ def main(argv: list[str] | None = None) -> int:
             print("SEARCH_URLS is set but contains no http(s) URLs.", file=sys.stderr)
             return 2
         listings = []
+        failures: list[str] = []
         for url in urls:
             log.info("scraping", url=url)
-            listings += run_and_fetch(
-                {
-                    "startUrls": [{"url": url}],
-                    "resultsLimit": args.limit,
-                    "includeListingDetails": True,
-                },
-                token=token,
-                actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+            try:
+                listings += run_and_fetch(
+                    {
+                        "startUrls": [{"url": url}],
+                        "resultsLimit": args.limit,
+                        "includeListingDetails": True,
+                    },
+                    token=token,
+                    actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+                )
+            except Exception as exc:  # noqa: BLE001 — one bad search shouldn't sink the run
+                log.warning("scrape_failed", url=url, error=str(exc)[:400])
+                failures.append(f"{url}: {exc}")
+        if failures and not listings:
+            print(
+                "Every search failed, so there is nothing to appraise:\n  "
+                + "\n  ".join(failures),
+                file=sys.stderr,
             )
+            return 5
     log.info("scraped", count=len(listings))
 
     # 2. Cost-controlled selection happens inside the engine; but photos must be fetched
