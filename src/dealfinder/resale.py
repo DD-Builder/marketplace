@@ -77,6 +77,8 @@ class ResaleSuggestion:
     market_anchor_cents: int     # the appraiser's realistic restored-resale estimate
     posture: Posture
     rationale: str
+    viable: bool = True          # False when the piece can't clear its own costs
+    warning: str = ""            # why it isn't viable, when it isn't
 
 
 def suggest_resale_price(
@@ -114,7 +116,19 @@ def suggest_resale_price(
 
     # Never list below the walk-away floor (covers money out + your time + margin).
     list_price = max(base, floor)
-    if list_price == floor and base < floor:
+
+    # If the floor sits above what the piece is actually worth, no price works: you'd have
+    # to ask more than the market pays just to break even. Say so plainly rather than
+    # printing an unreachable "target" — that would talk you into buying a loser.
+    viable = floor <= market + premium
+    warning = ""
+    if not viable:
+        warning = (
+            f"Underwater: breaking even needs {floor / 100:.0f} but the piece is only "
+            f"worth about {market / 100:.0f} restored. Pay less, cut the restoration, "
+            "or skip it."
+        )
+    elif list_price == floor and base < floor:
         why += " Raised to your cost-plus floor."
 
     return ResaleSuggestion(
@@ -123,6 +137,8 @@ def suggest_resale_price(
         market_anchor_cents=market,
         posture=posture,
         rationale=why,
+        viable=viable,
+        warning=warning,
     )
 
 

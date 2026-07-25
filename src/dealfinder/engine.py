@@ -85,12 +85,15 @@ def run_valuation(
     top_n: int = 20,
     wildcards: int = 5,
     in_radius: Callable[[str], bool] | None = None,
+    image_paths_by_id: Mapping[str, list] | None = None,
 ) -> RunResult:
     """Run the funnel over a batch and return a ranked, priced board.
 
     ``source`` may be raw Apify records or ready ``RawListing`` objects. ``seen`` is the
     cross-run ledger (``{id: last_price_cents}``) so already-evaluated pieces are skipped.
     ``in_radius(location_text) -> bool`` flags distance; omit to treat everything as in-range.
+    ``image_paths_by_id`` supplies already-downloaded photo files per listing — required by
+    the subscription (Claude Code) appraiser, which reads images off disk.
     """
     items = list(source)
     listings = (
@@ -104,7 +107,8 @@ def run_valuation(
     pieces: list[EvaluatedPiece] = []
     for listing in plan.to_appraise:
         try:
-            appr = provider.appraise(listing, vertical)
+            imgs = (image_paths_by_id or {}).get(listing.fb_listing_id)
+            appr = provider.appraise(listing, vertical, image_paths=imgs)
         except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
             log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
             continue

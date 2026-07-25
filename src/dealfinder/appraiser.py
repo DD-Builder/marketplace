@@ -76,65 +76,105 @@ _CLI_SCHEMA_HINT = (
 
 
 class ClaudeCodeAppraiser:
-    """Subscription path: shell out to the Claude Code CLI so calls bill to Max, not the API.
+    """Subscription path: drive the Claude Code CLI so calls bill to your Max plan, not the API.
 
-    Requires local image files (Claude Code reads them from disk) and a ``claude`` CLI that
-    is installed and authenticated to the user's subscription. Scaffolded — validate in an
-    environment where that CLI is present.
+    This is what makes the whole pipeline free to run. In CI (GitHub Actions) the CLI
+    authenticates from ``CLAUDE_CODE_OAUTH_TOKEN`` — a long-lived token you mint once with
+    ``claude setup-token`` and store as a repo secret. Locally it uses whatever login the
+    CLI already has.
+
+    Photos are read off disk by the CLI's Read tool, so download them first (they're also
+    only valid for a few hours). Falls back to a text-only appraisal when no images exist,
+    with the confidence penalty that deserves.
     """
 
     name = "claude-code"
 
-    def __init__(self, cli: str = "claude") -> None:
+    def __init__(self, cli: str = "claude", model: str = "", timeout: float = 300.0) -> None:
         self.cli = cli
+        self.model = model
+        self.timeout = timeout
 
     def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None):
         if not shutil.which(self.cli):
             raise RuntimeError(
                 f"'{self.cli}' CLI not found. The subscription appraiser needs Claude Code "
-                "installed and logged in to your Max plan. Use provider 'claude-api' to run "
-                "on the metered API instead."
+                "installed and authenticated (locally, or via CLAUDE_CODE_OAUTH_TOKEN in CI). "
+                "Set APPRAISER_PROVIDER=claude-api to use the metered API instead."
             )
-        if not image_paths:
-            raise RuntimeError(
-                "claude-code appraiser needs local image files (it reads them from disk). "
-                "Run the photo-download step before appraising, or use 'claude-api' with URLs."
-            )
-        imgs = "\n".join(str(p) for p in image_paths)
+        paths = [Path(p) for p in (image_paths or [])]
+        paths = [p for p in paths if p.exists()][:6]  # bound image cost per appraisal
+
         price = (
             f"${listing.asking_price_cents / 100:.0f}"
             if listing.asking_price_cents is not None
             else "unknown"
         )
+        if paths:
+            img_block = (
+                "Use the Read tool to look at EACH of these photos before judging:\n"
+                + "\n".join(str(p) for p in paths)
+            )
+        else:
+            img_block = (
+                "No photos are available — appraise from the text alone and set confidence "
+                "no higher than 0.35, since construction can't be verified."
+            )
+
         prompt = (
+            "You are an expert appraiser advising a restoration reseller. "
             f"{vertical.appraiser_guidance}\n\n"
-            "You are an expert appraiser advising a restoration reseller. Read the image "
-            f"files below plus the listing, and return ONLY a JSON object matching:\n"
-            f"{_CLI_SCHEMA_HINT}\n\n"
-            "Value the restored piece at realistic regional resale, not aspirational dealer "
-            "prices. All money in US cents.\n\n"
-            f"Asking price: {price}\nDescription: {listing.description[:2000]}\n\nImages:\n{imgs}"
+            f"{img_block}\n\n"
+            f"Asking price: {price}\n"
+            f"Title: {listing.title[:300]}\n"
+            f"Description: {listing.description[:2000]}\n\n"
+            "Judge construction (solid wood vs veneer vs particleboard), joinery, maker marks, "
+            "era, condition, and what restoration it truly needs. Value the RESTORED piece at "
+            "realistic regional resale (local marketplace / eBay sold), NOT aspirational dealer "
+            "listings like 1stDibs — treat those as heavily-discounted ceilings. If the piece is "
+            "styled-after rather than genuine, value it as a look-alike and lower confidence.\n\n"
+            "Return ONLY a JSON object, no prose, matching this shape (money in US cents):\n"
+            f"{_CLI_SCHEMA_HINT}"
         )
+
+        cmd = [self.cli, "-p", prompt, "--output-format", "json"]
+        if paths:
+            cmd += ["--allowedTools", "Read"]
+            for d in {str(p.parent.resolve()) for p in paths}:
+                cmd += ["--add-dir", d]
+        if self.model:
+            cmd += ["--model", self.model]
+
         proc = subprocess.run(  # noqa: S603
-            [self.cli, "-p", prompt, "--output-format", "json"],
-            capture_output=True, text=True, timeout=300,
+            cmd, capture_output=True, text=True, timeout=self.timeout
         )
         if proc.returncode != 0:
-            raise RuntimeError(f"claude CLI failed: {proc.stderr[:400]}")
+            raise RuntimeError(f"claude CLI failed: {(proc.stderr or proc.stdout)[:400]}")
         return _parse_cli_json(proc.stdout)
 
 
 def _parse_cli_json(stdout: str) -> AppraisalResult:
-    """Extract the JSON appraisal from the CLI's output (it wraps the reply in an envelope)."""
+    """Extract the appraisal JSON from the CLI output (it wraps the reply in an envelope,
+    and the reply itself may be fenced in markdown)."""
     text = stdout
     try:
         env = json.loads(stdout)
-        text = env.get("result") or env.get("text") or stdout
+        if isinstance(env, dict):
+            if env.get("is_error"):
+                raise RuntimeError(f"claude CLI reported an error: {str(env)[:300]}")
+            text = env.get("result") or env.get("text") or stdout
     except json.JSONDecodeError:
         pass
+    if "```" in text:  # strip a ```json fence if the model added one
+        parts = text.split("```")
+        for part in parts:
+            cleaned = part[4:] if part.startswith("json") else part
+            if "{" in cleaned:
+                text = cleaned
+                break
     start, end = text.find("{"), text.rfind("}")
     if start == -1 or end == -1:
-        raise RuntimeError("no JSON object found in claude CLI output")
+        raise RuntimeError(f"no JSON object in claude CLI output: {text[:200]!r}")
     return AppraisalResult.model_validate_json(text[start : end + 1])
 
 

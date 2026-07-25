@@ -73,6 +73,22 @@ def test_list_price_never_below_cost_floor():
     assert s.floor_price_cents >= loaded_cost_cents(costs, RATE)
 
 
+def test_underwater_piece_is_flagged_not_given_a_fantasy_target():
+    # Break-even needs far more than the piece is worth restored -> don't pretend a
+    # sell target exists. (Regression: a real run suggested a $632 target on a piece
+    # the appraiser valued at $220.)
+    costs = PieceCosts(acquisition_cents=7500, materials_cents=4000, labor_hours=6.0)
+    s = suggest_resale_price(_appraisal(restored=22000, conf=0.3, maker=None), costs, RATE)
+    assert not s.viable
+    assert "underwater" in s.warning.lower()
+
+
+def test_healthy_piece_stays_viable():
+    costs = PieceCosts(acquisition_cents=5000, materials_cents=2000, labor_hours=3.0)
+    s = suggest_resale_price(_appraisal(restored=40000, conf=0.85, maker="Lane"), costs, RATE)
+    assert s.viable and not s.warning
+
+
 def test_realized_profit_and_hourly_wage():
     costs = PieceCosts(acquisition_cents=5000, materials_cents=2000, labor_hours=4.0)
     out = realized(sale_price_cents=30000, costs=costs, hourly_rate_cents=RATE)
