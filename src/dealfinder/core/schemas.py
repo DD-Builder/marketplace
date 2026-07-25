@@ -40,15 +40,6 @@ class RawListing(BaseModel):
     posted_at: datetime | None = None
 
 
-class TriageResult(BaseModel):
-    """Tier-1 cheap-model filter output (structured)."""
-
-    promising: bool
-    rough_category: str = ""
-    reason: str = ""
-    red_flags: list[str] = Field(default_factory=list)
-
-
 class AppraisalResult(BaseModel):
     """Tier-2 Opus vision appraisal output (structured via messages.parse)."""
 

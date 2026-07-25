@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from dealfinder.core.schemas import AppraisalResult, TriageResult
+from dealfinder.core.schemas import AppraisalResult
 
 
 def test_appraisal_result_validates_good_payload():
@@ -43,8 +43,3 @@ def test_confidence_out_of_range_rejected():
             }
         )
 
-
-def test_triage_result_defaults():
-    t = TriageResult(promising=True)
-    assert t.red_flags == []
-    assert t.rough_category == ""
