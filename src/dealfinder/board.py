@@ -8,6 +8,7 @@ run and committed, which is what makes hosting free.
 from __future__ import annotations
 
 import html
+import json
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -32,6 +33,14 @@ class BoardMeta:
     region: str = "Lexington · 40 mi"
     generated_at: str = ""
     note: str = ""
+    # Where the page sends its writes. Empty ``repo`` renders a read-only board — every
+    # button explains that it isn't wired up rather than failing silently.
+    repo: str = ""                              # "owner/repo"
+    branch: str = "main"
+    board_workflow: str = "deal-board.yml"
+    negotiate_workflow: str = "negotiate.yml"
+    pieces_path: str = "docs/pieces.json"
+    drafts_dir: str = "docs/drafts"
 
 
 def _your_numbers(p: EvaluatedPiece) -> str:
@@ -96,6 +105,49 @@ def _resale_row(p: EvaluatedPiece) -> str:
     return head + reason + _your_numbers(p)
 
 
+def _tools(p: EvaluatedPiece) -> str:
+    """The two write-side panels on every card: your books, and the negotiation drafter.
+
+    Both are plain forms wired to the GitHub API from the browser. Folded shut by default
+    so the board still reads as a board.
+    """
+    lid = html.escape(p.listing.fb_listing_id)
+    ask = p.listing.asking_price_cents or 0
+    return f"""
+        <details class="tool log"><summary>Log this piece</summary>
+          <form class="logform" data-id="{lid}">
+            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+              placeholder="{ask / 100:.0f}"></label>
+            <label>Materials <input name="materials" type="number" inputmode="decimal"
+              step="1" placeholder="0"></label>
+            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+              placeholder="—"></label>
+            <button type="submit">Save to my books</button>
+            <p class="status" role="status"></p>
+          </form>
+        </details>
+        <details class="tool nego"><summary>Draft a message to the seller</summary>
+          <form class="negoform" data-id="{lid}">
+            <label class="wide">Posture
+              <input name="posture" type="range" min="0" max="100" step="5" value="40">
+              <span class="postval">measured</span>
+            </label>
+            <label class="wide">Their messages so far
+              <textarea name="conversation" rows="3"
+                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
+            <label class="wide">Leverage / flaws
+              <textarea name="notes" rows="2"
+                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
+            <button type="submit">Draft replies</button>
+            <p class="status" role="status"></p>
+            <div class="drafts"></div>
+            <p class="basis">Drafts only — nothing is ever sent for you.</p>
+          </form>
+        </details>"""
+
+
 def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
     listing = p.listing
     chips = "".join(
@@ -122,7 +174,7 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
         else ("card flagged" if p.authenticity.is_red_flag else "card")
     )
     return f"""
-    <article class="{klass}">
+    <article class="{klass}" data-id="{html.escape(listing.fb_listing_id)}">
       <div class="rank">{rank}</div>
       {thumb}
       <div class="body">
@@ -144,6 +196,7 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:{p.heat}%"></i></div><b>{p.heat:.0f}</b></div>
         </div>
         <details class="why"><summary>Why</summary><p>{html.escape(p.appraisal.reasoning[:600])}</p></details>
+{_tools(p)}
         <a class="view" href="{html.escape(listing.url)}" target="_blank" rel="noopener">View listing →</a>
       </div>
     </article>"""
@@ -171,11 +224,25 @@ def render_board(
         "FAKES": sum(1 for p in pieces if p.authenticity.is_red_flag),
         "INR": sum(1 for p in pieces if not p.out_of_radius),
     }
+    # Config for the page's write side. json.dumps also escapes it safely for a <script>
+    # block; </script> can't appear in any of these values, but the escape is free.
+    config = json.dumps(
+        {
+            "repo": meta.repo,
+            "branch": meta.branch,
+            "boardWorkflow": meta.board_workflow,
+            "negotiateWorkflow": meta.negotiate_workflow,
+            "piecesPath": meta.pieces_path,
+            "draftsDir": meta.drafts_dir,
+        }
+    ).replace("</", "<\\/")
+
     page = _TEMPLATE
     for key, val in stats.items():
         page = page.replace("{{" + key + "}}", str(val))
     return (
         page.replace("{{CARDS}}", cards)
+        .replace("{{CONFIG}}", config)
         .replace("{{TITLE}}", html.escape(meta.title))
         .replace("{{REGION}}", html.escape(meta.region))
         .replace("{{GENERATED}}", html.escape(meta.generated_at))
@@ -318,6 +385,54 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
 .yn .k{font-size:9.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
 .yn .v{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
 .basis{font-size:10.5px;color:var(--soft);margin:6px 0 0;font-style:italic}
+.actionbar{max-width:1120px;margin:0 auto 8px;padding:0 18px;display:flex;gap:8px;
+  align-items:center;flex-wrap:wrap}
+.actionbar button{font:inherit;font-size:13px;padding:7px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.actionbar button.primary{background:var(--brass);border-color:var(--brass);color:var(--paper);
+  font-weight:600}
+.conn{font-size:11.5px;color:var(--soft)}
+.conn.ok{color:var(--good)}
+.conn.bad{color:var(--crit)}
+.tool{margin:0 0 7px}
+.tool summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
+.tool summary::-webkit-details-marker{display:none}
+.tool summary::before{content:"▸ ";color:var(--brass)}
+.tool[open] summary::before{content:"▾ "}
+.tool form{display:flex;flex-wrap:wrap;gap:7px 10px;margin:8px 0 0;padding:9px 10px;
+  background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.tool label{display:flex;flex-direction:column;gap:2px;font-size:9.5px;color:var(--soft);
+  text-transform:uppercase;letter-spacing:.06em;flex:1 1 88px}
+.tool label.wide{flex:1 1 100%;text-transform:none;letter-spacing:0;font-size:10.5px}
+.tool input,.tool textarea{font:inherit;font-size:13px;padding:5px 7px;border-radius:6px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;
+  box-sizing:border-box}
+.tool input[type=range]{padding:0}
+.tool button{font:inherit;font-size:12.5px;padding:6px 13px;border-radius:999px;
+  border:1px solid var(--brass);background:var(--brass-soft);color:var(--brass);
+  cursor:pointer;flex:0 0 auto;align-self:flex-end}
+.postval{font-size:11px;color:var(--brass);text-transform:none;letter-spacing:0}
+.status{flex:1 1 100%;font-size:11.5px;color:var(--soft);margin:2px 0 0;min-height:1em}
+.status.ok{color:var(--good)}
+.status.bad{color:var(--crit)}
+.drafts{flex:1 1 100%;display:flex;flex-direction:column;gap:8px}
+.draft{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.dtext{font-size:13px;line-height:1.5;margin:0;white-space:pre-wrap}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
+  max-width:min(440px,92vw);padding:18px 20px;box-shadow:var(--shadow)}
+dialog::backdrop{background:#0009}
+dialog h2{font-size:16px;margin:0 0 8px}
+dialog p{font-size:12px;color:var(--soft);line-height:1.5;margin:0 0 10px}
+dialog code{font-size:11.5px;color:var(--brass)}
+dialog label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:var(--soft);
+  text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
+dialog input{font:inherit;font-size:13.5px;padding:7px 9px;border-radius:6px;
+  border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+dialog menu{display:flex;gap:8px;padding:0;margin:12px 0 0}
+dialog menu button{font:inherit;font-size:13px;padding:6px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+dialog menu button:first-child{background:var(--brass);border-color:var(--brass);
+  color:var(--card);font-weight:600}
 .meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
 .meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
 .meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
@@ -352,6 +467,29 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
     <div class="stat"><div class="n num">{{INR}}</div><div class="l">In radius</div></div>
   </div>
 </header>
+<div class="actionbar">
+  <button id="scrape-now" class="primary">Scrape now</button>
+  <button id="open-settings">Connection</button>
+  <span id="conn" class="conn">not connected</span>
+</div>
+<dialog id="settings">
+  <form method="dialog" class="settings">
+    <h2>Connect this page to your repo</h2>
+    <p>The board is a static page, so the buttons talk to GitHub directly. Paste a
+      <b>fine-grained personal access token</b> scoped to <code id="repo-name"></code>
+      with <b>Actions: read &amp; write</b> and <b>Contents: read &amp; write</b>.</p>
+    <label>Token <input id="token" type="password" autocomplete="off"
+      placeholder="github_pat_…"></label>
+    <p class="basis">Stored only in this browser. Anyone with your unlocked device could
+      use it — revoke it in GitHub settings in one click if that ever matters.</p>
+    <menu>
+      <button id="save-token" value="save">Save</button>
+      <button id="forget-token" value="forget" formnovalidate>Forget</button>
+      <button value="cancel" formnovalidate>Close</button>
+    </menu>
+    <p id="settings-status" class="status" role="status"></p>
+  </form>
+</dialog>
 <div class="controls">
   <button id="f-all" aria-pressed="true">All</button>
   <button id="f-radius" aria-pressed="false">In radius only</button>
@@ -389,6 +527,216 @@ function apply(mode){
   });
 }
 btns.forEach(id=>document.getElementById(id).addEventListener('click',()=>apply(id)));
+</script>
+<script>
+// ---- the write side -------------------------------------------------------------------
+// The page is static, so every action here is a direct call to GitHub's API with a token
+// you paste once. No server, no backend, nothing to pay for. Every failure path ends in a
+// sentence you can act on — a button that silently does nothing is the worst outcome.
+const CFG = {{CONFIG}};
+const S = {
+  get token(){ return localStorage.getItem('bench_token') || ''; },
+  set token(v){ v ? localStorage.setItem('bench_token', v) : localStorage.removeItem('bench_token'); }
+};
+const $ = s => document.querySelector(s);
+const b64 = str => {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000)
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+};
+const unb64 = s => new TextDecoder().decode(
+  Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
+
+function explain(status, body){
+  const msg = (body && body.message) || '';
+  if (status === 401) return 'GitHub rejected the token. Paste a fresh one under Connection.';
+  if (status === 403) return 'Token lacks permission. It needs Actions: read & write and '
+    + 'Contents: read & write on this repo.';
+  if (status === 404) return 'Not found — usually the token isn\'t scoped to ' + CFG.repo
+    + ', or the workflow file is missing on ' + CFG.branch + '.';
+  if (status === 409 || status === 422) return 'GitHub refused the write (' + (msg || status)
+    + '). Reload the page and try once more — someone else may have written first.';
+  return 'GitHub returned ' + status + (msg ? ': ' + msg : '') + '.';
+}
+
+async function api(path, opts = {}){
+  if (!CFG.repo) throw new Error('This board was built without a repo, so the buttons '
+    + 'have nothing to talk to. Re-run the pipeline from Actions.');
+  if (!S.token) throw new Error('No token yet — tap Connection and paste one.');
+  const res = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
+    headers: Object.assign({
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + S.token,
+      'X-GitHub-Api-Version': '2022-11-28'
+    }, opts.headers || {})
+  }));
+  if (!res.ok){
+    let body = null;
+    try { body = await res.json(); } catch (e) { /* GitHub sometimes returns no body */ }
+    throw new Error(explain(res.status, body));
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+const say = (el, msg, kind) => { if (el){ el.textContent = msg; el.className = 'status ' + (kind || ''); } };
+
+async function checkConnection(){
+  const el = $('#conn');
+  if (!CFG.repo){ el.textContent = 'read-only board'; el.className = 'conn'; return; }
+  if (!S.token){ el.textContent = 'not connected'; el.className = 'conn'; return; }
+  try {
+    await api('/repos/' + CFG.repo);
+    el.textContent = 'connected'; el.className = 'conn ok';
+  } catch (err) {
+    el.textContent = 'token problem'; el.className = 'conn bad';
+    el.title = err.message;
+  }
+}
+
+// ---- scrape now -----------------------------------------------------------------------
+$('#scrape-now').addEventListener('click', async () => {
+  const el = $('#conn');
+  say(el, 'starting…');
+  try {
+    await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.boardWorkflow + '/dispatches', {
+      method: 'POST',
+      body: JSON.stringify({ ref: CFG.branch, inputs: {} })
+    });
+    el.textContent = 'scrape started — refresh in a few minutes';
+    el.className = 'conn ok';
+  } catch (err) { el.textContent = err.message; el.className = 'conn bad'; }
+});
+
+// ---- connection dialog ----------------------------------------------------------------
+$('#repo-name').textContent = CFG.repo || '(not configured)';
+$('#open-settings').addEventListener('click', () => {
+  $('#token').value = S.token;
+  $('#settings').showModal();
+});
+$('#save-token').addEventListener('click', () => { S.token = $('#token').value.trim(); setTimeout(checkConnection, 0); });
+$('#forget-token').addEventListener('click', () => { S.token = ''; setTimeout(checkConnection, 0); });
+
+// ---- log a piece ----------------------------------------------------------------------
+const cents = v => { const n = parseFloat(v); return isNaN(n) ? null : Math.round(n * 100); };
+
+async function readJson(path){
+  try {
+    const r = await api('/repos/' + CFG.repo + '/contents/' + path + '?ref=' + CFG.branch
+      + '&nocache=' + Date.now());
+    return { data: JSON.parse(unb64(r.content)), sha: r.sha };
+  } catch (err) {
+    if (/Not found/.test(err.message)) return { data: null, sha: null };
+    throw err;
+  }
+}
+
+document.querySelectorAll('.logform').forEach(form => {
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const st = form.querySelector('.status');
+    const id = form.dataset.id;
+    const card = form.closest('article');
+    const fd = new FormData(form);
+    const paid = cents(fd.get('paid')), materials = cents(fd.get('materials'));
+    const hours = parseFloat(fd.get('hours')), sold = cents(fd.get('sold'));
+    if (paid === null && materials === null && isNaN(hours) && sold === null){
+      say(st, 'Nothing to save — fill in at least one field.', 'bad'); return;
+    }
+    say(st, 'saving…');
+    try {
+      const cur = await readJson(CFG.piecesPath);
+      const ledger = cur.data || { version: 1, pieces: {} };
+      const prev = ledger.pieces[id] || { listing_id: id };
+      const entry = Object.assign({}, prev, {
+        listing_id: id,
+        title: prev.title || (card ? card.querySelector('h2').textContent.trim() : '')
+      });
+      if (paid !== null) entry.acquired_price_cents = paid;
+      if (materials !== null) entry.materials_cents = materials;
+      if (!isNaN(hours)) entry.labor_hours = hours;
+      if (sold !== null){
+        entry.sold_price_cents = sold;
+        entry.sold_at = entry.sold_at || new Date().toISOString();
+      }
+      ledger.pieces[id] = entry;
+      const body = { message: 'Log piece ' + id, branch: CFG.branch,
+                     content: b64(JSON.stringify(ledger, null, 1)) };
+      if (cur.sha) body.sha = cur.sha;
+      await api('/repos/' + CFG.repo + '/contents/' + CFG.piecesPath,
+                { method: 'PUT', body: JSON.stringify(body) });
+      say(st, 'Saved. Your numbers update on the next run.', 'ok');
+    } catch (err) { say(st, err.message, 'bad'); }
+  });
+});
+
+// ---- negotiation ----------------------------------------------------------------------
+const POSTURES = [[25,'aggressive'],[50,'measured'],[75,'keen'],[100,'eager']];
+document.querySelectorAll('.negoform').forEach(form => {
+  const slider = form.querySelector('input[name=posture]');
+  const label = form.querySelector('.postval');
+  const show = () => { label.textContent = (POSTURES.find(p => slider.value <= p[0]) || POSTURES[3])[1]; };
+  slider.addEventListener('input', show); show();
+
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const st = form.querySelector('.status');
+    const out = form.querySelector('.drafts');
+    const id = form.dataset.id;
+    const fd = new FormData(form);
+    out.innerHTML = '';
+    say(st, 'asking… this runs on GitHub and takes a minute or two.');
+    try {
+      const before = await readJson(CFG.draftsDir + '/' + id + '.json');
+      const stamp = before.data ? before.data.generated_at : null;
+      await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.negotiateWorkflow + '/dispatches', {
+        method: 'POST',
+        body: JSON.stringify({ ref: CFG.branch, inputs: {
+          listing_id: id, posture: String(fd.get('posture')),
+          conversation: String(fd.get('conversation') || ''),
+          notes: String(fd.get('notes') || '')
+        } })
+      });
+      // Poll the committed file rather than the run, so a failure that still writes a
+      // reason surfaces as that reason instead of a red X you have to go hunting for.
+      for (let i = 0; i < 60; i++){
+        await new Promise(r => setTimeout(r, 5000));
+        const now = await readJson(CFG.draftsDir + '/' + id + '.json');
+        if (now.data && now.data.generated_at !== stamp){ renderDrafts(out, st, now.data); return; }
+        say(st, 'still working… ' + ((i + 1) * 5) + 's');
+      }
+      say(st, 'Gave up waiting after five minutes. Check the Actions tab — the run may '
+        + 'still be going, and the drafts will appear here when it finishes.', 'bad');
+    } catch (err) { say(st, err.message, 'bad'); }
+  });
+});
+
+function renderDrafts(out, st, data){
+  if (data.status !== 'ok'){
+    say(st, data.error || 'Drafting failed and gave no reason.', 'bad'); return;
+  }
+  say(st, data.posture_label + ' · walk away above $'
+    + Math.round((data.walkaway_price_cents || 0) / 100), 'ok');
+  out.innerHTML = data.drafts.map(d => {
+    const over = (d.over_walkaway_cents || []).length
+      ? '<p class="reason">⚠ mentions $'
+        + d.over_walkaway_cents.map(c => Math.round(c / 100)).join(', $')
+        + ' — above your walk-away. Check before sending.</p>' : '';
+    const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    return '<div class="draft"><p class="dtext">' + esc(d.text) + '</p>'
+      + '<p class="basis">' + esc(d.rationale) + '</p>' + over
+      + '<button type="button" class="copy">Copy</button></div>';
+  }).join('');
+  out.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', () => {
+    const text = btn.parentElement.querySelector('.dtext').textContent;
+    navigator.clipboard.writeText(text)
+      .then(() => { btn.textContent = 'Copied'; })
+      .catch(() => { btn.textContent = 'Copy failed — select the text instead'; });
+  }));
+}
+
+checkConnection();
 </script>
 </body>
 </html>

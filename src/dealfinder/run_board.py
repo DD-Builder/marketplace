@@ -364,6 +364,12 @@ def main(argv: list[str] | None = None) -> int:
             region=_env("REGION_LABEL", "Lexington · 40 mi"),
             generated_at=f"updated {now}",
             note=f"Valued by {provider.name}. Photos and prices as scraped; verify before buying.",
+            # In Actions these come free; locally you can set them to make the page's
+            # buttons work against your repo. Empty renders a read-only board that says so.
+            repo=_env("GITHUB_REPOSITORY", ""),
+            branch=_env("BOARD_BRANCH", "") or _env("GITHUB_REF_NAME", "main"),
+            pieces_path=args.pieces,
+            drafts_dir=_env("DRAFTS_DIR", "docs/drafts"),
         ),
         photo_files=cover,
         extra_photo_map={
@@ -371,6 +377,9 @@ def main(argv: list[str] | None = None) -> int:
         },
     )
     catalog_mod.save_catalog(catalog, catalog_path)
+    # Pages runs Jekyll by default, which drops files and directories starting with an
+    # underscore. Nothing here needs Jekyll, and the marker costs nothing.
+    (out_dir / ".nojekyll").touch()
 
     print(plan.summary())
     print(
