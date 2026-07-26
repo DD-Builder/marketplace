@@ -70,7 +70,7 @@ class BoardMeta:
     board_workflow: str = "deal-board.yml"
     negotiate_workflow: str = "negotiate.yml"
     pieces_path: str = "docs/pieces.json"
-    drafts_dir: str = "docs/drafts"
+    drafts_dir: str = ".drafts"
 
 
 def _your_numbers(p: EvaluatedPiece) -> str:

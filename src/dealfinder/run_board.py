@@ -201,12 +201,12 @@ def main(argv: list[str] | None = None) -> int:
                     help="legacy flat ledger; read once to seed a missing catalogue")
     ap.add_argument("--pieces", default="docs/pieces.json",
                     help="your books: price paid, materials, hours, sale price")
-    ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "60")),
+    ap.add_argument("--limit", type=int, default=_int_env("RESULTS_LIMIT") or 60,
                     help="listings to request per search URL (drives most of the scrape cost)")
     ap.add_argument("--max-appraisals", type=int,
-                    default=int(_env("MAX_APPRAISALS", "12")),
+                    default=_int_env("MAX_APPRAISALS") or 12,
                     help="hard cap on AI calls this run")
-    ap.add_argument("--wildcards", type=int, default=int(_env("WILDCARDS", "3")))
+    ap.add_argument("--wildcards", type=int, default=_int_env("WILDCARDS") or 3)
     ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
     ap.add_argument("--from-json", default="", help="use a local JSON export instead of scraping")
     ap.add_argument("--recover", action="store_true",
@@ -371,7 +371,7 @@ def main(argv: list[str] | None = None) -> int:
         provider = get_appraiser(_env("APPRAISER_PROVIDER", "claude-code"))
     log.info("appraiser", provider=provider.name)
 
-    hourly = int(_env("HOURLY_RATE_CENTS", "3000"))
+    hourly = _int_env("HOURLY_RATE_CENTS") or 3000
     in_radius = _radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS))
     result = run_valuation(
         listings, seen,
@@ -407,7 +407,7 @@ def main(argv: list[str] | None = None) -> int:
         need_photos = [
             e.to_listing() for e in catalog_mod.live_entries(catalog)
             if not e.photo_rel and e.photo_urls
-        ][: int(_env("MAX_PHOTO_BACKFILL", "40"))]
+        ][: _int_env("MAX_PHOTO_BACKFILL") or 40]
         if need_photos:
             got = _download_photos(need_photos, out_dir / "_photos")
             log.info("photo_backfill", wanted=len(need_photos), got=len(got))
@@ -434,7 +434,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
             log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])
     board_pieces.sort(key=lambda p: p.priority, reverse=True)
-    board_pieces = board_pieces[: int(_env("MAX_CARDS", "150"))]
+    board_pieces = board_pieces[: _int_env("MAX_CARDS") or 150]
 
     now = datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC")
     page = write_site(
@@ -448,7 +448,7 @@ def main(argv: list[str] | None = None) -> int:
             repo=_env("GITHUB_REPOSITORY", ""),
             branch=_env("BOARD_BRANCH", "") or _env("GITHUB_REF_NAME", "main"),
             pieces_path=args.pieces,
-            drafts_dir=_env("DRAFTS_DIR", "docs/drafts"),
+            drafts_dir=_env("DRAFTS_DIR", ".drafts"),
         ),
         photo_files=cover,
         extra_photo_map={

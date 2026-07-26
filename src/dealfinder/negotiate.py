@@ -2,7 +2,7 @@
 
 The board is a static page, so it can't run a model itself. Instead the page dispatches
 this through GitHub Actions with your posture and the conversation so far; the job writes
-``docs/drafts/<listing-id>.json`` and commits it, and the page — which is polling that
+``.drafts/<listing-id>.json`` and commits it, and the page — which is polling that
 file — shows the drafts when they land.
 
 That indirection is what keeps the whole thing free: the model call happens on GitHub's
@@ -54,7 +54,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--notes", default="", help="condition flaws or other leverage")
     ap.add_argument("--catalog", default="docs/catalog.json")
     ap.add_argument("--pieces", default="docs/pieces.json")
-    ap.add_argument("--out", default="docs/drafts", help="where the drafts JSON is written")
+    ap.add_argument("--out", default=".drafts",
+                    help="where the drafts JSON is written. Deliberately outside docs/: "
+                         "the page reads drafts through the Contents API, and pasted "
+                         "seller conversations must not be published as web pages")
     ap.add_argument("--provider", default=os.getenv("APPRAISER_PROVIDER") or "claude-code")
     args = ap.parse_args(argv)
 
