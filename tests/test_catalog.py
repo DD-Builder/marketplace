@@ -346,3 +346,45 @@ def test_a_seeded_catalogue_still_blocks_re_scraping_and_re_appraisal():
     # ...and 'a' is not re-valued, while the never-valued 'b' still is.
     assert cat.already_valued(c, exclude=cat.blind_appraisals(c)) == {"a"}
     assert {x.fb_listing_id for x in cat.unappraised_live(c)} == {"b"}
+
+
+# --- evidence age ---------------------------------------------------------------------
+
+def test_recovered_data_does_not_masquerade_as_a_fresh_sighting():
+    """The board put already-sold pieces on top because folding in a three-day-old
+    recovered dataset stamped last_seen = now, making stale evidence look confirmed."""
+    from datetime import datetime, timezone
+
+    three_days_ago = cat._now() - timedelta(days=3)
+    c = cat.Catalog()
+    cat.observe(c, [_l("a").model_copy(update={"observed_at": three_days_ago})])
+    entry = c.listings["a"]
+    assert entry.last_seen == three_days_ago
+    assert entry.first_seen == three_days_ago
+
+    # A live scrape (no observed_at) is "now", and never moves last_seen backwards.
+    cat.observe(c, [_l("a")])
+    assert c.listings["a"].last_seen > three_days_ago
+    cat.observe(c, [_l("a").model_copy(update={"observed_at": three_days_ago})])
+    assert c.listings["a"].last_seen > three_days_ago, "an older sighting must not win"
+
+    assert datetime.now(timezone.utc) >= c.listings["a"].last_seen
+
+
+def test_a_stale_piece_is_flagged_and_pushed_down_the_board():
+    from dealfinder.ranking import staleness_factor
+
+    assert staleness_factor(0) == 1.0
+    assert staleness_factor(1) == 1.0
+    assert staleness_factor(14) == 0.25
+    assert staleness_factor(60) == 0.25
+    assert 0.25 < staleness_factor(7) < 1.0          # a week old is a coin toss
+
+    listing = _l("s", title="Lane walnut credenza", price=6000)
+    appraisal = StubProvider().appraise(listing, None)
+    fresh = evaluate_piece(listing, appraisal, days_since_seen=0)
+    stale = evaluate_piece(listing, appraisal, days_since_seen=12)
+
+    assert stale.priority < fresh.priority
+    assert any("Unconfirmed" in b.label for b in stale.badges)
+    assert not any("Unconfirmed" in b.label for b in fresh.badges)

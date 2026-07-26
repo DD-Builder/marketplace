@@ -28,6 +28,19 @@ def _money(cents: int | None) -> str:
     return f"${(cents or 0) / 100:,.0f}"
 
 
+def _seen_label(days: float) -> str:
+    """How old the evidence is that this piece is still for sale."""
+    if days < 1:
+        return "today"
+    if days < 2:
+        return "yesterday"
+    return f"{int(days)} days ago"
+
+
+def _seen_tone(days: float) -> str:
+    return "bad" if days >= 7 else ("warn" if days >= 2 else "")
+
+
 def _short_label(identified_item: str, limit: int = 42) -> str:
     """A thumbnail-sized name for a piece with no photo.
 
@@ -206,6 +219,7 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
           <div class="fig"><span class="k">Ask</span><span class="v">{_money(listing.asking_price_cents)} {was}</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">{_money(p.appraisal.est_restored_resale_value_cents)}</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">{_money(p.cash_margin_cents)}</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v {_seen_tone(p.days_since_seen)}">{_seen_label(p.days_since_seen)}</span></div>
         </div>
         {_resale_row(p)}
         <div class="meters">
@@ -385,6 +399,8 @@ img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:bloc
 .fig .k{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
 .fig .v{font-size:15px;font-weight:600}
 .fig.net .v{color:var(--good)}
+.fig .v.warn{color:var(--warn)}
+.fig .v.bad{color:var(--crit)}
 .was{font-size:11px;color:var(--soft);text-decoration:line-through;font-weight:400}
 .resale{font-size:12px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .resale b{color:var(--ink);font-size:13px}

@@ -56,6 +56,7 @@ class EvaluatedPiece:
     is_killer: bool
     price_dropped: bool
     out_of_radius: bool
+    days_since_seen: float = 0.0
     badges: list[Badge] = field(default_factory=list)
 
 
@@ -132,6 +133,7 @@ def evaluate_piece(
     hourly_rate_cents: int = 3000,
     in_radius: Callable[[str], bool] | None = None,
     logged_costs: PieceCosts | None = None,
+    days_since_seen: float = 0.0,
 ) -> EvaluatedPiece:
     """Score one listing against an appraisal — no AI, no I/O, pure computation.
 
@@ -177,12 +179,14 @@ def evaluate_piece(
     )
     prio = viewing_priority(
         deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
-        roi_score=roi, out_of_radius=oor,
+        roi_score=roi, out_of_radius=oor, days_since_seen=days_since_seen,
     )
     return EvaluatedPiece(
         listing=listing, appraisal=appraisal, authenticity=auth, deal_score=deal,
         cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
         priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
+        days_since_seen=days_since_seen,
         badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
-                      authenticity=auth, out_of_radius=oor),
+                      authenticity=auth, out_of_radius=oor,
+                      days_since_seen=days_since_seen),
     )

@@ -95,19 +95,38 @@ def viewing_priority(
     authenticity: AuthenticityAssessment,
     roi_score: float = 0.0,
     out_of_radius: bool = False,
+    days_since_seen: float = 0.0,
 ) -> float:
     """Composite 0-100 the feed sorts by.
 
     Blends absolute margin (deal), return-on-cost (roi), resale ease (liquidity), and
     buy-side heat. Look-alikes and out-of-radius pieces are penalised — the second matters
     because a great piece 80 miles away isn't a great piece for you.
+
+    Staleness is penalised hardest of all, because the best deal on the board is worthless
+    if it sold on Tuesday. A piece we haven't confirmed in a week is far more likely gone
+    than available, and it should not be occupying the top slot.
     """
     base = deal_score * 0.40 + roi_score * 0.20 + liquidity * 0.25 + heat * 0.15
     if authenticity.is_red_flag:
         base *= 0.6
     if out_of_radius:
         base *= 0.7  # a great piece 80 miles away is a poor piece for a radius-bound buyer
+    base *= staleness_factor(days_since_seen)
     return round(max(0.0, min(100.0, base)), 1)
+
+
+def staleness_factor(days_since_seen: float) -> float:
+    """How much to trust that a piece is still for sale, by age of the last sighting.
+
+    Full weight for a day, then a steady decay: a listing confirmed today is real, one from
+    a week ago is a coin toss, and one from a fortnight ago is mostly a memory.
+    """
+    if days_since_seen <= 1:
+        return 1.0
+    if days_since_seen >= 14:
+        return 0.25
+    return round(1.0 - 0.75 * (days_since_seen - 1) / 13, 3)
 
 
 def is_killer_deal(
@@ -153,6 +172,7 @@ def badges(
     price_dropped: bool,
     authenticity: AuthenticityAssessment,
     out_of_radius: bool = False,
+    days_since_seen: float = 0.0,
 ) -> list[Badge]:
     """Glanceable status chips, ordered by how loudly they should read."""
     out: list[Badge] = []
@@ -172,6 +192,10 @@ def badges(
         out.append(Badge("?", "Maker unconfirmed", "info"))
     if out_of_radius:
         out.append(Badge("⤢", "Out of radius", "warn"))
+    if days_since_seen >= 7:
+        out.append(Badge("◷", f"Unconfirmed {int(days_since_seen)}d", "warn"))
+    elif days_since_seen >= 2:
+        out.append(Badge("◷", f"Last seen {int(days_since_seen)}d ago", "info"))
     return out
 
 

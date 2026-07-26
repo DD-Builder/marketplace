@@ -274,6 +274,12 @@ def recover_runs(
         except Exception as exc:  # noqa: BLE001 — an expired dataset is normal, not fatal
             report.append({**run, "recovered": 0, "error": str(exc)[:200]})
             continue
+        # Stamp the evidence with the run's own time. Without this a listing last seen
+        # three days ago is folded in as if we had just confirmed it on Marketplace —
+        # which is how sold pieces end up at the top of the board.
+        seen_at = _parse_ts(run.get("finished_at") or run.get("started_at"))
+        if seen_at is not None:
+            got = [lst.model_copy(update={"observed_at": seen_at}) for lst in got]
         listings += got
         report.append({**run, "recovered": len(got), "error": ""})
     return listings, report

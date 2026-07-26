@@ -379,6 +379,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # 5. Store this run's appraisals, then render the *accumulated* board.
     cover = {lid: paths[0] for lid, paths in photos.items() if paths}
+
     catalog_mod.record_appraisals(
         catalog, result.pieces, appraiser=provider.name,
         photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}" for lid, p in cover.items()},
@@ -389,15 +390,37 @@ def main(argv: list[str] | None = None) -> int:
         for stale in (out_dir / "photos").glob(f"{gone_id}.*"):
             stale.unlink(missing_ok=True)
 
+    # Photos for pieces that will be on the board but have none yet. Previously only the
+    # listings appraised *this* run were fetched, so a piece valued last week showed a grey
+    # placeholder forever. Facebook's URLs expire within hours, so old ones simply fail —
+    # that's fine, the downloader tolerates it and a fresh scrape supplies working ones.
+    if not (args.dry_run or args.no_photos):
+        need_photos = [
+            e.to_listing() for e in catalog_mod.live_entries(catalog)
+            if not e.photo_rel and e.photo_urls
+        ][: int(_env("MAX_PHOTO_BACKFILL", "40"))]
+        if need_photos:
+            got = _download_photos(need_photos, out_dir / "_photos")
+            log.info("photo_backfill", wanted=len(need_photos), got=len(got))
+            photos.update(got)
+            for lid, paths in got.items():
+                entry = catalog.listings.get(lid)
+                if entry and paths:
+                    entry.photo_rel = f"photos/{lid}{Path(paths[0]).suffix or '.jpg'}"
+            cover.update({lid: paths[0] for lid, paths in got.items() if paths})
+
     # Every live, appraised piece — not just this run's dozen — re-scored against today's
-    # price. This is why a piece found last week is still on the board this week.
+    # price and against how long ago we last confirmed it was still for sale.
+    now_utc = datetime.now(timezone.utc)
     board_pieces = []
     for entry in catalog_mod.live_entries(catalog):
         try:
             board_pieces.append(
                 evaluate_piece(entry.to_listing(), entry.appraisal,
                                hourly_rate_cents=hourly, in_radius=in_radius,
-                               logged_costs=logged.get(entry.id))
+                               logged_costs=logged.get(entry.id),
+                               days_since_seen=max(
+                                   0.0, (now_utc - entry.last_seen).total_seconds() / 86400))
             )
         except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
             log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])

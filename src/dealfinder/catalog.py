@@ -248,6 +248,7 @@ def observe(
                 id=lst.fb_listing_id, first_seen=now, last_seen=now,
                 price_history=[PricePoint(at=now, cents=price)],
             )
+            entry.first_seen = entry.last_seen = lst.observed_at or now
             catalog.listings[entry.id] = entry
             rep.new += 1
         else:
@@ -261,7 +262,11 @@ def observe(
                     entry.price_history.append(PricePoint(at=now, cents=price))
                     entry.price_history = entry.price_history[-_PRICE_POINTS_CAP:]
 
-        entry.last_seen = now
+        # last_seen is when the listing was *confirmed present*, which for recovered
+        # data is older than now. Never move it backwards.
+        seen_at = lst.observed_at or now
+        entry.last_seen = max(entry.last_seen, seen_at) if entry.last_seen else seen_at
+        entry.first_seen = min(entry.first_seen, seen_at) if entry.first_seen else seen_at
         entry.misses = 0
         entry.title = lst.title or entry.title
         entry.url = lst.url or entry.url
