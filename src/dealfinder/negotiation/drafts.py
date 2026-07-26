@@ -80,7 +80,7 @@ class ClaudeCodeDrafter:
         self.timeout = timeout
 
     def draft(self, prompt: str) -> NegotiationDrafts:
-        from dealfinder.appraiser import extract_cli_json
+        from dealfinder.appraiser import cli_failure_reason, extract_cli_json
 
         if not shutil.which(self.cli):
             raise RuntimeError(
@@ -94,7 +94,9 @@ class ClaudeCodeDrafter:
             cmd, capture_output=True, text=True, timeout=self.timeout
         )
         if proc.returncode != 0:
-            raise RuntimeError(f"claude CLI failed: {(proc.stderr or proc.stdout)[:400]}")
+            raise RuntimeError(
+                f"claude CLI failed: {cli_failure_reason(proc.stdout, proc.stderr)}"
+            )
         return NegotiationDrafts.model_validate_json(extract_cli_json(proc.stdout))
 
 

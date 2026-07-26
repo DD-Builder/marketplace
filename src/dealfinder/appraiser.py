@@ -149,8 +149,45 @@ class ClaudeCodeAppraiser:
             cmd, capture_output=True, text=True, timeout=self.timeout
         )
         if proc.returncode != 0:
-            raise RuntimeError(f"claude CLI failed: {(proc.stderr or proc.stdout)[:400]}")
+            raise RuntimeError(
+                f"claude CLI failed: {cli_failure_reason(proc.stdout, proc.stderr)}"
+            )
         return _parse_cli_json(proc.stdout)
+
+
+def cli_failure_reason(stdout: str, stderr: str = "") -> str:
+    """Explain a non-zero exit from the Claude Code CLI.
+
+    The CLI prints its envelope on stdout even when it fails, and the actual reason lives
+    in ``result`` — well past the usage/session fields. Reporting the raw first 400
+    characters therefore showed a wall of zeroed token counters and truncated the one
+    sentence that mattered, which is exactly what happened on the first real Action run.
+    """
+    try:
+        env = json.loads(stdout)
+    except (json.JSONDecodeError, TypeError):
+        env = None
+    if isinstance(env, dict):
+        detail = str(env.get("result") or env.get("error") or "").strip()
+        if detail:
+            low = detail.lower()
+            if any(w in low for w in ("auth", "credential", "token", "login", "unauthor")):
+                detail += (
+                    " — this reads like a credential problem. Run `claude setup-token` "
+                    "again and replace the CLAUDE_CODE_OAUTH_TOKEN repository secret."
+                )
+            return detail[:400]
+        # No `result` at all: report the fields that actually distinguish the failure.
+        usage = env.get("usage") or {}
+        return (
+            f"the CLI exited with is_error={env.get('is_error')}, "
+            f"stop_reason={env.get('stop_reason')!r}, "
+            f"turns={env.get('num_turns')}, "
+            f"input_tokens={usage.get('input_tokens')}, "
+            f"cost=${env.get('total_cost_usd')} — zero tokens and zero cost mean the "
+            "request never reached the API, which is almost always authentication."
+        )
+    return (stderr or stdout or "no output at all")[:400]
 
 
 def extract_cli_json(stdout: str) -> str:
