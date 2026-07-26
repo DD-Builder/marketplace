@@ -29,10 +29,12 @@ _REPRODUCTION = {
     "dupe", "lookalike", "look alike", "look-alike", "imitation", "copy of",
     "not authentic", "not genuine", "not original",
 }
-# Styling qualifiers — dangerous when they sit next to a famous name.
+# Styling qualifiers — dangerous when they sit next to a famous name. Multi-word forms
+# only for the prepositions: bare "after" flagged "Knoll desk, selling after moving" and
+# bare "type" flagged any listing mentioning a drawer type — both demoted genuine pieces.
 _QUALIFIERS = {
     "style", "styled", "inspired", "inspired by", "in the style of", "manner of",
-    "tribute", "homage", "type", "after",
+    "tribute", "homage", "styled after", "modeled after", "modelled after", "patterned after",
 }
 # Famous designs/designers that get knocked off. Name-adjacent qualifier = look-alike.
 _DESIGN_NAMES = {
@@ -124,17 +126,10 @@ def assess_authenticity(listing: RawListing) -> AuthenticityAssessment:
             matched=uniq,
         )
 
-    # A bare "-esque" / "style" with no designer named — generic descriptor, soft note.
-    if esque or qual_spans:
-        marks = sorted({m.group(0) for m in esque} | {t for *_, t in qual_spans})
-        return AuthenticityAssessment(
-            verdict="generic_style",
-            is_red_flag=False,
-            value_basis="genuine_ok",
-            warnings=["Generic 'style' wording; treat as an unbranded piece, not a named design."],
-            matched=marks,
-        )
-
+    # Hedges before generic style: "unmarked, danish style dresser" is above all a piece
+    # whose maker is UNCONFIRMED — that changes what you should pay, while a stray
+    # "style" is only a soft descriptor. The old order let the descriptor swallow the
+    # hedge, so "Maker unconfirmed" almost never appeared.
     hedges = _spans(text, _HEDGES)
     if hedges:
         words = sorted({t for *_, t in hedges})
@@ -144,6 +139,17 @@ def assess_authenticity(listing: RawListing) -> AuthenticityAssessment:
             value_basis="unconfirmed",
             warnings=[f"Seller hedges the attribution ({', '.join(words)}) — maker unconfirmed."],
             matched=words,
+        )
+
+    # A bare "-esque" / "style" with no designer named — generic descriptor, soft note.
+    if esque or qual_spans:
+        marks = sorted({m.group(0) for m in esque} | {t for *_, t in qual_spans})
+        return AuthenticityAssessment(
+            verdict="generic_style",
+            is_red_flag=False,
+            value_basis="genuine_ok",
+            warnings=["Generic 'style' wording; treat as an unbranded piece, not a named design."],
+            matched=marks,
         )
 
     return AuthenticityAssessment(verdict="clear", is_red_flag=False, value_basis="genuine_ok")

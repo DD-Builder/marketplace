@@ -159,7 +159,10 @@ def test_negotiate_writes_drafts_the_page_can_poll(tmp_path, monkeypatch):
     assert data["status"] == "ok"
     assert data["posture_label"] == "aggressive"
     assert data["drafts"][0]["text"] == "Would you take $80?"
-    assert data["walkaway_price_cents"] > data["asking_price_cents"] or True
+    # NEVER above ask — you can always simply pay the asking price. The original
+    # assertion here was `X > Y or True`, which is unconditionally true; it spent its
+    # life hiding a formula that told the model to offer MORE than the seller asked.
+    assert data["walkaway_price_cents"] <= data["asking_price_cents"]
     assert "generated_at" in data
     # The stored appraisal supplied the leverage without anyone typing it.
     assert "veneer lifting" in stub.prompt
@@ -206,3 +209,104 @@ def test_drafts_flag_an_over_walkaway_offer_in_the_published_file(tmp_path, monk
     ])
     data = json.loads((tmp_path / "drafts" / "abc.json").read_text())
     assert data["drafts"][0]["over_walkaway_cents"] == [900000]
+
+
+def test_the_walkaway_is_the_price_at_which_the_flip_stops_paying(tmp_path):
+    """walkaway = restored − restoration − labour − required margin, capped at ask.
+
+    The formula this replaces was ask + margin/2 — ABOVE the asking price for every
+    profitable piece, so the prompt told the model 'the most I will pay is $550' about a
+    $250 listing, and offers_above() (comparing against the same number) could not fire.
+    """
+    from dealfinder.catalog import CatalogEntry
+    from dealfinder.core.schemas import AppraisalResult
+    from dealfinder.negotiate import _walkaway_cents
+
+    def entry(ask, restored, resto=5000, hours=2.0):
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
+        return CatalogEntry(
+            id="x", first_seen=now, last_seen=now, asking_price_cents=ask,
+            appraisal=AppraisalResult(
+                identified_item="dresser", est_asis_value_cents=ask,
+                est_restored_resale_value_cents=restored,
+                est_restoration_cost_cents=resto,
+                est_restoration_effort_hours=hours, confidence=0.8, deal_score=50.0,
+            ),
+        )
+
+    # Marginal piece: $400 restored − $50 resto − 2h@$30 − $150 floor = $140 max offer.
+    assert _walkaway_cents(entry(25000, 40000), 3000) == 14000
+
+    # A screaming deal caps at the ask — never signals paying more than the seller wants.
+    assert _walkaway_cents(entry(25000, 90000, hours=6.0), 3000) == 25000
+
+    # A loser: restoring it costs more than it returns. No number beats a wrong number.
+    assert _walkaway_cents(entry(25000, 20000), 3000) is None
+
+
+def test_deal_score_and_killer_gate_agree_a_real_margin_is_a_killer():
+    """The old gate (score>=70 @ conf>=0.65) was unreachable: score = base x conf with
+    base < 100, so at the confidence floor it topped out at 65. Every star came from the
+    cheap-flip branch — 'killer deal' silently meant 'cheap item'."""
+    from dealfinder.core.schemas import AppraisalResult
+    from dealfinder.ranking import is_killer_deal
+    from dealfinder.valuation.scoring import compute_deal_score
+    from dealfinder.authenticity import AuthenticityAssessment
+
+    clean = AuthenticityAssessment(verdict="clear", is_red_flag=False, value_basis="genuine_ok")
+
+    def score(margin_dollars, conf, ask=20000):
+        appr = AppraisalResult(
+            identified_item="credenza", est_asis_value_cents=ask,
+            est_restored_resale_value_cents=ask + margin_dollars * 100 + 5000 + 6000,
+            est_restoration_cost_cents=5000, est_restoration_effort_hours=2.0,
+            confidence=conf, deal_score=0.0,
+        )
+        return compute_deal_score(appr, ask, 3000)
+
+    # A genuine $1,000-net-margin piece at 0.75 confidence IS a killer...
+    s = score(1000, 0.75)
+    assert s >= 50
+    assert is_killer_deal(deal_score=s, confidence=0.75, authenticity=clean,
+                          net_margin_cents=100000, asking_price_cents=20000)
+    # ...a $300 flip at high confidence is a fine deal but not a star...
+    s2 = score(300, 0.9)
+    assert not is_killer_deal(deal_score=s2, confidence=0.9, authenticity=clean,
+                              net_margin_cents=30000, asking_price_cents=20000)
+    # ...and the docstring's own scale is finally true: $500 -> 50 (pre-confidence).
+    assert abs(score(500, 1.0) - 50.0) < 1.0
+
+
+def test_free_junk_no_longer_tops_the_roi_axis():
+    """outlay<=0 returned a perfect 100, skipping the meaningful-margin guard that was
+    added because 'a real run had a $1 listing worth $50 ranking first'."""
+    from dealfinder.ranking import roi_to_score
+
+    free_junk = roi_to_score(5000, 0)          # free item, restores to $50
+    cheap_gem = roi_to_score(40000, 2000)      # $20 item, restores to $400
+    assert free_junk < 40                      # scaled down hard by the margin guard
+    assert cheap_gem > free_junk               # the real flip outranks the freebie
+
+
+def test_a_genuine_knoll_is_not_flagged_for_the_word_after():
+    from dealfinder.authenticity import assess_authenticity
+    from dealfinder.core.schemas import RawListing
+
+    genuine = assess_authenticity(RawListing(
+        fb_listing_id="1", title="Knoll desk",
+        description="Selling after moving to a smaller place.",
+    ))
+    assert genuine.is_red_flag is False
+
+    fake = assess_authenticity(RawListing(
+        fb_listing_id="2", title="Desk styled after Florence Knoll",
+    ))
+    assert fake.is_red_flag is True and fake.verdict == "styled_after"
+
+    # Hedges are no longer swallowed by a stray style word.
+    hedged = assess_authenticity(RawListing(
+        fb_listing_id="3", title="Danish style dresser",
+        description="Unmarked, no markings anywhere. Solid teak.",
+    ))
+    assert hedged.verdict == "hedged" and hedged.value_basis == "unconfirmed"

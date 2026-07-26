@@ -460,7 +460,7 @@ def main(argv: list[str] | None = None) -> int:
             board_pieces.append(
                 evaluate_piece(entry.to_listing(), entry.appraisal,
                                hourly_rate_cents=hourly, in_radius=in_radius,
-                               logged_costs=logged.get(entry.id),
+                               logged_costs=logged.get(entry.id), vertical=vertical,
                                days_since_seen=max(
                                    0.0, (now_utc - entry.last_seen).total_seconds() / 86400))
             )

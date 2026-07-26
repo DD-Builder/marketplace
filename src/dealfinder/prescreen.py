@@ -58,8 +58,10 @@ def prescreen(
     price = listing.asking_price_cents
     if price is not None:
         if price < vertical.min_price_cents:
-            reasons.append("price implausibly low")
-        elif price > vertical.max_price_cents:
+            # The vertical calls this scam/typo/free-pile territory; keeping it while
+            # merely noting the reason let $1 junk through to paid appraisal.
+            return PreScreenResult(False, 0, ["price implausibly low — scam/typo/free-pile range"])
+        if price > vertical.max_price_cents:
             return PreScreenResult(False, 0, ["price above flip range"])
 
     pos = _hits(text, vertical.positive)

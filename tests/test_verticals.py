@@ -38,4 +38,5 @@ def test_art_rejects_reproductions():
 def test_vertical_price_window_is_respected():
     # Electronics floor is $10; a $2 listing is below the sane window for that vertical.
     r = prescreen(_l(title="pioneer amplifier", price=200), ELECTRONICS)
-    assert "price implausibly low" in r.reasons
+    assert any("price implausibly low" in reason for reason in r.reasons)
+    assert r.keep is False   # noted-but-kept let $1 junk through to paid appraisal

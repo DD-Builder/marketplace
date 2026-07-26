@@ -70,7 +70,9 @@ def test_roi_lifts_cheap_high_multiple():
 def test_killer_requires_genuine():
     assert is_killer_deal(deal_score=80, confidence=0.8, authenticity=CLEAR)
     assert not is_killer_deal(deal_score=80, confidence=0.8, authenticity=FAKE)
-    assert not is_killer_deal(deal_score=50, confidence=0.8, authenticity=CLEAR)
+    # Gate sits at 50 now — the old 70 was unreachable (score = base x confidence,
+    # base < 100, so 0.65 confidence capped the product at 65).
+    assert not is_killer_deal(deal_score=45, confidence=0.8, authenticity=CLEAR)
 
 
 def test_killer_on_high_return_multiple_for_cheap_piece():

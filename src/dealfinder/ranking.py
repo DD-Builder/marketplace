@@ -77,11 +77,13 @@ def roi_to_score(
     $50 ranking first.) The multiple is therefore scaled down until the actual margin is
     worth a trip.
     """
-    if cash_outlay_cents <= 0:
-        return 100.0
-    mult = restored_cents / cash_outlay_cents
+    # A free (or unpriced) item is not an infinite-return jackpot — it still has to be
+    # worth the trip. Treat outlay as at least a dollar so the meaningful-margin scaler
+    # below applies to it like everything else; the old `<= 0 -> 100.0` early return let
+    # free-pile junk skip the exact guard this function exists to enforce.
+    mult = restored_cents / max(cash_outlay_cents, 100)
     raw = 100.0 * min(mult, cap) / cap
-    margin = restored_cents - cash_outlay_cents
+    margin = restored_cents - max(cash_outlay_cents, 0)
     if margin < meaningful_margin_cents:
         raw *= max(0.0, margin) / meaningful_margin_cents
     return round(raw, 1)
@@ -139,13 +141,18 @@ def is_killer_deal(
 ) -> bool:
     """The star. Two ways to earn it, both requiring a genuine, reasonably-confident piece:
 
-    * a big *absolute* margin (deal_score >= 70), or
+    * a big *absolute* margin (deal_score >= 50 — with the $500-half-point curve that is
+      roughly a $1,000 net margin at 0.75 confidence), or
     * a big *return multiple* on a cheap piece — e.g. a $20 armoire that restores to $250.
       A hobbyist rightly calls that a killer even though the absolute dollars are modest.
+
+    The old gate (deal_score >= 70 @ confidence >= 0.65) was unreachable: the score is
+    base x confidence with base < 100, so at the 0.65 floor the product topped out at 65.
+    Every star on the board was coming from the cheap-flip branch.
     """
     if authenticity.is_red_flag or confidence < 0.5:
         return False
-    if deal_score >= 70 and confidence >= 0.65:
+    if deal_score >= 50 and confidence >= 0.65:
         return True
     if (
         net_margin_cents is not None
