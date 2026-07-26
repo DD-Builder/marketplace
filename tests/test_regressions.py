@@ -18,12 +18,16 @@ def test_blank_env_vars_do_not_crash_the_run():
     del os.environ["BOARD_TEST_EMPTY"], os.environ["BOARD_TEST_JUNK"]
 
 
-def test_a_run_that_values_nothing_reports_failure():
+def test_a_run_that_values_nothing_reports_failure(monkeypatch):
     """20 appraisals failed, the job reported SUCCESS, and published a blank board —
     which read as 'no deals this week' rather than 'your credential is missing'."""
     import json
 
     from dealfinder import run_board
+
+    # The credential gate fires whenever GITHUB_ACTIONS=true — i.e. on the CI runner —
+    # and would end this test at exit 3 before the appraisal stage it exists to pin.
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-test")
 
     class AlwaysFails:
         name = "broken"

@@ -96,6 +96,10 @@ class Harness:
         self.fetcher = ScriptedFetcher(days)
         self.provider = CountingProvider()
         monkeypatch.setenv("APIFY_TOKEN", "t")
+        # The appraiser is stubbed, but the pre-scrape credential gate still runs — and
+        # it enforces this variable whenever GITHUB_ACTIONS=true, i.e. exactly on the CI
+        # runner. Without it the whole harness exits 3 in CI while passing locally.
+        monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-test")
         monkeypatch.setenv(
             "SEARCH_URLS",
             "https://www.facebook.com/marketplace/lexington/search/?query=dresser",
