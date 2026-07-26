@@ -239,6 +239,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # 1. Get listings — from Apify, or a local export for testing.
     coverage: dict[str, catalog_mod.SearchCoverage] = {}
+    scan_failed = False
     if args.from_json:
         records = json.loads(Path(args.from_json).read_text())
         listings = records_to_listings(records)
@@ -299,17 +300,25 @@ def main(argv: list[str] | None = None) -> int:
         log.info("scrape", summary=scraped.summary())
         if scraped.searches_failed and not listings:
             print(
-                "Every search failed, so there is nothing to appraise:\n  "
-                + "\n  ".join(scraped.searches_failed),
+                "Every search failed, so nothing new was seen this run:\n  "
+                + "\n  ".join(scraped.searches_failed)
+                + "\nRebuilding the board from the catalogue instead.",
                 file=sys.stderr,
             )
-            return 5
+            scan_failed = True
     log.info("scraped", count=len(listings))
 
     # 2. Fold the scan into the catalogue *before* planning, so price history, sold/gone
     #    state and first-seen dates are recorded even for listings we never pay to value.
     #    `seen` was snapshotted above, so the diff still sees pre-scan prices.
-    obs = catalog_mod.observe(catalog, listings, coverage=coverage)
+    if scan_failed:
+        # A scan that never reached Marketplace is not evidence that anything is missing.
+        # observe() counts a miss against every live entry it doesn't see, so running it on
+        # a quota-blocked day would retire listings we simply never looked for.
+        obs = catalog_mod.ObserveReport()
+        log.info("observe_skipped", reason="no search reached Marketplace")
+    else:
+        obs = catalog_mod.observe(catalog, listings, coverage=coverage)
     log.info("observed", new=obs.new, price_drops=obs.price_drops, gone=obs.marked_gone,
              sold=obs.marked_sold)
 
@@ -456,10 +465,10 @@ def main(argv: list[str] | None = None) -> int:
         f"appraised {len(result.pieces)} this run · catalogue {len(catalog.listings)} "
         f"({len(board_pieces)} on board) · {len(result.killers)} killers · wrote {page}"
     )
-
     # A run that selected pieces but valued none of them is a failure, even though each
     # individual error is caught so one bad listing can't sink the batch. Reporting success
-    # here published an empty board and hid a missing credential.
+    # here published an empty board and hid a missing credential. It outranks a failed scan
+    # below because a dead credential needs fixing now; a spent quota just needs waiting.
     if plan.to_appraise and not result.pieces and not args.dry_run:
         print(
             f"\nAll {len(plan.to_appraise)} appraisals failed — the board is empty. "
@@ -467,7 +476,9 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 4
-    return 0
+    # The board is up to date either way, but a run that couldn't reach Marketplace still
+    # exits non-zero — a silent success would hide a scraper that has stopped working.
+    return 5 if scan_failed else 0
 
 
 if __name__ == "__main__":

@@ -108,3 +108,63 @@ def test_a_failing_claude_cli_reports_the_reason_not_the_token_counters():
     # Non-JSON output falls back to stderr, then stdout, then a plain statement.
     assert cli_failure_reason("not json", "boom") == "boom"
     assert cli_failure_reason("", "") == "no output at all"
+
+
+def test_a_quota_blocked_scrape_still_rebuilds_the_board(tmp_path, monkeypatch):
+    """Apify's monthly hard limit 403'd every search, and the run exited before rendering.
+
+    Two things were wrong. The board went unrefreshed, so ranking and photo fixes never
+    reached the page on a blocked day; and observe() would have counted a miss against all
+    319 catalogue entries for a scan that never reached Marketplace, eventually retiring
+    listings nobody had looked for.
+    """
+    import json
+    from datetime import datetime, timedelta, timezone
+
+    from dealfinder import run_board
+    from dealfinder.catalog import Catalog, CatalogEntry, save_catalog
+    from dealfinder.core.schemas import AppraisalResult
+
+    now = datetime.now(timezone.utc)
+    cat = Catalog()
+    cat.listings["l1"] = CatalogEntry(
+        id="l1", first_seen=now - timedelta(days=3), last_seen=now - timedelta(days=3),
+        title="Walnut credenza", url="https://example.test/l1",
+        location_text="Lexington", asking_price_cents=15000, state="live", misses=1,
+        appraisal=AppraisalResult(
+            identified_item="mid-century walnut credenza",
+            est_asis_value_cents=20000, est_restored_resale_value_cents=60000,
+            est_restoration_cost_cents=5000, est_restoration_effort_hours=6.0,
+            confidence=0.7, deal_score=7.0, reasoning="stub",
+        ),
+    )
+    catalog_path = tmp_path / "catalog.json"
+    save_catalog(cat, catalog_path)
+
+    def boom(*a, **k):
+        raise RuntimeError(
+            "Apify actor run failed with HTTP 403. Apify said: "
+            "platform-feature-disabled: Monthly usage hard limit exceeded"
+        )
+
+    monkeypatch.setattr(run_board, "run_and_fetch", boom)
+    monkeypatch.setenv("APIFY_TOKEN", "x")
+    monkeypatch.setenv("SEARCH_URLS", "https://www.facebook.com/marketplace/lexington/search/?query=dresser")
+
+    out = tmp_path / "site"
+    rc = run_board.main([
+        "--out", str(out), "--catalog", str(catalog_path),
+        "--seen", str(tmp_path / "seen.json"), "--pieces", str(tmp_path / "pieces.json"),
+        "--no-photos", "--dry-run",
+    ])
+
+    # Non-zero, because a scraper that has stopped working must not look like success.
+    assert rc == 5
+    # But the board was still written, from the catalogue.
+    page = out / "index.html"
+    assert page.exists()
+    assert "Walnut credenza" in page.read_text()
+    # And the failed scan left presence evidence untouched.
+    after = json.loads(catalog_path.read_text())
+    assert after["listings"]["l1"]["misses"] == 1
+    assert after["listings"]["l1"]["state"] == "live"
