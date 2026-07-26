@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Bench">
+<meta name="referrer" content="no-referrer">
+<!-- Everything is inline by design (the page must render with zero network), so the CSP
+     allows inline style/script and nothing external beyond the GitHub API and same-origin
+     fetches for photos/status. Scraped listing text is injected into this page; if an
+     escaping gap ever appears, this is the fence that keeps it from phoning out. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#211a13" media="(prefers-color-scheme:dark)">
+<title>{{TITLE}} — deal board</title>
+<style>
+/*{{CSS}}*/
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brandrow">
+    <h1>{{TITLE}}</h1>
+    <span class="tag">{{REGION}}</span>
+    <span class="sub" id="updated" data-ts="{{GENERATED_ISO}}">{{GENERATED}}</span>
+  </div>
+  <p class="notice" id="notice" hidden></p>
+  <div class="summary">
+    <div class="stat"><div class="n num">{{N}}</div><div class="l">On the floor</div></div>
+    <div class="stat killer"><div class="n num">{{KILLERS}}</div><div class="l">★ Killers</div></div>
+    <div class="stat"><div class="n num">{{DROPS}}</div><div class="l">▼ Price drops</div></div>
+    <div class="stat fake"><div class="n num">{{FAKES}}</div><div class="l">⚠ Look-alikes</div></div>
+    <div class="stat"><div class="n num">{{INR}}</div><div class="l">In radius</div></div>
+  </div>
+</header>
+<div class="actionbar">
+  <button id="scrape-now" class="primary">Scrape now</button>
+  <button id="open-settings">Connection</button>
+  <span id="conn" class="conn">not connected</span>
+</div>
+<dialog id="settings">
+  <form method="dialog" class="settings">
+    <h2>Connect this page to your repo</h2>
+    <p>The board is a static page, so the buttons talk to GitHub directly. Paste a
+      <b>fine-grained personal access token</b> scoped to <code id="repo-name"></code>
+      with <b>Actions: read &amp; write</b> and <b>Contents: read &amp; write</b>.</p>
+    <label>Token <input id="token" type="password" autocomplete="off"
+      placeholder="github_pat_…"></label>
+    <p class="basis">Straight talk about what this token can do: Contents write access
+      means it can push code — including workflow changes that read this repo's secrets —
+      so scope it to this one repository and nothing else. It's stored in this browser's
+      localStorage, which is shared with every other GitHub Pages site under your
+      username. Treat it as disposable: rotate it if anything ever feels off.</p>
+    <menu>
+      <button id="save-token" value="save">Save</button>
+      <button id="forget-token" value="forget" formnovalidate>Forget</button>
+      <button value="cancel" formnovalidate>Close</button>
+    </menu>
+    <p id="settings-status" class="status" role="status"></p>
+  </form>
+</dialog>
+<div class="controls">
+  <div class="filters" role="group" aria-label="Filters">
+    <button class="filter" data-filter="radius" aria-pressed="false">In radius</button>
+    <button class="filter" data-filter="clean" aria-pressed="false">No look-alikes</button>
+    <button class="filter" data-filter="star" aria-pressed="false">★ Killers</button>
+  </div>
+  <label class="sort">Sort
+    <select id="sort">
+      <option value="priority" selected>Best first</option>
+      <option value="margin">Biggest margin</option>
+      <option value="ask">Cheapest</option>
+      <option value="fresh">Freshest</option>
+    </select>
+  </label>
+  <input id="search" type="search" placeholder="Search titles…" aria-label="Search titles">
+</div>
+<div class="legend">
+{{LEGEND}}
+  <span class="legend-note">what the flags mean</span>
+</div>
+<main class="grid" id="grid">
+{{CARDS}}
+</main>
+<div class="empty" id="empty" hidden>
+  <p class="empty-head">Nothing on the floor yet.</p>
+  <p class="empty-sub" id="empty-sub">The next scheduled scrape runs each morning — or tap
+    “Scrape now” above.</p>
+</div>
+<dialog id="lightbox">
+  <button id="lb-close" aria-label="Close">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-nav">
+    <button id="lb-prev" aria-label="Previous photo">‹</button>
+    <span id="lb-count"></span>
+    <button id="lb-next" aria-label="Next photo">›</button>
+  </div>
+</dialog>
+<footer class="foot">
+  <p>{{FUNNEL_HUMAN}}</p>
+  <details class="engineroom"><summary>Engine room</summary><p>{{FUNNEL}}</p></details>
+  <p>{{NOTE}}</p>
+</footer>
+<script>
+/*{{JS}}*/
+</script>
+</body>
+</html>

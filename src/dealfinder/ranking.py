@@ -171,6 +171,27 @@ class Badge:
     tone: str  # good | warn | info
 
 
+#: Single source of truth for every chip the board can show. badges() draws from this and
+#: the page's legend is generated from it, so the two can never drift apart again — the
+#: shipped legend documented six chips while this module emitted nine.
+BADGE_DEFS: dict[str, tuple[str, str, str]] = {
+    "killer": ("★", "Killer deal", "good"),
+    "lookalike": ("⚠", "Look-alike", "warn"),
+    "drop": ("▼", "Price drop", "good"),
+    "hot": ("◉", "Hot", "info"),
+    "fast": ("≈", "Sells fast", "info"),
+    "slow": ("∼", "Slow mover", "warn"),
+    "hedged": ("?", "Maker unconfirmed", "info"),
+    "oor": ("⤢", "Out of radius", "warn"),
+    "stale": ("◷", "Unconfirmed lately", "warn"),
+}
+
+
+def _badge(key: str, label: str | None = None, tone: str | None = None) -> Badge:
+    icon, deflabel, deftone = BADGE_DEFS[key]
+    return Badge(icon, label or deflabel, tone or deftone)
+
+
 def badges(
     *,
     killer: bool,
@@ -184,25 +205,25 @@ def badges(
     """Glanceable status chips, ordered by how loudly they should read."""
     out: list[Badge] = []
     if killer:
-        out.append(Badge("★", "Killer deal", "good"))
+        out.append(_badge("killer"))
     if authenticity.is_red_flag:
-        out.append(Badge("⚠", "Look-alike", "warn"))
+        out.append(_badge("lookalike"))
     if price_dropped:
-        out.append(Badge("▼", "Price drop", "good"))
+        out.append(_badge("drop"))
     if heat >= 60:
-        out.append(Badge("◉", "Hot", "info"))
+        out.append(_badge("hot"))
     if liquidity >= 70:
-        out.append(Badge("≈", "Sells fast", "info"))
+        out.append(_badge("fast"))
     elif liquidity <= 25:
-        out.append(Badge("∼", "Slow mover", "warn"))
+        out.append(_badge("slow"))
     if authenticity.verdict == "hedged":
-        out.append(Badge("?", "Maker unconfirmed", "info"))
+        out.append(_badge("hedged"))
     if out_of_radius:
-        out.append(Badge("⤢", "Out of radius", "warn"))
+        out.append(_badge("oor"))
     if days_since_seen >= 7:
-        out.append(Badge("◷", f"Unconfirmed {int(days_since_seen)}d", "warn"))
+        out.append(_badge("stale", f"Unconfirmed {int(days_since_seen)}d"))
     elif days_since_seen >= 2:
-        out.append(Badge("◷", f"Last seen {int(days_since_seen)}d ago", "info"))
+        out.append(_badge("stale", f"Last seen {int(days_since_seen)}d ago", "info"))
     return out
 
 

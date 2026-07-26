@@ -194,10 +194,25 @@ def _store_extra_photos(
             entry.extra_photo_rels = rels
 
 
+def _write_status(out_dir: Path, state: str, **counts) -> None:
+    """A tiny machine-readable verdict the page reads, so a quota-blocked or auth-broken
+    day shows a banner instead of a silently stale board."""
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "status.json").write_text(
+            json.dumps({"state": state,
+                        "generated_at": datetime.now(timezone.utc).isoformat(),
+                        **counts}, indent=1),
+            encoding="utf-8",
+        )
+    except OSError as exc:  # a status file must never sink the run it describes
+        log.warning("status_write_failed", error=str(exc)[:120])
+
+
 def _load_seen(path: Path) -> dict[str, int | None]:
     if path.exists():
         try:
-            return json.loads(path.read_text())
+            return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             log.warning("seen_ledger_unreadable", path=str(path))
     return {}
@@ -293,6 +308,7 @@ def main(argv: list[str] | None = None) -> int:
         # Refusing to run is the fix: proceeding would save an empty catalogue over the
         # damaged one and destroy every stored appraisal.
         print(str(exc), file=sys.stderr)
+        _write_status(out_dir, "catalog_corrupt")
         return 6
     _reconcile_photos(catalog, out_dir / "photos")
     seen = catalog_mod.seen_view(catalog)
@@ -312,7 +328,7 @@ def main(argv: list[str] | None = None) -> int:
     coverage: dict[str, catalog_mod.SearchCoverage] = {}
     scan_failed = False
     if args.from_json:
-        records = json.loads(Path(args.from_json).read_text())
+        records = json.loads(Path(args.from_json).read_text(encoding="utf-8"))
         listings = records_to_listings(records)
     elif args.recover:
         token = os.getenv("APIFY_TOKEN", "").strip()
@@ -541,12 +557,13 @@ def main(argv: list[str] | None = None) -> int:
     board_pieces.sort(key=lambda p: p.priority, reverse=True)
     board_pieces = board_pieces[: _int_env("MAX_CARDS") or 150]
 
-    now = datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC")
+    now = datetime.now(timezone.utc)
     page = write_site(
         RunResult(pieces=board_pieces, plan=plan), out_dir,
         meta=BoardMeta(
             region=_env("REGION_LABEL", "Lexington · 40 mi"),
-            generated_at=f"updated {now}",
+            generated_at=f"updated {now.strftime('%b %d, %Y · %H:%M UTC')}",
+            generated_at_iso=now.isoformat(),
             note=f"Valued by {provider.name}. Photos and prices as scraped; verify before buying.",
             # In Actions these come free; locally you can set them to make the page's
             # buttons work against your repo. Empty renders a read-only board that says so.
@@ -558,6 +575,10 @@ def main(argv: list[str] | None = None) -> int:
         photo_files=cover,
         extra_photo_map={
             e.id: e.photo_rel for e in catalog_mod.live_entries(catalog) if e.photo_rel
+        },
+        gallery_map={
+            e.id: e.extra_photo_rels
+            for e in catalog_mod.live_entries(catalog) if e.extra_photo_rels
         },
     )
     catalog_mod.save_catalog(catalog, catalog_path)
@@ -580,9 +601,13 @@ def main(argv: list[str] | None = None) -> int:
             "See the appraisal_failed warnings above for the reason.",
             file=sys.stderr,
         )
+        _write_status(out_dir, "appraisals_failed",
+                      failed=len(plan.to_appraise), on_board=len(board_pieces))
         return 4
     # The board is up to date either way, but a run that couldn't reach Marketplace still
     # exits non-zero — a silent success would hide a scraper that has stopped working.
+    _write_status(out_dir, "scan_blocked" if scan_failed else "ok",
+                  on_board=len(board_pieces), appraised=len(result.pieces))
     return 5 if scan_failed else 0
 
 
