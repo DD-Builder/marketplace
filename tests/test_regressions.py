@@ -1,80 +1,73 @@
-"""Regression tests for audit findings B1, B2, B3."""
+"""Regressions for bugs that reached a real run. Each one cost something to find."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 
-from dealfinder.core.enums import (
-    ListingStatus,
-    MessageRole,
-    ScrapeRunStatus,
-    ValuationTier,
-)
-from dealfinder.core.models import Listing, ScrapeRun, Valuation
+def test_blank_env_vars_do_not_crash_the_run():
+    """GitHub substitutes an unset repository variable as an empty string rather than
+    omitting it, so int("") blew up a whole run. Anything optional goes through _env."""
+    import os
 
+    from dealfinder.run_board import _env, _int_env
 
-def test_b1_blank_quiet_hours_env_does_not_crash(monkeypatch):
-    """The value shipped in .env.example must not break settings load."""
-    from dealfinder import config
-
-    monkeypatch.setenv("QUIET_HOURS_START", "")  # exactly as in .env.example
-    monkeypatch.setenv("QUIET_HOURS_END", "")
-    config.get_settings.cache_clear()
-    settings = config.Settings()
-    assert settings.quiet_hours_start is None
-    assert settings.quiet_hours_end is None
-    config.get_settings.cache_clear()
+    os.environ["BOARD_TEST_EMPTY"] = "   "
+    assert _env("BOARD_TEST_EMPTY", "fallback") == "fallback"
+    assert _int_env("BOARD_TEST_EMPTY") is None
+    os.environ["BOARD_TEST_JUNK"] = "not-a-number"
+    assert _int_env("BOARD_TEST_JUNK") is None
+    del os.environ["BOARD_TEST_EMPTY"], os.environ["BOARD_TEST_JUNK"]
 
 
-def test_b2_enum_columns_roundtrip_as_enum_members(temp_db):
-    """Enum columns must read back as enum members so ``.value`` works (not bare str)."""
-    with temp_db.session_scope() as s:
-        s.add(ScrapeRun(status=ScrapeRunStatus.OK, started_at=datetime.now(timezone.utc)))
-        s.add(Listing(id="1", status=ListingStatus.SOLD))
-    with temp_db.session_scope() as s:  # fresh session = simulates a later request
-        run = s.query(ScrapeRun).one()
-        assert isinstance(run.status, ScrapeRunStatus)
-        assert run.status.value == "ok"  # the template does exactly this
-        listing = s.query(Listing).one()
-        assert isinstance(listing.status, ListingStatus)
+def test_a_run_that_values_nothing_reports_failure():
+    """20 appraisals failed, the job reported SUCCESS, and published a blank board —
+    which read as 'no deals this week' rather than 'your credential is missing'."""
+    import json
+
+    from dealfinder import run_board
+
+    class AlwaysFails:
+        name = "broken"
+
+        def appraise(self, listing, vertical, *, image_paths=None):
+            raise RuntimeError("no credential")
+
+    import tempfile
+    from pathlib import Path
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        (tmp / "listings.json").write_text(json.dumps([
+            {"id": "a", "listingTitle": "solid walnut dresser",
+             "listingPrice": {"amount": "40.00"},
+             "listingPhotos": [{"image": {"uri": "u"}}]},
+        ]))
+        orig_get, orig_photos = run_board.get_appraiser, run_board._download_photos
+        run_board.get_appraiser = lambda name: AlwaysFails()
+        run_board._download_photos = lambda listings, out_dir, **kw: {}
+        try:
+            rc = run_board.main([
+                "--from-json", str(tmp / "listings.json"), "--out", str(tmp / "site"),
+                "--catalog", str(tmp / "catalog.json"), "--seen", str(tmp / "seen.json"),
+                "--pieces", str(tmp / "pieces.json"),
+            ])
+        finally:
+            run_board.get_appraiser, run_board._download_photos = orig_get, orig_photos
+    assert rc == 4
 
 
-def test_b3_only_current_appraisal_is_marked(temp_db):
-    """A re-appraisal supersedes the old one; only one is_current per listing."""
-    from dealfinder.core import repository
+def test_a_missing_credential_is_caught_before_the_scrape_is_paid_for(monkeypatch):
+    """Otherwise it surfaces as every appraisal failing one by one, by which point the
+    Apify credit is already spent."""
+    from dealfinder.run_board import _check_credentials
 
-    with temp_db.session_scope() as s:
-        s.add(Listing(id="1", asking_price_cents=10000, status=ListingStatus.NEW))
-        s.flush()
-        repository.add_appraisal(
-            s, Valuation(listing_id="1", tier=ValuationTier.APPRAISE, deal_score=90)
-        )
-        repository.add_appraisal(
-            s, Valuation(listing_id="1", tier=ValuationTier.APPRAISE, deal_score=10)
-        )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "")
+    assert _check_credentials("claude-code") == 3
 
-    with temp_db.session_scope() as s:
-        current = repository.current_valuation(s, "1")
-        assert current is not None and current.deal_score == 10  # the newer one wins
-        n_current = (
-            s.query(Valuation)
-            .filter(Valuation.is_current.is_(True))
-            .count()
-        )
-        assert n_current == 1
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-x")
+    assert _check_credentials("claude-code") == 0
 
-
-def test_message_role_roundtrips(temp_db):
-    from dealfinder.core.models import NegotiationMessage, NegotiationThread
-
-    with temp_db.session_scope() as s:
-        s.add(Listing(id="1", status=ListingStatus.NEW))
-        s.flush()
-        th = NegotiationThread(listing_id="1")
-        s.add(th)
-        s.flush()
-        s.add(NegotiationMessage(thread_id=th.id, role=MessageRole.SELLER, content="hi"))
-    with temp_db.session_scope() as s:
-        m = s.query(NegotiationMessage).one()
-        assert isinstance(m.role, MessageRole)
-        assert m.role.value == "seller"  # transcript building does this
+    # ...but a local run must not be blocked: the CLI carries its own stored login.
+    monkeypatch.setenv("GITHUB_ACTIONS", "")
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "")
+    assert _check_credentials("claude-code") == 0

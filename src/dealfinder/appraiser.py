@@ -153,9 +153,12 @@ class ClaudeCodeAppraiser:
         return _parse_cli_json(proc.stdout)
 
 
-def _parse_cli_json(stdout: str) -> AppraisalResult:
-    """Extract the appraisal JSON from the CLI output (it wraps the reply in an envelope,
-    and the reply itself may be fenced in markdown)."""
+def extract_cli_json(stdout: str) -> str:
+    """Pull the JSON object out of a Claude Code CLI reply.
+
+    The CLI wraps the answer in an envelope, and the answer itself may be fenced in
+    markdown. Shared with the negotiation drafter, which talks to the same CLI.
+    """
     text = stdout
     try:
         env = json.loads(stdout)
@@ -178,7 +181,11 @@ def _parse_cli_json(stdout: str) -> AppraisalResult:
     start, end = text.find("{"), text.rfind("}")
     if start == -1 or end == -1:
         raise RuntimeError(f"no JSON object in claude CLI output: {text[:200]!r}")
-    return AppraisalResult.model_validate_json(text[start : end + 1])
+    return text[start : end + 1]
+
+
+def _parse_cli_json(stdout: str) -> AppraisalResult:
+    return AppraisalResult.model_validate_json(extract_cli_json(stdout))
 
 
 class _UnimplementedProvider:

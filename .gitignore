@@ -16,9 +16,8 @@ venv/
 *.env
 !.env.example
 
-# Runtime data (DB, downloaded photos, browser sessions)
-data/
-!data/.gitkeep
+# Working photo downloads (only the cover images ship with the site)
+docs/_photos/
 
 # Local pilot inputs/outputs (your own scraped data — never commit)
 pilot/*.json

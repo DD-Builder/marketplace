@@ -1,15 +1,17 @@
-"""Typed application settings loaded from the environment / .env file.
+"""Typed settings for the metered-API valuation path.
 
-Search *targets* (what to scrape) are DB data managed via the dashboard, not config —
-only cross-cutting knobs live here. See ``.env.example`` for documentation of each field.
+Almost nothing is configured here any more. The pipeline runs in GitHub Actions, so its
+knobs are plain environment variables read where they're used (see
+:mod:`dealfinder.run_board`), and its state is JSON committed next to the site rather than
+a database. What's left is the handful of values the ``claude-api`` provider needs when you
+choose to pay per token instead of leaning on your subscription.
 """
 
 from __future__ import annotations
 
 from functools import lru_cache
-from pathlib import Path
 
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,64 +20,15 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    # Secrets
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
-    fb_session_path: str = Field(default="", alias="FB_SESSION_PATH")
-
-    # Models
-    triage_model: str = Field(default="claude-haiku-4-5", alias="TRIAGE_MODEL")
     appraise_model: str = Field(default="claude-opus-4-8", alias="APPRAISE_MODEL")
     negotiation_model: str = Field(default="claude-opus-4-8", alias="NEGOTIATION_MODEL")
+
     # Which valuation backend to use. 'claude-code' bills your Max subscription via the
     # Claude Code CLI; 'claude-api' uses the metered API; 'openai'/'gemini'/'grok' are seams.
     appraiser_provider: str = Field(default="claude-code", alias="APPRAISER_PROVIDER")
 
-    # Apify scraping (the on-demand source). Token from apify.com; empty = not configured.
-    apify_token: str = Field(default="", alias="APIFY_TOKEN")
-    apify_actor: str = Field(default="apify~facebook-marketplace-scraper", alias="APIFY_ACTOR")
-
-    # Economics
-    hourly_rate_cents: int = Field(default=3000, alias="HOURLY_RATE_CENTS")
-    # Cap on Opus vision appraisals per scrape cycle — bounds spend on broad targets.
-    max_appraisals_per_run: int = Field(default=25, alias="MAX_APPRAISALS_PER_RUN")
-
-    # Scraper / pacing
-    rate_max_actions_per_hour: int = Field(default=60, alias="RATE_MAX_ACTIONS_PER_HOUR")
-    pacing_min_seconds: float = Field(default=1.5, alias="PACING_MIN_SECONDS")
-    pacing_max_seconds: float = Field(default=6.0, alias="PACING_MAX_SECONDS")
-    headless: bool = Field(default=False, alias="HEADLESS")
-    browser_channel: str = Field(default="chrome", alias="BROWSER_CHANNEL")
-    max_search_pages: int = Field(default=10, alias="MAX_SEARCH_PAGES")
-    quiet_hours_start: int | None = Field(default=None, alias="QUIET_HOURS_START")
-    quiet_hours_end: int | None = Field(default=None, alias="QUIET_HOURS_END")
-
-    # Infra
-    database_url: str = Field(default="sqlite:///data/app.db", alias="DATABASE_URL")
-    photo_dir: str = Field(default="data/photos", alias="PHOTO_DIR")
-    session_dir: str = Field(default="data/sessions", alias="SESSION_DIR")
-
-    @field_validator("quiet_hours_start", "quiet_hours_end", mode="before")
-    @classmethod
-    def _blank_to_none(cls, v):
-        """Treat an empty/whitespace env value (as shipped in .env.example) as unset."""
-        if v is None or (isinstance(v, str) and v.strip() == ""):
-            return None
-        return v
-
-    @property
-    def photo_path(self) -> Path:
-        p = Path(self.photo_dir)
-        p.mkdir(parents=True, exist_ok=True)
-        return p
-
-    @property
-    def session_path(self) -> Path:
-        p = Path(self.session_dir)
-        p.mkdir(parents=True, exist_ok=True)
-        return p
-
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    """Cached settings accessor. Injected via FastAPI ``Depends`` and imported in the worker."""
     return Settings()

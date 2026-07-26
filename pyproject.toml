@@ -4,33 +4,25 @@ version = "0.1.0"
 description = "Self-hosted Facebook Marketplace furniture-deal finder with AI valuation"
 readme = "README.md"
 requires-python = ">=3.11"
+# Deliberately small. The pipeline runs on GitHub Actions with the stdlib for HTTP,
+# JSON files for state, and a generated static page for the UI — so there is no web
+# framework, no ORM and no browser driver to install. `anthropic` is only needed if you
+# switch the appraiser to the metered API instead of your Claude subscription.
 dependencies = [
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.32",
-    "jinja2>=3.1",
-    "python-multipart>=0.0.12",
-    "sqlalchemy>=2.0",
-    "alembic>=1.14",
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
-    "anthropic>=0.40",
-    "patchright>=1.48",
-    "apscheduler>=3.10",
-    "httpx>=0.27",
     "structlog>=24.4",
-    "python-dotenv>=1.0",
-    "pyyaml>=6.0",
+    "anthropic>=0.40",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3",
-    "pytest-asyncio>=0.24",
 ]
 
 [project.scripts]
-dealfinder-web = "dealfinder.web.run:main"
-dealfinder-worker = "dealfinder.worker.run:main"
+dealfinder-board = "dealfinder.run_board:main"
+dealfinder-negotiate = "dealfinder.negotiate:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -40,5 +32,4 @@ build-backend = "hatchling.build"
 packages = ["src/dealfinder"]
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 testpaths = ["tests"]
