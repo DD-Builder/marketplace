@@ -20,7 +20,7 @@ import json
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Iterable
 
 from dealfinder.core.schemas import RawListing, RawPhoto
@@ -93,24 +93,50 @@ def _images(rec: dict) -> list[str]:
 
 
 def _parse_ts(v: Any) -> datetime | None:
+    """Parse either ISO-8601 or a Unix epoch (this actor family emits both).
+
+    Always returns an aware datetime: a naive value would later hit a comparison
+    against an aware ``last_seen`` in ``observe()`` and kill the run with a
+    TypeError — after the scrape was already paid for.
+    """
     if not v:
         return None
+    if isinstance(v, (int, float)) or (isinstance(v, str) and v.strip().isdigit()):
+        try:
+            epoch = float(v)
+        except ValueError:
+            return None
+        if epoch > 1e12:  # milliseconds
+            epoch /= 1000.0
+        try:
+            return datetime.fromtimestamp(epoch, tz=timezone.utc)
+        except (OverflowError, OSError, ValueError):
+            return None
     try:
-        return datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
     except ValueError:
         return None
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
 
 def record_to_listing(
     rec: dict, idx: int = 0, *, detail_fetched: bool | None = None
-) -> RawListing:
-    """Map one actor record to a :class:`RawListing`.
+) -> RawListing | None:
+    """Map one actor record to a :class:`RawListing`, or None if it has no usable id.
 
     ``detail_fetched=None`` infers provenance from the payload — a description or a photo
     gallery can only have come from a detail page. That keeps ``--from-json`` exports and
     the measurement pilot correct without their callers knowing about the two-stage scrape.
+
+    A record with no id is dropped rather than given a positional one: these ids are the
+    catalogue's primary keys and the photo filenames, and a synthetic ``row-0`` names a
+    *different* listing on every run — one unfamiliar dataset through ``--recover`` and
+    entries silently inherit each other's appraisals.
     """
-    fb_id = str(_first(rec, _ID_KEYS) or f"row-{idx}")
+    raw_id = _first(rec, _ID_KEYS)
+    if raw_id is None:
+        return None
+    fb_id = str(raw_id)
     imgs = _images(rec)
     price = _first(rec, _PRICE_KEYS)
     prev = rec.get("strikethroughPrice")  # a present strikethrough = an already-dropped price
@@ -141,10 +167,19 @@ def record_to_listing(
 def records_to_listings(
     records: Iterable[dict], *, detail_fetched: bool | None = None
 ) -> list[RawListing]:
-    return [
-        record_to_listing(r, i, detail_fetched=detail_fetched)
-        for i, r in enumerate(records)
-    ]
+    out: list[RawListing] = []
+    dropped = 0
+    for i, r in enumerate(records):
+        lst = record_to_listing(r, i, detail_fetched=detail_fetched)
+        if lst is None:
+            dropped += 1
+            continue
+        out.append(lst)
+    if dropped:
+        from dealfinder.logging import get_logger
+
+        get_logger(__name__).warning("records_dropped_no_id", count=dropped)
+    return out
 
 
 # --- REST client ------------------------------------------------------------------------
@@ -269,6 +304,12 @@ def recover_runs(
     listings: list[RawListing] = []
     report: list[dict] = []
     for run in list_runs(token=token, actor=actor, limit=limit):
+        # A FAILED or ABORTED run's dataset is a partial truth at best — folding it in
+        # would record half a scan as if it were the whole market.
+        if run.get("status") != "SUCCEEDED":
+            report.append({**run, "recovered": 0,
+                           "error": f"run status {run.get('status')} — skipped"})
+            continue
         try:
             got = fetch_dataset(run["dataset_id"], token=token, timeout=timeout)
         except Exception as exc:  # noqa: BLE001 — an expired dataset is normal, not fatal

@@ -47,6 +47,11 @@ def test_adapter_falls_back_to_primary_photo():
     assert r.photos and r.photos[0].remote_url.endswith("/thumb.jpg")
 
 
-def test_records_to_listings_indexes_missing_ids():
-    out = records_to_listings([{"listingTitle": "x"}, {"listingTitle": "y"}])
-    assert [l.fb_listing_id for l in out] == ["row-0", "row-1"]
+def test_records_without_an_id_are_dropped_not_renumbered():
+    """Ids are the catalogue's primary keys and the photo filenames. The old fallback
+    (`row-{idx}`) named a *different* listing on every run, so entries silently inherited
+    each other's appraisals. No id -> not a listing we can track -> dropped."""
+    out = records_to_listings(
+        [{"listingTitle": "x"}, {"id": "123", "listingTitle": "y"}, {"listingTitle": "z"}]
+    )
+    assert [l.fb_listing_id for l in out] == ["123"]

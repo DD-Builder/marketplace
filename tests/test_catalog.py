@@ -179,12 +179,19 @@ def test_a_thin_record_that_gains_detail_is_worth_re_valuing():
     res = run_valuation([_l("a", price=8000)], seen={}, provider=StubProvider())
     cat.record_appraisals(c, res.pieces)
 
-    full = [_l("a", price=3000, desc="solid walnut, dovetail drawers", detail=True)]
+    # Same price as before — deliberately. The upgrade alone must be enough: an earlier
+    # version of this test lowered the price too, which routed 'a' through the ordinary
+    # price-drop path and hid that the upgrade path didn't work at all.
+    full = [_l("a", price=8000, desc="solid walnut, dovetail drawers", detail=True)]
     obs = cat.observe(c, full)
     assert obs.detail_upgrades == ["a"]
 
+    # Production wiring: an unchanged-price listing is invisible to the seen-diff, so the
+    # redo candidates must arrive through the backfill pool, not just be un-skipped.
+    redo = [c.listings[i].to_listing() for i in obs.detail_upgrades]
     plan = plan_appraisals(
         full, {"a": 8000},
+        backfill=redo + cat.unappraised_live(c),
         already_valued=cat.already_valued(c, exclude=obs.detail_upgrades),
     )
     assert [x.fb_listing_id for x in plan.to_appraise] == ["a"]
@@ -246,10 +253,29 @@ def test_migrate_from_seen_preserves_prices_so_nothing_is_re_appraised():
     assert not diff.actionable
 
 
-def test_load_catalog_degrades_instead_of_killing_the_run(tmp_path):
+def test_a_corrupt_catalog_is_quarantined_never_silently_replaced(tmp_path):
+    """The old behaviour returned an empty catalogue, which the run then SAVED over the
+    damaged file — one truncated write destroyed every stored appraisal. Now: back up,
+    keep the original byte-for-byte, and refuse to run."""
+    import pytest
+
     path = tmp_path / "catalog.json"
     path.write_text("{ this is not json")
-    assert cat.load_catalog(path).listings == {}
+    with pytest.raises(cat.CatalogCorrupt):
+        cat.load_catalog(path)
+    backups = list(tmp_path.glob("catalog.json.corrupt-*"))
+    assert len(backups) == 1
+    assert backups[0].read_text() == "{ this is not json"
+    assert path.read_text() == "{ this is not json"   # original untouched
+
+    # A catalogue from a NEWER schema version is quarantined too — loading it through
+    # the old model could drop fields and then persist the loss.
+    newer = tmp_path / "newer.json"
+    newer.write_text('{"version": 999, "listings": {}}')
+    with pytest.raises(cat.CatalogCorrupt):
+        cat.load_catalog(newer)
+
+    # A missing file is a fresh start, not an error.
     assert cat.load_catalog(tmp_path / "missing.json").listings == {}
 
 
@@ -322,9 +348,14 @@ def test_blind_pieces_are_excluded_from_already_valued_so_they_win_budget():
 
     valued = cat.already_valued(c, exclude=cat.blind_appraisals(c))
     assert valued == {"seen"}
+    # Production wiring: the blind piece has an appraisal, so unappraised_live() will
+    # never offer it — the redo pool must inject it into backfill explicitly. An earlier
+    # version passed *every* entry as backfill, which production never does, and so
+    # asserted a behaviour the pipeline didn't actually have.
+    redo = [c.listings[i].to_listing() for i in sorted(cat.blind_appraisals(c))]
     plan = plan_appraisals(
         [_l("blind"), _l("seen")], cat.seen_view(c),
-        backfill=[e.to_listing() for e in c.listings.values()], already_valued=valued,
+        backfill=redo + cat.unappraised_live(c), already_valued=valued,
     )
     assert [x.fb_listing_id for x in plan.to_appraise] == ["blind"]
 

@@ -223,7 +223,13 @@ def main(argv: list[str] | None = None) -> int:
 
     out_dir = Path(args.out)
     catalog_path = Path(args.catalog)
-    catalog = _open_catalog(catalog_path, Path(args.seen))
+    try:
+        catalog = _open_catalog(catalog_path, Path(args.seen))
+    except catalog_mod.CatalogCorrupt as exc:
+        # Refusing to run is the fix: proceeding would save an empty catalogue over the
+        # damaged one and destroy every stored appraisal.
+        print(str(exc), file=sys.stderr)
+        return 6
     seen = catalog_mod.seen_view(catalog)
     ledger = load_ledger(Path(args.pieces))
     logged = costs_by_id(ledger)
@@ -249,7 +255,11 @@ def main(argv: list[str] | None = None) -> int:
             print("APIFY_TOKEN is not set — cannot reach your past runs.", file=sys.stderr)
             return 2
         listings, report = recover_runs(
-            token=token, actor=_env("APIFY_ACTOR", "") or None, limit=args.recover_limit,
+            # Scoped to the scraping actor: an account may hold runs of unrelated actors
+            # whose records would pollute the catalogue.
+            token=token,
+            actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+            limit=args.recover_limit,
         )
         for run in report:
             log.info("recovered_run", run=run["id"], started=run["started_at"],
@@ -318,26 +328,42 @@ def main(argv: list[str] | None = None) -> int:
         obs = catalog_mod.ObserveReport()
         log.info("observe_skipped", reason="no search reached Marketplace")
     else:
-        obs = catalog_mod.observe(catalog, listings, coverage=coverage)
+        # Recovered datasets and local exports carry no absence evidence: they mention
+        # the listings they mention and imply nothing about the rest of the market.
+        obs = catalog_mod.observe(
+            catalog, listings, coverage=coverage,
+            absence_evidence=not (args.from_json or args.recover),
+        )
     log.info("observed", new=obs.new, price_drops=obs.price_drops, gone=obs.marked_gone,
              sold=obs.marked_sold)
 
     # 3. Cost-controlled selection happens inside the engine; but photos must be fetched
     #    for the pieces that will actually be appraised, so we plan first. `plan_appraisals`
     #    is pure, so this plan is identical to the one the engine computes.
-    top_n = max(args.max_appraisals - args.wildcards, 1)
-    backfill = catalog_mod.unappraised_live(catalog)
+    # MAX_APPRAISALS is the hard total. Wildcards come out of it, never on top of it —
+    # previously cap 3 + wildcards 3 quietly spent 4.
+    wildcards = min(args.wildcards, max(args.max_appraisals - 1, 0))
+    top_n = max(args.max_appraisals - wildcards, 1)
     # A price drop on a piece we already valued re-ranks for free — the object didn't
     # change, only what it costs us. Two things do earn a second look: a thin record that
     # just gained a description, and a piece we valued blind now that we can show the
-    # model a photograph.
-    redo = list(obs.detail_upgrades)
+    # model a photograph. Those redo candidates must be IN the pool, not merely un-skipped:
+    # they are neither new (the seen-diff ignores them) nor unappraised (backfill ignores
+    # them), so excluding them from `valued` alone leaves them unreachable.
+    redo_ids = set(obs.detail_upgrades)
     if not args.no_photos:
-        redo += list(catalog_mod.blind_appraisals(catalog))
-    valued = catalog_mod.already_valued(catalog, exclude=redo)
+        redo_ids |= {
+            i for i in catalog_mod.blind_appraisals(catalog)
+            if catalog.listings[i].photo_urls and catalog.listings[i].state == "live"
+        }
+    redo_listings = [
+        catalog.listings[i].to_listing() for i in sorted(redo_ids) if i in catalog.listings
+    ]
+    backfill = redo_listings + catalog_mod.unappraised_live(catalog)
+    valued = catalog_mod.already_valued(catalog, exclude=redo_ids)
     plan = plan_appraisals(
         listings, seen, vertical=vertical,
-        top_n=top_n, wildcards=args.wildcards, backfill=backfill, already_valued=valued,
+        top_n=top_n, wildcards=wildcards, backfill=backfill, already_valued=valued,
     )
     log.info("plan", summary=plan.summary())
 
@@ -379,7 +405,7 @@ def main(argv: list[str] | None = None) -> int:
         vertical=vertical,
         hourly_rate_cents=hourly,
         top_n=top_n,
-        wildcards=args.wildcards,
+        wildcards=wildcards,
         in_radius=in_radius,
         image_paths_by_id={k: v for k, v in photos.items()} if photos else None,
         backfill=backfill,
@@ -389,15 +415,22 @@ def main(argv: list[str] | None = None) -> int:
     # 5. Store this run's appraisals, then render the *accumulated* board.
     cover = {lid: paths[0] for lid, paths in photos.items() if paths}
 
-    catalog_mod.record_appraisals(
-        catalog, result.pieces, appraiser=provider.name,
-        photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}" for lid, p in cover.items()},
-        saw_photos=photos.keys(),
-    )
+    if not args.dry_run:
+        # A dry run's stub appraisals must never be recorded: they would satisfy
+        # "already valued" forever and permanently poison the entries they touch.
+        catalog_mod.record_appraisals(
+            catalog, result.pieces, appraiser=provider.name,
+            photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}"
+                       for lid, p in cover.items()},
+            saw_photos=photos.keys(),
+        )
     pruned = catalog_mod.prune(catalog)
     for gone_id in pruned.removed_ids:
         for stale in (out_dir / "photos").glob(f"{gone_id}.*"):
             stale.unlink(missing_ok=True)
+    # Persist the expensive artifact *now*, before rendering. A crash anywhere in the
+    # photo/board code below must not cost the appraisals this run just paid for.
+    catalog_mod.save_catalog(catalog, catalog_path)
 
     # Photos for pieces that will be on the board but have none yet. Previously only the
     # listings appraised *this* run were fetched, so a piece valued last week showed a grey

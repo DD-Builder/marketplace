@@ -134,16 +134,53 @@ class PruneReport(BaseModel):
 
 # --- persistence ----------------------------------------------------------------------
 
+class CatalogCorrupt(RuntimeError):
+    """The catalogue file exists but can't be parsed.
+
+    Deliberately fatal. The old behaviour — degrade to an empty catalogue — meant the
+    next ``save_catalog`` overwrote the damaged file with a blank one, silently destroying
+    every stored appraisal (the one artifact that costs real money to reproduce). Now the
+    damaged file is copied aside and the run aborts, so a human decides.
+    """
+
+    def __init__(self, path: Path, backup: Path, reason: str) -> None:
+        self.path, self.backup, self.reason = path, backup, reason
+        super().__init__(
+            f"{path} is unreadable ({reason}). A copy was saved to {backup.name}; "
+            "the original was left in place. Do not re-run until it's inspected — "
+            "a run would otherwise start from an empty catalogue and re-buy every appraisal."
+        )
+
+
 def load_catalog(path: Path) -> Catalog:
-    """Load the catalogue, degrading to empty rather than killing a run."""
+    """Load the catalogue. A missing file is a fresh start; a broken one is an abort."""
     path = Path(path)
     if not path.exists():
         return Catalog()
+    text = path.read_text(encoding="utf-8")
+
+    def _quarantine(reason: str) -> CatalogCorrupt:
+        backup = path.with_name(
+            f"{path.name}.corrupt-{_now().strftime('%Y%m%dT%H%M%SZ')}"
+        )
+        backup.write_text(text, encoding="utf-8")
+        log.error("catalog_corrupt", path=str(path), backup=str(backup), reason=reason[:200])
+        return CatalogCorrupt(path, backup, reason[:200])
+
     try:
-        return Catalog.model_validate_json(path.read_text())
+        import json
+
+        version = json.loads(text).get("version", CATALOG_VERSION)
+    except (json.JSONDecodeError, AttributeError) as exc:
+        raise _quarantine(str(exc)) from exc
+    if isinstance(version, int) and version > CATALOG_VERSION:
+        # Written by a newer schema than this code knows. Loading it through the old
+        # model could drop fields and then persist the loss.
+        raise _quarantine(f"catalogue version {version} is newer than {CATALOG_VERSION}")
+    try:
+        return Catalog.model_validate_json(text)
     except (ValidationError, ValueError) as exc:
-        log.warning("catalog_unreadable", path=str(path), error=str(exc)[:200])
-        return Catalog()
+        raise _quarantine(str(exc)) from exc
 
 
 def save_catalog(catalog: Catalog, path: Path) -> None:
@@ -227,12 +264,17 @@ def observe(
     now: datetime | None = None,
     coverage: Mapping[str, SearchCoverage] | None = None,
     gone_after_days: int = 14,
+    absence_evidence: bool = True,
 ) -> ObserveReport:
     """Fold a scan's results into the catalogue.
 
     Absence is deliberately weak evidence: with a ``resultsLimit`` in play a live listing
     drops out of view routinely, so a piece is only marked gone when every search returned
     an untruncated result set AND it was missed twice — otherwise we fall back to age.
+
+    ``absence_evidence=False`` says this batch carries no absence information at all — a
+    recovered dataset or a local JSON export mentions the listings it mentions and implies
+    nothing about the rest. Presence is still recorded; misses and retirement are not.
     """
     now = now or _now()
     rep = ObserveReport()
@@ -242,18 +284,31 @@ def observe(
         seen_now.add(lst.fb_listing_id)
         entry = catalog.listings.get(lst.fb_listing_id)
         price = lst.asking_price_cents
+        # When the listing was *confirmed present* — for recovered data, older than now.
+        seen_at = lst.observed_at or now
 
         if entry is None:
             entry = CatalogEntry(
-                id=lst.fb_listing_id, first_seen=now, last_seen=now,
+                id=lst.fb_listing_id, first_seen=seen_at, last_seen=seen_at,
                 price_history=[PricePoint(at=now, cents=price)],
             )
-            entry.first_seen = entry.last_seen = lst.observed_at or now
             catalog.listings[entry.id] = entry
             rep.new += 1
         else:
             if entry.state == "gone":
                 entry.state = "live"
+                rep.returned_to_live += 1
+            elif (
+                entry.state == "sold"
+                and lst.is_sold is False
+                and seen_at > (entry.sold_at or entry.first_seen)
+            ):
+                # Facebook's isSold flag also covers "pending", which routinely reverts.
+                # Only an explicit fresh is_sold=False re-lists it — mere absence of the
+                # flag (or an old recovered record) is not evidence it came back.
+                entry.state = "live"
+                entry.sold_at = None
+                entry.sold_price_cents = None
                 rep.returned_to_live += 1
             if price is not None and entry.asking_price_cents is not None:
                 if price < entry.asking_price_cents:
@@ -262,9 +317,7 @@ def observe(
                     entry.price_history.append(PricePoint(at=now, cents=price))
                     entry.price_history = entry.price_history[-_PRICE_POINTS_CAP:]
 
-        # last_seen is when the listing was *confirmed present*, which for recovered
-        # data is older than now. Never move it backwards.
-        seen_at = lst.observed_at or now
+        # Never move last_seen backwards past a fresher sighting.
         entry.last_seen = max(entry.last_seen, seen_at) if entry.last_seen else seen_at
         entry.first_seen = min(entry.first_seen, seen_at) if entry.first_seen else seen_at
         entry.misses = 0
@@ -294,16 +347,19 @@ def observe(
             entry.sold_at = entry.sold_at or now
             entry.sold_price_cents = entry.sold_price_cents or entry.asking_price_cents
 
-    # Absence handling
-    fully_covered = bool(coverage) and all(not c.truncated for c in coverage.values())
-    cutoff = now - timedelta(days=gone_after_days)
-    for entry in catalog.listings.values():
-        if entry.id in seen_now or entry.state != "live":
-            continue
-        entry.misses += 1
-        if (fully_covered and entry.misses >= 2) or entry.last_seen < cutoff:
-            entry.state = "gone"
-            rep.marked_gone += 1
+    # Absence handling — only when this batch is a real scan of the market. A failed
+    # search records itself in `coverage` as truncated, which keeps fully_covered False:
+    # a listing can't be retired on the strength of a search that never ran.
+    if absence_evidence:
+        fully_covered = bool(coverage) and all(not c.truncated for c in coverage.values())
+        cutoff = now - timedelta(days=gone_after_days)
+        for entry in catalog.listings.values():
+            if entry.id in seen_now or entry.state != "live":
+                continue
+            entry.misses += 1
+            if (fully_covered and entry.misses >= 2) or entry.last_seen < cutoff:
+                entry.state = "gone"
+                rep.marked_gone += 1
 
     if coverage:
         catalog.meta.searches.update(dict(coverage))
