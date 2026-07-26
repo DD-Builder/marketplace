@@ -12,7 +12,14 @@ from __future__ import annotations
 from functools import lru_cache
 
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
+try:
+    from pydantic_settings import BaseSettings, SettingsConfigDict
+except ImportError as exc:  # pragma: no cover — exercised only on a base install
+    raise ImportError(
+        "The metered-API path needs the optional extra: pip install 'dealfinder[api]'. "
+        "The default subscription path (APPRAISER_PROVIDER=claude-code) never loads this."
+    ) from exc
 
 
 class Settings(BaseSettings):
@@ -21,12 +28,8 @@ class Settings(BaseSettings):
     )
 
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
-    appraise_model: str = Field(default="claude-opus-4-8", alias="APPRAISE_MODEL")
-    negotiation_model: str = Field(default="claude-opus-4-8", alias="NEGOTIATION_MODEL")
-
-    # Which valuation backend to use. 'claude-code' bills your Max subscription via the
-    # Claude Code CLI; 'claude-api' uses the metered API; 'openai'/'gemini'/'grok' are seams.
-    appraiser_provider: str = Field(default="claude-code", alias="APPRAISER_PROVIDER")
+    appraise_model: str = Field(default="claude-opus-5", alias="APPRAISE_MODEL")
+    negotiation_model: str = Field(default="claude-sonnet-5", alias="NEGOTIATION_MODEL")
 
 
 @lru_cache(maxsize=1)

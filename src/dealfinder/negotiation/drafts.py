@@ -105,7 +105,7 @@ class ClaudeApiDrafter:
 
     name = "claude-api"
 
-    def __init__(self, model: str = "claude-sonnet-4-5", timeout: float = 120.0) -> None:
+    def __init__(self, model: str = "claude-sonnet-5", timeout: float = 120.0) -> None:
         self.model = model
         self.timeout = timeout
 
@@ -132,12 +132,16 @@ _DRAFTERS = {
 
 def get_drafter(name: str = "claude-code"):
     """Pick a drafting driver by name — the same seam the appraiser uses."""
-    try:
-        return _DRAFTERS[name]()
-    except KeyError:
+    import os
+
+    if name not in _DRAFTERS:
         raise ValueError(
             f"unknown drafter {name!r}; available: {', '.join(sorted(_DRAFTERS))}"
-        ) from None
+        )
+    if name == "claude-code":
+        # Empty = the CLI's default model. NEGOTIATION_MODEL pins it.
+        return ClaudeCodeDrafter(model=(os.getenv("NEGOTIATION_MODEL") or "").strip())
+    return _DRAFTERS[name]()
 
 
 def draft_replies(
