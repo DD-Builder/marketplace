@@ -5,167 +5,277 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="The Bench">
-<meta name="theme-color" content="#e7e4dc" media="(prefers-color-scheme:light)">
-<meta name="theme-color" content="#181712" media="(prefers-color-scheme:dark)">
+<meta name="referrer" content="no-referrer">
+<!-- Everything is inline by design (the page must render with zero network), so the CSP
+     allows inline style/script and nothing external beyond the GitHub API and same-origin
+     fetches for photos/status. Scraped listing text is injected into this page; if an
+     escaping gap ever appears, this is the fence that keeps it from phoning out. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#211a13" media="(prefers-color-scheme:dark)">
 <title>The Bench — deal board</title>
 <style>
-:root{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;--line:#d3cfc4;
-  --brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;--warn-bg:#f3e6cd;
-  --crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
-@media (prefers-color-scheme:dark){:root{--paper:#181712;--card:#22201b;--ink:#ece8de;
-  --soft:#9a9384;--line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;
-  --warn:#d0a24e;--warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;
-  --shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}}
-:root[data-theme="light"]{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;
-  --line:#d3cfc4;--brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;
-  --warn-bg:#f3e6cd;--crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
-:root[data-theme="dark"]{--paper:#181712;--card:#22201b;--ink:#ece8de;--soft:#9a9384;
-  --line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;--warn:#d0a24e;
-  --warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;--shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}
+/* The Bench — mid-century showroom.
+   Cream paper, walnut ink, burnt-orange primary, mustard stickers, teal for money-good.
+   System serif display stack only — the page ships with zero external requests.
+   Every text/background pairing is checked >= 4.5:1 in both themes (see tests). */
+
+:root{
+  --paper:#f4efe4; --card:#fbf7ec; --ink:#2b2118; --soft:#6b5c49; --line:#e0d5c2;
+  --accent:#a8431a; --accent-bright:#c4501f; --accent-soft:#f4ddd0;
+  --teal:#2f6d62; --teal-soft:#dcebe6;
+  --good:#2f6d62; --warn:#8a5a10; --warn-bg:#f3e6c8;
+  --crit:#9a3524; --crit-bg:#f4ded6;
+  --star:#d9a320; --star-ink:#3a2c07;
+  --tag:#fdfaf1; --tag-ink:#2b2118;
+  --shadow:0 1px 0 #fff9, 0 2px 12px #6b5c4922;
+  --display:"Iowan Old Style","Palatino Nova",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211a13; --card:#2c241b; --ink:#f2e8d8; --soft:#b3a48d; --line:#4a3e2f;
+    --accent:#e8804c; --accent-bright:#e8804c; --accent-soft:#472a1b;
+    --teal:#6fbfae; --teal-soft:#1d3b34;
+    --good:#6fbfae; --warn:#e0b45e; --warn-bg:#3d3016;
+    --crit:#e08a72; --crit-bg:#42241b;
+    --star:#e3b23c; --star-ink:#2a2005;
+    --tag:#382e21; --tag-ink:#f2e8d8;
+    --shadow:0 1px 0 #ffffff0a, 0 3px 16px #00000059;
+  }
+}
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.4}
-.num,.v,.was,.rank,.meter b,.resale b{font-variant-numeric:tabular-nums;
-  font-family:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace}
-header.top{padding:26px 18px 14px;max-width:1120px;margin:0 auto}
-.brandrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:650}
-.sub{color:var(--soft);font-size:12.5px}
-.tag{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--brass);
-  border:1px solid var(--line);border-radius:999px;padding:3px 10px}
-.summary{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:9px 13px;box-shadow:var(--shadow);min-width:90px}
-.stat .n{font-size:21px;font-weight:650;font-variant-numeric:tabular-nums}
-.stat .l{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
-.stat.killer .n{color:var(--star)} .stat.fake .n{color:var(--crit)}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px auto 0;max-width:1120px;padding:0 18px}
-.controls button{background:var(--card);border:1px solid var(--line);color:var(--ink);
-  border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer}
-.controls button[aria-pressed="true"]{background:var(--brass);border-color:var(--brass);color:#fff}
-:root[data-theme="dark"] .controls button[aria-pressed="true"]{color:#0c1a16}
-.legend{max-width:1120px;margin:11px auto 0;padding:0 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.legend .legend-note{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
-.grid{max-width:1120px;margin:16px auto 50px;padding:0 18px;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
-.card{position:relative;display:grid;grid-template-columns:104px 1fr;
-  background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
-.card.killer{border-color:var(--star);box-shadow:0 0 0 1px var(--star),var(--shadow)}
-.card.flagged{border-left:4px solid var(--crit)}
-.rank{position:absolute;top:8px;left:8px;z-index:2;background:#0007;color:#fff;
-  font-size:11px;padding:2px 7px;border-radius:999px}
-img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:block;background:var(--brass-soft)}
-.thumb.ph{background:repeating-linear-gradient(115deg,#0000 0 7px,#00000008 7px 8px),
-  linear-gradient(160deg,var(--brass-soft),var(--card));display:flex;align-items:center;
-  justify-content:center;padding:6px;text-align:center;overflow:hidden}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;line-height:1.45;
+  /* Home-screen (standalone) mode renders from y=0 — keep out of the clock's way. */
+  padding-top:env(safe-area-inset-top);
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+}
+.num,.v,.was,.meter b,.tag-price,.tag-margin{font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+/* ---- header ------------------------------------------------------------------------ */
+header.top{padding:28px 20px 10px;max-width:1200px;margin:0 auto}
+.brandrow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-size:34px;margin:0;font-weight:600;letter-spacing:.01em}
+.tag{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);
+  border:1.5px solid var(--teal);border-radius:999px;padding:4px 12px}
+.sub{color:var(--soft);font-size:13px}
+.notice{font-size:14px;background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);
+  border-radius:10px;padding:10px 14px;margin:12px 0 0;line-height:1.5}
+.notice.bad{background:var(--crit-bg);color:var(--crit);border-color:var(--crit)}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:10px 16px;box-shadow:var(--shadow);min-width:96px}
+.stat .n{font-family:var(--display);font-size:24px;font-weight:600}
+.stat .l{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.09em}
+.stat.killer .n{color:var(--accent)} .stat.fake .n{color:var(--crit)}
+
+/* ---- action bar / controls ----------------------------------------------------------- */
+.actionbar{max-width:1200px;margin:6px auto 0;padding:0 20px;display:flex;gap:10px;
+  align-items:center;flex-wrap:wrap}
+.actionbar button{font:inherit;font-size:14px;min-height:44px;padding:10px 18px;
+  border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  cursor:pointer}
+.actionbar button.primary{background:var(--accent);border-color:var(--accent);color:#fff;
+  font-weight:650}
+.actionbar button[aria-busy="true"],.tool button[aria-busy="true"]{opacity:.55;pointer-events:none}
+.conn{font-size:12.5px;color:var(--soft);max-width:100%;overflow-wrap:anywhere}
+.conn.ok{color:var(--good)} .conn.bad{color:var(--crit)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px auto 0;
+  max-width:1200px;padding:0 20px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.controls button.filter{font:inherit;font-size:14px;min-height:44px;padding:10px 16px;
+  border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  cursor:pointer}
+.controls button.filter[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);
+  color:#fff;font-weight:600}
+@media (prefers-color-scheme:dark){
+  .controls button.filter[aria-pressed="true"]{color:#10201c}
+  .actionbar button.primary{color:#231207}
+}
+.sort{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--soft);
+  text-transform:uppercase;letter-spacing:.08em}
+.sort select{font:inherit;font-size:14px;min-height:44px;padding:8px 12px;border-radius:10px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+#search{font:inherit;font-size:14px;min-height:44px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);flex:1 1 160px;min-width:140px}
+.legend{max-width:1200px;margin:12px auto 0;padding:0 20px;display:flex;gap:6px;
+  flex-wrap:wrap;align-items:center}
+.legend-note{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
+
+/* ---- the grid and cards -------------------------------------------------------------- */
+.grid{max-width:1200px;margin:18px auto 60px;padding:0 20px;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;align-items:start}
+.card{position:relative;background:var(--card);border:1px solid var(--line);
+  border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.card.killer{box-shadow:0 0 0 2px var(--star),var(--shadow)}
+.card.flagged{border-left:5px solid var(--crit)}
+
+.hero{position:relative;background:var(--teal-soft)}
+img.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--teal-soft)}
+.thumb.ph{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  padding:16px;text-align:center;overflow:hidden;
+  background:repeating-linear-gradient(115deg,#0000 0 9px,#00000007 9px 10px),
+  linear-gradient(160deg,var(--teal-soft),var(--card))}
 /* A real appraisal names the piece in a full sentence, so this has to clip hard —
-   unclipped it spilled out of the 104px column and across the whole card. */
-.thumb.ph span{font-size:12px;font-weight:600;color:var(--brass);opacity:.85;
-  text-transform:uppercase;letter-spacing:.05em;line-height:1.15;overflow:hidden;
-  overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}
-.body{padding:12px 14px 14px;min-width:0}
-.head h2{font-size:15px;margin:0 0 2px;line-height:1.25;font-weight:600;overflow:hidden;
-  text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.loc{font-size:12px;color:var(--soft)}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
-.chip{font-size:11px;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--line);
-  display:inline-flex;align-items:center;gap:4px;background:var(--paper)}
+   unclipped it spilled out of the thumbnail and across the whole card. */
+.thumb.ph span{font-family:var(--display);font-size:17px;color:var(--teal);line-height:1.3;
+  overflow:hidden;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:4;
+  -webkit-box-orient:vertical}
+.rank{position:absolute;top:10px;left:10px;z-index:2;background:#000a;color:#fff;
+  font-size:12px;padding:3px 9px;border-radius:999px}
+.gallery-hint{position:absolute;bottom:10px;left:10px;z-index:2;background:#000a;color:#fff;
+  font-size:12px;padding:3px 9px;border-radius:999px;border:0;cursor:pointer}
+
+/* The swing tag: ask price big, margin beneath, string-hole punched in the corner. */
+.swingtag{position:absolute;right:12px;bottom:-16px;z-index:3;background:var(--tag);
+  color:var(--tag-ink);border:1px solid var(--line);border-radius:10px 14px 14px 14px;
+  padding:9px 14px 8px 24px;transform:rotate(-3deg);box-shadow:0 3px 10px #0003;min-width:96px}
+.swingtag::before{content:"";position:absolute;left:8px;top:9px;width:9px;height:9px;
+  border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 2px var(--soft)}
+.tag-price{font-family:var(--display);font-size:22px;font-weight:600;display:block;line-height:1.05}
+.tag-was{font-size:11.5px;color:var(--soft);text-decoration:line-through;display:block}
+.tag-margin{font-size:12.5px;display:block;color:var(--good);font-weight:600}
+.swingtag.neg{background:var(--crit-bg);border-color:var(--crit)}
+.swingtag.neg .tag-margin{color:var(--crit)}
+
+/* The killer star: a mustard sticker, slightly askew, like the showroom dot on a sold tag. */
+.starsticker{position:absolute;top:10px;right:10px;z-index:4;background:var(--star);
+  color:var(--star-ink);font-size:12px;font-weight:750;letter-spacing:.05em;
+  text-transform:uppercase;padding:7px 11px;border-radius:999px;transform:rotate(5deg);
+  box-shadow:0 2px 7px #0004}
+
+.body{padding:24px 16px 16px;min-width:0}
+.head h2{font-family:var(--display);font-size:19px;margin:0 0 2px;line-height:1.3;
+  font-weight:600;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical}
+.loc{font-size:13px;color:var(--soft)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{font-size:12px;padding:3px 10px 3px 8px;border-radius:999px;border:1px solid var(--line);
+  display:inline-flex;align-items:center;gap:5px;background:var(--paper);color:var(--ink)}
 .chip.good{color:var(--good);border-color:var(--good)}
 .chip.warn{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
-.chip.info{color:var(--brass)}
-.authwarn{font-size:11.5px;color:var(--crit);background:var(--crit-bg);border-radius:8px;padding:6px 9px;margin:6px 0 2px}
-.figs{display:flex;gap:14px;margin:10px 0 4px;border-top:1px solid var(--line);padding-top:10px;flex-wrap:wrap}
+.chip.info{color:var(--teal)}
+.authwarn{font-size:13px;color:var(--crit);background:var(--crit-bg);border-radius:10px;
+  padding:8px 11px;margin:8px 0 2px;line-height:1.45}
+.figs{display:flex;gap:16px;margin:10px 0 4px;border-top:1px solid var(--line);
+  padding-top:12px;flex-wrap:wrap}
 .fig{display:flex;flex-direction:column}
-.fig .k{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
-.fig .v{font-size:15px;font-weight:600}
+.fig .k{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+.fig .v{font-size:16px;font-weight:600}
 .fig.net .v{color:var(--good)}
-.was{font-size:11px;color:var(--soft);text-decoration:line-through;font-weight:400}
-.resale{font-size:12px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-.resale b{color:var(--ink);font-size:13px}
-.resale .posture{font-size:10px;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--brass);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.fig.net.neg .v{color:var(--crit)}
+.fig .v.warn{color:var(--warn)} .fig .v.bad{color:var(--crit)}
+.was{font-size:12px;color:var(--soft);text-decoration:line-through;font-weight:400}
+.resale{font-size:13px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;
+  gap:7px;flex-wrap:wrap}
+.resale b{color:var(--ink);font-size:14.5px}
+.resale .posture{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--teal);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
 .resale.bad b{color:var(--crit)}
 .resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
 .resale .posture.thin{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
-.reason{font-size:11.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.4}
-.resale .span{font-size:11px;color:var(--soft)}
-.yours{margin:-2px 0 9px}
-.yours summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.yours summary::-webkit-details-marker{display:none}
-.yours summary::before{content:"▸ ";color:var(--brass)}
-.yours[open] summary::before{content:"▾ "}
-.yngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:5px 12px;
-  margin:7px 0 0;padding:8px 10px;background:var(--paper);border:1px solid var(--line);border-radius:8px}
+.reason{font-size:12.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.45}
+.resale .span{font-size:12px;color:var(--soft)}
+
+/* Disclosures: 44px touch targets, real affordance. */
+details.yours,details.why,details.tool{margin:0 0 2px}
+details.yours summary,details.why summary,details.tool summary{
+  font-size:13px;color:var(--accent);cursor:pointer;list-style:none;min-height:44px;
+  display:flex;align-items:center;gap:6px;border-top:1px dashed var(--line)}
+details summary::-webkit-details-marker{display:none}
+details.yours summary::before,details.why summary::before,details.tool summary::before{
+  content:"▸";color:var(--accent)}
+details[open].yours summary::before,details[open].why summary::before,
+details[open].tool summary::before{content:"▾"}
+.yngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:6px 14px;
+  margin:2px 0 10px;padding:10px 12px;background:var(--paper);border:1px solid var(--line);
+  border-radius:10px}
 .yn{display:flex;flex-direction:column;gap:1px}
-.yn .k{font-size:9.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.yn .v{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
-.basis{font-size:10.5px;color:var(--soft);margin:6px 0 0;font-style:italic}
-.actionbar{max-width:1120px;margin:0 auto 8px;padding:0 18px;display:flex;gap:8px;
-  align-items:center;flex-wrap:wrap}
-.actionbar button{font:inherit;font-size:13px;padding:7px 14px;border-radius:999px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
-.actionbar button.primary{background:var(--brass);border-color:var(--brass);color:var(--paper);
-  font-weight:600}
-.conn{font-size:11.5px;color:var(--soft)}
-.conn.ok{color:var(--good)}
-.conn.bad{color:var(--crit)}
-.tool{margin:0 0 7px}
-.tool summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.tool summary::-webkit-details-marker{display:none}
-.tool summary::before{content:"▸ ";color:var(--brass)}
-.tool[open] summary::before{content:"▾ "}
-.tool form{display:flex;flex-wrap:wrap;gap:7px 10px;margin:8px 0 0;padding:9px 10px;
-  background:var(--paper);border:1px solid var(--line);border-radius:8px}
-.tool label{display:flex;flex-direction:column;gap:2px;font-size:9.5px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.06em;flex:1 1 88px}
-.tool label.wide{flex:1 1 100%;text-transform:none;letter-spacing:0;font-size:10.5px}
-.tool input,.tool textarea{font:inherit;font-size:13px;padding:5px 7px;border-radius:6px;
+.yn .k{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.yn .v{font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.basis{font-size:12px;color:var(--soft);margin:6px 0 8px;font-style:italic}
+.why p{font-size:13px;color:var(--soft);margin:2px 0 10px;line-height:1.5}
+
+.tool form{display:flex;flex-wrap:wrap;gap:8px 12px;margin:2px 0 10px;padding:11px 12px;
+  background:var(--paper);border:1px solid var(--line);border-radius:10px}
+.tool label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--soft);
+  text-transform:uppercase;letter-spacing:.06em;flex:1 1 90px}
+.tool label.wide{flex:1 1 100%;text-transform:none;letter-spacing:0;font-size:12px}
+.tool input,.tool textarea{font:inherit;font-size:16px;padding:9px 10px;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;
   box-sizing:border-box}
-.tool input[type=range]{padding:0;accent-color:var(--brass)}
-.tool button{font:inherit;font-size:12.5px;padding:6px 13px;border-radius:999px;
-  border:1px solid var(--brass);background:var(--brass-soft);color:var(--brass);
-  cursor:pointer;flex:0 0 auto;align-self:flex-end}
-.postval{font-size:11px;color:var(--brass);text-transform:none;letter-spacing:0}
-.status{flex:1 1 100%;font-size:11.5px;color:var(--soft);margin:2px 0 0;min-height:1em}
-.status.ok{color:var(--good)}
-.status.bad{color:var(--crit)}
-.drafts{flex:1 1 100%;display:flex;flex-direction:column;gap:8px}
-.draft{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
-.dtext{font-size:13px;line-height:1.5;margin:0;white-space:pre-wrap}
-dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
-  max-width:min(440px,92vw);padding:18px 20px;box-shadow:var(--shadow)}
-dialog::backdrop{background:#0009}
-dialog h2{font-size:16px;margin:0 0 8px}
-dialog p{font-size:12px;color:var(--soft);line-height:1.5;margin:0 0 10px}
-dialog code{font-size:11.5px;color:var(--brass)}
-dialog label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:var(--soft);
+.tool input[type=range]{padding:0;accent-color:var(--accent);min-height:44px}
+.tool button{font:inherit;font-size:14px;min-height:44px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);
+  font-weight:600;cursor:pointer;flex:0 0 auto;align-self:flex-end}
+.postval{font-size:12px;color:var(--accent);text-transform:none;letter-spacing:0}
+.status{flex:1 1 100%;font-size:13px;color:var(--soft);margin:2px 0 0;min-height:1em;line-height:1.45}
+.status.ok{color:var(--good)} .status.bad{color:var(--crit)}
+.drafts{flex:1 1 100%;display:flex;flex-direction:column;gap:9px}
+.draft{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.dtext{font-size:14px;line-height:1.55;margin:0;white-space:pre-wrap}
+.draft .copy{font:inherit;font-size:13px;min-height:44px;padding:8px 14px;margin-top:6px;
+  border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+
+.meters{display:flex;flex-direction:column;gap:6px;margin:10px 0 4px}
+.meter{display:grid;grid-template-columns:58px 1fr 30px;align-items:center;gap:9px}
+.meter label{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.meter .bar{height:7px;background:var(--paper);border-radius:999px;overflow:hidden;
+  border:1px solid var(--line)}
+.meter .bar i{display:block;height:100%;background:var(--accent-bright);border-radius:999px}
+.meter .bar.sub i{background:var(--soft);opacity:.65}
+.meter b{font-size:13px;text-align:right}
+.view{display:inline-flex;align-items:center;min-height:44px;font-size:15px;
+  color:var(--accent);text-decoration:none;font-weight:650}
+
+/* ---- dialogs ------------------------------------------------------------------------- */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);
+  max-width:min(460px,92vw);padding:20px 22px;box-shadow:var(--shadow)}
+dialog::backdrop{background:#000a}
+dialog h2{font-family:var(--display);font-size:19px;margin:0 0 8px}
+dialog p{font-size:13px;color:var(--soft);line-height:1.55;margin:0 0 10px}
+dialog code{font-size:12.5px;color:var(--teal)}
+dialog label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--soft);
   text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
-dialog input{font:inherit;font-size:13.5px;padding:7px 9px;border-radius:6px;
+dialog input{font:inherit;font-size:16px;padding:9px 11px;border-radius:8px;
   border:1px solid var(--line);background:var(--paper);color:var(--ink)}
-dialog menu{display:flex;gap:8px;padding:0;margin:12px 0 0}
-dialog menu button{font:inherit;font-size:13px;padding:6px 14px;border-radius:999px;
-  border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
-dialog menu button:first-child{background:var(--brass);border-color:var(--brass);
-  color:var(--card);font-weight:600}
-.meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
-.meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
-.meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.meter .bar{height:6px;background:var(--paper);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-.meter .bar i{display:block;height:100%;background:var(--brass);border-radius:999px}
-.meter .bar.sub i{background:var(--soft);opacity:.6}
-.meter b{font-size:12px;text-align:right}
-.why{margin:0 0 9px}
-.why summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.why summary::-webkit-details-marker{display:none}
-.why summary::before{content:"▸ ";color:var(--brass)}
-.why[open] summary::before{content:"▾ "}
-.why p{font-size:12px;color:var(--soft);margin:6px 0 0;line-height:1.45}
-.view{display:inline-block;font-size:13.5px;color:var(--brass);text-decoration:none;font-weight:600}
-.foot{max-width:1120px;margin:0 auto 46px;padding:0 18px;color:var(--soft);font-size:11.5px;line-height:1.6}
+dialog menu{display:flex;gap:8px;padding:0;margin:12px 0 0;flex-wrap:wrap}
+dialog menu button{font:inherit;font-size:14px;min-height:44px;padding:8px 16px;
+  border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  cursor:pointer}
+dialog menu button:first-child{background:var(--accent);border-color:var(--accent);
+  color:#fff;font-weight:600}
+@media (prefers-color-scheme:dark){dialog menu button:first-child{color:#231207}}
+
+#lightbox{max-width:min(960px,96vw);padding:10px;background:#131009;border-color:#3a3226}
+#lightbox img{max-width:100%;max-height:78vh;display:block;border-radius:8px;margin:0 auto}
+#lb-close{position:absolute;top:8px;right:8px;font:inherit;font-size:16px;min-width:44px;
+  min-height:44px;border-radius:999px;border:0;background:#0008;color:#fff;cursor:pointer}
+.lb-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}
+.lb-nav button{font:inherit;font-size:22px;min-width:44px;min-height:44px;border-radius:999px;
+  border:0;background:#ffffff1c;color:#fff;cursor:pointer}
+#lb-count{color:#cfc6b4;font-size:13px}
+
+/* ---- empty state / footer ------------------------------------------------------------- */
+.empty{max-width:520px;margin:60px auto;padding:0 20px;text-align:center}
+.empty-head{font-family:var(--display);font-size:24px;margin:0 0 6px}
+.empty-sub{font-size:14px;color:var(--soft);line-height:1.55}
+.foot{max-width:1200px;margin:0 auto 52px;padding:0 20px calc(14px + env(safe-area-inset-bottom));
+  color:var(--soft);font-size:13px;line-height:1.6}
+.engineroom summary{cursor:pointer;color:var(--soft);min-height:44px;display:flex;align-items:center}
+.engineroom p{font-family:var(--mono);font-size:11.5px}
 .hide{display:none!important}
-@media (max-width:420px){.card{grid-template-columns:84px 1fr}img.thumb{width:84px}}
+
+@media (max-width:390px){
+  h1{font-size:28px}
+  .grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -173,10 +283,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
   <div class="brandrow">
     <h1>The Bench</h1>
     <span class="tag">Lexington · 40 mi</span>
-    <span class="sub">updated Jul 25, 2026 · 19:34 UTC</span>
+    <span class="sub" id="updated" data-ts="2026-07-26T16:06:33.521294+00:00">updated Jul 26, 2026 · 16:06 UTC</span>
   </div>
+  <p class="notice" id="notice" hidden></p>
   <div class="summary">
-    <div class="stat"><div class="n num">25</div><div class="l">Candidates</div></div>
+    <div class="stat"><div class="n num">25</div><div class="l">On the floor</div></div>
     <div class="stat killer"><div class="n num">0</div><div class="l">★ Killers</div></div>
     <div class="stat"><div class="n num">8</div><div class="l">▼ Price drops</div></div>
     <div class="stat fake"><div class="n num">0</div><div class="l">⚠ Look-alikes</div></div>
@@ -196,8 +307,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       with <b>Actions: read &amp; write</b> and <b>Contents: read &amp; write</b>.</p>
     <label>Token <input id="token" type="password" autocomplete="off"
       placeholder="github_pat_…"></label>
-    <p class="basis">Stored only in this browser. Anyone with your unlocked device could
-      use it — revoke it in GitHub settings in one click if that ever matters.</p>
+    <p class="basis">Straight talk about what this token can do: Contents write access
+      means it can push code — including workflow changes that read this repo's secrets —
+      so scope it to this one repository and nothing else. It's stored in this browser's
+      localStorage, which is shared with every other GitHub Pages site under your
+      username. Treat it as disposable: rotate it if anything ever feels off.</p>
     <menu>
       <button id="save-token" value="save">Save</button>
       <button id="forget-token" value="forget" formnovalidate>Forget</button>
@@ -207,10 +321,20 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
   </form>
 </dialog>
 <div class="controls">
-  <button id="f-all" aria-pressed="true">All</button>
-  <button id="f-radius" aria-pressed="false">In radius only</button>
-  <button id="f-clean" aria-pressed="false">Hide look-alikes</button>
-  <button id="f-star" aria-pressed="false">★ Killers only</button>
+  <div class="filters" role="group" aria-label="Filters">
+    <button class="filter" data-filter="radius" aria-pressed="false">In radius</button>
+    <button class="filter" data-filter="clean" aria-pressed="false">No look-alikes</button>
+    <button class="filter" data-filter="star" aria-pressed="false">★ Killers</button>
+  </div>
+  <label class="sort">Sort
+    <select id="sort">
+      <option value="priority" selected>Best first</option>
+      <option value="margin">Biggest margin</option>
+      <option value="ask">Cheapest</option>
+      <option value="fresh">Freshest</option>
+    </select>
+  </label>
+  <input id="search" type="search" placeholder="Search titles…" aria-label="Search titles">
 </div>
 <div class="legend">
   <span class="chip good"><span class="ico">★</span>Killer deal</span>
@@ -218,14 +342,19 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
   <span class="chip good"><span class="ico">▼</span>Price drop</span>
   <span class="chip info"><span class="ico">◉</span>Hot</span>
   <span class="chip info"><span class="ico">≈</span>Sells fast</span>
+  <span class="chip warn"><span class="ico">∼</span>Slow mover</span>
+  <span class="chip info"><span class="ico">?</span>Maker unconfirmed</span>
   <span class="chip warn"><span class="ico">⤢</span>Out of radius</span>
+  <span class="chip warn"><span class="ico">◷</span>Unconfirmed lately</span>
   <span class="legend-note">what the flags mean</span>
 </div>
 <main class="grid" id="grid">
 
-    <article class="card" data-id="1697195071582592">
-      <div class="rank">1</div>
-      <div class="thumb ph" aria-hidden="true"><span>Mixed Furniture Lot</span></div>
+    <article class="card" data-id="1697195071582592" data-title="Furniture Set: Dresser, Media Console, and Bookshelf" data-priority="27.1" data-margin="7500" data-ask="5000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">1</div>
+        <div class="thumb ph"><span>Mixed Furniture Lot</span></div><div class="swingtag"><span class="tag-price">$50</span><span class="tag-was">$300</span><span class="tag-margin">$75 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Furniture Set: Dresser, Media Console, and Bookshelf</h2>
@@ -234,9 +363,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span></div>
         <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$50 <span class="was">$300</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$50</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$150</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$75</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$218</b><span class="span">$150–$218</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $75 cash, but 4h at $30/hr is $105 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$75</span></div><div class="yn"><span class="k">With your time</span><span class="v">$180 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$142</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$41/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$207</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -244,17 +374,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker marks cited, and no joinery details (dovetails/M&amp;T) mentioned despite the listing being detailed about hardware — the cable-management hole on the console is a strong tell for post-1990s mass production, and a $50 asking price for three disparate case pieces sold as one lot is classic clearance/moving-sale pricing for particleboard-and-veneer furniture, not solid-wood antiques. This is very likely &#x27;traditional/asymmetrical style&#x27; veneer furniture rather than genuine hardwood construction, so treat any refinishing plans skeptically — veneer doesn&#x27;t tolerate heavy sanding/str</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks cited, and no joinery details (dovetails/M&amp;T) mentioned despite the listing being detailed about hardware — the cable-management hole on the console is a strong tell for post-1990s mass production, and a $50 asking price for three disparate case pieces sold as one lot is classic clearance/moving-sale pricing for particleboard-and-veneer furniture, not solid-wood antiques. This is very likely &#x27;traditional/asymmetrical style&#x27; veneer furniture rather than genuine hardwood construction, so treat any refinishing plans skeptically — veneer doesn&#x27;t tolerate heavy…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1697195071582592">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="50"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -282,9 +412,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1549815250125258">
-      <div class="rank">2</div>
-      <div class="thumb ph" aria-hidden="true"><span>White-Painted 2-Drawer Nightstand</span></div>
+    <article class="card" data-id="1549815250125258" data-title="White Mid-Century Modern 2-Drawer Nightstand" data-priority="24.4" data-margin="1800" data-ask="1500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">2</div>
+        <div class="thumb ph"><span>White-Painted 2-Drawer Nightstand</span></div><div class="swingtag"><span class="tag-price">$15</span><span class="tag-was">$30</span><span class="tag-margin">$18 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>White Mid-Century Modern 2-Drawer Nightstand</h2>
@@ -293,9 +425,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$15 <span class="was">$30</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$15</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$45</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$18</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$65</b><span class="span">$45–$65</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $18 cash, but 2h at $30/hr is $45 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$27</span></div><div class="yn"><span class="k">With your time</span><span class="v">$72 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$38</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$26/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$83</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -303,17 +436,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos or maker marks to verify construction, so this reads as a generic white-painted flat-pack nightstand cosmetically styled with MCM tapered legs rather than a genuine vintage solid-wood piece with dovetail joinery. At this price point and generic description, particleboard/MDF case construction with applied solid-wood legs is far more probable than true MCM craftsmanship. Realistic restoration is light: clean, tighten hardware/joints, maybe touch up paint or swap knobs — not a full refinish. Restored resale should be valued at realistic local marketplace pricing for a nice-looking but </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos or maker marks to verify construction, so this reads as a generic white-painted flat-pack nightstand cosmetically styled with MCM tapered legs rather than a genuine vintage solid-wood piece with dovetail joinery. At this price point and generic description, particleboard/MDF case construction with applied solid-wood legs is far more probable than true MCM craftsmanship. Realistic restoration is light: clean, tighten hardware/joints, maybe touch up paint or swap knobs — not a full refinish. Restored resale should be valued at realistic local marketplace pricing for a nice-looking but…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1549815250125258">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="15"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -341,9 +474,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="2147821552434160">
-      <div class="rank">3</div>
-      <div class="thumb ph" aria-hidden="true"><span>French Provincial-Style Wood End Table…</span></div>
+    <article class="card" data-id="2147821552434160" data-title="French Provincial Wood End Table with Blue Top" data-priority="23.9" data-margin="500" data-ask="8500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">3</div>
+        <div class="thumb ph"><span>French Provincial-Style Wood End Table…</span></div><div class="swingtag"><span class="tag-price">$85</span><span class="tag-was">$105</span><span class="tag-margin">$5 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>French Provincial Wood End Table with Blue Top</h2>
@@ -352,9 +487,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$85 <span class="was">$105</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$85</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$130</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$5</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$188</b><span class="span">$130–$188</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $5 cash, but 3h at $30/hr is $90 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$125</span></div><div class="yn"><span class="k">With your time</span><span class="v">$215 · 3h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$64</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$21/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$247</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -362,17 +498,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>Cabriole legs and a scalloped apron strongly suggest at least a solid-wood frame (particleboard doesn&#x27;t carve into cabriole shapes economically), which is a positive construction signal even without photos. However, the drawer front, apron panels, and painted top could still be veneer over ply — a common cost-saving move in this genre — and joinery (dovetail vs. stapled drawer box) can&#x27;t be assessed from text. Absence of any maker mark strongly implies this is generic 1960s-80s French Provincial reproduction furniture, extremely common in the US secondary market, not a collectible or designer </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>Cabriole legs and a scalloped apron strongly suggest at least a solid-wood frame (particleboard doesn&#x27;t carve into cabriole shapes economically), which is a positive construction signal even without photos. However, the drawer front, apron panels, and painted top could still be veneer over ply — a common cost-saving move in this genre — and joinery (dovetail vs. stapled drawer box) can&#x27;t be assessed from text. Absence of any maker mark strongly implies this is generic 1960s-80s French Provincial reproduction furniture, extremely common in the US secondary market, not a collectible or designer…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="2147821552434160">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="85"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -400,9 +536,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1028804236588745">
-      <div class="rank">4</div>
-      <div class="thumb ph" aria-hidden="true"><span>Three-Piece Bedroom Set</span></div>
+    <article class="card" data-id="1028804236588745" data-title="Large Antique Dresser W/ Mirror + Bedside Table" data-priority="23.4" data-margin="8500" data-ask="12500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">4</div>
+        <div class="thumb ph"><span>Three-Piece Bedroom Set</span></div><div class="swingtag"><span class="tag-price">$125</span><span class="tag-was">$150</span><span class="tag-margin">$85 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Large Antique Dresser W/ Mirror + Bedside Table</h2>
@@ -411,9 +549,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$125 <span class="was">$150</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$125</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$300</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$85</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$435</b><span class="span">$300–$435</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $85 cash, but 6h at $30/hr is $180 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$215</span></div><div class="yn"><span class="k">With your time</span><span class="v">$395 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$220</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$37/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$454</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -421,17 +560,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:55.0%"></i></div><b>55</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos and no stated maker mark or joinery detail (no mention of dovetails, mortise-and-tenon, or any label/stamp), so construction quality and true age can&#x27;t be confirmed — confidence capped low per instructions. The described features (wood-on-wood drawer glides with no metal rails, a large separately-hung mirror with a thin backboard and support struts screwed to the case, overall bulk/length around 5 feet) are consistent with earlier-to-mid-20th-century mass-market bedroom suites, most of which used veneered case goods over cheaper secondary wood rather than solid hardwood carcasses — t</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos and no stated maker mark or joinery detail (no mention of dovetails, mortise-and-tenon, or any label/stamp), so construction quality and true age can&#x27;t be confirmed — confidence capped low per instructions. The described features (wood-on-wood drawer glides with no metal rails, a large separately-hung mirror with a thin backboard and support struts screwed to the case, overall bulk/length around 5 feet) are consistent with earlier-to-mid-20th-century mass-market bedroom suites, most of which used veneered case goods over cheaper secondary wood rather than solid hardwood carcasses —…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1028804236588745">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="125"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -459,9 +598,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1396410792335616">
-      <div class="rank">5</div>
-      <div class="thumb ph" aria-hidden="true"><span>6-Seat Traditional Oak Dining Set</span></div>
+    <article class="card" data-id="1396410792335616" data-title="Solid Oak Dining Table with 6 Chairs" data-priority="23.3" data-margin="12000" data-ask="5000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">5</div>
+        <div class="thumb ph"><span>6-Seat Traditional Oak Dining Set</span></div><div class="swingtag"><span class="tag-price">$50</span><span class="tag-margin">$120 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Solid Oak Dining Table with 6 Chairs</h2>
@@ -470,9 +611,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$50 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$50</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$350</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$120</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$508</b><span class="span">$350–$508</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $120 cash, but 14h at $30/hr is $420 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$230</span></div><div class="yn"><span class="k">With your time</span><span class="v">$650 · 14h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$278</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$20/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$748</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -480,17 +622,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>At $50 OBO the downside is small, but the water-swelling disclosure is the key unknown: if the set is genuinely solid oak, this is a straightforward strip/sand/reglue/refinish job (table top + 6 chairs) landing around $150-200 in materials and ~12-16 hours of labor, yielding a set that resells regionally (FB Marketplace/Craigslist/local eBay pickup) in the $300-450 range for a sturdy, refinished traditional oak dining set with chairs - solid but unremarkable sets rarely command more without a documented maker or notable design. If instead the top is veneer over particleboard, the swelling may </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>At $50 OBO the downside is small, but the water-swelling disclosure is the key unknown: if the set is genuinely solid oak, this is a straightforward strip/sand/reglue/refinish job (table top + 6 chairs) landing around $150-200 in materials and ~12-16 hours of labor, yielding a set that resells regionally (FB Marketplace/Craigslist/local eBay pickup) in the $300-450 range for a sturdy, refinished traditional oak dining set with chairs - solid but unremarkable sets rarely command more without a documented maker or notable design. If instead the top is veneer over particleboard, the swelling may…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1396410792335616">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="50"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -518,9 +660,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1576635034096120">
-      <div class="rank">6</div>
-      <div class="thumb ph" aria-hidden="true"><span>Five-Piece Oak Dining Set</span></div>
+    <article class="card" data-id="1576635034096120" data-title="Five piece solid oak dinner table &amp; chairs. One spindle is missing from one of the chairs." data-priority="21.5" data-margin="7500" data-ask="12500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">6</div>
+        <div class="thumb ph"><span>Five-Piece Oak Dining Set</span></div><div class="swingtag"><span class="tag-price">$125</span><span class="tag-margin">$75 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Five piece solid oak dinner table &amp; chairs. One spindle is missing from one of the chairs.</h2>
@@ -529,9 +673,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$125 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$125</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$300</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$75</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$435</b><span class="span">$300–$435</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $75 cash, but 6h at $30/hr is $180 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$225</span></div><div class="yn"><span class="k">With your time</span><span class="v">$405 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$210</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$35/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$466</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -539,17 +684,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos means construction, joinery, and &#x27;solid oak&#x27; claim can&#x27;t be verified — this could easily be oak veneer over particleboard/plywood, common in mass-market colonial-style dining sets from the 70s-90s. No maker marks mentioned, no evidence of dovetail or mortise-and-tenon joinery, and &#x27;spindle&#x27; chair style plus generic description points to factory production rather than a period or artisan piece. Needed restoration is modest if the piece is genuinely solid wood: turning/sourcing a matching spindle (cheap, a few hours) and sanding/refinishing the scratched tabletop (moderate labor, inexp</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos means construction, joinery, and &#x27;solid oak&#x27; claim can&#x27;t be verified — this could easily be oak veneer over particleboard/plywood, common in mass-market colonial-style dining sets from the 70s-90s. No maker marks mentioned, no evidence of dovetail or mortise-and-tenon joinery, and &#x27;spindle&#x27; chair style plus generic description points to factory production rather than a period or artisan piece. Needed restoration is modest if the piece is genuinely solid wood: turning/sourcing a matching spindle (cheap, a few hours) and sanding/refinishing the scratched tabletop (moderate labor…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1576635034096120">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="125"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -577,9 +722,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1337568671342152">
-      <div class="rank">7</div>
-      <div class="thumb ph" aria-hidden="true"><span>Generic Mid-Size Chest Of Drawers/Dresser</span></div>
+    <article class="card" data-id="1337568671342152" data-title="Dresser" data-priority="18.6" data-margin="6500" data-ask="8000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">7</div>
+        <div class="thumb ph"><span>Generic Mid-Size Chest Of Drawers/Dresser</span></div><div class="swingtag"><span class="tag-price">$80</span><span class="tag-margin">$65 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Dresser</h2>
@@ -588,9 +735,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip info"><span class="ico">?</span>Maker unconfirmed</span></div>
         <p class="authwarn">⚠ Seller hedges the attribution (could be) — maker unconfirmed.</p>
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$80 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$80</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$175</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$65</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$254</b><span class="span">$175–$254</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $65 cash, but 4h at $30/hr is $120 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$110</span></div><div class="yn"><span class="k">With your time</span><span class="v">$230 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$144</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$36/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$264</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -598,17 +746,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker marks, no era or joinery detail given — the &#x27;solid wood&#x27; and &#x27;good condition&#x27; claims are entirely unverified, so confidence is capped low. Description suggests a generic, undistinguished dresser rather than a notable antique, so value should be anchored to typical local-marketplace prices for plain solid-wood dressers ($150-200 restored), not aspirational dealer pricing. The listed defect (hair-dye stain) is a simple cosmetic fix: sand/strip the affected area and refinish or repaint, plus a light overall cleaning/wax — a few hours of labor and cheap materials, no veneer rep</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks, no era or joinery detail given — the &#x27;solid wood&#x27; and &#x27;good condition&#x27; claims are entirely unverified, so confidence is capped low. Description suggests a generic, undistinguished dresser rather than a notable antique, so value should be anchored to typical local-marketplace prices for plain solid-wood dressers ($150-200 restored), not aspirational dealer pricing. The listed defect (hair-dye stain) is a simple cosmetic fix: sand/strip the affected area and refinish or repaint, plus a light overall cleaning/wax — a few hours of labor and cheap materials, no veneer…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1337568671342152">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="80"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -636,9 +784,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1432160245389492">
-      <div class="rank">8</div>
-      <div class="thumb ph" aria-hidden="true"><span>Modern Mass-Market King-Size Storage Bed…</span></div>
+    <article class="card" data-id="1432160245389492" data-title="Kind size storage bed frame" data-priority="18.2" data-margin="-12500" data-ask="39000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">8</div>
+        <div class="thumb ph"><span>Modern Mass-Market King-Size Storage Bed…</span></div><div class="swingtag neg"><span class="tag-price">$390</span><span class="tag-was">$430</span><span class="tag-margin">−$125 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Kind size storage bed frame</h2>
@@ -647,27 +797,28 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$390 <span class="was">$430</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$390</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$280</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-125</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$125</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $405 in it and it&#x27;s only worth about $280 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$405</span></div><div class="yn"><span class="k">With your time</span><span class="v">$435 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$-97</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$-97/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$500</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $405 in it and it&#x27;s only worth about $280 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$405</span></div><div class="yn"><span class="k">With your time</span><span class="v">$435 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$97</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$97/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$500</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:18.2%"></i></div><b>18</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:55.0%"></i></div><b>55</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>This is not a restoration-grade antique or solid-wood piece: storage beds with integrated drawers are almost exclusively a modern manufactured category built from particleboard/MDF with laminate or veneer skins and knockdown cam-lock/bolt joinery, not dovetailed or mortise-and-tenon casework. No maker marks or brand are given, and construction can&#x27;t be verified from text alone, so confidence is capped low. There is essentially no &#x27;restoration&#x27; opportunity here in the traditional refinishing sense — at 7 months old the realistic work is cleaning, re-tightening hardware, and possibly replacing a</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is not a restoration-grade antique or solid-wood piece: storage beds with integrated drawers are almost exclusively a modern manufactured category built from particleboard/MDF with laminate or veneer skins and knockdown cam-lock/bolt joinery, not dovetailed or mortise-and-tenon casework. No maker marks or brand are given, and construction can&#x27;t be verified from text alone, so confidence is capped low. There is essentially no &#x27;restoration&#x27; opportunity here in the traditional refinishing sense — at 7 months old the realistic work is cleaning, re-tightening hardware, and possibly replacing…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1432160245389492">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="390"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -695,9 +846,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1722164608784679">
-      <div class="rank">9</div>
-      <div class="thumb ph" aria-hidden="true"><span>Full-Size Wooden Spindle Bed Frame</span></div>
+    <article class="card" data-id="1722164608784679" data-title="Wooden Spindle Full Bed Frame with Mattress and Box Spring" data-priority="18.2" data-margin="-3000" data-ask="17000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">9</div>
+        <div class="thumb ph"><span>Full-Size Wooden Spindle Bed Frame</span></div><div class="swingtag neg"><span class="tag-price">$170</span><span class="tag-was">$200</span><span class="tag-margin">−$30 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Wooden Spindle Full Bed Frame with Mattress and Box Spring</h2>
@@ -706,9 +859,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span></div>
         <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$170 <span class="was">$200</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$170</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$210</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-30</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$30</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $240 in it and it&#x27;s only worth about $210 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$240</span></div><div class="yn"><span class="k">With your time</span><span class="v">$420 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$64</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$11/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$483</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -716,17 +870,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:55.0%"></i></div><b>55</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos and no maker mark mean &#x27;solid wood&#x27; and joinery quality are seller claims only, capping confidence low. This reads as a common mass-produced spindle/turned-post bed (not a documented antique) - full-size beds also have weaker resale demand than queen/king in most local markets, limiting upside. The mattress/box spring, while described as near-new, are hard to monetize as used bedding (buyer hygiene concerns, no warranty) and shouldn&#x27;t be counted at anything near retail value. Realistic play: negotiate to buy just the frame well under the $170 combined ask (seller is open to splitting</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos and no maker mark mean &#x27;solid wood&#x27; and joinery quality are seller claims only, capping confidence low. This reads as a common mass-produced spindle/turned-post bed (not a documented antique) - full-size beds also have weaker resale demand than queen/king in most local markets, limiting upside. The mattress/box spring, while described as near-new, are hard to monetize as used bedding (buyer hygiene concerns, no warranty) and shouldn&#x27;t be counted at anything near retail value. Realistic play: negotiate to buy just the frame well under the $170 combined ask (seller is open to…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1722164608784679">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="170"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -754,9 +908,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1298036099183850">
-      <div class="rank">10</div>
-      <div class="thumb ph" aria-hidden="true"><span>Painted Five-Drawer Wood Dresser/Chest…</span></div>
+    <article class="card" data-id="1298036099183850" data-title="Dresser" data-priority="17.4" data-margin="3400" data-ask="3600" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">10</div>
+        <div class="thumb ph"><span>Painted Five-Drawer Wood Dresser/Chest…</span></div><div class="swingtag"><span class="tag-price">$36</span><span class="tag-margin">$34 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Dresser</h2>
@@ -765,9 +921,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$36 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$36</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$95</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$34</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$138</b><span class="span">$95–$138</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $34 cash, but 2h at $30/hr is $75 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$61</span></div><div class="yn"><span class="k">With your time</span><span class="v">$136 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$77</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$31/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$156</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -775,17 +932,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>This reads as a thrift-tier chest of drawers (30W x 18D x 46H fits a standard 5-drawer chest, not a wide triple dresser) that someone hand-painted with a hobbyist racing-stripe motif — fun novelty appeal for a kid&#x27;s/man-cave room but no evidence of period, maker, or fine joinery. &#x27;Solid wood&#x27; is the seller&#x27;s unverified claim; at this price point and generic description, some particleboard/veneer secondary construction is plausible. No dovetails, no maker marks, no era detail given, so this is valued as a generic painted case good, not a genuine antique or designer piece. Realistic restoration </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This reads as a thrift-tier chest of drawers (30W x 18D x 46H fits a standard 5-drawer chest, not a wide triple dresser) that someone hand-painted with a hobbyist racing-stripe motif — fun novelty appeal for a kid&#x27;s/man-cave room but no evidence of period, maker, or fine joinery. &#x27;Solid wood&#x27; is the seller&#x27;s unverified claim; at this price point and generic description, some particleboard/veneer secondary construction is plausible. No dovetails, no maker marks, no era detail given, so this is valued as a generic painted case good, not a genuine antique or designer piece. Realistic restoration…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1298036099183850">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="36"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -813,9 +970,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1539598741047412">
-      <div class="rank">11</div>
-      <div class="thumb ph" aria-hidden="true"><span>Small Painted Armoire/Linen Cupboard</span></div>
+    <article class="card" data-id="1539598741047412" data-title="DRESSER - Vintage Green and White Painted Armoire" data-priority="17.1" data-margin="18000" data-ask="2000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">11</div>
+        <div class="thumb ph"><span>Small Painted Armoire/Linen Cupboard</span></div><div class="swingtag"><span class="tag-price">$20</span><span class="tag-margin">$180 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>DRESSER - Vintage Green and White Painted Armoire</h2>
@@ -824,27 +983,28 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip warn"><span class="ico">∼</span>Slow mover</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$20 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$20</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$300</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$180</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$435</b><span class="span">$300–$435</span><span class="posture">ceiling test</span></div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$120</span></div><div class="yn"><span class="k">With your time</span><span class="v">$240 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$315</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$79/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$276</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:16.5%"></i></div><b>16</b></div>
+          <div class="meter"><label>Priority</label><div class="bar"><i style="width:17.1%"></i></div><b>17</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:15.0%"></i></div><b>15</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>At $20 cash, even a modest solid-wood painted cupboard is a strong margin if the seller&#x27;s claims hold up. No maker marks or joinery details are given, so this is priced as an unbranded vintage/cottage piece rather than a documented antique — construction (dovetails vs. nails, solid panels vs. plywood backs) cannot be confirmed without photos, hence confidence is capped low. Realistic restoration is light: reglue/wax drawer runners, adjust door alignment, spot-touch or refresh the chippy paint (a look many buyers want preserved, not stripped), and possibly swap or polish the metal pulls — rough</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>At $20 cash, even a modest solid-wood painted cupboard is a strong margin if the seller&#x27;s claims hold up. No maker marks or joinery details are given, so this is priced as an unbranded vintage/cottage piece rather than a documented antique — construction (dovetails vs. nails, solid panels vs. plywood backs) cannot be confirmed without photos, hence confidence is capped low. Realistic restoration is light: reglue/wax drawer runners, adjust door alignment, spot-touch or refresh the chippy paint (a look many buyers want preserved, not stripped), and possibly swap or polish the metal pulls —…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1539598741047412">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="20"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -872,9 +1032,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="2262069701213212">
-      <div class="rank">12</div>
-      <div class="thumb ph" aria-hidden="true"><span>Unbranded Long Low Bedroom Dresser</span></div>
+    <article class="card" data-id="2262069701213212" data-title="solid wood dresser" data-priority="16.5" data-margin="1000" data-ask="10000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">12</div>
+        <div class="thumb ph"><span>Unbranded Long Low Bedroom Dresser</span></div><div class="swingtag"><span class="tag-price">$100</span><span class="tag-margin">$10 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>solid wood dresser</h2>
@@ -883,9 +1045,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$100 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$200</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$10</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$290</b><span class="span">$200–$290</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $10 cash, but 10h at $30/hr is $300 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$190</span></div><div class="yn"><span class="k">With your time</span><span class="v">$490 · 10h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$100</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$10/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$564</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -893,17 +1056,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker mark, no joinery detail, and no condition notes make this listing essentially unverifiable - seller&#x27;s &#x27;solid wood&#x27; claim in a title is a common overstatement and cannot be confirmed (could be solid-front/veneer-side hybrid construction typical of the era, or lower-grade case goods). The 62in-long, low 30in-tall proportions suggest a generic long dresser rather than a documented design or branded maker (no maker mark cited), so treat as a look-alike/generic piece rather than a verified quality antique. At $100 asking with no red flags but no green flags either, as-is value i</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker mark, no joinery detail, and no condition notes make this listing essentially unverifiable - seller&#x27;s &#x27;solid wood&#x27; claim in a title is a common overstatement and cannot be confirmed (could be solid-front/veneer-side hybrid construction typical of the era, or lower-grade case goods). The 62in-long, low 30in-tall proportions suggest a generic long dresser rather than a documented design or branded maker (no maker mark cited), so treat as a look-alike/generic piece rather than a verified quality antique. At $100 asking with no red flags but no green flags either, as-is value…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="2262069701213212">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="100"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -931,9 +1094,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1043485054820806">
-      <div class="rank">13</div>
-      <div class="thumb ph" aria-hidden="true"><span>3-Piece Upholstered Living Room Set</span></div>
+    <article class="card" data-id="1043485054820806" data-title="Sofa,loveseat, &amp; chair." data-priority="16.2" data-margin="-10000" data-ask="45000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">13</div>
+        <div class="thumb ph"><span>3-Piece Upholstered Living Room Set</span></div><div class="swingtag neg"><span class="tag-price">$450</span><span class="tag-margin">−$100 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Sofa,loveseat, &amp; chair.</h2>
@@ -942,9 +1107,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$450 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$450</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$550</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-100</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$100</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $650 in it and it&#x27;s only worth about $550 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$650</span></div><div class="yn"><span class="k">With your time</span><span class="v">$830 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$148</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$25/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$954</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -952,17 +1118,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>This is a 3-piece upholstered set, not casegoods, so dovetail/mortise-and-tenon joinery assessment doesn&#x27;t apply — frame construction for this category is typically stapled/screwed hardwood or engineered wood, invisible under upholstery and impossible to verify from text alone. &#x27;Wood trim&#x27; suggests exposed accent legs/arms rather than a solid-wood-frame heirloom piece; no maker mark, brand, or provenance is given, pointing to a generic mass-market set rather than a designer or vintage find. Without photos, era is a guess based on absence of any vintage/antique language — most likely a 2000s-20</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is a 3-piece upholstered set, not casegoods, so dovetail/mortise-and-tenon joinery assessment doesn&#x27;t apply — frame construction for this category is typically stapled/screwed hardwood or engineered wood, invisible under upholstery and impossible to verify from text alone. &#x27;Wood trim&#x27; suggests exposed accent legs/arms rather than a solid-wood-frame heirloom piece; no maker mark, brand, or provenance is given, pointing to a generic mass-market set rather than a designer or vintage find. Without photos, era is a guess based on absence of any vintage/antique language — most likely a…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1043485054820806">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="450"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -990,9 +1156,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1538385981061764">
-      <div class="rank">14</div>
-      <div class="thumb ph" aria-hidden="true"><span>Matching Wood Dresser And Nightstand Set</span></div>
+    <article class="card" data-id="1538385981061764" data-title="Dresser &amp; night stand" data-priority="16.2" data-margin="-500" data-ask="7500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">14</div>
+        <div class="thumb ph"><span>Matching Wood Dresser And Nightstand Set</span></div><div class="swingtag neg"><span class="tag-price">$75</span><span class="tag-margin">−$5 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Dresser &amp; night stand</h2>
@@ -1001,9 +1169,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$75 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$75</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$250</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-5</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$5</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $255 in it and it&#x27;s only worth about $250 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$255</span></div><div class="yn"><span class="k">With your time</span><span class="v">$555 · 10h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$108</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$11/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$638</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1011,17 +1180,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos means construction (solid wood vs veneer vs particleboard) and joinery (dovetails vs stapled/dowelled) can&#x27;t be verified, so confidence is capped low per instructions. The listing is generic and unbranded with no maker marks, no wood species named, and dimensions typical of a mass-produced mid-to-late 20th century American bedroom suite rather than a documented period antique - most likely a look-alike/utility piece rather than a high-value antique. At $75 for a matching two-piece set the as-is value is roughly in line with asking (typical local market rate for unbranded, unverified </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos means construction (solid wood vs veneer vs particleboard) and joinery (dovetails vs stapled/dowelled) can&#x27;t be verified, so confidence is capped low per instructions. The listing is generic and unbranded with no maker marks, no wood species named, and dimensions typical of a mass-produced mid-to-late 20th century American bedroom suite rather than a documented period antique - most likely a look-alike/utility piece rather than a high-value antique. At $75 for a matching two-piece set the as-is value is roughly in line with asking (typical local market rate for unbranded, unverified…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1538385981061764">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="75"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1049,9 +1218,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1747310869953366">
-      <div class="rank">15</div>
-      <div class="thumb ph" aria-hidden="true"><span>Black-Painted Six-Drawer Double Dresser</span></div>
+    <article class="card" data-id="1747310869953366" data-title="Black Dresser" data-priority="16.2" data-margin="-13000" data-ask="20000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">15</div>
+        <div class="thumb ph"><span>Black-Painted Six-Drawer Double Dresser</span></div><div class="swingtag neg"><span class="tag-price">$200</span><span class="tag-margin">−$130 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Black Dresser</h2>
@@ -1060,27 +1231,28 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$200 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$200</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$220</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-130</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$130</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $350 in it and it&#x27;s only worth about $220 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$350</span></div><div class="yn"><span class="k">With your time</span><span class="v">$530 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$-31</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$-5/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$610</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $350 in it and it&#x27;s only worth about $220 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$350</span></div><div class="yn"><span class="k">With your time</span><span class="v">$530 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$31</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$5/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$610</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:16.2%"></i></div><b>16</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>Listing provides only dimensions and a generic title with no photos, wood species, joinery, hardware, or maker marks — far too little to distinguish solid-wood/dovetailed construction from veneer-over-plywood or particleboard hidden under black paint, which is common in mass-market pieces of this exact size. Standard double-dresser proportions are consistent with anything from 1950s to modern IKEA-tier furniture, so no era can be pinned down. Assuming typical odds (most unmarked black dressers at this price point are mid-grade veneer/particleboard rather than solid hardwood with dovetails), re</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>Listing provides only dimensions and a generic title with no photos, wood species, joinery, hardware, or maker marks — far too little to distinguish solid-wood/dovetailed construction from veneer-over-plywood or particleboard hidden under black paint, which is common in mass-market pieces of this exact size. Standard double-dresser proportions are consistent with anything from 1950s to modern IKEA-tier furniture, so no era can be pinned down. Assuming typical odds (most unmarked black dressers at this price point are mid-grade veneer/particleboard rather than solid hardwood with dovetails)…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1747310869953366">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="200"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1108,9 +1280,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="969553609454287">
-      <div class="rank">16</div>
-      <div class="thumb ph" aria-hidden="true"><span>Unbranded Bedroom Dresser</span></div>
+    <article class="card" data-id="969553609454287" data-title="Bedroom dresser excellent" data-priority="16.2" data-margin="-14000" data-ask="40000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">16</div>
+        <div class="thumb ph"><span>Unbranded Bedroom Dresser</span></div><div class="swingtag neg"><span class="tag-price">$400</span><span class="tag-margin">−$140 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Bedroom dresser excellent</h2>
@@ -1119,9 +1293,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$400 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$400</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$320</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-140</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$140</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $460 in it and it&#x27;s only worth about $320 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$460</span></div><div class="yn"><span class="k">With your time</span><span class="v">$550 · 3h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$4</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$1/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$632</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1129,17 +1304,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker marks, no joinery details, and a generic &#x27;excellent/heavy/solid wood&#x27; seller description that could describe anything from a genuine mid-century solid cherry piece to a veneered reproduction — this is a common pattern in local marketplace listings that overstate quality/materials. Modest dimensions suggest a standard low dresser rather than a rare or large case piece, capping upside even if solid wood is confirmed in person. Absent verification, realistic as-is value is ~$200 and a light-restoration ceiling (~$60, 3 hrs for cleaning, hardware polish, minor touch-up) lands r</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks, no joinery details, and a generic &#x27;excellent/heavy/solid wood&#x27; seller description that could describe anything from a genuine mid-century solid cherry piece to a veneered reproduction — this is a common pattern in local marketplace listings that overstate quality/materials. Modest dimensions suggest a standard low dresser rather than a rare or large case piece, capping upside even if solid wood is confirmed in person. Absent verification, realistic as-is value is ~$200 and a light-restoration ceiling (~$60, 3 hrs for cleaning, hardware polish, minor touch-up) lands…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="969553609454287">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="400"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1167,9 +1342,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1831513537810902">
-      <div class="rank">17</div>
-      <div class="thumb ph" aria-hidden="true"><span>Small Cabinet/Credenza</span></div>
+    <article class="card" data-id="1831513537810902" data-title="Credenza / Bookshelf / Cabinet" data-priority="14.5" data-margin="-10500" data-ask="19500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">17</div>
+        <div class="thumb ph"><span>Small Cabinet/Credenza</span></div><div class="swingtag neg"><span class="tag-price">$195</span><span class="tag-was">$250</span><span class="tag-margin">−$105 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Credenza / Bookshelf / Cabinet</h2>
@@ -1178,27 +1355,28 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$195 <span class="was">$250</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$195</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$130</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-105</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$105</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $235 in it and it&#x27;s only worth about $130 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$235</span></div><div class="yn"><span class="k">With your time</span><span class="v">$310 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$-46</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$-19/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$356</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $235 in it and it&#x27;s only worth about $130 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$235</span></div><div class="yn"><span class="k">With your time</span><span class="v">$310 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$46</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$19/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$356</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:14.5%"></i></div><b>14</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:55.0%"></i></div><b>55</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker mark, no material claims, and no joinery details means construction and authenticity cannot be assessed — confidence is capped low per instructions. The dimensions (31Wx15Dx35H) don&#x27;t match typical vintage credenza proportions, suggesting this is more likely a modern mass-produced cabinet (veneer/laminate over particleboard) than a genuine restorable hardwood piece, which caps realistic upside. Even generously assuming presentable condition, regional resale for an unbranded small cabinet like this typically lands $100-150 restored, well under the $195 ask. Restoration would</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker mark, no material claims, and no joinery details means construction and authenticity cannot be assessed — confidence is capped low per instructions. The dimensions (31Wx15Dx35H) don&#x27;t match typical vintage credenza proportions, suggesting this is more likely a modern mass-produced cabinet (veneer/laminate over particleboard) than a genuine restorable hardwood piece, which caps realistic upside. Even generously assuming presentable condition, regional resale for an unbranded small cabinet like this typically lands $100-150 restored, well under the $195 ask. Restoration…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1831513537810902">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="195"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1226,9 +1404,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="2105305880334082">
-      <div class="rank">18</div>
-      <div class="thumb ph" aria-hidden="true"><span>3-Piece Queen Bedroom Set</span></div>
+    <article class="card" data-id="2105305880334082" data-title="Solid Oak Queen Bedroom Set" data-priority="14.3" data-margin="5000" data-ask="50000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">18</div>
+        <div class="thumb ph"><span>3-Piece Queen Bedroom Set</span></div><div class="swingtag"><span class="tag-price">$500</span><span class="tag-margin">$50 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Solid Oak Queen Bedroom Set</h2>
@@ -1237,9 +1417,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$500 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$500</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$750</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$50</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$1,088</b><span class="span">$750–$1,088</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $50 cash, but 10h at $30/hr is $300 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$700</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,000 · 10h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$388</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$39/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,150</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1247,17 +1428,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos means construction, joinery, and true condition are unverifiable — confidence capped low. Listing tone and lack of any maker/antique cues (no dovetails, no mortise-and-tenon, no maker mark, no specific era claimed) point to a common mass-market &#x27;oak&#x27; bedroom set, which in this segment is very often oak veneer over engineered wood cores with solid oak used only for legs/rails/trim, not a genuine solid-oak antique. Seller&#x27;s &#x27;comparable sets are a few thousand&#x27; framing is aspirational retail-new pricing, not a realistic used-market comp, and should be discounted heavily — regional resal</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos means construction, joinery, and true condition are unverifiable — confidence capped low. Listing tone and lack of any maker/antique cues (no dovetails, no mortise-and-tenon, no maker mark, no specific era claimed) point to a common mass-market &#x27;oak&#x27; bedroom set, which in this segment is very often oak veneer over engineered wood cores with solid oak used only for legs/rails/trim, not a genuine solid-oak antique. Seller&#x27;s &#x27;comparable sets are a few thousand&#x27; framing is aspirational retail-new pricing, not a realistic used-market comp, and should be discounted heavily — regional…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="2105305880334082">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="500"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1285,9 +1466,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1407296814592313">
-      <div class="rank">19</div>
-      <div class="thumb ph" aria-hidden="true"><span>Modern Mass-Market Reclining Sofa And…</span></div>
+    <article class="card" data-id="1407296814592313" data-title="Couch and loveseat" data-priority="13.8" data-margin="-115000" data-ask="180000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">19</div>
+        <div class="thumb ph"><span>Modern Mass-Market Reclining Sofa And…</span></div><div class="swingtag neg"><span class="tag-price">$1,800</span><span class="tag-margin">−$1,150 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Couch and loveseat</h2>
@@ -1296,27 +1479,28 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$1,800 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$1,800</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$750</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-1,150</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$1,150</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1900 in it and it&#x27;s only worth about $750 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,900</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,975 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$-812</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$-325/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$2,271</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1900 in it and it&#x27;s only worth about $750 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,900</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,975 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$812</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$325/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$2,271</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:13.8%"></i></div><b>14</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No maker, materials, or photos given, and reclining upholstered sets are mass-produced with no meaningful joinery or maker-mark value to verify — this is a generic used-furniture appraisal, not an antique/fine-furniture one, so confidence is set below the 0.35 cap. Used reclining sofa+loveseat pairs (non-designer) typically resell locally for $400-900 depending on fabric/leather and working mechanisms; &#x27;restoration&#x27; here means cleaning, minor mechanism lubrication/repair, and possibly spot upholstery fixes rather than cabinetmaking work. At $1800 asking, the piece is priced roughly 2-4x realis</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No maker, materials, or photos given, and reclining upholstered sets are mass-produced with no meaningful joinery or maker-mark value to verify — this is a generic used-furniture appraisal, not an antique/fine-furniture one, so confidence is set below the 0.35 cap. Used reclining sofa+loveseat pairs (non-designer) typically resell locally for $400-900 depending on fabric/leather and working mechanisms; &#x27;restoration&#x27; here means cleaning, minor mechanism lubrication/repair, and possibly spot upholstery fixes rather than cabinetmaking work. At $1800 asking, the piece is priced roughly 2-4x…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1407296814592313">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="1800"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1344,9 +1528,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1768375487938678">
-      <div class="rank">20</div>
-      <div class="thumb ph" aria-hidden="true"><span>Modern Flat-Pack Media Console / Tv Stand…</span></div>
+    <article class="card" data-id="1768375487938678" data-title="63” TV Stand with Built-in Power Outlets | Excellent Condition" data-priority="13.8" data-margin="-300" data-ask="6000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">20</div>
+        <div class="thumb ph"><span>Modern Flat-Pack Media Console / Tv Stand…</span></div><div class="swingtag neg"><span class="tag-price">$60</span><span class="tag-margin">−$3 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>63” TV Stand with Built-in Power Outlets | Excellent Condition</h2>
@@ -1355,9 +1541,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$60 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$60</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$65</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-3</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$3</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $68 in it and it&#x27;s only worth about $65 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$68</span></div><div class="yn"><span class="k">With your time</span><span class="v">$90 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$4</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$5/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$104</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1365,17 +1552,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>Text-only listing with no images, so construction/condition cannot be verified — confidence capped low. This reads as a generic imported flat-pack TV console (particleboard/MDF with laminate finish, metal legs, built-in power strip) rather than a genuine wood piece with joinery or maker marks; there is no antique or solid-wood upside, and &#x27;restoration&#x27; here means only cleaning, tightening hardware, and testing the electrical outlets for safety, not refinishing or repair of real wood/veneer. Comparable used flat-pack TV stands with power outlets typically resell locally for $50-80 depending on </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>Text-only listing with no images, so construction/condition cannot be verified — confidence capped low. This reads as a generic imported flat-pack TV console (particleboard/MDF with laminate finish, metal legs, built-in power strip) rather than a genuine wood piece with joinery or maker marks; there is no antique or solid-wood upside, and &#x27;restoration&#x27; here means only cleaning, tightening hardware, and testing the electrical outlets for safety, not refinishing or repair of real wood/veneer. Comparable used flat-pack TV stands with power outlets typically resell locally for $50-80 depending on…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1768375487938678">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="60"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1403,9 +1590,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1004805828845064">
-      <div class="rank">21</div>
-      <div class="thumb ph" aria-hidden="true"><span>Unidentified Furniture Piece</span></div>
+    <article class="card" data-id="1004805828845064" data-title="Free furniture" data-priority="13.5" data-margin="2900" data-ask="100" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">21</div>
+        <div class="thumb ph"><span>Unidentified Furniture Piece</span></div><div class="swingtag"><span class="tag-price">$1</span><span class="tag-was">$1,234</span><span class="tag-margin">$29 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Free furniture</h2>
@@ -1414,9 +1603,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$1 <span class="was">$1,234</span></span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$1</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$80</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$29</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$116</b><span class="span">$80–$116</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $29 cash, but 4h at $30/hr is $120 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$51</span></div><div class="yn"><span class="k">With your time</span><span class="v">$171 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$65</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$16/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$197</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1424,17 +1614,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:55.0%"></i></div><b>55</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>The listing contains no identifying details whatsoever - not even furniture category (chair, dresser, table, etc.), let alone construction, joinery, maker marks, or era. At a $1/free asking price the downside is capped, but so is any basis for judgment: &#x27;free furniture, come get it&#x27; Craigslist-style posts skew heavily toward low-value particleboard/veneer pieces being cleared out, with only a small chance of a genuine solid-wood find worth restoring. Estimates above are generic placeholders for an unknown low-to-mid-tier secondhand piece, not a real appraisal. Confidence is set near the floor </p></details>
+        <details class="why"><summary>Why this valuation</summary><p>The listing contains no identifying details whatsoever - not even furniture category (chair, dresser, table, etc.), let alone construction, joinery, maker marks, or era. At a $1/free asking price the downside is capped, but so is any basis for judgment: &#x27;free furniture, come get it&#x27; Craigslist-style posts skew heavily toward low-value particleboard/veneer pieces being cleared out, with only a small chance of a genuine solid-wood find worth restoring. Estimates above are generic placeholders for an unknown low-to-mid-tier secondhand piece, not a real appraisal. Confidence is set near the floor…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1004805828845064">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="1"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1462,9 +1652,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1745001666717512">
-      <div class="rank">22</div>
-      <div class="thumb ph" aria-hidden="true"><span>Depression-Era Double-Pedestal…</span></div>
+    <article class="card" data-id="1745001666717512" data-title="Vanity Old" data-priority="11.8" data-margin="2500" data-ask="10000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">22</div>
+        <div class="thumb ph"><span>Depression-Era Double-Pedestal…</span></div><div class="swingtag"><span class="tag-price">$100</span><span class="tag-margin">$25 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Vanity Old</h2>
@@ -1473,9 +1665,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$100 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$275</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$25</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$399</b><span class="span">$275–$399</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $25 cash, but 16h at $30/hr is $480 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$250</span></div><div class="yn"><span class="k">With your time</span><span class="v">$730 · 16h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$149</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$9/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$840</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1483,17 +1676,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>This reads as a genuine period waterfall-style vanity rather than a reproduction — the construction description (heavy, two full pedestals, trifold mirror, functioning joinery after a century) is consistent with 1920s-30s factory case goods, which commonly used solid wood frames/drawer boxes with figured veneer panels; particleboard didn&#x27;t enter mass furniture production until decades later, so the weight claim is a good (if unverifiable) signal against it. No maker mark is mentioned, which is typical — most of this era&#x27;s mid-market bedroom suites were unbranded or branded with paper labels lo</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This reads as a genuine period waterfall-style vanity rather than a reproduction — the construction description (heavy, two full pedestals, trifold mirror, functioning joinery after a century) is consistent with 1920s-30s factory case goods, which commonly used solid wood frames/drawer boxes with figured veneer panels; particleboard didn&#x27;t enter mass furniture production until decades later, so the weight claim is a good (if unverifiable) signal against it. No maker mark is mentioned, which is typical — most of this era&#x27;s mid-market bedroom suites were unbranded or branded with paper labels…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1745001666717512">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="100"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1521,9 +1714,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1329984805955947">
-      <div class="rank">23</div>
-      <div class="thumb ph" aria-hidden="true"><span>Unidentified &quot;Antique&quot; Wood Dresser With…</span></div>
+    <article class="card" data-id="1329984805955947" data-title="Wood dresser" data-priority="11.7" data-margin="1900" data-ask="100" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">23</div>
+        <div class="thumb ph"><span>Unidentified &quot;Antique&quot; Wood Dresser With…</span></div><div class="swingtag"><span class="tag-price">$1</span><span class="tag-margin">$19 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Wood dresser</h2>
@@ -1532,9 +1727,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$1 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$1</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$200</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$19</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$290</b><span class="span">$200–$290</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $19 cash, but 9h at $30/hr is $270 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$181</span></div><div class="yn"><span class="k">With your time</span><span class="v">$451 · 9h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$109</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$12/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$519</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1542,17 +1738,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>No photos, no maker marks, no joinery details, no dimensions, and no era stated - only seller puffery (&quot;gorgeous,&quot; &quot;nearly perfect&quot;). At $1 asking, acquisition risk is minimal, but this class of listing (rural KY, mirror-back dresser, no details) most often turns out to be a common oak/walnut veneer piece worth modest money after refinishing (mirror re-silvering, drawer glide repair, veneer touch-up, hardware), not a high-value genuine antique. Restoration cost realistically eats most of the resale upside, leaving thin but positive margin. Recommend a lowball offer near asking ($1-$25) conting</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks, no joinery details, no dimensions, and no era stated - only seller puffery (&quot;gorgeous,&quot; &quot;nearly perfect&quot;). At $1 asking, acquisition risk is minimal, but this class of listing (rural KY, mirror-back dresser, no details) most often turns out to be a common oak/walnut veneer piece worth modest money after refinishing (mirror re-silvering, drawer glide repair, veneer touch-up, hardware), not a high-value genuine antique. Restoration cost realistically eats most of the resale upside, leaving thin but positive margin. Recommend a lowball offer near asking ($1-$25)…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1329984805955947">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="1"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1580,9 +1776,11 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1111420097939591">
-      <div class="rank">24</div>
-      <div class="thumb ph" aria-hidden="true"><span>Small Oak-Finish Cabinet/Jewelry Armoire…</span></div>
+    <article class="card" data-id="1111420097939591" data-title="Amour" data-priority="11.5" data-margin="2500" data-ask="500" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="0" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">24</div>
+        <div class="thumb ph"><span>Small Oak-Finish Cabinet/Jewelry Armoire…</span></div><div class="swingtag"><span class="tag-price">$5</span><span class="tag-margin">$25 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Amour</h2>
@@ -1591,9 +1789,10 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
         <div class="chips"><span class="chip warn"><span class="ico">∼</span>Slow mover</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$5 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$5</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$55</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$25</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
         <div class="resale">Sell target <b>$80</b><span class="span">$55–$80</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $25 cash, but 1h at $30/hr is $30 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$30</span></div><div class="yn"><span class="k">With your time</span><span class="v">$60 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$50</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$50/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$69</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
@@ -1601,17 +1800,17 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:15.0%"></i></div><b>15</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>Listing gives almost nothing to verify: no dimensions, no photos, no maker mark, and a generic title (&#x27;Amour&#x27;) that suggests mass-produced import furniture rather than a notable maker or genuine antique. &#x27;Oak&#x27; is a self-report and can&#x27;t be confirmed as solid wood versus veneer over composite, which is common in this price/description tier. The single stated defect (missing door hinge) is a cheap, fast fix (replacement hinge + hardware, minor cleaning/touch-up), so realistic restoration cost stays low. Absent any evidence of dovetail or mortise-and-tenon joinery or a maker&#x27;s mark, this should b</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>Listing gives almost nothing to verify: no dimensions, no photos, no maker mark, and a generic title (&#x27;Amour&#x27;) that suggests mass-produced import furniture rather than a notable maker or genuine antique. &#x27;Oak&#x27; is a self-report and can&#x27;t be confirmed as solid wood versus veneer over composite, which is common in this price/description tier. The single stated defect (missing door hinge) is a cheap, fast fix (replacement hinge + hardware, minor cleaning/touch-up), so realistic restoration cost stays low. Absent any evidence of dovetail or mortise-and-tenon joinery or a maker&#x27;s mark, this should…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1111420097939591">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="5"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1639,38 +1838,41 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 
-    <article class="card" data-id="1004715078837966">
-      <div class="rank">25</div>
-      <div class="thumb ph" aria-hidden="true"><span>Three-Piece Oak-Finish Entertainment…</span></div>
+    <article class="card" data-id="1004715078837966" data-title="Large Oak Entertainment Center with Glass Display Cabinets" data-priority="8.9" data-margin="-16000" data-ask="50000" data-fresh="0.86" data-killer="0" data-flag="0" data-oor="1" data-photos='[]'>
+      <div class="hero">
+        <div class="rank">25</div>
+        <div class="thumb ph"><span>Three-Piece Oak-Finish Entertainment…</span></div><div class="swingtag neg"><span class="tag-price">$500</span><span class="tag-margin">−$160 margin</span></div>
+      </div>
       <div class="body">
         <div class="head">
           <h2>Large Oak Entertainment Center with Glass Display Cabinets</h2>
           <div class="loc">Williamstown, KY</div>
         </div>
-        <div class="chips"><span class="chip warn"><span class="ico">∼</span>Slow mover</span><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
+        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">∼</span>Slow mover</span><span class="chip warn"><span class="ico">⤢</span>Out of radius</span></div>
         
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$500 </span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">$500</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$400</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$-160</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$160</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v ">today</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $560 in it and it&#x27;s only worth about $400 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$560</span></div><div class="yn"><span class="k">With your time</span><span class="v">$620 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$-120</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$-60/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$713</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $560 in it and it&#x27;s only worth about $400 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$560</span></div><div class="yn"><span class="k">With your time</span><span class="v">$620 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$120</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$60/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$713</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:7.3%"></i></div><b>7</b></div>
+          <div class="meter"><label>Priority</label><div class="bar"><i style="width:8.9%"></i></div><b>9</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:15.0%"></i></div><b>15</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
+          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>This is almost certainly a mass-produced 1990s/early-2000s &#x27;oak entertainment center&#x27; (Bassett/Broyhill/Riverside/Sumter-tier manufacturing), not a period antique — no maker mark given, and the construction described (fluted pilasters, crown molding, leaded-glass curio doors, cam/screw case construction typical of the category) points to oak veneer over MDF/particleboard with solid wood limited to frames and trim, not dovetailed or mortise-and-tenon joinery. This category has structurally weak resale economics regardless of condition: flatscreen wall-mounting has collapsed demand for large con</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is almost certainly a mass-produced 1990s/early-2000s &#x27;oak entertainment center&#x27; (Bassett/Broyhill/Riverside/Sumter-tier manufacturing), not a period antique — no maker mark given, and the construction described (fluted pilasters, crown molding, leaded-glass curio doors, cam/screw case construction typical of the category) points to oak veneer over MDF/particleboard with solid wood limited to frames and trim, not dovetailed or mortise-and-tenon joinery. This category has structurally weak resale economics regardless of condition: flatscreen wall-mounting has collapsed demand for large…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1004715078837966">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="500"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -1698,37 +1900,158 @@ dialog menu button:first-child{background:var(--brass);border-color:var(--brass)
       </div>
     </article>
 </main>
-<p class="foot">91 scraped -&gt; 91 after dedup -&gt; 0 new + 0 price-drops (91 already-seen, skipped) -&gt; 1 appraised (0 strong + 0 wildcards + 1 backfilled; 0 junked, 0 over cap)<br>Valued by claude-code. Photos and prices as scraped; verify before buying.</p>
+<div class="empty" id="empty" hidden>
+  <p class="empty-head">Nothing on the floor yet.</p>
+  <p class="empty-sub" id="empty-sub">The next scheduled scrape runs each morning — or tap
+    “Scrape now” above.</p>
+</div>
+<dialog id="lightbox">
+  <button id="lb-close" aria-label="Close">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-nav">
+    <button id="lb-prev" aria-label="Previous photo">‹</button>
+    <span id="lb-count"></span>
+    <button id="lb-next" aria-label="Next photo">›</button>
+  </div>
+</dialog>
+<footer class="foot">
+  <p>Valued 12 this run, no stars today — patience pays.</p>
+  <details class="engineroom"><summary>Engine room</summary><p>0 scraped -&gt; 0 after dedup -&gt; 0 new + 0 price-drops (0 already-seen, skipped) -&gt; 12 appraised (0 strong + 0 wildcards + 12 backfilled; 0 junked, 0 over cap)</p></details>
+  <p>Valued by dry-run. Photos and prices as scraped; verify before buying.</p>
+</footer>
 <script>
-const grid=document.getElementById('grid');
-const cards=[...grid.children];
-const btns=['f-all','f-radius','f-clean','f-star'];
-function apply(mode){
-  btns.forEach(x=>document.getElementById(x).setAttribute('aria-pressed',String(x===mode)));
-  cards.forEach(c=>{
-    const oor=[...c.querySelectorAll('.chip.warn')].some(e=>e.textContent.includes('Out of radius'));
-    const fake=c.classList.contains('flagged');
-    const star=c.classList.contains('killer');
-    let show=true;
-    if(mode==='f-radius'&&oor)show=false;
-    if(mode==='f-clean'&&fake)show=false;
-    if(mode==='f-star'&&!star)show=false;
-    c.classList.toggle('hide',!show);
-  });
-}
-btns.forEach(id=>document.getElementById(id).addEventListener('click',()=>apply(id)));
-</script>
-<script>
-// ---- the write side -------------------------------------------------------------------
-// The page is static, so every action here is a direct call to GitHub's API with a token
-// you paste once. No server, no backend, nothing to pay for. Every failure path ends in a
-// sentence you can act on — a button that silently does nothing is the worst outcome.
-const CFG = {"repo": "DD-Builder/marketplace", "branch": "main", "boardWorkflow": "deal-board.yml", "negotiateWorkflow": "negotiate.yml", "piecesPath": "docs/pieces.json", "draftsDir": "docs/drafts"};
-const S = {
-  get token(){ return localStorage.getItem('bench_token') || ''; },
-  set token(v){ v ? localStorage.setItem('bench_token', v) : localStorage.removeItem('bench_token'); }
-};
+'use strict';
+/* The board's client side. Two halves:
+   1. Presentation: filters/sort/search over data-* attributes, relative timestamps,
+      status banner, photo fallbacks, the lightbox.
+   2. The write side: direct GitHub API calls with a token pasted once. No server.
+   Every failure path ends in a visible sentence — this is an iPad, tooltips don't exist. */
+
+const CFG = {"repo": "DD-Builder/marketplace", "branch": "main", "boardWorkflow": "deal-board.yml", "negotiateWorkflow": "negotiate.yml", "piecesPath": "docs/pieces.json", "draftsDir": ".drafts"};
 const $ = s => document.querySelector(s);
+const grid = document.getElementById('grid');
+const cards = [...grid.children];
+
+/* ---- status banner + relative time ---------------------------------------------------- */
+(function () {
+  const upd = $('#updated');
+  if (upd && upd.dataset.ts) {
+    const then = Date.parse(upd.dataset.ts);
+    if (!isNaN(then)) {
+      const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
+      const label = mins < 2 ? 'updated just now'
+        : mins < 90 ? 'updated ' + mins + ' min ago'
+        : mins < 36 * 60 ? 'updated ' + Math.round(mins / 60) + ' h ago'
+        : 'updated ' + Math.round(mins / 1440) + ' days ago';
+      upd.textContent = label;
+      upd.title = new Date(then).toLocaleString();
+    }
+  }
+  if (cards.length === 0) $('#empty').hidden = false;
+
+  // status.json is written by every run, including the ones that fail — so the page can
+  // say WHY it looks the way it does instead of silently going stale.
+  fetch('status.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(s => {
+    if (!s || s.state === 'ok') return;
+    const n = $('#notice');
+    const msgs = {
+      scan_blocked: 'The last scrape couldn’t reach Marketplace (usually the Apify '
+        + 'monthly limit). The board below is re-ranked from the catalogue — fresh '
+        + 'listings will appear once scraping resumes.',
+      appraisals_failed: 'The last run scraped fine but every AI valuation failed — '
+        + 'usually an expired CLAUDE_CODE_OAUTH_TOKEN. New finds are waiting unvalued.',
+      catalog_corrupt: 'The catalogue file is damaged and the run stopped to protect your '
+        + 'stored appraisals. See the Actions log.'
+    };
+    n.textContent = msgs[s.state] || ('Last run reported: ' + s.state);
+    n.className = 'notice' + (s.state === 'catalog_corrupt' ? ' bad' : '');
+    n.hidden = false;
+    if (cards.length === 0 && s.state === 'scan_blocked')
+      $('#empty-sub').textContent = 'Scraping is paused until the Apify month resets.';
+  }).catch(() => {});
+})();
+
+/* ---- photo fallback -------------------------------------------------------------------- */
+// A missing/expired image swaps to the text placeholder instead of an empty box.
+document.addEventListener('error', ev => {
+  const img = ev.target;
+  if (!(img instanceof HTMLImageElement) || !img.classList.contains('thumb')) return;
+  const ph = document.createElement('div');
+  ph.className = 'thumb ph';
+  const span = document.createElement('span');
+  span.textContent = img.dataset.ph || img.alt || 'no photo';
+  ph.appendChild(span);
+  img.replaceWith(ph);
+}, true);
+
+/* ---- filters (combinable), sort, search ------------------------------------------------ */
+const state = { radius: false, clean: false, star: false, q: '', sort: 'priority' };
+
+function applyView() {
+  let visible = 0;
+  cards.forEach(c => {
+    const d = c.dataset;
+    let show = true;
+    if (state.radius && d.oor === '1') show = false;
+    if (state.clean && d.flag === '1') show = false;
+    if (state.star && d.killer !== '1') show = false;
+    if (state.q && !(d.title || '').toLowerCase().includes(state.q)) show = false;
+    c.classList.toggle('hide', !show);
+    if (show) visible++;
+  });
+  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh' }[state.sort];
+  const dir = state.sort === 'ask' || state.sort === 'fresh' ? 1 : -1;
+  [...cards].sort((a, b) => dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0)))
+    .forEach(c => grid.appendChild(c));
+  $('#empty').hidden = visible > 0 || cards.length === 0;
+  if (visible === 0 && cards.length > 0)
+    $('#empty-sub').textContent = 'Nothing matches these filters.';
+}
+document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
+  const k = btn.dataset.filter;
+  state[k] = !state[k];
+  btn.setAttribute('aria-pressed', String(state[k]));
+  applyView();
+}));
+$('#sort').addEventListener('change', ev => { state.sort = ev.target.value; applyView(); });
+$('#search').addEventListener('input', ev => {
+  state.q = ev.target.value.trim().toLowerCase(); applyView();
+});
+
+/* ---- lightbox --------------------------------------------------------------------------- */
+const lb = { photos: [], i: 0 };
+function lbShow() {
+  $('#lb-img').src = lb.photos[lb.i];
+  $('#lb-count').textContent = (lb.i + 1) + ' / ' + lb.photos.length;
+  $('#lb-prev').disabled = lb.i === 0;
+  $('#lb-next').disabled = lb.i === lb.photos.length - 1;
+}
+function openLightbox(photos, alt) {
+  lb.photos = photos; lb.i = 0;
+  $('#lb-img').alt = alt || '';
+  lbShow();
+  const dlg = $('#lightbox');
+  if (typeof dlg.showModal === 'function') dlg.showModal();
+  else dlg.setAttribute('open', '');            // Safari < 15.4: non-modal but usable
+}
+document.addEventListener('click', ev => {
+  const hero = ev.target.closest('.hero');
+  if (!hero || ev.target.closest('.swingtag')) return;
+  const card = hero.closest('article');
+  let photos = [];
+  try { photos = JSON.parse(card.dataset.photos || '[]'); } catch (e) { photos = []; }
+  if (photos.length) openLightbox(photos, card.dataset.title);
+});
+$('#lb-close').addEventListener('click', () => $('#lightbox').close
+  ? $('#lightbox').close() : $('#lightbox').removeAttribute('open'));
+$('#lb-prev').addEventListener('click', () => { if (lb.i > 0) { lb.i--; lbShow(); } });
+$('#lb-next').addEventListener('click', () => { if (lb.i < lb.photos.length - 1) { lb.i++; lbShow(); } });
+
+/* ---- the write side --------------------------------------------------------------------- */
+const S = {
+  get token() { return localStorage.getItem('bench_token') || ''; },
+  set token(v) { v ? localStorage.setItem('bench_token', v) : localStorage.removeItem('bench_token'); }
+};
 const b64 = str => {
   const bytes = new TextEncoder().encode(str);
   let bin = '';
@@ -1739,19 +2062,19 @@ const b64 = str => {
 const unb64 = s => new TextDecoder().decode(
   Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
 
-function explain(status, body){
+function explain(status, body) {
   const msg = (body && body.message) || '';
   if (status === 401) return 'GitHub rejected the token. Paste a fresh one under Connection.';
   if (status === 403) return 'Token lacks permission. It needs Actions: read & write and '
     + 'Contents: read & write on this repo.';
-  if (status === 404) return 'Not found — usually the token isn\'t scoped to ' + CFG.repo
+  if (status === 404) return 'Not found — usually the token isn’t scoped to ' + CFG.repo
     + ', or the workflow file is missing on ' + CFG.branch + '.';
   if (status === 409 || status === 422) return 'GitHub refused the write (' + (msg || status)
     + '). Reload the page and try once more — someone else may have written first.';
   return 'GitHub returned ' + status + (msg ? ': ' + msg : '') + '.';
 }
 
-async function api(path, opts = {}){
+async function api(path, opts = {}) {
   if (!CFG.repo) throw new Error('This board was built without a repo, so the buttons '
     + 'have nothing to talk to. Re-run the pipeline from Actions.');
   if (!S.token) throw new Error('No token yet — tap Connection and paste one.');
@@ -1762,62 +2085,88 @@ async function api(path, opts = {}){
       'X-GitHub-Api-Version': '2022-11-28'
     }, opts.headers || {})
   }));
-  if (!res.ok){
+  if (!res.ok) {
     let body = null;
-    try { body = await res.json(); } catch (e) { /* GitHub sometimes returns no body */ }
-    throw new Error(explain(res.status, body));
+    try { body = await res.json(); } catch (e) { /* no body */ }
+    const err = new Error(explain(res.status, body));
+    err.status = res.status;
+    throw err;
   }
   return res.status === 204 ? null : res.json();
 }
 
-const say = (el, msg, kind) => { if (el){ el.textContent = msg; el.className = 'status ' + (kind || ''); } };
+const say = (el, msg, kind) => { if (el) { el.textContent = msg; el.className = 'status ' + (kind || ''); } };
 
-async function checkConnection(){
+async function checkConnection() {
   const el = $('#conn');
-  if (!CFG.repo){ el.textContent = 'read-only board'; el.className = 'conn'; return; }
-  if (!S.token){ el.textContent = 'not connected'; el.className = 'conn'; return; }
+  if (!CFG.repo) { el.textContent = 'read-only board'; el.className = 'conn'; return; }
+  if (!S.token) { el.textContent = 'not connected'; el.className = 'conn'; return; }
   try {
     await api('/repos/' + CFG.repo);
     el.textContent = 'connected'; el.className = 'conn ok';
   } catch (err) {
-    el.textContent = 'token problem'; el.className = 'conn bad';
-    el.title = err.message;
+    // The full sentence, visible. A title= tooltip does not exist on a touch screen.
+    el.textContent = err.message; el.className = 'conn bad';
   }
 }
 
-// ---- scrape now -----------------------------------------------------------------------
-$('#scrape-now').addEventListener('click', async () => {
+/* ---- scrape now ------------------------------------------------------------------------- */
+$('#scrape-now').addEventListener('click', async ev => {
+  const btn = ev.currentTarget;
   const el = $('#conn');
-  say(el, 'starting…');
+  if (btn.getAttribute('aria-busy') === 'true') return;
+  // This spends real Apify credit; a double-tap must not double-bill.
+  if (!window.confirm('Run a scrape now? This spends Apify credit.')) return;
+  btn.setAttribute('aria-busy', 'true');
+  el.textContent = 'starting…'; el.className = 'conn';
   try {
     await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.boardWorkflow + '/dispatches', {
       method: 'POST',
       body: JSON.stringify({ ref: CFG.branch, inputs: {} })
     });
-    el.textContent = 'scrape started — refresh in a few minutes';
+    el.textContent = 'scrape started — this page updates itself when the run commits '
+      + '(check back in ~10 minutes)';
     el.className = 'conn ok';
   } catch (err) { el.textContent = err.message; el.className = 'conn bad'; }
+  finally { setTimeout(() => btn.removeAttribute('aria-busy'), 8000); }
 });
 
-// ---- connection dialog ----------------------------------------------------------------
+/* ---- connection dialog ------------------------------------------------------------------ */
 $('#repo-name').textContent = CFG.repo || '(not configured)';
 $('#open-settings').addEventListener('click', () => {
   $('#token').value = S.token;
-  $('#settings').showModal();
+  const dlg = $('#settings');
+  if (typeof dlg.showModal === 'function') dlg.showModal();
+  else dlg.setAttribute('open', '');
 });
-$('#save-token').addEventListener('click', () => { S.token = $('#token').value.trim(); setTimeout(checkConnection, 0); });
-$('#forget-token').addEventListener('click', () => { S.token = ''; setTimeout(checkConnection, 0); });
+$('#save-token').addEventListener('click', () => {
+  S.token = $('#token').value.trim();
+  say($('#settings-status'), S.token ? 'Saved.' : 'Token cleared.', 'ok');
+  setTimeout(checkConnection, 0);
+});
+$('#forget-token').addEventListener('click', () => {
+  S.token = '';
+  say($('#settings-status'), 'Token forgotten.', 'ok');
+  setTimeout(checkConnection, 0);
+});
 
-// ---- log a piece ----------------------------------------------------------------------
-const cents = v => { const n = parseFloat(v); return isNaN(n) ? null : Math.round(n * 100); };
+/* ---- log a piece ------------------------------------------------------------------------- */
+// "1,200" must be $1,200 — parseFloat quietly read it as $1. "$120" must work too.
+// Returns null for empty, NaN for unreadable (caller shows an error instead of dropping it).
+const cents = v => {
+  const s = String(v == null ? '' : v).trim().replace(/[$,\s]/g, '');
+  if (!s) return null;
+  if (!/^\d+(\.\d{1,2})?$/.test(s)) return NaN;
+  return Math.round(parseFloat(s) * 100);
+};
 
-async function readJson(path){
+async function readJson(path) {
   try {
     const r = await api('/repos/' + CFG.repo + '/contents/' + path + '?ref=' + CFG.branch
       + '&nocache=' + Date.now());
     return { data: JSON.parse(unb64(r.content)), sha: r.sha };
   } catch (err) {
-    if (/Not found/.test(err.message)) return { data: null, sha: null };
+    if (err.status === 404) return { data: null, sha: null };
     throw err;
   }
 }
@@ -1825,15 +2174,26 @@ async function readJson(path){
 document.querySelectorAll('.logform').forEach(form => {
   form.addEventListener('submit', async ev => {
     ev.preventDefault();
+    const btn = form.querySelector('button[type=submit]');
+    if (btn.getAttribute('aria-busy') === 'true') return;
     const st = form.querySelector('.status');
     const id = form.dataset.id;
     const card = form.closest('article');
     const fd = new FormData(form);
     const paid = cents(fd.get('paid')), materials = cents(fd.get('materials'));
-    const hours = parseFloat(fd.get('hours')), sold = cents(fd.get('sold'));
-    if (paid === null && materials === null && isNaN(hours) && sold === null){
+    const hoursRaw = String(fd.get('hours') || '').trim();
+    const hours = hoursRaw ? parseFloat(hoursRaw) : NaN;
+    const sold = cents(fd.get('sold'));
+    for (const [label, v] of [['Paid', paid], ['Materials', materials], ['Sold for', sold]]) {
+      if (Number.isNaN(v)) {
+        say(st, label + ' isn’t a number I can read — digits only, like 120 or 1200.50.', 'bad');
+        return;
+      }
+    }
+    if (paid === null && materials === null && isNaN(hours) && sold === null) {
       say(st, 'Nothing to save — fill in at least one field.', 'bad'); return;
     }
+    btn.setAttribute('aria-busy', 'true');
     say(st, 'saving…');
     try {
       const cur = await readJson(CFG.piecesPath);
@@ -1841,12 +2201,12 @@ document.querySelectorAll('.logform').forEach(form => {
       const prev = ledger.pieces[id] || { listing_id: id };
       const entry = Object.assign({}, prev, {
         listing_id: id,
-        title: prev.title || (card ? card.querySelector('h2').textContent.trim() : '')
+        title: prev.title || (card ? card.dataset.title || '' : '')
       });
       if (paid !== null) entry.acquired_price_cents = paid;
       if (materials !== null) entry.materials_cents = materials;
       if (!isNaN(hours)) entry.labor_hours = hours;
-      if (sold !== null){
+      if (sold !== null) {
         entry.sold_price_cents = sold;
         entry.sold_at = entry.sold_at || new Date().toISOString();
       }
@@ -1858,11 +2218,12 @@ document.querySelectorAll('.logform').forEach(form => {
                 { method: 'PUT', body: JSON.stringify(body) });
       say(st, 'Saved. Your numbers update on the next run.', 'ok');
     } catch (err) { say(st, err.message, 'bad'); }
+    finally { btn.removeAttribute('aria-busy'); }
   });
 });
 
-// ---- negotiation ----------------------------------------------------------------------
-const POSTURES = [[25,'aggressive'],[50,'measured'],[75,'keen'],[100,'eager']];
+/* ---- negotiation -------------------------------------------------------------------------- */
+const POSTURES = [[25, 'aggressive'], [50, 'measured'], [75, 'keen'], [100, 'eager']];
 document.querySelectorAll('.negoform').forEach(form => {
   const slider = form.querySelector('input[name=posture]');
   const label = form.querySelector('.postval');
@@ -1871,15 +2232,18 @@ document.querySelectorAll('.negoform').forEach(form => {
 
   form.addEventListener('submit', async ev => {
     ev.preventDefault();
+    const btn = form.querySelector('button[type=submit]');
+    if (btn.getAttribute('aria-busy') === 'true') return;   // double-tap = double dispatch
     const st = form.querySelector('.status');
     const out = form.querySelector('.drafts');
     const id = form.dataset.id;
     const fd = new FormData(form);
     out.innerHTML = '';
+    btn.setAttribute('aria-busy', 'true');
     say(st, 'asking… this runs on GitHub and takes a minute or two.');
     try {
       const before = await readJson(CFG.draftsDir + '/' + id + '.json');
-      const stamp = before.data ? before.data.generated_at : null;
+      const stamp = (before.data && before.data.generated_at) || null;
       await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.negotiateWorkflow + '/dispatches', {
         method: 'POST',
         body: JSON.stringify({ ref: CFG.branch, inputs: {
@@ -1890,30 +2254,40 @@ document.querySelectorAll('.negoform').forEach(form => {
       });
       // Poll the committed file rather than the run, so a failure that still writes a
       // reason surfaces as that reason instead of a red X you have to go hunting for.
-      for (let i = 0; i < 60; i++){
+      // Compare stamps null-safely: every payload (errors included) now carries
+      // generated_at, and `undefined !== undefined` was false — a repeated error
+      // previously hung this loop for its full five minutes.
+      for (let i = 0; i < 60; i++) {
         await new Promise(r => setTimeout(r, 5000));
         const now = await readJson(CFG.draftsDir + '/' + id + '.json');
-        if (now.data && now.data.generated_at !== stamp){ renderDrafts(out, st, now.data); return; }
+        const nowStamp = (now.data && now.data.generated_at) || null;
+        if (now.data && nowStamp !== stamp) { renderDrafts(out, st, now.data); return; }
         say(st, 'still working… ' + ((i + 1) * 5) + 's');
       }
       say(st, 'Gave up waiting after five minutes. Check the Actions tab — the run may '
         + 'still be going, and the drafts will appear here when it finishes.', 'bad');
     } catch (err) { say(st, err.message, 'bad'); }
+    finally { btn.removeAttribute('aria-busy'); }
   });
 });
 
-function renderDrafts(out, st, data){
-  if (data.status !== 'ok'){
+function renderDrafts(out, st, data) {
+  if (data.status !== 'ok') {
     say(st, data.error || 'Drafting failed and gave no reason.', 'bad'); return;
   }
-  say(st, data.posture_label + ' · walk away above $'
-    + Math.round((data.walkaway_price_cents || 0) / 100), 'ok');
+  if (!Array.isArray(data.drafts)) {
+    say(st, 'The draft file came back in a shape this page doesn’t recognise.', 'bad');
+    return;
+  }
+  say(st, data.posture_label + (data.walkaway_price_cents
+    ? ' · walk away above $' + Math.round(data.walkaway_price_cents / 100)
+    : ' · no walk-away — the numbers say this piece isn’t worth buying'), 'ok');
   out.innerHTML = data.drafts.map(d => {
     const over = (d.over_walkaway_cents || []).length
       ? '<p class="reason">⚠ mentions $'
         + d.over_walkaway_cents.map(c => Math.round(c / 100)).join(', $')
         + ' — above your walk-away. Check before sending.</p>' : '';
-    const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
     return '<div class="draft"><p class="dtext">' + esc(d.text) + '</p>'
       + '<p class="basis">' + esc(d.rationale) + '</p>' + over
       + '<button type="button" class="copy">Copy</button></div>';
@@ -1927,6 +2301,7 @@ function renderDrafts(out, st, data){
 }
 
 checkConnection();
+
 </script>
 </body>
 </html>

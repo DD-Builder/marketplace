@@ -84,6 +84,12 @@ class CatalogEntry(BaseModel):
         raw: dict = {}
         if self.was_price_cents:
             raw["_was_price_cents"] = self.was_price_cents
+        photos = [RawPhoto(remote_url=u, position=i) for i, u in enumerate(self.photo_urls)]
+        if not photos and self.photo_rel:
+            # The CDN links expired, but a committed copy exists on disk. That satisfies
+            # "we can see this piece" for the pre-screen; the downloader skips non-http
+            # URLs and the appraiser is handed the local file directly.
+            photos = [RawPhoto(remote_url=f"local:{self.photo_rel}", position=0)]
         return RawListing(
             fb_listing_id=self.id,
             title=self.title,
@@ -91,7 +97,7 @@ class CatalogEntry(BaseModel):
             asking_price_cents=self.asking_price_cents,
             location_text=self.location_text,
             url=self.url,
-            photos=[RawPhoto(remote_url=u, position=i) for i, u in enumerate(self.photo_urls)],
+            photos=photos,
             raw_json=raw,
             detail_fetched=self.detail_fetched,
             posted_at=self.posted_at,

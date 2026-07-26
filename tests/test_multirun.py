@@ -283,3 +283,48 @@ def test_expired_photo_urls_heal_on_the_next_fresh_scan(tmp_path, monkeypatch):
     assert h.run() == 0
     assert h.catalog["listings"]["a"]["photo_rel"] == "photos/a.jpg"
     assert (tmp_path / "site" / "photos" / "a.jpg").exists()
+
+
+def test_committed_photos_feed_the_appraiser_even_when_the_scrape_is_blocked(
+    tmp_path, monkeypatch
+):
+    """The live repo holds photos for entries that were never appraised. Their CDN URLs
+    are long expired — but the files are on disk, so backfill must (a) prefer those
+    entries and (b) hand the local files to the appraiser instead of valuing blind."""
+    a = _detailed("a")
+    h = Harness(tmp_path, monkeypatch, days=[
+        {"index": [a]},
+        {"index": RuntimeError("HTTP 403: quota")},
+    ])
+    seen_images = {}
+    orig = h.provider.appraise
+
+    def spy(listing, vertical, *, image_paths=None):
+        seen_images[listing.fb_listing_id] = list(image_paths or [])
+        return orig(listing, vertical, image_paths=image_paths)
+
+    h.provider.appraise = spy
+
+    # Day 1 values 'a' normally. Now plant an UNappraised entry with a photo on disk —
+    # the exact state the live board shipped in.
+    assert h.run() == 0
+    import json as _json
+    cat = _json.loads((tmp_path / "catalog.json").read_text())
+    photos_dir = tmp_path / "site" / "photos"
+    photos_dir.mkdir(parents=True, exist_ok=True)
+    (photos_dir / "orphan.jpg").write_bytes(b"jpg")
+    cat["listings"]["orphan"] = dict(
+        cat["listings"]["a"],
+        id="orphan", appraisal=None, appraised_at=None, appraiser="",
+        photo_rel="photos/orphan.jpg", photo_urls=[], extra_photo_rels=[],
+    )
+    (tmp_path / "catalog.json").write_text(_json.dumps(cat))
+
+    # Day 2: quota blocked, CDN dead — yet the orphan is valued, with its local photo.
+    monkeypatch.setattr(run_board, "_download_photos", lambda listings, out_dir, **kw: {})
+    assert h.run() == 5
+    assert seen_images.get("orphan"), "orphan was valued blind or not at all"
+    assert str(seen_images["orphan"][0]).endswith("orphan.jpg")
+    cat2 = h.catalog["listings"]["orphan"]
+    assert cat2["appraisal"] is not None
+    assert cat2["appraised_with_photos"] is True

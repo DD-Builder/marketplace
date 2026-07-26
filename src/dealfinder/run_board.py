@@ -118,6 +118,10 @@ def _download_photos(
             break
         paths: list[Path] = []
         for i, photo in enumerate(listing.photos[:per_listing]):
+            if not photo.remote_url.startswith("http"):
+                # A local: sentinel from the catalogue — nothing to download, and it must
+                # not count against the circuit breaker. The on-disk supplement covers it.
+                continue
             dest = out_dir / f"{listing.fb_listing_id}_{i}.jpg"
             try:
                 req = urllib.request.Request(
@@ -440,7 +444,11 @@ def main(argv: list[str] | None = None) -> int:
     redo_listings = [
         catalog.listings[i].to_listing() for i in sorted(redo_ids) if i in catalog.listings
     ]
-    backfill = redo_listings + catalog_mod.unappraised_live(catalog)
+    pool = catalog_mod.unappraised_live(catalog)
+    # Entries with a photo already on disk first: they can be valued with vision TODAY,
+    # even on a day the scrape is quota-blocked, while the rest would be valued blind.
+    pool.sort(key=lambda l: catalog.listings[l.fb_listing_id].photo_rel is None)
+    backfill = redo_listings + pool
     valued = catalog_mod.already_valued(catalog, exclude=redo_ids)
     plan = plan_appraisals(
         listings, seen, vertical=vertical,
@@ -452,6 +460,18 @@ def main(argv: list[str] | None = None) -> int:
         {} if args.dry_run or args.no_photos
         else _download_photos(plan.to_appraise, out_dir / "_photos")
     )
+    if not (args.dry_run or args.no_photos):
+        # Photos already on disk from an earlier run serve the appraiser too. The CDN
+        # URLs for these expired within hours, but the pixels never went anywhere —
+        # without this, a piece whose photo we committed weeks ago was valued blind.
+        for lst in plan.to_appraise:
+            lid = lst.fb_listing_id
+            if lid not in photos:
+                on_disk = sorted((out_dir / "photos").glob(f"{lid}.*")) + sorted(
+                    (out_dir / "photos").glob(f"{lid}_[0-9].*")
+                )
+                if on_disk:
+                    photos[lid] = on_disk[:3]
 
     # 4. Appraise (or stub in dry-run) and rank.
     if args.dry_run:

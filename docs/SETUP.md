@@ -4,39 +4,45 @@ Everything runs on GitHub's free compute and publishes to a free GitHub Pages si
 Valuations run on **your Claude subscription**, not a metered API bill.
 
 Running total: **$0/month** for hosting and AI. The only spend is Apify scraping, which
-fits inside its free monthly credit at a twice-weekly cadence.
+fits inside its free monthly credit at the default caps below.
 
-You do this once. After that, running the app is: open GitHub → Actions → **Run workflow**.
+You do this once. After that, running the app is: open the board → tap **Scrape now**
+(or let the daily schedule do it).
 
 ---
 
 ## 1. Mint a Claude token (so valuations bill to your subscription)
 
-In a Claude Code session, run:
+`claude setup-token` is a **terminal command** (Claude Code CLI). No computer handy? Use
+GitHub Codespaces from the iPad: repo → **Code** → **Codespaces** → create one, then in
+its terminal:
 
 ```
+npm install -g @anthropic-ai/claude-code
 claude setup-token
 ```
 
-Follow the prompt to authorize. It prints a long-lived token starting with `sk-ant-oat...`.
-Copy it. This is what lets the pipeline value pieces on your subscription instead of
-pay-per-token API billing.
+Authorize in the browser tab it opens. It prints a long-lived token starting with
+`sk-ant-oat...`. Copy the **whole line** — no spaces, no quotes; a partial paste is the
+most common cause of every-appraisal-fails runs. Delete the codespace afterwards.
 
 > Treat it like a password. It goes straight into GitHub's encrypted secrets, never into
 > the repo.
 
 ## 2. Get an Apify token (the scraper)
 
-1. Sign in at [apify.com](https://apify.com) (the account you already made).
+1. Sign in at [apify.com](https://apify.com).
 2. **Settings → API & Integrations → Personal API tokens**.
 3. Create a token and copy it.
 
-Apify's free plan includes a monthly credit. With the caps below (≈150 listings per search,
-twice a week) a normal month stays inside it.
+Apify's free plan includes a monthly credit. The defaults below are sized to stay inside
+it — the very first version of this app shipped with `RESULTS_LIMIT=150` and burned a
+month's credit in two runs, which is why the default is now 60 and why you should raise
+it only after you've seen what a week actually costs you.
 
 ## 3. Put both tokens in GitHub
 
-In your repository: **Settings → Secrets and variables → Actions → Secrets → New repository secret**
+**Settings → Secrets and variables → Actions → Secrets → New repository secret**
 
 | Secret name | Value |
 | --- | --- |
@@ -45,37 +51,45 @@ In your repository: **Settings → Secrets and variables → Actions → Secrets
 
 ## 4. Tell it what to hunt
 
-Same page, the **Variables** tab → **New repository variable**:
+Same page, the **Variables** tab. All optional — unset means the default.
 
-| Variable | Example | What it does |
+| Variable | Default | What it does |
 | --- | --- | --- |
-| `SEARCH_URLS` | `https://www.facebook.com/marketplace/lexington/search/?query=dresser`<br>`https://www.facebook.com/marketplace/lexington/search/?query=mid%20century` | One search URL per line. Overlap is fine — duplicates are removed before anything is paid for. |
+| `SEARCH_URLS` | one Lexington dresser search | One Marketplace search URL per line. Overlap is fine — duplicates collapse before anything is paid for. |
 | `REGION_LABEL` | `Lexington · 40 mi` | Shown in the site header. |
-| `IN_RADIUS_TOWNS` | `lexington,nicholasville,georgetown,richmond,winchester,versailles,paris,berea` | Towns you'll actually drive to. Anything else is flagged **⤢ Out of radius**. |
-| `RESULTS_LIMIT` | `150` | Listings requested per search URL. Lower = cheaper scraping. |
-| `HOURLY_RATE_CENTS` | `3000` | What your restoration time is worth ($30/hr here). Feeds profit and hourly-wage math. |
+| `IN_RADIUS_TOWNS` | Lexington + surrounds | Towns you'll actually drive to; anything else is flagged **⤢ Out of radius**. |
+| `RESULTS_LIMIT` | `60` | Listings requested per search URL — the main scrape-cost dial. See the warning in step 2 before raising it. |
+| `MAX_APPRAISALS` | `12` | Hard cap on AI valuations per run, wildcards included. |
+| `MIN_PRICE_DOLLARS` / `MAX_PRICE_DOLLARS` | unset | Pushed into the search URL so junk is never billed. |
+| `DAYS_SINCE_LISTED` / `SEARCH_RADIUS_KM` | unset | Same idea — filter at the source. |
+| `HOURLY_RATE_CENTS` | `3000` | What your restoration time is worth ($30/hr). Feeds profit, hourly-wage and walk-away math. |
+| `APIFY_ACTOR` / `APIFY_DETAIL_ACTOR` | the standard scraper | Only if you switch actors. `APIFY_ACTOR` also scopes recovery to that actor's past runs. |
+| `WILDCARDS`, `MAX_CARDS`, `MAX_PHOTO_BACKFILL`, `VERTICAL` | sensible | Finer dials; the defaults are fine. |
 
 ## 5. Turn on the website
 
 **Settings → Pages → Build and deployment**
 
 - Source: **Deploy from a branch**
-- Branch: your working branch, folder **`/docs`**
+- Branch: your default branch, folder **`/docs`**
 - Save.
 
-Your board will live at `https://<your-username>.github.io/<repo>/`.
+Your board lives at `https://<your-username>.github.io/<repo>/`.
 
 ## 6. Run it
 
-**Actions → Deal board → Run workflow.**
+**Actions → Deal board → Run workflow.** Three knobs:
 
-Two knobs each run:
+- **max_appraisals** — this run's AI cap (blank = the variable/default).
+- **dry_run** — skip AI entirely; free pre-screen only. Never touches the catalogue's
+  stored appraisals.
+- **recover** — instead of scraping, re-read the datasets your past Apify runs already
+  produced. Reading a stored dataset starts no actor and costs **no credit** — use it to
+  rescue a scrape you paid for, e.g. after a failed run or when the quota is exhausted.
 
-- **max_appraisals** — hard cap on AI valuations (default 12). This is the main cost dial.
-- **dry_run** — skip AI entirely and just see what the free pre-screen kept.
-
-It also runs itself **Mondays and Thursdays** — Monday catches weekend price drops, Thursday
-catches fresh pre-weekend listings.
+It also runs itself **daily at 13:00 UTC**. Daily is deliberately the *cheap* cadence:
+measured on real data, ~70% of a daily scan is already known, and the two-stage scrape
+only pays for the new 30%.
 
 ## 7. Put it on your home screen
 
@@ -90,22 +104,43 @@ Open your Pages URL in Safari → **Share → Add to Home Screen**. It opens lik
 | GitHub Actions compute | Free |
 | GitHub Pages hosting | Free |
 | Claude valuations | Free — drawn from your subscription |
-| Apify scraping | A few cents per run; free monthly credit covers a normal month |
+| Apify scraping | A few cents per run; the free monthly credit covers the default caps |
 
 The engine also protects that budget on its own:
 
-- **Cross-search dedup** — searching `dresser`, `mcm`, and `walnut` returns overlapping
-  results; they collapse to one block before anything is paid for.
-- **A seen ledger** (`docs/seen.json`) — a later run skips listings already evaluated and
-  only spends on genuinely new pieces or price drops.
-- **A hard appraisal cap** — only the top-ranked pieces plus a few wildcards reach the AI.
+- **Cross-search dedup** — overlapping searches collapse to one block before billing.
+- **The catalogue** (`docs/catalog.json`) — every appraisal is stored, so a later run
+  skips pieces already valued and only spends on genuinely new listings, price-dropped
+  detail pages, or pieces that gained real new evidence (a description, a photo).
+- **A hard appraisal cap** — `MAX_APPRAISALS` is the total, wildcards included.
+
+## Exit codes (what a red X means)
+
+| Code | Meaning |
+| --- | --- |
+| 0 | Ran clean. |
+| 2 | Configuration problem (missing token / bad URLs). Nothing was spent. |
+| 3 | `CLAUDE_CODE_OAUTH_TOKEN` missing in CI. Caught **before** the scrape is paid for. |
+| 4 | Scrape worked but every appraisal failed — almost always an expired Claude token. The scan data is still saved and published. |
+| 5 | No search reached Marketplace (usually Apify's monthly limit). The board is still re-ranked and published from the catalogue. |
+| 6 | `catalog.json` is corrupt. It was backed up, not overwritten — inspect before re-running. |
+
+The board itself shows a banner for 4/5/6, so you don't need the Actions tab to know.
 
 ## If something goes wrong
 
 | Symptom | Cause |
 | --- | --- |
 | `APIFY_TOKEN is not set` | Secret missing or misnamed (step 3). |
-| `SEARCH_URLS is not set` | Variable missing (step 4). |
-| `claude CLI failed` / auth errors | Token expired — re-run `claude setup-token` and update the secret. |
-| Board renders but no photos | Facebook's photo links expire within hours; they're downloaded during the run, so this usually means the scrape returned no images. |
-| Everything says "already-seen" | Working as intended — nothing new since the last run. Delete `docs/seen.json` to force a full re-evaluation. |
+| `Monthly usage hard limit exceeded` | Apify's free credit is spent. Wait for the month to reset (the daily runs keep re-ranking what's already known), or add a few dollars. |
+| `claude CLI failed` / zero-token auth errors | Token expired or was pasted incompletely — redo step 1 and update the secret. |
+| Board renders but some pieces have no photo | Facebook photo links expire within hours. Photos land on the next *fresh* scan of that listing; pieces valued from an earlier committed photo already show it. |
+| Everything says "already-seen" | Working as intended — nothing new since the last run. The catalogue is the memory; there is no ledger file to delete, and deleting `catalog.json` would throw away every paid appraisal. |
+| A negotiation draft never appears | Open the card's panel again — errors are written into the same file the page polls, with the reason. |
+
+## Privacy note
+
+Negotiation drafts (including seller conversation text you paste) are committed to
+`.drafts/` — outside the published website. On a **public** repo they are still readable
+by anyone via the repository itself. If that ever matters, make the repo private
+(Pages on the free plan then stops; Actions and the Contents-API buttons keep working).
