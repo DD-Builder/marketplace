@@ -1,6 +1,6 @@
 {
- "state": "ok",
- "generated_at": "2026-07-26T16:06:33.537104+00:00",
- "on_board": 25,
- "appraised": 12
+ "state": "appraisals_failed",
+ "generated_at": "2026-07-26T18:16:17.591239+00:00",
+ "failed": 12,
+ "on_board": 25
 }
