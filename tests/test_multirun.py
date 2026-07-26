@@ -257,3 +257,29 @@ def test_a_corrupt_catalogue_aborts_with_a_backup_instead_of_being_replaced(
     assert h2.run() == 6
     assert (tmp_path / "catalog.json").read_text() == good[: len(good) // 2]  # untouched
     assert list(tmp_path.glob("catalog.json.corrupt-*"))
+
+
+def test_expired_photo_urls_heal_on_the_next_fresh_scan(tmp_path, monkeypatch):
+    """Day 1: the CDN is unreachable, so the piece is valued but has no photo file.
+    Day 2: a fresh scan supplies working URLs and the backfill downloads one. This is
+    the chain that was broken on the live board — 25 appraised entries, 0 photos."""
+    a = _detailed("a")
+    h = Harness(tmp_path, monkeypatch, days=[{"index": [a]}, {"index": [a]}])
+
+    day = {"n": 0}
+    real_fake = run_board._download_photos
+
+    def cdn_down_on_day_one(listings, out_dir, **kw):
+        if day["n"] == 0:
+            return {}
+        return real_fake(listings, out_dir, **kw)   # the Harness fake: always succeeds
+
+    monkeypatch.setattr(run_board, "_download_photos", cdn_down_on_day_one)
+
+    assert h.run() == 0
+    assert h.catalog["listings"]["a"]["photo_rel"] is None
+
+    day["n"] = 1
+    assert h.run() == 0
+    assert h.catalog["listings"]["a"]["photo_rel"] == "photos/a.jpg"
+    assert (tmp_path / "site" / "photos" / "a.jpg").exists()

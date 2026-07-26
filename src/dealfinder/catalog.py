@@ -62,6 +62,11 @@ class CatalogEntry(BaseModel):
     sold_price_cents: int | None = None
 
     photo_rel: str | None = None          # e.g. "photos/<id>.jpg", relative to the site root
+    #: Additional gallery shots ("photos/<id>_1.jpg", ...). The scrape already pays for up
+    #: to three photos per listing; throwing two of them away was pure waste, and judging
+    #: furniture condition from one 100-px thumbnail is how you drive out for a piece with
+    #: a smashed side you were never shown.
+    extra_photo_rels: list[str] = Field(default_factory=list)
     photo_urls: list[str] = Field(default_factory=list)
     detail_fetched: bool = False
 

@@ -136,6 +136,64 @@ def _download_photos(
     return got
 
 
+def _reconcile_photos(catalog: catalog_mod.Catalog, photos_dir: Path) -> int:
+    """Link photo files already on disk to entries that lost (or never had) photo_rel.
+
+    The live board shipped with 20 committed photos belonging to entries whose
+    photo_rel was never set — files paid for, present, and invisible. This runs at
+    startup, is idempotent, and also removes files whose listing left the catalogue.
+    """
+    if not photos_dir.is_dir():
+        return 0
+    linked = 0
+    for entry in catalog.listings.values():
+        if not entry.photo_rel:
+            match = sorted(photos_dir.glob(f"{entry.id}.*"))
+            if match:
+                entry.photo_rel = f"photos/{match[0].name}"
+                linked += 1
+        if not entry.extra_photo_rels:
+            extras = sorted(photos_dir.glob(f"{entry.id}_[0-9].*"))
+            if extras:
+                entry.extra_photo_rels = [f"photos/{p.name}" for p in extras]
+    for f in photos_dir.iterdir():
+        if not f.is_file():
+            continue
+        base = f.stem
+        if len(base) > 2 and base[-2] == "_" and base[-1].isdigit():
+            base = base[:-2]  # strip a gallery suffix (_1, _2) only, never inner underscores
+        if base not in catalog.listings:
+            f.unlink()
+    if linked:
+        log.info("photos_reconciled", linked=linked)
+    return linked
+
+
+def _store_extra_photos(
+    catalog: catalog_mod.Catalog, photos: dict[str, list[Path]], photos_dir: Path
+) -> None:
+    """Keep the gallery shots. The downloader fetches up to 3 per listing; only [0] used
+    to survive — the workflow rm -rf'd the rest after paying to fetch them."""
+    photos_dir.mkdir(parents=True, exist_ok=True)
+    for lid, paths in photos.items():
+        entry = catalog.listings.get(lid)
+        if entry is None or len(paths) < 2:
+            continue
+        rels = []
+        for i, src in enumerate(paths[1:3], start=1):
+            src = Path(src)
+            if not src.exists():
+                continue
+            dest = photos_dir / f"{lid}_{i}{src.suffix or '.jpg'}"
+            if src.resolve() != dest.resolve():
+                import shutil
+
+                shutil.copyfile(src, dest)
+            rels.append(f"photos/{dest.name}")
+        if rels:
+            entry.extra_photo_rels = rels
+
+
 def _load_seen(path: Path) -> dict[str, int | None]:
     if path.exists():
         try:
@@ -188,7 +246,13 @@ def _check_credentials(provider: str) -> int:
 
 
 def _search_urls(raw: str) -> list[str]:
-    parts = [p.strip() for chunk in raw.split("\n") for p in chunk.split(",")]
+    import re
+
+    parts: list[str] = []
+    for line in raw.split("\n"):
+        # A comma separates URLs only when the next chunk starts one — a comma *inside*
+        # a query value must not split the URL into two garbage halves.
+        parts += [p.strip() for p in re.split(r",(?=\s*https?://)", line.strip())]
     return [p for p in parts if p.startswith("http")]
 
 
@@ -230,6 +294,7 @@ def main(argv: list[str] | None = None) -> int:
         # damaged one and destroy every stored appraisal.
         print(str(exc), file=sys.stderr)
         return 6
+    _reconcile_photos(catalog, out_dir / "photos")
     seen = catalog_mod.seen_view(catalog)
     ledger = load_ledger(Path(args.pieces))
     logged = costs_by_id(ledger)
@@ -426,8 +491,11 @@ def main(argv: list[str] | None = None) -> int:
         )
     pruned = catalog_mod.prune(catalog)
     for gone_id in pruned.removed_ids:
-        for stale in (out_dir / "photos").glob(f"{gone_id}.*"):
-            stale.unlink(missing_ok=True)
+        # Cover and gallery shots, by exact stem — `{id}*` would also match ids that
+        # merely start with this one.
+        for pattern in (f"{gone_id}.*", f"{gone_id}_[0-9].*"):
+            for stale in (out_dir / "photos").glob(pattern):
+                stale.unlink(missing_ok=True)
     # Persist the expensive artifact *now*, before rendering. A crash anywhere in the
     # photo/board code below must not cost the appraisals this run just paid for.
     catalog_mod.save_catalog(catalog, catalog_path)
@@ -450,6 +518,10 @@ def main(argv: list[str] | None = None) -> int:
                 if entry and paths:
                     entry.photo_rel = f"photos/{lid}{Path(paths[0]).suffix or '.jpg'}"
             cover.update({lid: paths[0] for lid, paths in got.items() if paths})
+
+    # Gallery shots for everything downloaded this run (appraisal + backfill alike).
+    if photos:
+        _store_extra_photos(catalog, photos, out_dir / "photos")
 
     # Every live, appraised piece — not just this run's dozen — re-scored against today's
     # price and against how long ago we last confirmed it was still for sale.
