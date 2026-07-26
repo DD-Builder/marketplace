@@ -24,8 +24,8 @@ def test_positive_margin_scores_above_zero():
     # net = 60000 - 12000 asking - 5000 cost - (4h * 3000) = 31000c => $310
     score = compute_deal_score(_appraisal(), asking_price_cents=12000, hourly_rate_cents=3000)
     assert 0 < score < 100
-    # $310 margin -> 100 * 310/(310+1000) ~= 23.7
-    assert 20 < score < 28
+    # $310 margin -> 100 * 310/(310+500) ~= 38.3 (pre-confidence; half-point at $500)
+    assert 34 < score < 42
 
 
 def test_negative_margin_scores_zero():

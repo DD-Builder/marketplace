@@ -110,9 +110,13 @@ def test_the_negotiation_panel_states_that_nothing_is_sent():
 
 
 def test_the_token_note_is_honest_about_the_risk():
+    """The dialog must state the real blast radius, not minimise it: Contents-write can
+    push workflow changes that read repo secrets, and localStorage is shared across
+    every GitHub Pages site on the same username origin."""
     page = _page()
-    assert "Stored only in this browser" in page
-    assert "revoke it" in page
+    assert "push code" in page and "secrets" in page
+    assert "localStorage" in page and "shared" in page
+    assert "rotate" in page.lower()
 
 
 # --- the two resale tiers on the card ---------------------------------------------------
@@ -182,7 +186,7 @@ def test_a_sentence_length_item_name_does_not_break_the_thumbnail():
 def test_the_placeholder_is_clipped_in_css_too():
     page = _page()
     assert ".thumb.ph{" in page and "overflow:hidden" in page
-    assert "-webkit-line-clamp:6" in page
+    assert "-webkit-line-clamp:4" in page
 
 
 def test_an_underwater_piece_says_do_not_buy_instead_of_a_sell_target():
@@ -218,3 +222,122 @@ def test_a_warning_is_printed_once_per_card_not_twice():
     assert piece.resale.yours.warning                      # this piece does warn
     page = _page([piece])
     assert page.count("Fine if you enjoy the work") == 1
+
+
+# --- regressions from the frontend audit --------------------------------------------------
+
+def test_scraped_text_cannot_steer_the_template():
+    """Cards are substituted LAST: a listing titled '{{CONFIG}}' used to get the page's
+    config JSON injected into its own heading."""
+    page = _page([_piece(title="{{CONFIG}} {{TITLE}} bargain")])
+    assert "{{CONFIG}} {{TITLE}} bargain" in page          # survives, literally, escaped
+    assert page.count('"boardWorkflow"') == 1              # config appears exactly once
+
+
+def test_a_negative_margin_is_red_and_reads_negative():
+    """10 of 25 committed cards showed a loss in GREEN, formatted '$-1,150'."""
+    losing = _piece()
+    losing.cash_margin_cents = -115000
+    page = _page([losing])
+    assert "fig net neg" in page
+    assert "−$1,150" in page                               # sign before the currency
+    assert "$-" not in page
+
+
+def test_a_missing_price_is_unknown_not_free():
+    from dealfinder.board import _money
+
+    assert _money(None) == "—"
+    assert _money(0) == "$0"
+    assert _money(-12000) == "−$120"
+    assert _money(123456) == "$1,235"
+
+
+def test_only_https_listing_urls_become_links():
+    """An empty href reloads the page (destroying half-typed notes); a javascript: URL
+    from a third-party actor must never reach the browser."""
+    bad = _piece()
+    bad.listing = bad.listing.model_copy(update={"url": ""})
+    evil = _piece()
+    evil.listing = evil.listing.model_copy(update={"url": "javascript:alert(1)"})
+    page = _page([bad, evil])
+    assert "View listing" not in page
+    assert "javascript:" not in page
+
+
+def test_the_legend_is_generated_from_the_badge_definitions():
+    """The shipped legend documented 6 chips while ranking.py emitted 9 — it drifted
+    because it was hand-maintained. Now both come from BADGE_DEFS."""
+    from dealfinder.ranking import BADGE_DEFS
+
+    page = _page()
+    for icon, label, _tone in BADGE_DEFS.values():
+        assert label in page, f"legend is missing {label!r}"
+
+
+def test_reasoning_is_clipped_at_a_word_with_an_ellipsis():
+    wordy = _piece()
+    wordy.appraisal = wordy.appraisal.model_copy(
+        update={"reasoning": "flatscreen wall-mounting has collapsed demand " * 30}
+    )
+    page = _page([wordy])
+    assert "demand …" in page or "demand…" in page or "wall-mounting…" in page
+    assert "for large con<" not in page                    # the old mid-word chop
+
+
+def test_cards_carry_machine_readable_data_attributes():
+    """The JS must never scrape badge text or headings again — filters, sort, search and
+    the log form all read data-*."""
+    page = _page()
+    for attr in ("data-title=", "data-priority=", "data-margin=", "data-ask=",
+                 "data-fresh=", "data-killer=", "data-flag=", "data-oor=", "data-photos="):
+        assert attr in page, f"missing {attr}"
+
+
+def test_the_templates_ship_as_package_data():
+    from importlib.resources import files
+
+    tpl = files("dealfinder").joinpath("templates")
+    for name in ("board.html", "board.css", "board.js"):
+        assert tpl.joinpath(name).is_file(), f"{name} missing from package data"
+
+
+def test_the_page_has_a_csp_and_no_tooltip_only_errors():
+    page = _page()
+    assert "Content-Security-Policy" in page
+    assert "connect-src 'self' https://api.github.com" in page
+    assert "el.title = err.message" not in page            # errors render visibly now
+
+
+def test_every_theme_pairing_clears_wcag_aa():
+    """4.5:1 for the text/background pairs actually used. Computed, not eyeballed."""
+    import re as _re
+
+    from dealfinder.board import _template
+
+    css = _template()
+
+    def lum(hexcolor):
+        r, g, b = (int(hexcolor[i:i + 2], 16) / 255 for i in (0, 2, 4))
+        f = lambda c: c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+        return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+    def contrast(a, b):
+        la, lb = lum(a), lum(b)
+        hi, lo = max(la, lb), min(la, lb)
+        return (hi + 0.05) / (lo + 0.05)
+
+    blocks = _re.findall(r":root\{(.*?)\}", css, _re.S)
+    assert len(blocks) >= 2, "expected a light and a dark palette"
+    for block in blocks[:2]:
+        v = dict(_re.findall(r"--([\w-]+):\s*#([0-9a-fA-F]{6})", block))
+        pairs = [
+            ("ink", "paper"), ("ink", "card"), ("soft", "card"), ("soft", "paper"),
+            ("accent", "card"), ("teal", "card"), ("good", "card"),
+            ("warn", "warn-bg"), ("crit", "crit-bg"), ("crit", "card"),
+            ("star-ink", "star"), ("tag-ink", "tag"),
+        ]
+        for fg, bg in pairs:
+            if fg in v and bg in v:
+                c = contrast(v[fg], v[bg])
+                assert c >= 4.5, f"--{fg} on --{bg} is {c:.2f}:1 (< 4.5)"

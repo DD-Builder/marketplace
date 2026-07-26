@@ -3,6 +3,10 @@
 Takes the engine's ranked output and writes a self-contained HTML file (plus local photo
 files) into an output directory. No server, no database: the whole site is regenerated each
 run and committed, which is what makes hosting free.
+
+The page's skeleton, stylesheet and script live as real files in ``templates/`` (so they
+get editor tooling and diffs) and are inlined at render time — the shipped artifact stays
+one HTML file that renders with zero network requests.
 """
 
 from __future__ import annotations
@@ -12,9 +16,11 @@ import json
 import re
 import shutil
 from dataclasses import dataclass
+from importlib.resources import files as _pkg_files
 from pathlib import Path
 
 from dealfinder.engine import EvaluatedPiece, RunResult
+from dealfinder.ranking import BADGE_DEFS
 from dealfinder.resale import Posture
 
 _POSTURE_LABEL = {
@@ -24,8 +30,33 @@ _POSTURE_LABEL = {
 }
 
 
-def _money(cents: int | None) -> str:
-    return f"${(cents or 0) / 100:,.0f}"
+def _template() -> str:
+    tpl = _pkg_files("dealfinder").joinpath("templates")
+    page = tpl.joinpath("board.html").read_text(encoding="utf-8")
+    page = page.replace("/*{{CSS}}*/", tpl.joinpath("board.css").read_text(encoding="utf-8"))
+    return page.replace("/*{{JS}}*/", tpl.joinpath("board.js").read_text(encoding="utf-8"))
+
+
+def _money(cents: int | None, *, none: str = "—") -> str:
+    """Dollars for humans. None is *unknown*, not free — the two used to render alike,
+    and a parse failure was indistinguishable from a $0 curb find."""
+    if cents is None:
+        return none
+    sign = "−" if cents < 0 else ""
+    return f"{sign}${abs(cents) / 100:,.0f}"
+
+
+def _seen_label(days: float) -> str:
+    """How old the evidence is that this piece is still for sale."""
+    if days < 1:
+        return "today"
+    if days < 2:
+        return "yesterday"
+    return f"{int(days)} days ago"
+
+
+def _seen_tone(days: float) -> str:
+    return "bad" if days >= 7 else ("warn" if days >= 2 else "")
 
 
 def _short_label(identified_item: str, limit: int = 42) -> str:
@@ -37,11 +68,20 @@ def _short_label(identified_item: str, limit: int = 42) -> str:
     """
     # The hyphen is deliberately not a separator: "three-piece bedroom set" is one clause,
     # and splitting on it left cards labelled just "Three".
-    head = re.split(r"[:;(\u2014]|,\s", identified_item.strip(), maxsplit=1)[0].strip()
+    head = re.split(r"[:;(—]|,\s", identified_item.strip(), maxsplit=1)[0].strip()
     head = head or identified_item.strip() or "no photo"
     if len(head) > limit:
-        head = head[:limit].rsplit(" ", 1)[0] + "\u2026"
+        head = head[:limit].rsplit(" ", 1)[0] + "…"
     return head.title()
+
+
+def _clip(text: str, limit: int) -> str:
+    """Word-boundary truncation with a visible ellipsis — a sentence chopped mid-word
+    ('collapsed demand for large con') reads as a rendering bug."""
+    text = text.strip()
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0].rstrip(",;:") + "…"
 
 
 @dataclass
@@ -49,6 +89,7 @@ class BoardMeta:
     title: str = "The Bench"
     region: str = "Lexington · 40 mi"
     generated_at: str = ""
+    generated_at_iso: str = ""
     note: str = ""
     # Where the page sends its writes. Empty ``repo`` renders a read-only board — every
     # button explains that it isn't wired up rather than failing silently.
@@ -56,8 +97,10 @@ class BoardMeta:
     branch: str = "main"
     board_workflow: str = "deal-board.yml"
     negotiate_workflow: str = "negotiate.yml"
+    # Repo-relative paths consumed by the GitHub Contents API — deliberately NOT URLs,
+    # and not filesystem paths either. "docs/pieces.json" is exactly right in Actions.
     pieces_path: str = "docs/pieces.json"
-    drafts_dir: str = "docs/drafts"
+    drafts_dir: str = ".drafts"
 
 
 def _your_numbers(p: EvaluatedPiece) -> str:
@@ -134,13 +177,13 @@ def _tools(p: EvaluatedPiece) -> str:
     return f"""
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="{lid}">
-            <label>Paid <input name="paid" type="number" inputmode="decimal" step="1"
+            <label>Paid <input name="paid" inputmode="decimal"
               placeholder="{ask / 100:.0f}"></label>
-            <label>Materials <input name="materials" type="number" inputmode="decimal"
-              step="1" placeholder="0"></label>
-            <label>Hours <input name="hours" type="number" inputmode="decimal" step="0.5"
+            <label>Materials <input name="materials" inputmode="decimal"
               placeholder="0"></label>
-            <label>Sold for <input name="sold" type="number" inputmode="decimal" step="1"
+            <label>Hours <input name="hours" inputmode="decimal"
+              placeholder="0"></label>
+            <label>Sold for <input name="sold" inputmode="decimal"
               placeholder="—"></label>
             <button type="submit">Save to my books</button>
             <p class="status" role="status"></p>
@@ -166,7 +209,7 @@ def _tools(p: EvaluatedPiece) -> str:
         </details>"""
 
 
-def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
+def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
     listing = p.listing
     chips = "".join(
         f'<span class="chip {b.tone}"><span class="ico">{html.escape(b.icon)}</span>'
@@ -178,23 +221,69 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
         if p.authenticity.warnings
         else ""
     )
+    label = _short_label(p.appraisal.identified_item)
+    alt = html.escape(p.appraisal.identified_item[:120])
     was_cents = listing.raw_json.get("_was_price_cents")
-    was = f'<span class="was">{_money(was_cents)}</span>' if was_cents else ""
-    thumb = (
-        f'<img class="thumb" src="{html.escape(photo_rel)}" alt="" loading="lazy">'
-        if photo_rel
-        else f'<div class="thumb ph" aria-hidden="true"><span>'
-        f"{html.escape(_short_label(p.appraisal.identified_item))}</span></div>"
+
+    cover = photos[0] if photos else None
+    if cover:
+        thumb = (
+            f'<img class="thumb" src="{html.escape(cover)}" alt="{alt}" '
+            f'data-ph="{html.escape(label)}" loading="lazy">'
+        )
+    else:
+        # The span carries the only textual identity of the piece, so it must NOT be
+        # aria-hidden — a VoiceOver user would get nothing at all where the photo goes.
+        thumb = f'<div class="thumb ph"><span>{html.escape(label)}</span></div>'
+    hint = (
+        f'<button type="button" class="gallery-hint">{len(photos)} photos</button>'
+        if len(photos) > 1 else ""
     )
+
+    # The swing tag: ask price, strike-through if dropped, margin beneath.
+    neg = p.cash_margin_cents < 0
+    was = f'<span class="tag-was">{_money(was_cents)}</span>' if was_cents else ""
+    tag = (
+        f'<div class="swingtag{" neg" if neg else ""}">'
+        f'<span class="tag-price">{_money(listing.asking_price_cents)}</span>{was}'
+        f'<span class="tag-margin">{_money(p.cash_margin_cents)} margin</span></div>'
+    )
+    star = '<div class="starsticker">★ Killer</div>' if p.is_killer else ""
+
     klass = (
         "card killer"
         if p.is_killer
         else ("card flagged" if p.authenticity.is_red_flag else "card")
     )
+    # Everything the page's JS needs lives in data-* attributes; it must never scrape
+    # badge text or heading text out of the markup again.
+    data = (
+        f' data-id="{html.escape(listing.fb_listing_id)}"'
+        f' data-title="{html.escape(listing.title or "Untitled")}"'
+        f' data-priority="{p.priority}"'
+        f' data-margin="{p.cash_margin_cents}"'
+        f' data-ask="{listing.asking_price_cents if listing.asking_price_cents is not None else ""}"'
+        f' data-fresh="{p.days_since_seen:.2f}"'
+        f' data-killer="{1 if p.is_killer else 0}"'
+        f' data-flag="{1 if p.authenticity.is_red_flag else 0}"'
+        f' data-oor="{1 if p.out_of_radius else 0}"'
+        f" data-photos='{html.escape(json.dumps(photos))}'"
+    )
+    # An empty href reloads the page (losing half-typed notes); a non-https listing URL
+    # from a third-party actor is not something we hand the browser.
+    view = (
+        f'<a class="view" href="{html.escape(listing.url)}" target="_blank" '
+        'rel="noopener">View listing →</a>'
+        if listing.url.startswith("https://")
+        else ""
+    )
+    net_class = "fig net neg" if neg else "fig net"
     return f"""
-    <article class="{klass}" data-id="{html.escape(listing.fb_listing_id)}">
-      <div class="rank">{rank}</div>
-      {thumb}
+    <article class="{klass}"{data}>
+      <div class="hero">
+        <div class="rank">{rank}</div>
+        {thumb}{hint}{tag}{star}
+      </div>
       <div class="body">
         <div class="head">
           <h2>{html.escape(listing.title) or "Untitled"}</h2>
@@ -203,9 +292,10 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
         <div class="chips">{chips}</div>
         {warn}
         <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">{_money(listing.asking_price_cents)} {was}</span></div>
+          <div class="fig"><span class="k">Ask</span><span class="v">{_money(listing.asking_price_cents)}</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">{_money(p.appraisal.est_restored_resale_value_cents)}</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">{_money(p.cash_margin_cents)}</span></div>
+          <div class="{net_class}"><span class="k">Est. margin</span><span class="v">{_money(p.cash_margin_cents)}</span></div>
+          <div class="fig"><span class="k">Last confirmed</span><span class="v {_seen_tone(p.days_since_seen)}">{_seen_label(p.days_since_seen)}</span></div>
         </div>
         {_resale_row(p)}
         <div class="meters">
@@ -213,11 +303,35 @@ def _card(rank: int, p: EvaluatedPiece, photo_rel: str | None) -> str:
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:{p.liquidity}%"></i></div><b>{p.liquidity:.0f}</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:{p.heat}%"></i></div><b>{p.heat:.0f}</b></div>
         </div>
-        <details class="why"><summary>Why</summary><p>{html.escape(p.appraisal.reasoning[:600])}</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>{html.escape(_clip(p.appraisal.reasoning, 600))}</p></details>
 {_tools(p)}
-        <a class="view" href="{html.escape(listing.url)}" target="_blank" rel="noopener">View listing →</a>
+        {view}
       </div>
     </article>"""
+
+
+def _legend() -> str:
+    return "\n".join(
+        f'  <span class="chip {tone}"><span class="ico">{html.escape(icon)}</span>'
+        f"{html.escape(label)}</span>"
+        for icon, label, tone in BADGE_DEFS.values()
+    )
+
+
+def _funnel_human(result: RunResult) -> str:
+    plan = result.plan
+    looked = plan.total_scraped
+    valued = len(plan.to_appraise)
+    stars = sum(1 for p in result.pieces if p.is_killer)
+    bits = []
+    if looked:
+        bits.append(f"Looked at {looked} listings")
+    if valued:
+        bits.append(f"valued {valued} this run")
+    bits.append(
+        f"{stars} worth a hard look" if stars else "no stars today — patience pays"
+    )
+    return (", ".join(bits) + ".").capitalize()
 
 
 def render_board(
@@ -225,13 +339,25 @@ def render_board(
     *,
     meta: BoardMeta | None = None,
     photo_map: dict[str, str] | None = None,
+    gallery_map: dict[str, list[str]] | None = None,
 ) -> str:
-    """Return the complete HTML page for a run. ``photo_map`` maps listing id -> relative path."""
+    """Return the complete HTML page for a run.
+
+    ``photo_map`` maps listing id -> cover photo path; ``gallery_map`` adds the extra
+    shots per id for the lightbox.
+    """
     meta = meta or BoardMeta()
     photo_map = photo_map or {}
+    gallery_map = gallery_map or {}
     pieces = result.pieces
+
+    def photos_for(pid: str) -> list[str]:
+        cover = photo_map.get(pid)
+        extras = [g for g in gallery_map.get(pid, []) if g != cover]
+        return ([cover] if cover else []) + extras
+
     cards = "\n".join(
-        _card(i + 1, p, photo_map.get(p.listing.fb_listing_id))
+        _card(i + 1, p, photos_for(p.listing.fb_listing_id))
         for i, p in enumerate(pieces)
     )
     plan = result.plan
@@ -255,18 +381,26 @@ def render_board(
         }
     ).replace("</", "<\\/")
 
-    page = _TEMPLATE
+    # Substitution order is a security boundary: every scalar placeholder is resolved
+    # against the pristine template FIRST, and the cards — which carry scraped,
+    # attacker-authored text — are substituted LAST, exactly once. The old order ran
+    # the remaining replacements over the card text, so a listing titled "{{CONFIG}}"
+    # got the page's config JSON injected into its own heading.
+    page = _template()
     for key, val in stats.items():
         page = page.replace("{{" + key + "}}", str(val))
-    return (
-        page.replace("{{CARDS}}", cards)
-        .replace("{{CONFIG}}", config)
+    page = (
+        page.replace("{{CONFIG}}", config)
         .replace("{{TITLE}}", html.escape(meta.title))
         .replace("{{REGION}}", html.escape(meta.region))
         .replace("{{GENERATED}}", html.escape(meta.generated_at))
+        .replace("{{GENERATED_ISO}}", html.escape(meta.generated_at_iso))
+        .replace("{{LEGEND}}", _legend())
+        .replace("{{FUNNEL_HUMAN}}", html.escape(_funnel_human(result)))
         .replace("{{FUNNEL}}", html.escape(plan.summary()))
         .replace("{{NOTE}}", html.escape(meta.note))
     )
+    return page.replace("{{CARDS}}", cards)
 
 
 def write_site(
@@ -276,11 +410,13 @@ def write_site(
     meta: BoardMeta | None = None,
     photo_files: dict[str, Path] | None = None,
     extra_photo_map: dict[str, str] | None = None,
+    gallery_map: dict[str, list[str]] | None = None,
 ) -> Path:
     """Write index.html (and copy photos) into ``out_dir``; return the page path.
 
     ``extra_photo_map`` carries already-committed photos for pieces appraised on earlier
-    runs, so they render without being copied again.
+    runs, so they render without being copied again. ``gallery_map`` lists the extra
+    committed shots per id for the lightbox.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -299,466 +435,8 @@ def write_site(
                 shutil.copyfile(src, dest)
             photo_map[listing_id] = f"photos/{dest.name}"
     page = out_dir / "index.html"
-    page.write_text(render_board(result, meta=meta, photo_map=photo_map))
+    page.write_text(
+        render_board(result, meta=meta, photo_map=photo_map, gallery_map=gallery_map),
+        encoding="utf-8",
+    )
     return page
-
-
-_TEMPLATE = r"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="The Bench">
-<meta name="theme-color" content="#e7e4dc" media="(prefers-color-scheme:light)">
-<meta name="theme-color" content="#181712" media="(prefers-color-scheme:dark)">
-<title>{{TITLE}} — deal board</title>
-<style>
-:root{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;--line:#d3cfc4;
-  --brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;--warn-bg:#f3e6cd;
-  --crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
-@media (prefers-color-scheme:dark){:root{--paper:#181712;--card:#22201b;--ink:#ece8de;
-  --soft:#9a9384;--line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;
-  --warn:#d0a24e;--warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;
-  --shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}}
-:root[data-theme="light"]{--paper:#e7e4dc;--card:#f2efe8;--ink:#26241f;--soft:#6a655a;
-  --line:#d3cfc4;--brass:#2f7d6b;--brass-soft:#e0ebe6;--good:#2f7d5a;--warn:#9a6b1e;
-  --warn-bg:#f3e6cd;--crit:#8f3a2f;--crit-bg:#f2ddd7;--star:#b98a1f;--shadow:0 1px 0 #fff8,0 2px 10px #0000000f}
-:root[data-theme="dark"]{--paper:#181712;--card:#22201b;--ink:#ece8de;--soft:#9a9384;
-  --line:#332f27;--brass:#4fb39a;--brass-soft:#12352e;--good:#4fb38a;--warn:#d0a24e;
-  --warn-bg:#33280f;--crit:#d98069;--crit-bg:#37201a;--star:#e0b34e;--shadow:0 1px 0 #ffffff08,0 3px 14px #0000004d}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
-  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.4}
-.num,.v,.was,.rank,.meter b,.resale b{font-variant-numeric:tabular-nums;
-  font-family:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace}
-header.top{padding:26px 18px 14px;max-width:1120px;margin:0 auto}
-.brandrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:650}
-.sub{color:var(--soft);font-size:12.5px}
-.tag{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--brass);
-  border:1px solid var(--line);border-radius:999px;padding:3px 10px}
-.summary{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:9px 13px;box-shadow:var(--shadow);min-width:90px}
-.stat .n{font-size:21px;font-weight:650;font-variant-numeric:tabular-nums}
-.stat .l{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
-.stat.killer .n{color:var(--star)} .stat.fake .n{color:var(--crit)}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px auto 0;max-width:1120px;padding:0 18px}
-.controls button{background:var(--card);border:1px solid var(--line);color:var(--ink);
-  border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer}
-.controls button[aria-pressed="true"]{background:var(--brass);border-color:var(--brass);color:#fff}
-:root[data-theme="dark"] .controls button[aria-pressed="true"]{color:#0c1a16}
-.legend{max-width:1120px;margin:11px auto 0;padding:0 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.legend .legend-note{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
-.grid{max-width:1120px;margin:16px auto 50px;padding:0 18px;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
-.card{position:relative;display:grid;grid-template-columns:104px 1fr;
-  background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
-.card.killer{border-color:var(--star);box-shadow:0 0 0 1px var(--star),var(--shadow)}
-.card.flagged{border-left:4px solid var(--crit)}
-.rank{position:absolute;top:8px;left:8px;z-index:2;background:#0007;color:#fff;
-  font-size:11px;padding:2px 7px;border-radius:999px}
-img.thumb{width:104px;height:100%;min-height:150px;object-fit:cover;display:block;background:var(--brass-soft)}
-.thumb.ph{background:repeating-linear-gradient(115deg,#0000 0 7px,#00000008 7px 8px),
-  linear-gradient(160deg,var(--brass-soft),var(--card));display:flex;align-items:center;
-  justify-content:center;padding:6px;text-align:center;overflow:hidden}
-/* A real appraisal names the piece in a full sentence, so this has to clip hard —
-   unclipped it spilled out of the 104px column and across the whole card. */
-.thumb.ph span{font-size:12px;font-weight:600;color:var(--brass);opacity:.85;
-  text-transform:uppercase;letter-spacing:.05em;line-height:1.15;overflow:hidden;
-  overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}
-.body{padding:12px 14px 14px;min-width:0}
-.head h2{font-size:15px;margin:0 0 2px;line-height:1.25;font-weight:600;overflow:hidden;
-  text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.loc{font-size:12px;color:var(--soft)}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
-.chip{font-size:11px;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--line);
-  display:inline-flex;align-items:center;gap:4px;background:var(--paper)}
-.chip.good{color:var(--good);border-color:var(--good)}
-.chip.warn{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
-.chip.info{color:var(--brass)}
-.authwarn{font-size:11.5px;color:var(--crit);background:var(--crit-bg);border-radius:8px;padding:6px 9px;margin:6px 0 2px}
-.figs{display:flex;gap:14px;margin:10px 0 4px;border-top:1px solid var(--line);padding-top:10px;flex-wrap:wrap}
-.fig{display:flex;flex-direction:column}
-.fig .k{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
-.fig .v{font-size:15px;font-weight:600}
-.fig.net .v{color:var(--good)}
-.was{font-size:11px;color:var(--soft);text-decoration:line-through;font-weight:400}
-.resale{font-size:12px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-.resale b{color:var(--ink);font-size:13px}
-.resale .posture{font-size:10px;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--brass);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
-.resale.bad b{color:var(--crit)}
-.resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
-.resale .posture.thin{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
-.reason{font-size:11.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.4}
-.resale .span{font-size:11px;color:var(--soft)}
-.yours{margin:-2px 0 9px}
-.yours summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.yours summary::-webkit-details-marker{display:none}
-.yours summary::before{content:"▸ ";color:var(--brass)}
-.yours[open] summary::before{content:"▾ "}
-.yngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:5px 12px;
-  margin:7px 0 0;padding:8px 10px;background:var(--paper);border:1px solid var(--line);border-radius:8px}
-.yn{display:flex;flex-direction:column;gap:1px}
-.yn .k{font-size:9.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.yn .v{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
-.basis{font-size:10.5px;color:var(--soft);margin:6px 0 0;font-style:italic}
-.actionbar{max-width:1120px;margin:0 auto 8px;padding:0 18px;display:flex;gap:8px;
-  align-items:center;flex-wrap:wrap}
-.actionbar button{font:inherit;font-size:13px;padding:7px 14px;border-radius:999px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
-.actionbar button.primary{background:var(--brass);border-color:var(--brass);color:var(--paper);
-  font-weight:600}
-.conn{font-size:11.5px;color:var(--soft)}
-.conn.ok{color:var(--good)}
-.conn.bad{color:var(--crit)}
-.tool{margin:0 0 7px}
-.tool summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.tool summary::-webkit-details-marker{display:none}
-.tool summary::before{content:"▸ ";color:var(--brass)}
-.tool[open] summary::before{content:"▾ "}
-.tool form{display:flex;flex-wrap:wrap;gap:7px 10px;margin:8px 0 0;padding:9px 10px;
-  background:var(--paper);border:1px solid var(--line);border-radius:8px}
-.tool label{display:flex;flex-direction:column;gap:2px;font-size:9.5px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.06em;flex:1 1 88px}
-.tool label.wide{flex:1 1 100%;text-transform:none;letter-spacing:0;font-size:10.5px}
-.tool input,.tool textarea{font:inherit;font-size:13px;padding:5px 7px;border-radius:6px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;
-  box-sizing:border-box}
-.tool input[type=range]{padding:0;accent-color:var(--brass)}
-.tool button{font:inherit;font-size:12.5px;padding:6px 13px;border-radius:999px;
-  border:1px solid var(--brass);background:var(--brass-soft);color:var(--brass);
-  cursor:pointer;flex:0 0 auto;align-self:flex-end}
-.postval{font-size:11px;color:var(--brass);text-transform:none;letter-spacing:0}
-.status{flex:1 1 100%;font-size:11.5px;color:var(--soft);margin:2px 0 0;min-height:1em}
-.status.ok{color:var(--good)}
-.status.bad{color:var(--crit)}
-.drafts{flex:1 1 100%;display:flex;flex-direction:column;gap:8px}
-.draft{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
-.dtext{font-size:13px;line-height:1.5;margin:0;white-space:pre-wrap}
-dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
-  max-width:min(440px,92vw);padding:18px 20px;box-shadow:var(--shadow)}
-dialog::backdrop{background:#0009}
-dialog h2{font-size:16px;margin:0 0 8px}
-dialog p{font-size:12px;color:var(--soft);line-height:1.5;margin:0 0 10px}
-dialog code{font-size:11.5px;color:var(--brass)}
-dialog label{display:flex;flex-direction:column;gap:3px;font-size:10px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
-dialog input{font:inherit;font-size:13.5px;padding:7px 9px;border-radius:6px;
-  border:1px solid var(--line);background:var(--paper);color:var(--ink)}
-dialog menu{display:flex;gap:8px;padding:0;margin:12px 0 0}
-dialog menu button{font:inherit;font-size:13px;padding:6px 14px;border-radius:999px;
-  border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
-dialog menu button:first-child{background:var(--brass);border-color:var(--brass);
-  color:var(--card);font-weight:600}
-.meters{display:flex;flex-direction:column;gap:5px;margin:8px 0 10px}
-.meter{display:grid;grid-template-columns:52px 1fr 26px;align-items:center;gap:8px}
-.meter label{font-size:10.5px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.meter .bar{height:6px;background:var(--paper);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-.meter .bar i{display:block;height:100%;background:var(--brass);border-radius:999px}
-.meter .bar.sub i{background:var(--soft);opacity:.6}
-.meter b{font-size:12px;text-align:right}
-.why{margin:0 0 9px}
-.why summary{font-size:11.5px;color:var(--soft);cursor:pointer;list-style:none}
-.why summary::-webkit-details-marker{display:none}
-.why summary::before{content:"▸ ";color:var(--brass)}
-.why[open] summary::before{content:"▾ "}
-.why p{font-size:12px;color:var(--soft);margin:6px 0 0;line-height:1.45}
-.view{display:inline-block;font-size:13.5px;color:var(--brass);text-decoration:none;font-weight:600}
-.foot{max-width:1120px;margin:0 auto 46px;padding:0 18px;color:var(--soft);font-size:11.5px;line-height:1.6}
-.hide{display:none!important}
-@media (max-width:420px){.card{grid-template-columns:84px 1fr}img.thumb{width:84px}}
-</style>
-</head>
-<body>
-<header class="top">
-  <div class="brandrow">
-    <h1>{{TITLE}}</h1>
-    <span class="tag">{{REGION}}</span>
-    <span class="sub">{{GENERATED}}</span>
-  </div>
-  <div class="summary">
-    <div class="stat"><div class="n num">{{N}}</div><div class="l">Candidates</div></div>
-    <div class="stat killer"><div class="n num">{{KILLERS}}</div><div class="l">★ Killers</div></div>
-    <div class="stat"><div class="n num">{{DROPS}}</div><div class="l">▼ Price drops</div></div>
-    <div class="stat fake"><div class="n num">{{FAKES}}</div><div class="l">⚠ Look-alikes</div></div>
-    <div class="stat"><div class="n num">{{INR}}</div><div class="l">In radius</div></div>
-  </div>
-</header>
-<div class="actionbar">
-  <button id="scrape-now" class="primary">Scrape now</button>
-  <button id="open-settings">Connection</button>
-  <span id="conn" class="conn">not connected</span>
-</div>
-<dialog id="settings">
-  <form method="dialog" class="settings">
-    <h2>Connect this page to your repo</h2>
-    <p>The board is a static page, so the buttons talk to GitHub directly. Paste a
-      <b>fine-grained personal access token</b> scoped to <code id="repo-name"></code>
-      with <b>Actions: read &amp; write</b> and <b>Contents: read &amp; write</b>.</p>
-    <label>Token <input id="token" type="password" autocomplete="off"
-      placeholder="github_pat_…"></label>
-    <p class="basis">Stored only in this browser. Anyone with your unlocked device could
-      use it — revoke it in GitHub settings in one click if that ever matters.</p>
-    <menu>
-      <button id="save-token" value="save">Save</button>
-      <button id="forget-token" value="forget" formnovalidate>Forget</button>
-      <button value="cancel" formnovalidate>Close</button>
-    </menu>
-    <p id="settings-status" class="status" role="status"></p>
-  </form>
-</dialog>
-<div class="controls">
-  <button id="f-all" aria-pressed="true">All</button>
-  <button id="f-radius" aria-pressed="false">In radius only</button>
-  <button id="f-clean" aria-pressed="false">Hide look-alikes</button>
-  <button id="f-star" aria-pressed="false">★ Killers only</button>
-</div>
-<div class="legend">
-  <span class="chip good"><span class="ico">★</span>Killer deal</span>
-  <span class="chip warn"><span class="ico">⚠</span>Look-alike</span>
-  <span class="chip good"><span class="ico">▼</span>Price drop</span>
-  <span class="chip info"><span class="ico">◉</span>Hot</span>
-  <span class="chip info"><span class="ico">≈</span>Sells fast</span>
-  <span class="chip warn"><span class="ico">⤢</span>Out of radius</span>
-  <span class="legend-note">what the flags mean</span>
-</div>
-<main class="grid" id="grid">
-{{CARDS}}
-</main>
-<p class="foot">{{FUNNEL}}<br>{{NOTE}}</p>
-<script>
-const grid=document.getElementById('grid');
-const cards=[...grid.children];
-const btns=['f-all','f-radius','f-clean','f-star'];
-function apply(mode){
-  btns.forEach(x=>document.getElementById(x).setAttribute('aria-pressed',String(x===mode)));
-  cards.forEach(c=>{
-    const oor=[...c.querySelectorAll('.chip.warn')].some(e=>e.textContent.includes('Out of radius'));
-    const fake=c.classList.contains('flagged');
-    const star=c.classList.contains('killer');
-    let show=true;
-    if(mode==='f-radius'&&oor)show=false;
-    if(mode==='f-clean'&&fake)show=false;
-    if(mode==='f-star'&&!star)show=false;
-    c.classList.toggle('hide',!show);
-  });
-}
-btns.forEach(id=>document.getElementById(id).addEventListener('click',()=>apply(id)));
-</script>
-<script>
-// ---- the write side -------------------------------------------------------------------
-// The page is static, so every action here is a direct call to GitHub's API with a token
-// you paste once. No server, no backend, nothing to pay for. Every failure path ends in a
-// sentence you can act on — a button that silently does nothing is the worst outcome.
-const CFG = {{CONFIG}};
-const S = {
-  get token(){ return localStorage.getItem('bench_token') || ''; },
-  set token(v){ v ? localStorage.setItem('bench_token', v) : localStorage.removeItem('bench_token'); }
-};
-const $ = s => document.querySelector(s);
-const b64 = str => {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  for (let i = 0; i < bytes.length; i += 0x8000)
-    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-  return btoa(bin);
-};
-const unb64 = s => new TextDecoder().decode(
-  Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
-
-function explain(status, body){
-  const msg = (body && body.message) || '';
-  if (status === 401) return 'GitHub rejected the token. Paste a fresh one under Connection.';
-  if (status === 403) return 'Token lacks permission. It needs Actions: read & write and '
-    + 'Contents: read & write on this repo.';
-  if (status === 404) return 'Not found — usually the token isn\'t scoped to ' + CFG.repo
-    + ', or the workflow file is missing on ' + CFG.branch + '.';
-  if (status === 409 || status === 422) return 'GitHub refused the write (' + (msg || status)
-    + '). Reload the page and try once more — someone else may have written first.';
-  return 'GitHub returned ' + status + (msg ? ': ' + msg : '') + '.';
-}
-
-async function api(path, opts = {}){
-  if (!CFG.repo) throw new Error('This board was built without a repo, so the buttons '
-    + 'have nothing to talk to. Re-run the pipeline from Actions.');
-  if (!S.token) throw new Error('No token yet — tap Connection and paste one.');
-  const res = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
-    headers: Object.assign({
-      'Accept': 'application/vnd.github+json',
-      'Authorization': 'Bearer ' + S.token,
-      'X-GitHub-Api-Version': '2022-11-28'
-    }, opts.headers || {})
-  }));
-  if (!res.ok){
-    let body = null;
-    try { body = await res.json(); } catch (e) { /* GitHub sometimes returns no body */ }
-    throw new Error(explain(res.status, body));
-  }
-  return res.status === 204 ? null : res.json();
-}
-
-const say = (el, msg, kind) => { if (el){ el.textContent = msg; el.className = 'status ' + (kind || ''); } };
-
-async function checkConnection(){
-  const el = $('#conn');
-  if (!CFG.repo){ el.textContent = 'read-only board'; el.className = 'conn'; return; }
-  if (!S.token){ el.textContent = 'not connected'; el.className = 'conn'; return; }
-  try {
-    await api('/repos/' + CFG.repo);
-    el.textContent = 'connected'; el.className = 'conn ok';
-  } catch (err) {
-    el.textContent = 'token problem'; el.className = 'conn bad';
-    el.title = err.message;
-  }
-}
-
-// ---- scrape now -----------------------------------------------------------------------
-$('#scrape-now').addEventListener('click', async () => {
-  const el = $('#conn');
-  say(el, 'starting…');
-  try {
-    await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.boardWorkflow + '/dispatches', {
-      method: 'POST',
-      body: JSON.stringify({ ref: CFG.branch, inputs: {} })
-    });
-    el.textContent = 'scrape started — refresh in a few minutes';
-    el.className = 'conn ok';
-  } catch (err) { el.textContent = err.message; el.className = 'conn bad'; }
-});
-
-// ---- connection dialog ----------------------------------------------------------------
-$('#repo-name').textContent = CFG.repo || '(not configured)';
-$('#open-settings').addEventListener('click', () => {
-  $('#token').value = S.token;
-  $('#settings').showModal();
-});
-$('#save-token').addEventListener('click', () => { S.token = $('#token').value.trim(); setTimeout(checkConnection, 0); });
-$('#forget-token').addEventListener('click', () => { S.token = ''; setTimeout(checkConnection, 0); });
-
-// ---- log a piece ----------------------------------------------------------------------
-const cents = v => { const n = parseFloat(v); return isNaN(n) ? null : Math.round(n * 100); };
-
-async function readJson(path){
-  try {
-    const r = await api('/repos/' + CFG.repo + '/contents/' + path + '?ref=' + CFG.branch
-      + '&nocache=' + Date.now());
-    return { data: JSON.parse(unb64(r.content)), sha: r.sha };
-  } catch (err) {
-    if (/Not found/.test(err.message)) return { data: null, sha: null };
-    throw err;
-  }
-}
-
-document.querySelectorAll('.logform').forEach(form => {
-  form.addEventListener('submit', async ev => {
-    ev.preventDefault();
-    const st = form.querySelector('.status');
-    const id = form.dataset.id;
-    const card = form.closest('article');
-    const fd = new FormData(form);
-    const paid = cents(fd.get('paid')), materials = cents(fd.get('materials'));
-    const hours = parseFloat(fd.get('hours')), sold = cents(fd.get('sold'));
-    if (paid === null && materials === null && isNaN(hours) && sold === null){
-      say(st, 'Nothing to save — fill in at least one field.', 'bad'); return;
-    }
-    say(st, 'saving…');
-    try {
-      const cur = await readJson(CFG.piecesPath);
-      const ledger = cur.data || { version: 1, pieces: {} };
-      const prev = ledger.pieces[id] || { listing_id: id };
-      const entry = Object.assign({}, prev, {
-        listing_id: id,
-        title: prev.title || (card ? card.querySelector('h2').textContent.trim() : '')
-      });
-      if (paid !== null) entry.acquired_price_cents = paid;
-      if (materials !== null) entry.materials_cents = materials;
-      if (!isNaN(hours)) entry.labor_hours = hours;
-      if (sold !== null){
-        entry.sold_price_cents = sold;
-        entry.sold_at = entry.sold_at || new Date().toISOString();
-      }
-      ledger.pieces[id] = entry;
-      const body = { message: 'Log piece ' + id, branch: CFG.branch,
-                     content: b64(JSON.stringify(ledger, null, 1)) };
-      if (cur.sha) body.sha = cur.sha;
-      await api('/repos/' + CFG.repo + '/contents/' + CFG.piecesPath,
-                { method: 'PUT', body: JSON.stringify(body) });
-      say(st, 'Saved. Your numbers update on the next run.', 'ok');
-    } catch (err) { say(st, err.message, 'bad'); }
-  });
-});
-
-// ---- negotiation ----------------------------------------------------------------------
-const POSTURES = [[25,'aggressive'],[50,'measured'],[75,'keen'],[100,'eager']];
-document.querySelectorAll('.negoform').forEach(form => {
-  const slider = form.querySelector('input[name=posture]');
-  const label = form.querySelector('.postval');
-  const show = () => { label.textContent = (POSTURES.find(p => slider.value <= p[0]) || POSTURES[3])[1]; };
-  slider.addEventListener('input', show); show();
-
-  form.addEventListener('submit', async ev => {
-    ev.preventDefault();
-    const st = form.querySelector('.status');
-    const out = form.querySelector('.drafts');
-    const id = form.dataset.id;
-    const fd = new FormData(form);
-    out.innerHTML = '';
-    say(st, 'asking… this runs on GitHub and takes a minute or two.');
-    try {
-      const before = await readJson(CFG.draftsDir + '/' + id + '.json');
-      const stamp = before.data ? before.data.generated_at : null;
-      await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.negotiateWorkflow + '/dispatches', {
-        method: 'POST',
-        body: JSON.stringify({ ref: CFG.branch, inputs: {
-          listing_id: id, posture: String(fd.get('posture')),
-          conversation: String(fd.get('conversation') || ''),
-          notes: String(fd.get('notes') || '')
-        } })
-      });
-      // Poll the committed file rather than the run, so a failure that still writes a
-      // reason surfaces as that reason instead of a red X you have to go hunting for.
-      for (let i = 0; i < 60; i++){
-        await new Promise(r => setTimeout(r, 5000));
-        const now = await readJson(CFG.draftsDir + '/' + id + '.json');
-        if (now.data && now.data.generated_at !== stamp){ renderDrafts(out, st, now.data); return; }
-        say(st, 'still working… ' + ((i + 1) * 5) + 's');
-      }
-      say(st, 'Gave up waiting after five minutes. Check the Actions tab — the run may '
-        + 'still be going, and the drafts will appear here when it finishes.', 'bad');
-    } catch (err) { say(st, err.message, 'bad'); }
-  });
-});
-
-function renderDrafts(out, st, data){
-  if (data.status !== 'ok'){
-    say(st, data.error || 'Drafting failed and gave no reason.', 'bad'); return;
-  }
-  say(st, data.posture_label + ' · walk away above $'
-    + Math.round((data.walkaway_price_cents || 0) / 100), 'ok');
-  out.innerHTML = data.drafts.map(d => {
-    const over = (d.over_walkaway_cents || []).length
-      ? '<p class="reason">⚠ mentions $'
-        + d.over_walkaway_cents.map(c => Math.round(c / 100)).join(', $')
-        + ' — above your walk-away. Check before sending.</p>' : '';
-    const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    return '<div class="draft"><p class="dtext">' + esc(d.text) + '</p>'
-      + '<p class="basis">' + esc(d.rationale) + '</p>' + over
-      + '<button type="button" class="copy">Copy</button></div>';
-  }).join('');
-  out.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', () => {
-    const text = btn.parentElement.querySelector('.dtext').textContent;
-    navigator.clipboard.writeText(text)
-      .then(() => { btn.textContent = 'Copied'; })
-      .catch(() => { btn.textContent = 'Copy failed — select the text instead'; });
-  }));
-}
-
-checkConnection();
-</script>
-</body>
-</html>
-"""

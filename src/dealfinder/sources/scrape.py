@@ -161,6 +161,10 @@ def _scan_searches(
         except Exception as exc:  # noqa: BLE001 — one bad search shouldn't sink the run
             log.warning("search_failed", url=url, error=str(exc)[:300])
             failed.append(f"{raw_url}: {exc}")
+            # A failed search saw nothing, which is the opposite of seeing everything —
+            # record it as truncated coverage so observe() can't treat this scan as a
+            # full view of the market and retire listings this search never looked for.
+            coverage[raw_url] = SearchCoverage(url=raw_url, last_count=0, truncated=True)
             continue
         out += got
         coverage[raw_url] = SearchCoverage(
@@ -191,11 +195,20 @@ def _fetch_details(
         raise DetailStageUnsupported(str(exc)) from exc
     if not got:
         raise DetailStageUnsupported("the detail run returned no records")
-    return {
+    usable = {
         lst.fb_listing_id: lst.model_copy(update={"detail_fetched": True})
         for lst in got
         if lst.detail_fetched or lst.description
     }
+    if not usable:
+        # Records came back but none carried detail-page evidence (no description, no
+        # gallery). Treating that as success would persist detail_supported=True while
+        # marking nothing as detailed — so the same ids get re-billed every single run.
+        # Raising routes down the fallback ladder, whose verdict is paid for once.
+        raise DetailStageUnsupported(
+            f"{len(got)} detail records returned, none usable (no description or gallery)"
+        )
+    return usable
 
 
 def _merge(index: Sequence[RawListing], details: Mapping[str, RawListing]) -> list[RawListing]:

@@ -38,6 +38,10 @@ class RawListing(BaseModel):
     is_sold: bool | None = None
     is_live: bool | None = None
     posted_at: datetime | None = None
+    #: When this record was actually observed on Marketplace. A live scrape leaves it
+    #: None (meaning "now"); a dataset recovered from an old run sets it to that run's
+    #: time, so three-day-old evidence cannot masquerade as a fresh sighting.
+    observed_at: datetime | None = None
 
 
 class AppraisalResult(BaseModel):

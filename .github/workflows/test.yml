@@ -1,0 +1,32 @@
+# CI: the suite is offline by construction (providers injected, no network),
+# so this needs no secrets and finishes in under a minute.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e '.[dev]'
+      - run: python -m pytest -q
+      # A broken console script would go unnoticed otherwise — the workflows
+      # invoke the modules directly.
+      - run: dealfinder-board --help && dealfinder-negotiate --help

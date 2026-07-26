@@ -33,6 +33,7 @@ from dealfinder.ranking import (
     roi_to_score,
     viewing_priority,
 )
+from dealfinder.prescreen import prescreen
 from dealfinder.resale import PieceCosts, ResalePlan, price_piece
 from dealfinder.selection import AppraisalPlan, plan_appraisals
 from dealfinder.sources.apify import records_to_listings
@@ -56,6 +57,7 @@ class EvaluatedPiece:
     is_killer: bool
     price_dropped: bool
     out_of_radius: bool
+    days_since_seen: float = 0.0
     badges: list[Badge] = field(default_factory=list)
 
 
@@ -117,7 +119,8 @@ def run_valuation(
             continue
         pieces.append(
             evaluate_piece(
-                listing, appr, hourly_rate_cents=hourly_rate_cents, in_radius=in_radius
+                listing, appr, hourly_rate_cents=hourly_rate_cents, in_radius=in_radius,
+                vertical=vertical,
             )
         )
 
@@ -132,6 +135,8 @@ def evaluate_piece(
     hourly_rate_cents: int = 3000,
     in_radius: Callable[[str], bool] | None = None,
     logged_costs: PieceCosts | None = None,
+    days_since_seen: float = 0.0,
+    vertical: Vertical = DEFAULT_VERTICAL,
 ) -> EvaluatedPiece:
     """Score one listing against an appraisal — no AI, no I/O, pure computation.
 
@@ -164,9 +169,13 @@ def evaluate_piece(
         maker_guess=appraisal.maker_guess, confidence=appraisal.confidence,
         identified_item=appraisal.identified_item, authenticity=auth,
     )
+    # The pre-screen score is free and already encodes the vertical's hot signals —
+    # it was previously computed during selection, discarded, and hardcoded 0 here,
+    # which quietly made the "Hot" badge a synonym for "price drop".
+    pre = prescreen(listing, vertical, require_photo=False)
     heat = heat_score(
         text=f"{listing.title} {listing.description}",
-        prescreen_score=0, price_dropped=dropped,
+        prescreen_score=pre.score, price_dropped=dropped,
     )
     roi = roi_to_score(
         appraisal.est_restored_resale_value_cents, ask + appraisal.est_restoration_cost_cents
@@ -177,12 +186,14 @@ def evaluate_piece(
     )
     prio = viewing_priority(
         deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
-        roi_score=roi, out_of_radius=oor,
+        roi_score=roi, out_of_radius=oor, days_since_seen=days_since_seen,
     )
     return EvaluatedPiece(
         listing=listing, appraisal=appraisal, authenticity=auth, deal_score=deal,
         cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
         priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
+        days_since_seen=days_since_seen,
         badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
-                      authenticity=auth, out_of_radius=oor),
+                      authenticity=auth, out_of_radius=oor,
+                      days_since_seen=days_since_seen),
     )

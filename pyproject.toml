@@ -6,18 +6,23 @@ readme = "README.md"
 requires-python = ">=3.11"
 # Deliberately small. The pipeline runs on GitHub Actions with the stdlib for HTTP,
 # JSON files for state, and a generated static page for the UI — so there is no web
-# framework, no ORM and no browser driver to install. `anthropic` is only needed if you
-# switch the appraiser to the metered API instead of your Claude subscription.
+# framework, no ORM and no browser driver to install.
 dependencies = [
     "pydantic>=2.9",
-    "pydantic-settings>=2.6",
     "structlog>=24.4",
-    "anthropic>=0.40",
 ]
 
 [project.optional-dependencies]
+# The metered-API path. The default (subscription) path shells out to the Claude Code
+# CLI and needs neither of these — installing them on every scheduled Actions run for a
+# code path that never executes was pure waste.
+api = [
+    "anthropic>=0.40",
+    "pydantic-settings>=2.6",
+]
 dev = [
     "pytest>=8.3",
+    "dealfinder[api]",
 ]
 
 [project.scripts]

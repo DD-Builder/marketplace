@@ -20,6 +20,7 @@ Status of the drivers:
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -240,7 +241,11 @@ class _UnimplementedProvider:
 
 _BUILDERS = {
     "claude-api": lambda: ClaudeApiAppraiser(),
-    "claude-code": lambda: ClaudeCodeAppraiser(),
+    # Empty model = the CLI's own default. APPRAISE_MODEL pins it when you want the
+    # vision-critical valuation call on a specific model.
+    "claude-code": lambda: ClaudeCodeAppraiser(
+        model=(os.getenv("APPRAISE_MODEL") or "").strip()
+    ),
     "openai": lambda: _UnimplementedProvider("openai"),
     "gemini": lambda: _UnimplementedProvider("gemini"),
     "grok": lambda: _UnimplementedProvider("grok"),

@@ -64,8 +64,12 @@ Paste a fine-grained GitHub token into **Connection** once, and the page can als
 - **Draft a message to the seller** — a posture slider from *ready to walk* to *pay asking
   today*, plus the thread so far. Drafts are generated on Actions and appear on the card.
 
-The token lives only in your browser's local storage. Anyone with your unlocked device
-could press these buttons; it's revocable in one click.
+The token lives in your browser's localStorage. Be clear-eyed about it: Contents-write
+scope can push code (including workflow changes that read repo secrets), and localStorage
+is shared across every GitHub Pages project site on your username — so scope the token to
+this one repository and treat it as disposable. Drafts you generate (including pasted
+seller messages) are committed to `.drafts/`, outside the published site — though on a
+public repo the repository itself is still readable.
 
 ## Setup
 
@@ -105,8 +109,8 @@ small now — widen them once you know what a run costs you.
 pip install -e '.[dev]'
 python -m pytest                                   # no network, no spend
 
-# A full offline run over a saved export — no scrape, no AI:
-python -m dealfinder.run_board --from-json pilot/real_listings.json --out /tmp/site --dry-run
+# A full offline run over a saved Apify export (any dataset JSON you've downloaded):
+python -m dealfinder.run_board --from-json my_export.json --out /tmp/site --dry-run
 
 # Verify the two-stage scrape against Apify for a few cents:
 python -m dealfinder.sources.scrape
@@ -121,13 +125,15 @@ python -m dealfinder.sources.scrape
 | `sources/apify.py` | Apify REST client and record adapter |
 | `catalog.py` | persistent listings + stored appraisals |
 | `selection.py` | cost control: dedup, seen-diff, cap |
+| `prescreen.py` / `verticals.py` | the free junk filter and its per-niche knowledge |
 | `engine.py` | `evaluate_piece` — scoring a listing against an appraisal |
+| `ranking.py` | priority, liquidity, heat, badges (`BADGE_DEFS` feeds the page legend) |
 | `appraiser.py` | provider seam: subscription CLI, metered API, or a future model |
 | `authenticity.py` | look-alike and knockoff detection |
 | `resale.py` | market price and your-numbers pricing |
 | `pieces.py` | your books: costs, sales, realised hourly wage |
 | `negotiation/` | posture, prompt building, drafters |
-| `board.py` | the static page, including its write side |
+| `board.py` + `templates/` | the static page: data → markup in Python, skeleton/CSS/JS as real files |
 
 ## Honest limits
 

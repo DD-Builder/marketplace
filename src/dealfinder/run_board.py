@@ -118,6 +118,10 @@ def _download_photos(
             break
         paths: list[Path] = []
         for i, photo in enumerate(listing.photos[:per_listing]):
+            if not photo.remote_url.startswith("http"):
+                # A local: sentinel from the catalogue — nothing to download, and it must
+                # not count against the circuit breaker. The on-disk supplement covers it.
+                continue
             dest = out_dir / f"{listing.fb_listing_id}_{i}.jpg"
             try:
                 req = urllib.request.Request(
@@ -136,10 +140,83 @@ def _download_photos(
     return got
 
 
+def _reconcile_photos(catalog: catalog_mod.Catalog, photos_dir: Path) -> int:
+    """Link photo files already on disk to entries that lost (or never had) photo_rel.
+
+    The live board shipped with 20 committed photos belonging to entries whose
+    photo_rel was never set — files paid for, present, and invisible. This runs at
+    startup, is idempotent, and also removes files whose listing left the catalogue.
+    """
+    if not photos_dir.is_dir():
+        return 0
+    linked = 0
+    for entry in catalog.listings.values():
+        if not entry.photo_rel:
+            match = sorted(photos_dir.glob(f"{entry.id}.*"))
+            if match:
+                entry.photo_rel = f"photos/{match[0].name}"
+                linked += 1
+        if not entry.extra_photo_rels:
+            extras = sorted(photos_dir.glob(f"{entry.id}_[0-9].*"))
+            if extras:
+                entry.extra_photo_rels = [f"photos/{p.name}" for p in extras]
+    for f in photos_dir.iterdir():
+        if not f.is_file():
+            continue
+        base = f.stem
+        if len(base) > 2 and base[-2] == "_" and base[-1].isdigit():
+            base = base[:-2]  # strip a gallery suffix (_1, _2) only, never inner underscores
+        if base not in catalog.listings:
+            f.unlink()
+    if linked:
+        log.info("photos_reconciled", linked=linked)
+    return linked
+
+
+def _store_extra_photos(
+    catalog: catalog_mod.Catalog, photos: dict[str, list[Path]], photos_dir: Path
+) -> None:
+    """Keep the gallery shots. The downloader fetches up to 3 per listing; only [0] used
+    to survive — the workflow rm -rf'd the rest after paying to fetch them."""
+    photos_dir.mkdir(parents=True, exist_ok=True)
+    for lid, paths in photos.items():
+        entry = catalog.listings.get(lid)
+        if entry is None or len(paths) < 2:
+            continue
+        rels = []
+        for i, src in enumerate(paths[1:3], start=1):
+            src = Path(src)
+            if not src.exists():
+                continue
+            dest = photos_dir / f"{lid}_{i}{src.suffix or '.jpg'}"
+            if src.resolve() != dest.resolve():
+                import shutil
+
+                shutil.copyfile(src, dest)
+            rels.append(f"photos/{dest.name}")
+        if rels:
+            entry.extra_photo_rels = rels
+
+
+def _write_status(out_dir: Path, state: str, **counts) -> None:
+    """A tiny machine-readable verdict the page reads, so a quota-blocked or auth-broken
+    day shows a banner instead of a silently stale board."""
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "status.json").write_text(
+            json.dumps({"state": state,
+                        "generated_at": datetime.now(timezone.utc).isoformat(),
+                        **counts}, indent=1),
+            encoding="utf-8",
+        )
+    except OSError as exc:  # a status file must never sink the run it describes
+        log.warning("status_write_failed", error=str(exc)[:120])
+
+
 def _load_seen(path: Path) -> dict[str, int | None]:
     if path.exists():
         try:
-            return json.loads(path.read_text())
+            return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             log.warning("seen_ledger_unreadable", path=str(path))
     return {}
@@ -188,7 +265,13 @@ def _check_credentials(provider: str) -> int:
 
 
 def _search_urls(raw: str) -> list[str]:
-    parts = [p.strip() for chunk in raw.split("\n") for p in chunk.split(",")]
+    import re
+
+    parts: list[str] = []
+    for line in raw.split("\n"):
+        # A comma separates URLs only when the next chunk starts one — a comma *inside*
+        # a query value must not split the URL into two garbage halves.
+        parts += [p.strip() for p in re.split(r",(?=\s*https?://)", line.strip())]
     return [p for p in parts if p.startswith("http")]
 
 
@@ -201,12 +284,12 @@ def main(argv: list[str] | None = None) -> int:
                     help="legacy flat ledger; read once to seed a missing catalogue")
     ap.add_argument("--pieces", default="docs/pieces.json",
                     help="your books: price paid, materials, hours, sale price")
-    ap.add_argument("--limit", type=int, default=int(_env("RESULTS_LIMIT", "60")),
+    ap.add_argument("--limit", type=int, default=_int_env("RESULTS_LIMIT") or 60,
                     help="listings to request per search URL (drives most of the scrape cost)")
     ap.add_argument("--max-appraisals", type=int,
-                    default=int(_env("MAX_APPRAISALS", "12")),
+                    default=_int_env("MAX_APPRAISALS") or 12,
                     help="hard cap on AI calls this run")
-    ap.add_argument("--wildcards", type=int, default=int(_env("WILDCARDS", "3")))
+    ap.add_argument("--wildcards", type=int, default=_int_env("WILDCARDS") or 3)
     ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
     ap.add_argument("--from-json", default="", help="use a local JSON export instead of scraping")
     ap.add_argument("--recover", action="store_true",
@@ -223,7 +306,15 @@ def main(argv: list[str] | None = None) -> int:
 
     out_dir = Path(args.out)
     catalog_path = Path(args.catalog)
-    catalog = _open_catalog(catalog_path, Path(args.seen))
+    try:
+        catalog = _open_catalog(catalog_path, Path(args.seen))
+    except catalog_mod.CatalogCorrupt as exc:
+        # Refusing to run is the fix: proceeding would save an empty catalogue over the
+        # damaged one and destroy every stored appraisal.
+        print(str(exc), file=sys.stderr)
+        _write_status(out_dir, "catalog_corrupt")
+        return 6
+    _reconcile_photos(catalog, out_dir / "photos")
     seen = catalog_mod.seen_view(catalog)
     ledger = load_ledger(Path(args.pieces))
     logged = costs_by_id(ledger)
@@ -239,8 +330,9 @@ def main(argv: list[str] | None = None) -> int:
 
     # 1. Get listings — from Apify, or a local export for testing.
     coverage: dict[str, catalog_mod.SearchCoverage] = {}
+    scan_failed = False
     if args.from_json:
-        records = json.loads(Path(args.from_json).read_text())
+        records = json.loads(Path(args.from_json).read_text(encoding="utf-8"))
         listings = records_to_listings(records)
     elif args.recover:
         token = os.getenv("APIFY_TOKEN", "").strip()
@@ -248,7 +340,11 @@ def main(argv: list[str] | None = None) -> int:
             print("APIFY_TOKEN is not set — cannot reach your past runs.", file=sys.stderr)
             return 2
         listings, report = recover_runs(
-            token=token, actor=_env("APIFY_ACTOR", "") or None, limit=args.recover_limit,
+            # Scoped to the scraping actor: an account may hold runs of unrelated actors
+            # whose records would pollute the catalogue.
+            token=token,
+            actor=_env("APIFY_ACTOR", "apify~facebook-marketplace-scraper"),
+            limit=args.recover_limit,
         )
         for run in report:
             log.info("recovered_run", run=run["id"], started=run["started_at"],
@@ -299,36 +395,64 @@ def main(argv: list[str] | None = None) -> int:
         log.info("scrape", summary=scraped.summary())
         if scraped.searches_failed and not listings:
             print(
-                "Every search failed, so there is nothing to appraise:\n  "
-                + "\n  ".join(scraped.searches_failed),
+                "Every search failed, so nothing new was seen this run:\n  "
+                + "\n  ".join(scraped.searches_failed)
+                + "\nRebuilding the board from the catalogue instead.",
                 file=sys.stderr,
             )
-            return 5
+            scan_failed = True
     log.info("scraped", count=len(listings))
 
     # 2. Fold the scan into the catalogue *before* planning, so price history, sold/gone
     #    state and first-seen dates are recorded even for listings we never pay to value.
     #    `seen` was snapshotted above, so the diff still sees pre-scan prices.
-    obs = catalog_mod.observe(catalog, listings, coverage=coverage)
+    if scan_failed:
+        # A scan that never reached Marketplace is not evidence that anything is missing.
+        # observe() counts a miss against every live entry it doesn't see, so running it on
+        # a quota-blocked day would retire listings we simply never looked for.
+        obs = catalog_mod.ObserveReport()
+        log.info("observe_skipped", reason="no search reached Marketplace")
+    else:
+        # Recovered datasets and local exports carry no absence evidence: they mention
+        # the listings they mention and imply nothing about the rest of the market.
+        obs = catalog_mod.observe(
+            catalog, listings, coverage=coverage,
+            absence_evidence=not (args.from_json or args.recover),
+        )
     log.info("observed", new=obs.new, price_drops=obs.price_drops, gone=obs.marked_gone,
              sold=obs.marked_sold)
 
     # 3. Cost-controlled selection happens inside the engine; but photos must be fetched
     #    for the pieces that will actually be appraised, so we plan first. `plan_appraisals`
     #    is pure, so this plan is identical to the one the engine computes.
-    top_n = max(args.max_appraisals - args.wildcards, 1)
-    backfill = catalog_mod.unappraised_live(catalog)
+    # MAX_APPRAISALS is the hard total. Wildcards come out of it, never on top of it —
+    # previously cap 3 + wildcards 3 quietly spent 4.
+    wildcards = min(args.wildcards, max(args.max_appraisals - 1, 0))
+    top_n = max(args.max_appraisals - wildcards, 1)
     # A price drop on a piece we already valued re-ranks for free — the object didn't
     # change, only what it costs us. Two things do earn a second look: a thin record that
     # just gained a description, and a piece we valued blind now that we can show the
-    # model a photograph.
-    redo = list(obs.detail_upgrades)
+    # model a photograph. Those redo candidates must be IN the pool, not merely un-skipped:
+    # they are neither new (the seen-diff ignores them) nor unappraised (backfill ignores
+    # them), so excluding them from `valued` alone leaves them unreachable.
+    redo_ids = set(obs.detail_upgrades)
     if not args.no_photos:
-        redo += list(catalog_mod.blind_appraisals(catalog))
-    valued = catalog_mod.already_valued(catalog, exclude=redo)
+        redo_ids |= {
+            i for i in catalog_mod.blind_appraisals(catalog)
+            if catalog.listings[i].photo_urls and catalog.listings[i].state == "live"
+        }
+    redo_listings = [
+        catalog.listings[i].to_listing() for i in sorted(redo_ids) if i in catalog.listings
+    ]
+    pool = catalog_mod.unappraised_live(catalog)
+    # Entries with a photo already on disk first: they can be valued with vision TODAY,
+    # even on a day the scrape is quota-blocked, while the rest would be valued blind.
+    pool.sort(key=lambda l: catalog.listings[l.fb_listing_id].photo_rel is None)
+    backfill = redo_listings + pool
+    valued = catalog_mod.already_valued(catalog, exclude=redo_ids)
     plan = plan_appraisals(
         listings, seen, vertical=vertical,
-        top_n=top_n, wildcards=args.wildcards, backfill=backfill, already_valued=valued,
+        top_n=top_n, wildcards=wildcards, backfill=backfill, already_valued=valued,
     )
     log.info("plan", summary=plan.summary())
 
@@ -336,6 +460,18 @@ def main(argv: list[str] | None = None) -> int:
         {} if args.dry_run or args.no_photos
         else _download_photos(plan.to_appraise, out_dir / "_photos")
     )
+    if not (args.dry_run or args.no_photos):
+        # Photos already on disk from an earlier run serve the appraiser too. The CDN
+        # URLs for these expired within hours, but the pixels never went anywhere —
+        # without this, a piece whose photo we committed weeks ago was valued blind.
+        for lst in plan.to_appraise:
+            lid = lst.fb_listing_id
+            if lid not in photos:
+                on_disk = sorted((out_dir / "photos").glob(f"{lid}.*")) + sorted(
+                    (out_dir / "photos").glob(f"{lid}_[0-9].*")
+                )
+                if on_disk:
+                    photos[lid] = on_disk[:3]
 
     # 4. Appraise (or stub in dry-run) and rank.
     if args.dry_run:
@@ -362,7 +498,7 @@ def main(argv: list[str] | None = None) -> int:
         provider = get_appraiser(_env("APPRAISER_PROVIDER", "claude-code"))
     log.info("appraiser", provider=provider.name)
 
-    hourly = int(_env("HOURLY_RATE_CENTS", "3000"))
+    hourly = _int_env("HOURLY_RATE_CENTS") or 3000
     in_radius = _radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS))
     result = run_valuation(
         listings, seen,
@@ -370,7 +506,7 @@ def main(argv: list[str] | None = None) -> int:
         vertical=vertical,
         hourly_rate_cents=hourly,
         top_n=top_n,
-        wildcards=args.wildcards,
+        wildcards=wildcards,
         in_radius=in_radius,
         image_paths_by_id={k: v for k, v in photos.items()} if photos else None,
         backfill=backfill,
@@ -379,48 +515,90 @@ def main(argv: list[str] | None = None) -> int:
 
     # 5. Store this run's appraisals, then render the *accumulated* board.
     cover = {lid: paths[0] for lid, paths in photos.items() if paths}
-    catalog_mod.record_appraisals(
-        catalog, result.pieces, appraiser=provider.name,
-        photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}" for lid, p in cover.items()},
-        saw_photos=photos.keys(),
-    )
+
+    if not args.dry_run:
+        # A dry run's stub appraisals must never be recorded: they would satisfy
+        # "already valued" forever and permanently poison the entries they touch.
+        catalog_mod.record_appraisals(
+            catalog, result.pieces, appraiser=provider.name,
+            photo_rel={lid: f"photos/{lid}{Path(p).suffix or '.jpg'}"
+                       for lid, p in cover.items()},
+            saw_photos=photos.keys(),
+        )
     pruned = catalog_mod.prune(catalog)
     for gone_id in pruned.removed_ids:
-        for stale in (out_dir / "photos").glob(f"{gone_id}.*"):
-            stale.unlink(missing_ok=True)
+        # Cover and gallery shots, by exact stem — `{id}*` would also match ids that
+        # merely start with this one.
+        for pattern in (f"{gone_id}.*", f"{gone_id}_[0-9].*"):
+            for stale in (out_dir / "photos").glob(pattern):
+                stale.unlink(missing_ok=True)
+    # Persist the expensive artifact *now*, before rendering. A crash anywhere in the
+    # photo/board code below must not cost the appraisals this run just paid for.
+    catalog_mod.save_catalog(catalog, catalog_path)
+
+    # Photos for pieces that will be on the board but have none yet. Previously only the
+    # listings appraised *this* run were fetched, so a piece valued last week showed a grey
+    # placeholder forever. Facebook's URLs expire within hours, so old ones simply fail —
+    # that's fine, the downloader tolerates it and a fresh scrape supplies working ones.
+    if not (args.dry_run or args.no_photos):
+        need_photos = [
+            e.to_listing() for e in catalog_mod.live_entries(catalog)
+            if not e.photo_rel and e.photo_urls
+        ][: _int_env("MAX_PHOTO_BACKFILL") or 40]
+        if need_photos:
+            got = _download_photos(need_photos, out_dir / "_photos")
+            log.info("photo_backfill", wanted=len(need_photos), got=len(got))
+            photos.update(got)
+            for lid, paths in got.items():
+                entry = catalog.listings.get(lid)
+                if entry and paths:
+                    entry.photo_rel = f"photos/{lid}{Path(paths[0]).suffix or '.jpg'}"
+            cover.update({lid: paths[0] for lid, paths in got.items() if paths})
+
+    # Gallery shots for everything downloaded this run (appraisal + backfill alike).
+    if photos:
+        _store_extra_photos(catalog, photos, out_dir / "photos")
 
     # Every live, appraised piece — not just this run's dozen — re-scored against today's
-    # price. This is why a piece found last week is still on the board this week.
+    # price and against how long ago we last confirmed it was still for sale.
+    now_utc = datetime.now(timezone.utc)
     board_pieces = []
     for entry in catalog_mod.live_entries(catalog):
         try:
             board_pieces.append(
                 evaluate_piece(entry.to_listing(), entry.appraisal,
                                hourly_rate_cents=hourly, in_radius=in_radius,
-                               logged_costs=logged.get(entry.id))
+                               logged_costs=logged.get(entry.id), vertical=vertical,
+                               days_since_seen=max(
+                                   0.0, (now_utc - entry.last_seen).total_seconds() / 86400))
             )
         except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
             log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])
     board_pieces.sort(key=lambda p: p.priority, reverse=True)
-    board_pieces = board_pieces[: int(_env("MAX_CARDS", "150"))]
+    board_pieces = board_pieces[: _int_env("MAX_CARDS") or 150]
 
-    now = datetime.now(timezone.utc).strftime("%b %d, %Y · %H:%M UTC")
+    now = datetime.now(timezone.utc)
     page = write_site(
         RunResult(pieces=board_pieces, plan=plan), out_dir,
         meta=BoardMeta(
             region=_env("REGION_LABEL", "Lexington · 40 mi"),
-            generated_at=f"updated {now}",
+            generated_at=f"updated {now.strftime('%b %d, %Y · %H:%M UTC')}",
+            generated_at_iso=now.isoformat(),
             note=f"Valued by {provider.name}. Photos and prices as scraped; verify before buying.",
             # In Actions these come free; locally you can set them to make the page's
             # buttons work against your repo. Empty renders a read-only board that says so.
             repo=_env("GITHUB_REPOSITORY", ""),
             branch=_env("BOARD_BRANCH", "") or _env("GITHUB_REF_NAME", "main"),
             pieces_path=args.pieces,
-            drafts_dir=_env("DRAFTS_DIR", "docs/drafts"),
+            drafts_dir=_env("DRAFTS_DIR", ".drafts"),
         ),
         photo_files=cover,
         extra_photo_map={
             e.id: e.photo_rel for e in catalog_mod.live_entries(catalog) if e.photo_rel
+        },
+        gallery_map={
+            e.id: e.extra_photo_rels
+            for e in catalog_mod.live_entries(catalog) if e.extra_photo_rels
         },
     )
     catalog_mod.save_catalog(catalog, catalog_path)
@@ -433,18 +611,24 @@ def main(argv: list[str] | None = None) -> int:
         f"appraised {len(result.pieces)} this run · catalogue {len(catalog.listings)} "
         f"({len(board_pieces)} on board) · {len(result.killers)} killers · wrote {page}"
     )
-
     # A run that selected pieces but valued none of them is a failure, even though each
     # individual error is caught so one bad listing can't sink the batch. Reporting success
-    # here published an empty board and hid a missing credential.
+    # here published an empty board and hid a missing credential. It outranks a failed scan
+    # below because a dead credential needs fixing now; a spent quota just needs waiting.
     if plan.to_appraise and not result.pieces and not args.dry_run:
         print(
             f"\nAll {len(plan.to_appraise)} appraisals failed — the board is empty. "
             "See the appraisal_failed warnings above for the reason.",
             file=sys.stderr,
         )
+        _write_status(out_dir, "appraisals_failed",
+                      failed=len(plan.to_appraise), on_board=len(board_pieces))
         return 4
-    return 0
+    # The board is up to date either way, but a run that couldn't reach Marketplace still
+    # exits non-zero — a silent success would hide a scraper that has stopped working.
+    _write_status(out_dir, "scan_blocked" if scan_failed else "ok",
+                  on_board=len(board_pieces), appraised=len(result.pieces))
+    return 5 if scan_failed else 0
 
 
 if __name__ == "__main__":
