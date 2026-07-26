@@ -1,0 +1,41 @@
+# A 30-second answer to "is CLAUDE_CODE_OAUTH_TOKEN actually valid right now?"
+# Exists because the alternative was discovering a dead token twelve failed
+# appraisals into a full pipeline run. Costs nothing but a few seconds of
+# Actions time and one trivial model call against the subscription.
+name: Token check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Ask Claude to say ok
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "::error::The CLAUDE_CODE_OAUTH_TOKEN secret is empty or missing."
+            exit 1
+          fi
+          set +e
+          OUT=$(claude -p "Reply with exactly the word: ok" --output-format json 2>&1)
+          CODE=$?
+          set -e
+          # The CLI never echoes the token, so this output is safe to show.
+          echo "$OUT" | head -c 2000
+          echo
+          if [ $CODE -eq 0 ]; then
+            echo "::notice::Token works. Valuations will bill to the subscription."
+          else
+            echo "::error::Token rejected — the message above is Anthropic's exact reason. Re-run 'claude setup-token' ONCE, copy the single sk-ant-oat... line, and update the secret."
+          fi
+          exit $CODE
