@@ -1,7 +1,8 @@
-# A 30-second answer to "is CLAUDE_CODE_OAUTH_TOKEN actually valid right now?"
-# Exists because the alternative was discovering a dead token twelve failed
-# appraisals into a full pipeline run. Costs nothing but a few seconds of
-# Actions time and one trivial model call against the subscription.
+# A 30-second answer to "will valuations authenticate right now?"
+# Tests whichever provider is configured: the subscription CLI token by default,
+# or the metered API key when the APPRAISER_PROVIDER repository variable says
+# claude-api. Exists because the alternative was discovering a dead credential
+# twelve failed appraisals into a full pipeline run.
 name: Token check
 
 on:
@@ -15,10 +16,38 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Check the metered API key
+        if: ${{ vars.APPRAISER_PROVIDER == 'claude-api' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::APPRAISER_PROVIDER is claude-api but the ANTHROPIC_API_KEY secret is empty or missing."
+            exit 1
+          fi
+          pip -q install anthropic
+          python - <<'EOF'
+          import sys
+          import anthropic
+          try:
+              msg = anthropic.Anthropic().messages.create(
+                  model="claude-haiku-4-5-20251001", max_tokens=16,
+                  messages=[{"role": "user", "content": "Reply with exactly the word: ok"}],
+              )
+              text = "".join(b.text for b in msg.content if getattr(b, "type", "") == "text")
+              print("reply:", text.strip())
+          except Exception as exc:
+              print(f"::error::Anthropic rejected the key: {exc}")
+              sys.exit(1)
+          EOF
+          echo "::notice::API key works. Valuations will bill per token to this key."
+
       - name: Install Claude Code
+        if: ${{ vars.APPRAISER_PROVIDER != 'claude-api' }}
         run: npm install -g @anthropic-ai/claude-code
 
-      - name: Ask Claude to say ok
+      - name: Check the subscription token
+        if: ${{ vars.APPRAISER_PROVIDER != 'claude-api' }}
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |

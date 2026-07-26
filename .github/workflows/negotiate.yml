@@ -53,15 +53,19 @@ jobs:
           python-version: "3.12"
 
       - name: Install the app
-        run: pip install -e .
+        run: pip install -e '.[api]'
 
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
 
       - name: Draft the reply
         env:
+          # Same provider switch as the deal board: the APPRAISER_PROVIDER repository
+          # variable set to claude-api routes drafting through the metered API instead.
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          APPRAISER_PROVIDER: claude-code
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APPRAISER_PROVIDER: ${{ vars.APPRAISER_PROVIDER || 'claude-code' }}
+          NEGOTIATION_MODEL: ${{ vars.NEGOTIATION_MODEL }}
           HOURLY_RATE_CENTS: ${{ vars.HOURLY_RATE_CENTS }}
         run: |
           python -m dealfinder.negotiate \

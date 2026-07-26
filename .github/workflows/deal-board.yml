@@ -47,7 +47,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install the app
-        run: pip install -e .
+        # [api] pulls the metered-path SDK too, so switching provider is one variable.
+        run: pip install -e '.[api]'
 
       - name: Install Claude Code
         if: ${{ !inputs.dry_run }}
@@ -55,10 +56,15 @@ jobs:
 
       - name: Run the pipeline
         env:
-          # Your Max subscription drives the valuations — no metered API bill.
+          # Provider: claude-code bills your Max subscription via the CLI (needs the
+          # OAuth token). Set the APPRAISER_PROVIDER repository VARIABLE to claude-api
+          # to pay per token with an ANTHROPIC_API_KEY secret instead — the escape
+          # hatch for when the OAuth token can't be minted from the device you're on.
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APPRAISER_PROVIDER: ${{ vars.APPRAISER_PROVIDER || 'claude-code' }}
+          APPRAISE_MODEL: ${{ vars.APPRAISE_MODEL }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-          APPRAISER_PROVIDER: claude-code
           SEARCH_URLS: ${{ vars.SEARCH_URLS }}
           REGION_LABEL: ${{ vars.REGION_LABEL }}
           IN_RADIUS_TOWNS: ${{ vars.IN_RADIUS_TOWNS }}
