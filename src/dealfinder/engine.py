@@ -63,6 +63,18 @@ class EvaluatedPiece:
     tier: str = "mid"
     restoration_notes: list[str] = field(default_factory=list)
     badges: list[Badge] = field(default_factory=list)
+    #: The appraisal exactly as the model returned it, before :mod:`restoration` clamped
+    #: it. ``appraisal`` above carries the clamped numbers so the card's figures agree
+    #: with its scores — but this is what gets persisted, because the catalogue must hold
+    #: the model's own answer. Storing the clamped copy would destroy the original on the
+    #: first write (it exists nowhere else), freeze every stored piece at whatever the
+    #: bounds happened to be that day, and leave the board re-clamping already-clamped
+    #: numbers — which is a no-op, so no card would ever show that it had been corrected.
+    appraisal_raw: AppraisalResult | None = None
+    #: Competing supply behind ``liquidity``, when a comps source measured it. Persisted
+    #: for the same reason the appraisal is: it's an observation about the market, not a
+    #: score, so re-ranking from the catalogue shouldn't have to re-query eBay for it.
+    market_supply: int | None = None
 
 
 @dataclass
@@ -175,9 +187,9 @@ def evaluate_piece(
     bounds = clamp_restoration(
         appraisal.est_restoration_cost_cents,
         appraisal.est_restoration_effort_hours,
-        hourly_rate_cents=hourly_rate_cents,
         restored_value_cents=appraisal.est_restored_resale_value_cents,
     )
+    appraisal_raw = appraisal
     if bounds.adjusted:
         appraisal = appraisal.model_copy(update={
             "est_restoration_cost_cents": bounds.cost_cents,
@@ -234,6 +246,8 @@ def evaluate_piece(
         days_since_seen=days_since_seen,
         tier=price_tier(appraisal.est_restored_resale_value_cents),
         restoration_notes=bounds.adjustments,
+        appraisal_raw=appraisal_raw,
+        market_supply=market_supply,
         badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
                       authenticity=auth, out_of_radius=oor,
                       days_since_seen=days_since_seen),

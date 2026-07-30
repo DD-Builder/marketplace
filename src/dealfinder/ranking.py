@@ -36,9 +36,10 @@ def liquidity_score(
 ) -> float:
     """0-100: how easily this resells once restored.
 
-    ``market_supply`` is how many comparable pieces are currently listed elsewhere, which
-    is measured rather than guessed — the keyword lists below are educated invention, and
-    a live count of what you'd be competing against is better evidence than either.
+    ``market_supply`` is how many comparable pieces are currently listed elsewhere —
+    measured, where the keyword lists below are educated invention. It adjusts the
+    keyword score rather than replacing it, because it's only present when a comps
+    source is configured and its query actually matched something.
     """
     score = 40.0
     item = identified_item.lower()
@@ -52,7 +53,12 @@ def liquidity_score(
         score -= 25  # big niche casegoods are slow movers
     if authenticity.is_red_flag:
         score -= 25  # look-alikes are harder to place at a good price
-    if market_supply is not None:
+    # Zero results is treated as "no evidence", never as "scarce". A comps query is built
+    # from up to eight keywords off a seller-written title, so an overstuffed one
+    # ("Antique Eastlake Victorian Walnut Marble Top Dresser Circa 1880") matches nothing
+    # far more often than the market is genuinely empty. Scoring that as maximum scarcity
+    # would hand the biggest liquidity bonus to the worst-worded listings.
+    if market_supply:
         # Scarce and wanted beats common and wanted. A near-empty market for a named
         # piece means you set the price; a thousand competing listings means you don't.
         if market_supply <= 10:

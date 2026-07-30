@@ -118,6 +118,18 @@ class EbayBrowseComps:
         self._token_expires = time.monotonic() + max(60, int(payload.get("expires_in", 7200)) - 60)
         return self._token
 
+    def _search(self, url: str) -> dict:
+        """One authenticated GET. Separate so a 401 can be retried on a fresh token."""
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {self._access_token()}",
+                "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=self.timeout) as resp:  # noqa: S310
+            return json.loads(resp.read().decode("utf-8"))
+
     # --- the seam -----------------------------------------------------------------------
 
     def get_comps(self, item_descriptor: str) -> list[Comp]:
@@ -134,24 +146,34 @@ class EbayBrowseComps:
         if self.category_ids:
             params["category_ids"] = self.category_ids
         url = f"{_SEARCH_URL}?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(
-            url,
-            headers={
-                "Authorization": f"Bearer {self._access_token()}",
-                "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
-            },
-        )
+        # Minting the token is inside the try as well: a bad EBAY_CLIENT_SECRET or a
+        # hanging identity endpoint must degrade this run to "no comps", not raise out of
+        # a helper the caller was promised is never fatal.
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:  # noqa: S310
-                payload = json.loads(resp.read().decode("utf-8"))
+            payload = self._search(url)
         except urllib.error.HTTPError as exc:
             detail = ""
             try:
                 detail = exc.read().decode("utf-8", "replace")[:300]
             except Exception:  # noqa: BLE001
                 pass
-            log.warning("ebay_search_failed", status=exc.code, query=query, detail=detail)
-            return []
+            # 401 mid-run means the cached token died early — eBay rotated it, failed over,
+            # or throttled the app. Drop it and try once more; otherwise every remaining
+            # listing in the run silently loses its comps behind a token that can never
+            # recover, since nothing else ever clears it.
+            if exc.code == 401 and self._token:
+                log.info("ebay_token_expired_early", query=query)
+                self._token = ""
+                self._token_expires = 0.0
+                try:
+                    payload = self._search(url)
+                except Exception as retry_exc:  # noqa: BLE001
+                    log.warning("ebay_search_failed", query=query,
+                                error=str(retry_exc)[:200], after_reauth=True)
+                    return []
+            else:
+                log.warning("ebay_search_failed", status=exc.code, query=query, detail=detail)
+                return []
         except Exception as exc:  # noqa: BLE001 — comps are a bonus, never fatal
             log.warning("ebay_search_failed", query=query, error=str(exc)[:200])
             return []

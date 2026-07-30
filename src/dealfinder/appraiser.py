@@ -33,6 +33,18 @@ from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
 log = get_logger(__name__)
 
 
+def _one_line(text: str) -> str:
+    """Flatten third-party text to a single line before it goes into a prompt.
+
+    Comp titles are written by strangers. One newline lets a title break out of its
+    ``- {title}: ${price}`` row and read as a fresh instruction to the model. eBay caps
+    titles at 80 characters and rejects newlines, so this isn't reachable today — but
+    this block is the shared seam for every future comps source, and the guard is a
+    single call.
+    """
+    return " ".join(str(text).split())
+
+
 def comps_prompt_block(comps) -> str:
     """Render comparables for an appraisal prompt.
 
@@ -48,16 +60,16 @@ def comps_prompt_block(comps) -> str:
     out = []
     if sold:
         out.append("Comparable SOLD prices (what buyers actually paid):")
-        out += [f"- {c.title}: ${c.price_cents / 100:.0f}"
-                + (f" [{c.condition}]" if c.condition else "") for c in sold]
+        out += [f"- {_one_line(c.title)}: ${c.price_cents / 100:.0f}"
+                + (f" [{_one_line(c.condition)}]" if c.condition else "") for c in sold]
     if asks:
         out.append(
             "Comparable ASKING prices (currently listed, NOT sold — sellers ask more "
             "than pieces fetch, and unsold items may be overpriced; treat these as a "
             "soft ceiling, not a market value):"
         )
-        out += [f"- {c.title}: ${c.price_cents / 100:.0f}"
-                + (f" [{c.condition}]" if c.condition else "") for c in asks]
+        out += [f"- {_one_line(c.title)}: ${c.price_cents / 100:.0f}"
+                + (f" [{_one_line(c.condition)}]" if c.condition else "") for c in asks]
     out.append(
         "These come from a keyword search on the seller's own title, so some may be the "
         "wrong item entirely. Ignore any that don't match what you see in the photos."

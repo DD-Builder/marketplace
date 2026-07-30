@@ -11,12 +11,22 @@ Thumbtack), which agree closely:
 
 * a typical full refinish runs **$341-$931**, averaging about **$631**
 * heavy stripping (layered paint, deep wear) adds **$100-$500**
-* **labour is roughly 85% of the total** — materials are the small part
 
-That last figure is the useful invariant. It means the two fields are not independent: a
-plausible pairing has materials well below the labour value, and an estimate that violates
-it badly is a sign the model has guessed rather than judged. This clamps the obvious
-nonsense and reports what it changed, rather than silently rewriting the appraisal.
+Every bound here is **absolute** — a fixed band, or a comparison against the piece's own
+restored value. None of them depends on your hourly rate, and that is deliberate.
+
+An earlier version also enforced "materials must not exceed the labour value", reasoning
+from the surveys' finding that labour is ~85% of a refinishing job. That rule was wrong
+twice over. The 85% figure describes a *professional's billed invoice* at $60-100/h, and
+comparing it against the reseller's own $30/h opportunity cost is a unit mismatch — but
+worse, materials genuinely can dominate: a replacement marble top or a yard of upholstery
+fabric is real money against two hours of work. The rule fired hardest on exactly those
+parts-heavy jobs, cutting a truthful $400 top down to $45 and inflating the margin 2x on
+the pieces most likely to lose money. Cost is subtracted from margin, so a clamp that
+lowers it is optimistic, and an optimistic clamp is the one thing this module must not be.
+
+What remains only catches estimates that are absurd on their face, and reports what it
+changed rather than silently rewriting the appraisal.
 """
 
 from __future__ import annotations
@@ -31,10 +41,6 @@ MAX_HOURS = 40.0
 #: for hardware, veneer patches and upholstery on a large piece.
 MIN_MATERIALS_CENTS = 500
 MAX_MATERIALS_CENTS = 120000
-
-#: Published surveys put labour at ~85% of a refinishing job's cost, so materials should
-#: not dwarf the labour value. Allowed to reach parity before we call it implausible.
-MATERIALS_TO_LABOUR_CEILING = 1.0
 
 
 @dataclass
@@ -52,13 +58,17 @@ def clamp_restoration(
     cost_cents: int,
     effort_hours: float,
     *,
-    hourly_rate_cents: int = 3000,
     restored_value_cents: int | None = None,
 ) -> RestorationBounds:
     """Bring an appraisal's restoration estimate inside published reality.
 
     Returns the clamped values plus a plain-language note for each change, so the board
     can show that a number was corrected instead of pretending the model said it.
+
+    Every note describes a change that actually happened, and states the value the field
+    really ended up with — a note is only recorded once the new value is final, so the
+    two can't drift apart. Running this on its own output is a no-op that produces no
+    notes, which is what lets the board re-derive the correction on every render.
     """
     notes: list[str] = []
     hours = float(effort_hours)
@@ -78,23 +88,16 @@ def clamp_restoration(
         notes.append(f"materials capped from ${cost / 100:.0f} to ${MAX_MATERIALS_CENTS / 100:.0f}")
         cost = MAX_MATERIALS_CENTS
 
-    # Labour dominates a real refinishing job. Materials far above the labour value means
-    # the model has conflated "what the piece is worth" with "what fixing it costs".
-    labour_cents = int(hours * hourly_rate_cents)
-    ceiling = int(labour_cents * MATERIALS_TO_LABOUR_CEILING)
-    if labour_cents > 0 and cost > ceiling:
-        notes.append(
-            f"materials cut from ${cost / 100:.0f} to ${ceiling / 100:.0f} — labour is "
-            "about 85% of a real refinish, so materials shouldn't exceed the labour value"
-        )
-        cost = max(MIN_MATERIALS_CENTS, ceiling)
-
     # Restoring a piece for more than it will ever be worth is not a restoration estimate.
-    if restored_value_cents and cost > restored_value_cents:
-        notes.append(
-            f"materials cut from ${cost / 100:.0f} to the restored value "
-            f"(${restored_value_cents / 100:.0f}) — no one spends more than the piece fetches"
-        )
-        cost = max(MIN_MATERIALS_CENTS, restored_value_cents)
+    # The floor still wins, so the limit is computed first and the note quotes the value
+    # actually assigned rather than the raw restored value.
+    if restored_value_cents:
+        limit = max(MIN_MATERIALS_CENTS, restored_value_cents)
+        if cost > limit:
+            notes.append(
+                f"materials cut from ${cost / 100:.0f} to ${limit / 100:.0f} — no one "
+                "spends more restoring a piece than it fetches finished"
+            )
+            cost = limit
 
     return RestorationBounds(cost_cents=cost, effort_hours=hours, adjustments=notes)

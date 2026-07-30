@@ -581,6 +581,7 @@ def main(argv: list[str] | None = None) -> int:
                 evaluate_piece(entry.to_listing(), entry.appraisal,
                                hourly_rate_cents=hourly, in_radius=in_radius,
                                logged_costs=logged.get(entry.id), vertical=vertical,
+                               market_supply=entry.market_supply,
                                days_since_seen=max(
                                    0.0, (now_utc - entry.last_seen).total_seconds() / 86400))
             )
