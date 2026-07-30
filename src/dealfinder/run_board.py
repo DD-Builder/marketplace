@@ -31,6 +31,7 @@ from dealfinder.board import BoardMeta, write_site
 from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
 from dealfinder.pieces import costs_by_id, load_ledger
+from dealfinder.ranking import TIERS
 from dealfinder.selection import plan_appraisals
 from dealfinder.sources.apify import (
     records_to_listings,
@@ -436,6 +437,8 @@ def main(argv: list[str] | None = None) -> int:
     # they are neither new (the seen-diff ignores them) nor unappraised (backfill ignores
     # them), so excluding them from `valued` alone leaves them unreachable.
     redo_ids = set(obs.detail_upgrades)
+    # Appraisals from a superseded prompt generation are stale answers, not answers.
+    redo_ids |= catalog_mod.stale_appraisals(catalog)
     if not args.no_photos:
         redo_ids |= {
             i for i in catalog_mod.blind_appraisals(catalog)
@@ -525,13 +528,18 @@ def main(argv: list[str] | None = None) -> int:
                        for lid, p in cover.items()},
             saw_photos=photos.keys(),
         )
-    pruned = catalog_mod.prune(catalog)
-    for gone_id in pruned.removed_ids:
-        # Cover and gallery shots, by exact stem — `{id}*` would also match ids that
-        # merely start with this one.
+    pruned = catalog_mod.prune(
+        catalog, photo_retention_days=_int_env("PHOTO_RETENTION_DAYS") or 30
+    )
+    # Photos of departed entries, and of entries whose pictures have aged out. Both are
+    # deleted the same way: by exact stem, since `{id}*` would also match ids that merely
+    # start with this one.
+    for gone_id in pruned.removed_ids + pruned.expired_photo_ids:
         for pattern in (f"{gone_id}.*", f"{gone_id}_[0-9].*"):
             for stale in (out_dir / "photos").glob(pattern):
                 stale.unlink(missing_ok=True)
+    if pruned.expired_photo_ids:
+        log.info("photos_expired", count=len(pruned.expired_photo_ids))
     # Persist the expensive artifact *now*, before rendering. A crash anywhere in the
     # photo/board code below must not cost the appraisals this run just paid for.
     catalog_mod.save_catalog(catalog, catalog_path)
@@ -575,7 +583,14 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 — a bad entry shouldn't blank the board
             log.warning("catalog_entry_skipped", listing=entry.id, error=str(exc)[:120])
     board_pieces.sort(key=lambda p: p.priority, reverse=True)
-    board_pieces = board_pieces[: _int_env("MAX_CARDS") or 150]
+    # Cap *per tier*, not overall. One global ranking is won by whatever has the best
+    # ratio, and a $10 nightstand worth $50 beats a $220 credenza worth $1,500 on every
+    # percentage measure — so the pieces actually worth driving for get buried by volume.
+    per_tier = _int_env("MAX_CARDS_PER_TIER") or 8
+    kept: list = []
+    for tier_key, _label, _blurb in TIERS:
+        kept += [p for p in board_pieces if p.tier == tier_key][:per_tier]
+    board_pieces = kept
 
     now = datetime.now(timezone.utc)
     page = write_site(

@@ -7,8 +7,12 @@
 
 const CFG = {{CONFIG}};
 const $ = s => document.querySelector(s);
-const grid = document.getElementById('grid');
-const cards = [...grid.children];
+const board = document.getElementById('board');
+// Cards live in one grid per tier. Filtering and sorting act on all of them, but a card
+// is only ever re-appended to its own band — sorting must never move an estate piece
+// into the quick-flips shelf.
+const cards = [...board.querySelectorAll('article.card')];
+const tierSections = [...board.querySelectorAll('section.tier')];
 
 /* ---- status banner + relative time ---------------------------------------------------- */
 (function () {
@@ -79,8 +83,16 @@ function applyView() {
   });
   const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh' }[state.sort];
   const dir = state.sort === 'ask' || state.sort === 'fresh' ? 1 : -1;
-  [...cards].sort((a, b) => dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0)))
-    .forEach(c => grid.appendChild(c));
+  tierSections.forEach(section => {
+    const grid = section.querySelector('.grid');
+    const own = cards.filter(c => c.dataset.tier === section.dataset.tier);
+    [...own]
+      .sort((a, b) => dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0)))
+      .forEach(c => grid.appendChild(c));
+    // A band with nothing left after filtering hides its heading too, rather than
+    // leaving a title over empty space.
+    section.classList.toggle('empty', own.every(c => c.classList.contains('hide')));
+  });
   $('#empty').hidden = visible > 0 || cards.length === 0;
   if (visible === 0 && cards.length > 0)
     $('#empty-sub').textContent = 'Nothing matches these filters.';
@@ -378,4 +390,5 @@ function renderDrafts(out, st, data) {
   }));
 }
 
+applyView();      // establish sort/empty state on load, not only after a click
 checkConnection();

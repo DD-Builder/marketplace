@@ -419,3 +419,42 @@ def test_a_stale_piece_is_flagged_and_pushed_down_the_board():
     assert stale.priority < fresh.priority
     assert any("Unconfirmed" in b.label for b in stale.badges)
     assert not any("Unconfirmed" in b.label for b in fresh.badges)
+
+
+# --- photo retention and prompt versioning -------------------------------------------------
+
+def test_photos_age_out_while_their_entries_survive():
+    """Photos are the only bulky thing in the repo, and after a month a piece has sold or
+    been passed on. The price history it leaves behind stays useful and costs nothing."""
+    c = cat.Catalog()
+    cat.observe(c, [_l("old"), _l("recent")])
+    c.listings["old"].photo_rel = "photos/old.jpg"
+    c.listings["old"].extra_photo_rels = ["photos/old_1.jpg"]
+    c.listings["old"].last_seen = cat._now() - timedelta(days=45)
+    c.listings["recent"].photo_rel = "photos/recent.jpg"
+
+    rep = cat.prune(c, photo_retention_days=30)
+
+    assert rep.expired_photo_ids == ["old"]
+    assert c.listings["old"].photo_rel is None            # file will be unlinked by caller
+    assert c.listings["old"].extra_photo_rels == []
+    assert "old" in c.listings                            # the ENTRY stays
+    assert c.listings["recent"].photo_rel == "photos/recent.jpg"
+
+
+def test_an_appraisal_from_an_older_prompt_is_re_valued_not_reused():
+    """Editing the prompt used to improve nothing already in the catalogue — the id was
+    the whole cache key, so stale answers were served forever."""
+    c = cat.Catalog()
+    cat.observe(c, [_l("a")])
+    res = run_valuation([_l("a")], seen={}, provider=StubProvider())
+    cat.record_appraisals(c, res.pieces)
+
+    # Current generation: valued, nothing to redo.
+    assert cat.already_valued(c) == {"a"}
+    assert cat.stale_appraisals(c) == set()
+
+    # Simulate a prompt edit by ageing the stored version.
+    c.listings["a"].appraisal_prompt_version = cat.APPRAISAL_PROMPT_VERSION - 1
+    assert cat.already_valued(c) == set()                 # no longer counts as valued
+    assert cat.stale_appraisals(c) == {"a"}               # and IS offered to the pool

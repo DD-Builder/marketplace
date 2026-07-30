@@ -102,3 +102,24 @@ def test_near_free_junk_does_not_dominate_on_roi():
     junk = roi_to_score(5000, 100)
     real = roi_to_score(60000, 20000)
     assert junk < real
+
+
+# --- price tiers --------------------------------------------------------------------------
+
+def test_tiers_are_keyed_on_restored_value_not_asking_price():
+    """The whole point: a $220 credenza that restores to $1,500 is an estate find, not a
+    cheap flip. Bucketing on the ask would file it with the nightstands."""
+    from dealfinder.ranking import price_tier
+
+    assert price_tier(150000) == "estate"      # $1,500 restored
+    assert price_tier(70000) == "estate"       # exactly on the floor
+    assert price_tier(45000) == "mid"          # $450
+    assert price_tier(20000) == "mid"
+    assert price_tier(5000) == "quick"         # the $50 nightstand
+    assert price_tier(0) == "quick"
+
+
+def test_tier_floors_are_configurable():
+    from dealfinder.ranking import price_tier
+
+    assert price_tier(30000, estate_floor_cents=25000) == "estate"
