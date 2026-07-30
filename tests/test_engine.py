@@ -12,7 +12,7 @@ class StubProvider:
 
     name = "stub"
 
-    def appraise(self, listing, vertical, *, image_paths=None):
+    def appraise(self, listing, vertical, *, image_paths=None, comps=None):
         ask = listing.asking_price_cents or 0
         return AppraisalResult(
             identified_item="dresser",

@@ -75,7 +75,7 @@ class CountingProvider:
     def __init__(self):
         self.appraised: list[str] = []
 
-    def appraise(self, listing, vertical, *, image_paths=None):
+    def appraise(self, listing, vertical, *, image_paths=None, comps=None):
         self.appraised.append(listing.fb_listing_id)
         ask = listing.asking_price_cents or 0
         return AppraisalResult(
@@ -303,9 +303,9 @@ def test_committed_photos_feed_the_appraiser_even_when_the_scrape_is_blocked(
     seen_images = {}
     orig = h.provider.appraise
 
-    def spy(listing, vertical, *, image_paths=None):
+    def spy(listing, vertical, *, image_paths=None, comps=None):
         seen_images[listing.fb_listing_id] = list(image_paths or [])
-        return orig(listing, vertical, image_paths=image_paths)
+        return orig(listing, vertical, image_paths=image_paths, comps=comps)
 
     h.provider.appraise = spy
 

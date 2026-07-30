@@ -209,6 +209,21 @@ def _tools(p: EvaluatedPiece) -> str:
         </details>"""
 
 
+def _restoration_notes(p: EvaluatedPiece) -> str:
+    """Say so when the model's restoration estimate was clamped to published reality.
+
+    Silently rewriting a number the appraiser produced would make the card a lie about
+    its own reasoning — and these corrections move the margin, so they're worth reading.
+    """
+    if not p.restoration_notes:
+        return ""
+    items = "".join(f"<li>{html.escape(n)}</li>" for n in p.restoration_notes)
+    return (
+        '<p class="basis">Restoration estimate adjusted against published refinishing '
+        f'costs:</p><ul class="clamped">{items}</ul>'
+    )
+
+
 def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
     listing = p.listing
     chips = "".join(
@@ -304,7 +319,7 @@ def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:{p.liquidity}%"></i></div><b>{p.liquidity:.0f}</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:{p.heat}%"></i></div><b>{p.heat:.0f}</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>{html.escape(_clip(p.appraisal.reasoning, 600))}</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>{html.escape(_clip(p.appraisal.reasoning, 600))}</p>{_restoration_notes(p)}</details>
 {_tools(p)}
         {view}
       </div>

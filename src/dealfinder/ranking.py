@@ -32,8 +32,14 @@ def liquidity_score(
     confidence: float,
     identified_item: str,
     authenticity: AuthenticityAssessment,
+    market_supply: int | None = None,
 ) -> float:
-    """0-100: how easily this resells once restored."""
+    """0-100: how easily this resells once restored.
+
+    ``market_supply`` is how many comparable pieces are currently listed elsewhere, which
+    is measured rather than guessed — the keyword lists below are educated invention, and
+    a live count of what you'd be competing against is better evidence than either.
+    """
     score = 40.0
     item = identified_item.lower()
     if maker_guess and not authenticity.is_red_flag:
@@ -46,6 +52,17 @@ def liquidity_score(
         score -= 25  # big niche casegoods are slow movers
     if authenticity.is_red_flag:
         score -= 25  # look-alikes are harder to place at a good price
+    if market_supply is not None:
+        # Scarce and wanted beats common and wanted. A near-empty market for a named
+        # piece means you set the price; a thousand competing listings means you don't.
+        if market_supply <= 10:
+            score += 15
+        elif market_supply <= 50:
+            score += 7
+        elif market_supply >= 1000:
+            score -= 15
+        elif market_supply >= 300:
+            score -= 7
     return round(max(0.0, min(100.0, score)), 1)
 
 

@@ -59,12 +59,9 @@ def _image_block(path: Path) -> dict | None:
 
 
 def _comps_block(comps: list[Comp]) -> str:
-    if not comps:
-        return ""
-    lines = [
-        f"- {c.title}: ${c.sold_price_cents / 100:.0f} ({c.source})" for c in comps
-    ]
-    return "\n\nRecent comparable sales:\n" + "\n".join(lines)
+    from dealfinder.appraiser import comps_prompt_block
+
+    return comps_prompt_block(comps)
 
 
 def _image_url_block(url: str) -> dict:
