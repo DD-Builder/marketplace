@@ -332,3 +332,34 @@ def test_committed_photos_feed_the_appraiser_even_when_the_scrape_is_blocked(
     cat2 = h.catalog["listings"]["orphan"]
     assert cat2["appraisal"] is not None
     assert cat2["appraised_with_photos"] is True
+
+
+def test_photos_are_deleted_from_disk_once_they_age_out(tmp_path, monkeypatch):
+    """Photos are the only bulky thing in the repo. After a month the piece has sold or
+    been passed on, so the picture goes and the price history stays."""
+    import json as _json
+
+    a = _detailed("a")
+    h = Harness(tmp_path, monkeypatch, days=[{"index": [a]}, {"index": [a]}])
+    assert h.run() == 0
+
+    photos = tmp_path / "site" / "photos"
+    assert list(photos.glob("a.*")), "day one should have written a cover photo"
+
+    # Age the sighting past the retention window.
+    cat = _json.loads((tmp_path / "catalog.json").read_text())
+    from datetime import datetime, timedelta, timezone
+    old = (datetime.now(timezone.utc) - timedelta(days=45)).isoformat()
+    cat["listings"]["a"]["last_seen"] = old
+    cat["listings"]["a"]["first_seen"] = old
+    (tmp_path / "catalog.json").write_text(_json.dumps(cat))
+
+    monkeypatch.setenv("PHOTO_RETENTION_DAYS", "30")
+    # Day two: the scan doesn't return it, so nothing refreshes last_seen.
+    h.fetcher.days[1] = {"index": []}
+    h.run()
+
+    assert not list(photos.glob("a.*")), "expired photos should be unlinked"
+    after = _json.loads((tmp_path / "catalog.json").read_text())
+    assert after["listings"]["a"]["photo_rel"] is None
+    assert "a" in after["listings"], "the entry itself must survive"

@@ -30,6 +30,7 @@ from dealfinder.ranking import (
     heat_score,
     is_killer_deal,
     liquidity_score,
+    price_tier,
     roi_to_score,
     viewing_priority,
 )
@@ -58,6 +59,7 @@ class EvaluatedPiece:
     price_dropped: bool
     out_of_radius: bool
     days_since_seen: float = 0.0
+    tier: str = "mid"
     badges: list[Badge] = field(default_factory=list)
 
 
@@ -193,6 +195,7 @@ def evaluate_piece(
         cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
         priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
         days_since_seen=days_since_seen,
+        tier=price_tier(appraisal.est_restored_resale_value_cents),
         badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
                       authenticity=auth, out_of_radius=oor,
                       days_since_seen=days_since_seen),

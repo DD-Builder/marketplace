@@ -20,7 +20,7 @@ from importlib.resources import files as _pkg_files
 from pathlib import Path
 
 from dealfinder.engine import EvaluatedPiece, RunResult
-from dealfinder.ranking import BADGE_DEFS
+from dealfinder.ranking import BADGE_DEFS, TIERS
 from dealfinder.resale import Posture
 
 _POSTURE_LABEL = {
@@ -267,6 +267,7 @@ def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
         f' data-killer="{1 if p.is_killer else 0}"'
         f' data-flag="{1 if p.authenticity.is_red_flag else 0}"'
         f' data-oor="{1 if p.out_of_radius else 0}"'
+        f' data-tier="{html.escape(p.tier)}"'
         f" data-photos='{html.escape(json.dumps(photos))}'"
     )
     # An empty href reloads the page (losing half-typed notes); a non-https listing URL
@@ -286,7 +287,7 @@ def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
       </div>
       <div class="body">
         <div class="head">
-          <h2>{html.escape(listing.title) or "Untitled"}</h2>
+          <h3>{html.escape(listing.title) or "Untitled"}</h3>
           <div class="loc">{html.escape(listing.location_text)}</div>
         </div>
         <div class="chips">{chips}</div>
@@ -356,10 +357,29 @@ def render_board(
         extras = [g for g in gallery_map.get(pid, []) if g != cover]
         return ([cover] if cover else []) + extras
 
-    cards = "\n".join(
-        _card(i + 1, p, photos_for(p.listing.fb_listing_id))
-        for i, p in enumerate(pieces)
-    )
+    # One grid per tier. Ranking is within a band, because comparing a $50 nightstand to
+    # a $1,500 credenza on the same scale flatters whichever has the better percentage
+    # and buries whichever is actually worth the drive.
+    sections = []
+    rank = 0
+    for tier_key, label, blurb in TIERS:
+        in_tier = [p for p in pieces if p.tier == tier_key]
+        if not in_tier:
+            continue
+        cards_html = []
+        for p in in_tier:
+            rank += 1
+            cards_html.append(_card(rank, p, photos_for(p.listing.fb_listing_id)))
+        sections.append(
+            f'<section class="tier" data-tier="{html.escape(tier_key)}">\n'
+            f'  <div class="tierhead"><h2>{html.escape(label)}</h2>'
+            f'<span class="tiernote">{html.escape(blurb)}</span>'
+            f'<span class="tiercount">{len(in_tier)}</span></div>\n'
+            f'  <div class="grid" id="grid-{html.escape(tier_key)}">\n'
+            + "\n".join(cards_html)
+            + "\n  </div>\n</section>"
+        )
+    cards = "\n".join(sections)
     plan = result.plan
     stats = {
         "N": len(pieces),

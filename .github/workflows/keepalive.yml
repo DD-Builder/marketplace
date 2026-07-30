@@ -1,0 +1,46 @@
+# Keeps the scheduled deal board alive.
+#
+# GitHub disables scheduled workflows on public repositories after 60 days with no
+# *commit to the default branch*. Workflow runs themselves do not count, and the deal
+# board only commits on days its output actually changes — so a quiet stretch (off
+# season, or the scraper breaking in a way that yields identical output) silently
+# retires the cron.
+#
+# It is worse than it sounds: disabling a workflow for idleness disables ALL of its
+# triggers, including workflow_dispatch, so the board could not even be started by hand.
+#
+# This lives in its own file on purpose. If the board workflow is ever disabled, this one
+# keeps committing and preserves the repository activity that allows it to be re-enabled.
+name: Keepalive
+
+on:
+  schedule:
+    - cron: "41 7 1,15 * *"     # twice monthly, well inside the 60-day window
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: false
+
+jobs:
+  touch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record a heartbeat
+        run: |
+          mkdir -p .github
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/last-keepalive
+          git config user.name "deal-board"
+          git config user.email "deal-board@users.noreply.github.com"
+          git add .github/last-keepalive
+          git diff --staged --quiet && exit 0
+          git commit -m "Keepalive [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push && break
+            sleep $((i * 5))
+          done

@@ -29,6 +29,11 @@ from dealfinder.logging import get_logger
 log = get_logger(__name__)
 
 CATALOG_VERSION = 1
+
+#: Bump when the appraisal prompt changes materially. Stored per entry, so raising this
+#: retires every stored appraisal and lets them be re-valued (a few per run, inside the
+#: normal cap) instead of silently serving answers from an older prompt forever.
+APPRAISAL_PROMPT_VERSION = 1
 _DESC_CAP = 600          # descriptions are for context, not archival
 _PRICE_POINTS_CAP = 12
 _PHOTO_URL_CAP = 3       # signed URLs expire; the local copies are the real record
@@ -78,6 +83,8 @@ class CatalogEntry(BaseModel):
     #: guess from a title, and the model says so by hedging its confidence — so it must be
     #: redone once photos exist, or the first thin valuation is locked in forever.
     appraised_with_photos: bool = False
+    #: Which prompt generation produced ``appraisal``. 0 means "before this was tracked".
+    appraisal_prompt_version: int = 0
 
     def to_listing(self) -> RawListing:
         """Rebuild a listing good enough to re-score against today's price."""
@@ -137,6 +144,8 @@ class ObserveReport(BaseModel):
 
 class PruneReport(BaseModel):
     removed_ids: list[str] = Field(default_factory=list)
+    #: Entries kept, but whose photos are past the retention window and should be deleted.
+    expired_photo_ids: list[str] = Field(default_factory=list)
 
     @property
     def count(self) -> int:
@@ -244,6 +253,21 @@ def blind_appraisals(catalog: Catalog) -> set[str]:
     }
 
 
+def stale_appraisals(catalog: Catalog) -> set[str]:
+    """Live pieces valued by a superseded prompt generation.
+
+    Like blind appraisals, these must be added to the *candidate pool* — dropping them
+    from ``already_valued`` alone leaves them unreachable, because nothing else offers
+    an entry that already has an appraisal.
+    """
+    return {
+        e.id for e in catalog.listings.values()
+        if e.appraisal is not None
+        and e.state == "live"
+        and e.appraisal_prompt_version < APPRAISAL_PROMPT_VERSION
+    }
+
+
 def already_valued(catalog: Catalog, *, exclude: Iterable[str] = ()) -> set[str]:
     """Ids that already carry a usable appraisal, so this run must not pay to value them again.
 
@@ -254,7 +278,13 @@ def already_valued(catalog: Catalog, *, exclude: Iterable[str] = ()) -> set[str]
     only pieces in ``exclude`` (typically this scan's thin-to-detailed upgrades) are re-valued.
     """
     skip = set(exclude)
-    return {e.id for e in catalog.listings.values() if e.appraisal is not None} - skip
+    return {
+        e.id for e in catalog.listings.values()
+        if e.appraisal is not None
+        # An appraisal from an older prompt generation is not a usable answer to today's
+        # question. Without this, editing the prompt improved nothing already catalogued.
+        and e.appraisal_prompt_version >= APPRAISAL_PROMPT_VERSION
+    } - skip
 
 
 def unappraised_live(catalog: Catalog) -> list[RawListing]:
@@ -429,6 +459,7 @@ def record_appraisals(
         entry.appraised_price_cents = piece.listing.asking_price_cents
         entry.appraiser = appraiser
         entry.appraised_with_photos = piece.listing.fb_listing_id in seen_photos
+        entry.appraisal_prompt_version = APPRAISAL_PROMPT_VERSION
         rel = photo_rel.get(entry.id)
         if rel:
             entry.photo_rel = rel
@@ -442,8 +473,16 @@ def prune(
     gone_days: int = 90,
     sold_days: int = 180,
     max_entries: int = 1200,
+    photo_retention_days: int = 30,
 ) -> PruneReport:
-    """Bound the file. Never drops a live entry; returns ids so photos are cleaned too."""
+    """Bound the file. Never drops a live entry; returns ids so photos are cleaned too.
+
+    Photos age out well before their entries do. After about a month a piece has sold,
+    been passed on, or been saved off elsewhere — the picture has done its job, while
+    the price history it leaves behind stays useful and costs almost nothing to keep.
+    Photos are the only part of this repo with real bulk, so this is what keeps the
+    published site from growing without bound.
+    """
     now = now or _now()
     rep = PruneReport()
 
@@ -461,6 +500,13 @@ def prune(
         if drop(entry):
             rep.removed_ids.append(entry.id)
             del catalog.listings[entry.id]
+
+    photo_cutoff = now - timedelta(days=photo_retention_days)
+    for entry in catalog.listings.values():
+        if (entry.photo_rel or entry.extra_photo_rels) and entry.last_seen < photo_cutoff:
+            rep.expired_photo_ids.append(entry.id)
+            entry.photo_rel = None
+            entry.extra_photo_rels = []
 
     if len(catalog.listings) > max_entries:
         expendable = sorted(

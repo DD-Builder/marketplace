@@ -25,7 +25,10 @@ on:
     # cadence: measured on a real export, a daily re-run finds ~30% new listings and
     # ~70% already seen, and the two-stage scrape only pays for the 30%. Running twice
     # a week means a bigger new-fraction each time, for the same index cost.
-    - cron: "0 13 * * *"
+    # 13:17 UTC, not 13:00. GitHub's scheduler is heavily congested on the hour: runs
+    # queued at :00 are routinely delayed 10-30 minutes and are sometimes dropped
+    # outright. An odd minute is the standard workaround.
+    - cron: "17 13 * * *"
 
 # Let the job commit the regenerated site back to the branch.
 permissions:

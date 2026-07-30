@@ -118,6 +118,35 @@ def viewing_priority(
     return round(max(0.0, min(100.0, base)), 1)
 
 
+#: Board tiers, coarsest first. Keyed by the *restored* value rather than the asking
+#: price on purpose: a $220 Brasilia credenza that restores to $1,500 is an estate find,
+#: not a cheap flip, and bucketing on ask would file it with the nightstands.
+TIERS: tuple[tuple[str, str, str], ...] = (
+    ("estate", "Estate pieces", "The ones worth clearing a weekend for"),
+    ("mid", "Mid-tier", "Solid pieces, real money, manageable work"),
+    ("quick", "Quick flips", "Small margins, small effort — take them or leave them"),
+)
+
+
+def price_tier(
+    restored_value_cents: int,
+    *,
+    estate_floor_cents: int = 70000,
+    mid_floor_cents: int = 20000,
+) -> str:
+    """Which band a piece belongs in, by what it's worth restored.
+
+    Exists because one ranked list is dominated by whatever has the best *ratio*, and a
+    $10 nightstand worth $50 beats a $220 credenza worth $1,500 on every percentage
+    measure while being worth a fraction as much money and just as much of a Saturday.
+    """
+    if restored_value_cents >= estate_floor_cents:
+        return "estate"
+    if restored_value_cents >= mid_floor_cents:
+        return "mid"
+    return "quick"
+
+
 def staleness_factor(days_since_seen: float) -> float:
     """How much to trust that a piece is still for sale, by age of the last sighting.
 
