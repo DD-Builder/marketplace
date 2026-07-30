@@ -49,6 +49,26 @@ it only after you've seen what a week actually costs you.
 | `CLAUDE_CODE_OAUTH_TOKEN` | the `sk-ant-oat...` token from step 1 |
 | `APIFY_TOKEN` | the Apify token from step 2 |
 
+## 3b. Optional: eBay comps (free, and it makes the prices real)
+
+Without this, the appraiser judges what a piece is worth restored from photographs and
+the seller's blurb alone — an educated guess with no market data behind it. eBay's Browse
+API gives it comparable listings to anchor against. It's free (~5,000 calls a day, far
+more than a dozen valuations needs) and entirely optional: with no keys configured the app
+behaves exactly as it did before.
+
+1. Sign in at [developer.ebay.com](https://developer.ebay.com) and create an application.
+2. Take the **Production** keyset. Copy the **App ID (Client ID)** and **Cert ID (Client Secret)**.
+3. eBay will ask you to handle *marketplace account deletion notifications* before the
+   keyset activates. Take the **opt-out** — it applies to apps that don't store eBay user
+   data, which is this one. Without doing one or the other the keys silently won't work.
+4. Add two repository **secrets**: `EBAY_CLIENT_ID` and `EBAY_CLIENT_SECRET`.
+
+Honest limitation: this returns **asking** prices, not sold prices. eBay retired its
+completed-listings API in February 2025, and the official replacement is a closed
+programme not accepting applicants. Asking prices run optimistic, so the appraiser is told
+explicitly which kind it's looking at and to treat them as a soft ceiling.
+
 ## 4. Tell it what to hunt
 
 Same page, the **Variables** tab. All optional — unset means the default.

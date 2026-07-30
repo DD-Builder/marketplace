@@ -458,3 +458,69 @@ def test_an_appraisal_from_an_older_prompt_is_re_valued_not_reused():
     c.listings["a"].appraisal_prompt_version = cat.APPRAISAL_PROMPT_VERSION - 1
     assert cat.already_valued(c) == set()                 # no longer counts as valued
     assert cat.stale_appraisals(c) == {"a"}               # and IS offered to the pool
+
+
+# --- what the catalogue stores about a valuation --------------------------------------------
+
+def test_the_model_s_own_numbers_are_stored_not_the_clamped_ones():
+    """Regression, two bugs at once.
+
+    ``evaluate_piece`` clamps the restoration estimate and scores against the clamped copy.
+    Storing *that* copy destroyed the model's original — which exists nowhere else — so the
+    bounds of the day were baked permanently into the only durable record, and correcting
+    the clamp later could never be applied retroactively. It also made the board's
+    correction notes unreachable: re-clamping an already-clamped appraisal is a no-op, so
+    ``restoration_notes`` came back empty on every rendered card.
+    """
+    from dealfinder.core.schemas import AppraisalResult
+
+    c = cat.Catalog()
+    listing = _l("z", title="walnut credenza", price=20000)
+    cat.observe(c, [listing])
+    absurd = AppraisalResult(
+        identified_item="credenza", est_asis_value_cents=20000,
+        est_restored_resale_value_cents=90000, est_restoration_cost_cents=5000,
+        est_restoration_effort_hours=500.0,
+        confidence=0.8, deal_score=50.0,
+    )
+    piece = evaluate_piece(listing, absurd, hourly_rate_cents=3000)
+    cat.record_appraisals(c, [piece], appraiser="stub")
+
+    stored = c.listings["z"].appraisal
+    assert stored.est_restoration_effort_hours == 500.0, "the model's answer must survive"
+
+    # ...and because it does, the board re-derives the correction when it renders.
+    rendered = evaluate_piece(c.listings["z"].to_listing(), stored, hourly_rate_cents=3000)
+    assert rendered.appraisal.est_restoration_effort_hours == 40.0
+    assert rendered.restoration_notes, "the card must be able to show it was corrected"
+
+
+def test_measured_market_supply_survives_to_the_board():
+    """Regression. Supply was measured during valuation and threaded into the piece, but the
+    board is built from a *second* pass over the catalogue — so unless it's persisted every
+    card silently fell back to the keyword-only liquidity guess, and configuring eBay
+    credentials changed nothing a user could see."""
+    from dealfinder.ranking import liquidity_score
+
+    c = cat.Catalog()
+    listing = _l("q", title="Lane walnut credenza", price=20000)
+    cat.observe(c, [listing])
+    appraisal = StubProvider().appraise(listing, None)
+
+    piece = evaluate_piece(listing, appraisal, market_supply=4)
+    cat.record_appraisals(c, [piece], appraiser="stub")
+    assert c.listings["q"].market_supply == 4
+
+    entry = c.listings["q"]
+    rendered = evaluate_piece(entry.to_listing(), entry.appraisal,
+                              market_supply=entry.market_supply)
+    assert rendered.liquidity == piece.liquidity
+    # And it genuinely moved the number, so the assertion above isn't vacuous.
+    assert rendered.liquidity != evaluate_piece(entry.to_listing(), entry.appraisal).liquidity
+
+    # A search that matched nothing is absence of evidence, not proof of scarcity —
+    # otherwise the worst-worded listings collect the largest liquidity bonus.
+    base = dict(maker_guess="Lane", confidence=0.8, identified_item="credenza",
+                authenticity=piece.authenticity)
+    assert liquidity_score(**base, market_supply=0) == liquidity_score(**base)
+    assert liquidity_score(**base, market_supply=4) > liquidity_score(**base)

@@ -33,6 +33,50 @@ from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
 log = get_logger(__name__)
 
 
+def _one_line(text: str) -> str:
+    """Flatten third-party text to a single line before it goes into a prompt.
+
+    Comp titles are written by strangers. One newline lets a title break out of its
+    ``- {title}: ${price}`` row and read as a fresh instruction to the model. eBay caps
+    titles at 80 characters and rejects newlines, so this isn't reachable today — but
+    this block is the shared seam for every future comps source, and the guard is a
+    single call.
+    """
+    return " ".join(str(text).split())
+
+
+def comps_prompt_block(comps) -> str:
+    """Render comparables for an appraisal prompt.
+
+    Deliberately labels asking prices as such. eBay's free API exposes active listings
+    only, and an asking price is what a hopeful seller wants rather than what anyone
+    paid — anchoring a restored-value estimate to unsold asks inflates it. Saying so is
+    what lets the model discount them instead of averaging them.
+    """
+    if not comps:
+        return ""
+    asks = [c for c in comps if not c.is_sold]
+    sold = [c for c in comps if c.is_sold]
+    out = []
+    if sold:
+        out.append("Comparable SOLD prices (what buyers actually paid):")
+        out += [f"- {_one_line(c.title)}: ${c.price_cents / 100:.0f}"
+                + (f" [{_one_line(c.condition)}]" if c.condition else "") for c in sold]
+    if asks:
+        out.append(
+            "Comparable ASKING prices (currently listed, NOT sold — sellers ask more "
+            "than pieces fetch, and unsold items may be overpriced; treat these as a "
+            "soft ceiling, not a market value):"
+        )
+        out += [f"- {_one_line(c.title)}: ${c.price_cents / 100:.0f}"
+                + (f" [{_one_line(c.condition)}]" if c.condition else "") for c in asks]
+    out.append(
+        "These come from a keyword search on the seller's own title, so some may be the "
+        "wrong item entirely. Ignore any that don't match what you see in the photos."
+    )
+    return "\n\n" + "\n".join(out)
+
+
 @runtime_checkable
 class ValuationProvider(Protocol):
     name: str
@@ -43,6 +87,7 @@ class ValuationProvider(Protocol):
         vertical: Vertical = DEFAULT_VERTICAL,
         *,
         image_paths: list[Path] | None = None,
+        comps: list | None = None,
     ) -> AppraisalResult:
         ...
 
@@ -52,7 +97,7 @@ class ClaudeApiAppraiser:
 
     name = "claude-api"
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
         from dealfinder.valuation import appraise as appraise_mod
 
         image_urls = None if image_paths else [p.remote_url for p in listing.photos]
@@ -61,6 +106,7 @@ class ClaudeApiAppraiser:
             asking_price_cents=listing.asking_price_cents,
             image_paths=image_paths,
             image_urls=image_urls,
+            comps=comps,
             guidance=vertical.appraiser_guidance,
         )
         return result
@@ -96,7 +142,7 @@ class ClaudeCodeAppraiser:
         self.model = model
         self.timeout = timeout
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
         if not shutil.which(self.cli):
             raise RuntimeError(
                 f"'{self.cli}' CLI not found. The subscription appraiser needs Claude Code "
@@ -128,7 +174,8 @@ class ClaudeCodeAppraiser:
             f"{img_block}\n\n"
             f"Asking price: {price}\n"
             f"Title: {listing.title[:300]}\n"
-            f"Description: {listing.description[:2000]}\n\n"
+            f"Description: {listing.description[:2000]}"
+            f"{comps_prompt_block(comps or [])}\n\n"
             "Judge construction (solid wood vs veneer vs particleboard), joinery, maker marks, "
             "era, condition, and what restoration it truly needs. Value the RESTORED piece at "
             "realistic regional resale (local marketplace / eBay sold), NOT aspirational dealer "
@@ -232,7 +279,7 @@ class _UnimplementedProvider:
     def __init__(self, name: str) -> None:
         self.name = name
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
         raise NotImplementedError(
             f"The '{self.name}' appraiser is a declared seam, not yet implemented. "
             "It plugs in as one ValuationProvider class with no funnel changes."

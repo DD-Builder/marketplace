@@ -88,8 +88,14 @@ public repo the repository itself is still readable.
    | `DAYS_SINCE_LISTED` | unset | Same, for recency. |
    | `IN_RADIUS_TOWNS` | Lexington + 40mi | Comma-separated town names used to flag distance. |
    | `HOURLY_RATE_CENTS` | 3000 | What your bench time is worth. |
+   | `MAX_CARDS_PER_TIER` | 8 | Cards shown per price band (Estate / Mid / Quick). |
+   | `PHOTO_RETENTION_DAYS` | 30 | Photos are deleted after this; entries and price history stay. |
 
-4. **Run it**: *Actions → Deal board → Run workflow*. It also runs daily at 13:00 UTC.
+   Two optional *secrets* unlock market comparables: `EBAY_CLIENT_ID` and
+   `EBAY_CLIENT_SECRET` (free Browse API, ~5k calls/day). Without them the appraiser
+   estimates unaided, exactly as before. See `docs/SETUP.md` step 3b.
+
+4. **Run it**: *Actions → Deal board → Run workflow*. It also runs daily at 13:17 UTC.
 
 ## Costs
 
@@ -131,6 +137,8 @@ python -m dealfinder.sources.scrape
 | `appraiser.py` | provider seam: subscription CLI, metered API, or a future model |
 | `authenticity.py` | look-alike and knockoff detection |
 | `resale.py` | market price and your-numbers pricing |
+| `restoration.py` | bounds on the model's cost/effort estimate, from published survey data |
+| `sources/ebay.py` | free Browse API comps — market anchors for the appraisal |
 | `pieces.py` | your books: costs, sales, realised hourly wage |
 | `negotiation/` | posture, prompt building, drafters |
 | `board.py` + `templates/` | the static page: data → markup in Python, skeleton/CSS/JS as real files |

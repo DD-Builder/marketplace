@@ -32,6 +32,7 @@ from dealfinder.engine import RunResult, evaluate_piece, run_valuation
 from dealfinder.logging import get_logger
 from dealfinder.pieces import costs_by_id, load_ledger
 from dealfinder.ranking import TIERS
+from dealfinder.valuation import comparables
 from dealfinder.selection import plan_appraisals
 from dealfinder.sources.apify import (
     records_to_listings,
@@ -483,7 +484,7 @@ def main(argv: list[str] | None = None) -> int:
         class _Dry:
             name = "dry-run"
 
-            def appraise(self, listing, vertical, *, image_paths=None):
+            def appraise(self, listing, vertical, *, image_paths=None, comps=None):
                 ask = listing.asking_price_cents or 0
                 return AppraisalResult(
                     identified_item="unappraised",
@@ -503,9 +504,12 @@ def main(argv: list[str] | None = None) -> int:
 
     hourly = _int_env("HOURLY_RATE_CENTS") or 3000
     in_radius = _radius_check(_env("IN_RADIUS_TOWNS", _DEFAULT_RADIUS_TOWNS))
+    comps_source = comparables.default_source()
+    log.info("comps_source", source=getattr(comps_source, "name", "?"))
     result = run_valuation(
         listings, seen,
         provider=provider,
+        comps_source=comps_source,
         vertical=vertical,
         hourly_rate_cents=hourly,
         top_n=top_n,
@@ -577,6 +581,7 @@ def main(argv: list[str] | None = None) -> int:
                 evaluate_piece(entry.to_listing(), entry.appraisal,
                                hourly_rate_cents=hourly, in_radius=in_radius,
                                logged_costs=logged.get(entry.id), vertical=vertical,
+                               market_supply=entry.market_supply,
                                days_since_seen=max(
                                    0.0, (now_utc - entry.last_seen).total_seconds() / 86400))
             )

@@ -85,6 +85,11 @@ class CatalogEntry(BaseModel):
     appraised_with_photos: bool = False
     #: Which prompt generation produced ``appraisal``. 0 means "before this was tracked".
     appraisal_prompt_version: int = 0
+    #: How many comparable listings the market held when this piece was valued. Scores are
+    #: never persisted, but this is an *observation*, like the appraisal itself — and the
+    #: board re-ranks from the catalogue without a comps source in hand, so without storing
+    #: it every card would fall back to the keyword-only liquidity guess.
+    market_supply: int | None = None
 
     def to_listing(self) -> RawListing:
         """Rebuild a listing good enough to re-score against today's price."""
@@ -454,8 +459,14 @@ def record_appraisals(
         entry = catalog.listings.get(piece.listing.fb_listing_id)
         if entry is None:
             continue
-        entry.appraisal = piece.appraisal
+        # The model's own numbers, not the clamped ones used for scoring. The clamp is
+        # re-applied on every render, so storing its output would bake one day's bounds
+        # into the only durable copy and silently discard what the appraiser actually
+        # said. See ``EvaluatedPiece.appraisal_raw``.
+        entry.appraisal = getattr(piece, "appraisal_raw", None) or piece.appraisal
         entry.appraised_at = now
+        if getattr(piece, "market_supply", None) is not None:
+            entry.market_supply = piece.market_supply
         entry.appraised_price_cents = piece.listing.asking_price_cents
         entry.appraiser = appraiser
         entry.appraised_with_photos = piece.listing.fb_listing_id in seen_photos

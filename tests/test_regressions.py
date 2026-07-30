@@ -32,7 +32,7 @@ def test_a_run_that_values_nothing_reports_failure(monkeypatch):
     class AlwaysFails:
         name = "broken"
 
-        def appraise(self, listing, vertical, *, image_paths=None):
+        def appraise(self, listing, vertical, *, image_paths=None, comps=None):
             raise RuntimeError("no credential")
 
     import tempfile
