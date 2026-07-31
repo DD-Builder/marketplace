@@ -2,6 +2,7 @@
  "listings": {
   "1000266262732258": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -17,6 +18,7 @@
    "id": "1000266262732258",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Williamstown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1000266262732258.jpg",
    "photo_urls": [
@@ -55,6 +57,7 @@
     "reasoning": "This is almost certainly a mass-produced 1990s/early-2000s 'oak entertainment center' (Bassett/Broyhill/Riverside/Sumter-tier manufacturing), not a period antique \u2014 no maker mark given, and the construction described (fluted pilasters, crown molding, leaded-glass curio doors, cam/screw case construction typical of the category) points to oak veneer over MDF/particleboard with solid wood limited to frames and trim, not dovetailed or mortise-and-tenon joinery. This category has structurally weak resale economics regardless of condition: flatscreen wall-mounting has collapsed demand for large console/cubby units, and these pieces are heavy, bulky, and expensive to move, which suppresses local marketplace/eBay sold prices to roughly $250-450 for the assembled set even in excellent condition \u2014 well below the $500 ask. The ability to separate into two curio cabinets plus a TV console is the main value lever (curios alone are more desirable than the bulky whole), and could push combined realistic resale toward $400-450 if sold as three separate listings to three different buyer pools. Since the piece is already reported as excellent/well-maintained, restoration needs are minimal \u2014 cleaning, hardware tightening, maybe touch-up polish (~2 hours, minimal materials cost) \u2014 so there's little value to add through work; the deal's success hinges entirely on negotiating below the $500 ask and on transport/logistics cost, which the reseller should factor in given the item's size (96.5\" wide, three separate carcasses). Confidence is capped low since no photos were available to verify veneer condition, glass integrity, or actual wood species.",
     "style_era": "Mass-market traditional/'oak furniture' style, circa 1990s\u2013early 2000s (peak era for TV-cubby entertainment centers with leaded-glass curio sides)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 50000,
    "appraised_with_photos": false,
@@ -67,6 +70,7 @@
    "id": "1004715078837966",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Williamstown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1004715078837966.jpg",
    "photo_urls": [
@@ -105,6 +109,7 @@
     "reasoning": "The listing contains no identifying details whatsoever - not even furniture category (chair, dresser, table, etc.), let alone construction, joinery, maker marks, or era. At a $1/free asking price the downside is capped, but so is any basis for judgment: 'free furniture, come get it' Craigslist-style posts skew heavily toward low-value particleboard/veneer pieces being cleared out, with only a small chance of a genuine solid-wood find worth restoring. Estimates above are generic placeholders for an unknown low-to-mid-tier secondhand piece, not a real appraisal. Confidence is set near the floor (0.05, well under the 0.35 photo-less ceiling) because even basic item identification is missing - an in-person inspection (check for dovetails/mortise-and-tenon joints, solid wood vs. veneer via edge/drawer-bottom inspection, maker stamps or labels) is required before any restoration/resale decision can be made.",
     "style_era": "Unknown - no descriptive details, dimensions, or photos provided"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 100,
    "appraised_with_photos": false,
@@ -120,6 +125,7 @@
    "id": "1004805828845064",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Indianapolis, IN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1004805828845064.jpg",
    "photo_urls": [
@@ -143,6 +149,7 @@
   },
   "1005884362342557": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -155,6 +162,7 @@
    "id": "1005884362342557",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -173,6 +181,7 @@
   },
   "1007716528691457": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -185,6 +194,7 @@
    "id": "1007716528691457",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -208,6 +218,7 @@
   },
   "1009432891776181": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -220,6 +231,7 @@
    "id": "1009432891776181",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -236,6 +248,7 @@
   },
   "1012037981654776": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -248,6 +261,7 @@
    "id": "1012037981654776",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Knoxville, TN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -266,6 +280,7 @@
   },
   "1012725934967876": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -278,6 +293,7 @@
    "id": "1012725934967876",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -296,6 +312,7 @@
   },
   "1013309341166778": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -308,6 +325,7 @@
    "id": "1013309341166778",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Paris, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -324,6 +342,7 @@
   },
   "1014209484748408": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -336,6 +355,7 @@
    "id": "1014209484748408",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -352,6 +372,7 @@
   },
   "1014242497770190": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -364,6 +385,7 @@
    "id": "1014242497770190",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -382,6 +404,7 @@
   },
   "1017737897741984": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -394,6 +417,7 @@
    "id": "1017737897741984",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Crab Orchard, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -410,6 +434,7 @@
   },
   "1018696887816287": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -422,6 +447,7 @@
    "id": "1018696887816287",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -439,6 +465,7 @@
   },
   "1018897307416069": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -451,6 +478,7 @@
    "id": "1018897307416069",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -469,6 +497,7 @@
   },
   "1021865934045054": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -481,6 +510,7 @@
    "id": "1021865934045054",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -497,6 +527,7 @@
   },
   "1022365840304707": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -509,6 +540,7 @@
    "id": "1022365840304707",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -532,6 +564,7 @@
   },
   "1022465520579307": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -544,6 +577,7 @@
    "id": "1022465520579307",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -562,6 +596,7 @@
   },
   "1023603290642029": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -574,6 +609,7 @@
    "id": "1023603290642029",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -597,6 +633,7 @@
   },
   "1023876637038437": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -609,6 +646,7 @@
    "id": "1023876637038437",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -625,6 +663,7 @@
   },
   "1024819403811478": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -637,6 +676,7 @@
    "id": "1024819403811478",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -655,6 +695,7 @@
   },
   "1026884956920997": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -667,6 +708,7 @@
    "id": "1026884956920997",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -690,6 +732,7 @@
   },
   "1027772329694129": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -702,6 +745,7 @@
    "id": "1027772329694129",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -720,6 +764,7 @@
   },
   "1028460643443553": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -732,6 +777,7 @@
    "id": "1028460643443553",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -765,6 +811,7 @@
     "reasoning": "No photos and no stated maker mark or joinery detail (no mention of dovetails, mortise-and-tenon, or any label/stamp), so construction quality and true age can't be confirmed \u2014 confidence capped low per instructions. The described features (wood-on-wood drawer glides with no metal rails, a large separately-hung mirror with a thin backboard and support struts screwed to the case, overall bulk/length around 5 feet) are consistent with earlier-to-mid-20th-century mass-market bedroom suites, most of which used veneered case goods over cheaper secondary wood rather than solid hardwood carcasses \u2014 true solid-wood, hand-cut dovetailed construction would be unusual for this common a set at this price point without the seller calling it out. Absent evidence of fine joinery or a known maker, this should be treated as a decent-quality but ordinary vintage veneer suite rather than a high-value antique. Realistic restoration is modest: clean and wax/oil the finish, address minor surface scrapes with touch-up stain/fill, treat the water rings on the table top (often removable with heat/moisture draw-out treatments, occasionally requiring a partial refinish of just that top), re-securing the mirror mounting hardware, and general drawer glide conditioning (paraffin/wax on runners). This is a few hours of cosmetic work, not a full strip-and-refinish or veneer replacement job. At $125 asking for a matching 3-piece set including a mirror, the as-is price is fair-to-good; after modest cleanup, a matching dresser+mirror+nightstand set in a real regional marketplace (not aspirational dealer pricing) could reasonably fetch $250-350 depending on local demand for vintage brown furniture, which is currently soft. Net margin after materials/time is decent but not spectacular, reflecting the abundance of similar sets on the secondhand market and uncertain true construction quality.",
     "style_era": "Likely 1930s-1950s 'waterfall' or transitional Depression-era bedroom suite (based on long low dresser form, separate screw-mounted mirror with plywood backboard and support struts, and pre-modern wood drawer runners); could alternatively be a later 1960s-70s veneer reproduction in a similar idiom"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 12500,
    "appraised_with_photos": false,
@@ -780,6 +827,7 @@
    "id": "1028804236588745",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1028804236588745.jpg",
    "photo_urls": [
@@ -798,6 +846,7 @@
   },
   "1029309916179538": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -810,6 +859,7 @@
    "id": "1029309916179538",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -827,6 +877,7 @@
   },
   "1029637473146311": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -839,6 +890,7 @@
    "id": "1029637473146311",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Medina, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -857,6 +909,7 @@
   },
   "1029706352787356": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -869,6 +922,7 @@
    "id": "1029706352787356",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -887,6 +941,7 @@
   },
   "1029990956442877": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -899,6 +954,7 @@
    "id": "1029990956442877",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -917,6 +973,7 @@
   },
   "1030356182908111": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -929,6 +986,7 @@
    "id": "1030356182908111",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Florence, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -947,6 +1005,7 @@
   },
   "1030649106284451": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -959,6 +1018,7 @@
    "id": "1030649106284451",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -981,6 +1041,7 @@
   },
   "1034298252728024": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -993,6 +1054,7 @@
    "id": "1034298252728024",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Danville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1011,6 +1073,7 @@
   },
   "1034653629332127": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1023,6 +1086,7 @@
    "id": "1034653629332127",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1041,6 +1105,7 @@
   },
   "1042255841537819": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1053,6 +1118,7 @@
    "id": "1042255841537819",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1088,6 +1154,7 @@
     "reasoning": "This is a 3-piece upholstered set, not casegoods, so dovetail/mortise-and-tenon joinery assessment doesn't apply \u2014 frame construction for this category is typically stapled/screwed hardwood or engineered wood, invisible under upholstery and impossible to verify from text alone. 'Wood trim' suggests exposed accent legs/arms rather than a solid-wood-frame heirloom piece; no maker mark, brand, or provenance is given, pointing to a generic mass-market set rather than a designer or vintage find. Without photos, era is a guess based on absence of any vintage/antique language \u2014 most likely a 2000s-2010s production set. Realistic restoration is limited to deep cleaning, minor upholstery spot-repair, and touching up the wood trim; full reupholstery of three pieces (often $800-1500 per piece) would exceed resale value for an unbranded set and isn't economically justified. At $450 asking for all three pieces, margin after modest cleanup is thin but plausible for a quick-turn regional resale; deal quality is mediocre and heavily dependent on unverifiable actual condition, so confidence is capped low given the total lack of visual verification.",
     "style_era": "Contemporary mass-market, likely 2000s\u20132010s manufacture"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 45000,
    "appraised_with_photos": false,
@@ -1103,6 +1170,7 @@
    "id": "1043485054820806",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Cynthiana, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1043485054820806.jpg",
    "photo_urls": [
@@ -1126,6 +1194,7 @@
   },
   "1046498121061960": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1138,6 +1207,7 @@
    "id": "1046498121061960",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1156,6 +1226,7 @@
   },
   "1048027964445782": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1168,6 +1239,7 @@
    "id": "1048027964445782",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1186,6 +1258,7 @@
   },
   "1048403807574819": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1201,6 +1274,7 @@
    "id": "1048403807574819",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1048403807574819.jpg",
    "photo_urls": [
@@ -1219,6 +1293,7 @@
   },
   "1049816267591927": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1231,6 +1306,7 @@
    "id": "1049816267591927",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1248,6 +1324,7 @@
   },
   "1050533147500358": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1263,6 +1340,7 @@
    "id": "1050533147500358",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1050533147500358.jpg",
    "photo_urls": [
@@ -1281,6 +1359,7 @@
   },
   "1056946626791333": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1293,6 +1372,7 @@
    "id": "1056946626791333",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1310,6 +1390,7 @@
   },
   "1057805330258841": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1322,6 +1403,7 @@
    "id": "1057805330258841",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Hamilton, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1338,6 +1420,7 @@
   },
   "1059679846744209": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1350,6 +1433,7 @@
    "id": "1059679846744209",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1366,6 +1450,7 @@
   },
   "1059691913347318": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1378,6 +1463,7 @@
    "id": "1059691913347318",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1394,6 +1480,7 @@
   },
   "1060103160033052": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1406,6 +1493,7 @@
    "id": "1060103160033052",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1424,6 +1512,7 @@
   },
   "1062091556490692": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1436,6 +1525,7 @@
    "id": "1062091556490692",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1062091556490692.jpg",
    "photo_urls": [
@@ -1454,6 +1544,7 @@
   },
   "1062170386335041": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1466,6 +1557,7 @@
    "id": "1062170386335041",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1482,6 +1574,7 @@
   },
   "1063854932652892": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1494,6 +1587,7 @@
    "id": "1063854932652892",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1510,6 +1604,7 @@
   },
   "1075162648508670": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1522,6 +1617,7 @@
    "id": "1075162648508670",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1540,6 +1636,7 @@
   },
   "1076146581431150": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1552,6 +1649,7 @@
    "id": "1076146581431150",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Willisburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1575,6 +1673,7 @@
   },
   "1076807484915187": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1587,6 +1686,7 @@
    "id": "1076807484915187",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1625,6 +1725,7 @@
     "reasoning": "Listing gives almost nothing to verify: no dimensions, no photos, no maker mark, and a generic title ('Amour') that suggests mass-produced import furniture rather than a notable maker or genuine antique. 'Oak' is a self-report and can't be confirmed as solid wood versus veneer over composite, which is common in this price/description tier. The single stated defect (missing door hinge) is a cheap, fast fix (replacement hinge + hardware, minor cleaning/touch-up), so realistic restoration cost stays low. Absent any evidence of dovetail or mortise-and-tenon joinery or a maker's mark, this should be valued as an unremarkable, possibly veneered utility piece, not a restorable antique - regional resale (Facebook Marketplace/Craigslist/eBay sold comps for small oak-look cabinets) likely lands modestly above the buy price after a trivial repair, giving a decent but not exceptional flip margin. Confidence is capped low per instructions since construction, era, and maker cannot be verified without photos.",
     "style_era": "No period style indicated; 'Amour' reads as a mass-market/import product line name rather than a historical style, most likely a late 20th-century factory-made piece rather than an antique"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 500,
    "appraised_with_photos": false,
@@ -1637,6 +1738,7 @@
    "id": "1111420097939591",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1111420097939591.jpg",
    "photo_urls": [
@@ -1658,6 +1760,7 @@
   },
   "1133936193142987": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1670,6 +1773,7 @@
    "id": "1133936193142987",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1688,6 +1792,7 @@
   },
   "1136587782123091": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1700,6 +1805,7 @@
    "id": "1136587782123091",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Shelbyville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1718,6 +1824,7 @@
   },
   "1171517152719380": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1730,6 +1837,7 @@
    "id": "1171517152719380",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Willisburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1752,6 +1860,7 @@
   },
   "1205876228337162": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1764,6 +1873,7 @@
    "id": "1205876228337162",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1787,6 +1897,7 @@
   },
   "1222152490009162": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1799,6 +1910,7 @@
    "id": "1222152490009162",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1815,6 +1927,7 @@
   },
   "1242601887872389": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1827,6 +1940,7 @@
    "id": "1242601887872389",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1845,6 +1959,7 @@
   },
   "1276968291171660": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1857,6 +1972,7 @@
    "id": "1276968291171660",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1873,6 +1989,7 @@
   },
   "1292462742787932": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1885,6 +2002,7 @@
    "id": "1292462742787932",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1920,6 +2038,7 @@
     "reasoning": "This reads as a thrift-tier chest of drawers (30W x 18D x 46H fits a standard 5-drawer chest, not a wide triple dresser) that someone hand-painted with a hobbyist racing-stripe motif \u2014 fun novelty appeal for a kid's/man-cave room but no evidence of period, maker, or fine joinery. 'Solid wood' is the seller's unverified claim; at this price point and generic description, some particleboard/veneer secondary construction is plausible. No dovetails, no maker marks, no era detail given, so this is valued as a generic painted case good, not a genuine antique or designer piece. Realistic restoration is light: clean, tighten/wax drawer runners, touch up chips in the paint (keep the novelty finish rather than stripping it, since stripping a $36 piece to bare wood isn't economical), check/replace one pull if needed, add felt glides \u2014 a couple hours and modest materials cost. Restored resale on local marketplace/eBay for a clean, functional novelty racing dresser is realistically $80\u2013110, not designer-dealer pricing. Margin is decent (~$33 profit after purchase + restoration) but confidence is capped low since construction, joinery, and true condition can't be confirmed without photos.",
     "style_era": "No period style evident \u2014 generic mass-market chest form (likely 1970s\u20132000s manufacture) given a later amateur novelty paint job, not an antique or designer piece"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 3600,
    "appraised_with_photos": false,
@@ -1934,6 +2053,7 @@
    "id": "1298036099183850",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1298036099183850.jpg",
    "photo_urls": [
@@ -1951,6 +2071,7 @@
   },
   "1299750248691873": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1963,6 +2084,7 @@
    "id": "1299750248691873",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -1979,6 +2101,7 @@
   },
   "1305729088318288": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -1991,6 +2114,7 @@
    "id": "1305729088318288",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2008,6 +2132,7 @@
   },
   "1307089094921671": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2020,6 +2145,7 @@
    "id": "1307089094921671",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Delaware, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2038,6 +2164,7 @@
   },
   "1311622437818198": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2050,6 +2177,7 @@
    "id": "1311622437818198",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2066,6 +2194,7 @@
   },
   "1317465736788390": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2078,6 +2207,7 @@
    "id": "1317465736788390",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Whiteland, IN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2096,6 +2226,7 @@
   },
   "1317772440566341": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2108,6 +2239,7 @@
    "id": "1317772440566341",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2126,6 +2258,7 @@
   },
   "1319671416915655": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2138,6 +2271,7 @@
    "id": "1319671416915655",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2156,6 +2290,7 @@
   },
   "1320971486424962": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2168,6 +2303,7 @@
    "id": "1320971486424962",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Russell Springs, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2186,6 +2322,7 @@
   },
   "1327312329571323": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2198,6 +2335,7 @@
    "id": "1327312329571323",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2215,6 +2353,7 @@
   },
   "1328065502745007": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2227,6 +2366,7 @@
    "id": "1328065502745007",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2260,6 +2400,7 @@
     "reasoning": "No photos, no maker marks, no joinery details, no dimensions, and no era stated - only seller puffery (\"gorgeous,\" \"nearly perfect\"). At $1 asking, acquisition risk is minimal, but this class of listing (rural KY, mirror-back dresser, no details) most often turns out to be a common oak/walnut veneer piece worth modest money after refinishing (mirror re-silvering, drawer glide repair, veneer touch-up, hardware), not a high-value genuine antique. Restoration cost realistically eats most of the resale upside, leaving thin but positive margin. Recommend a lowball offer near asking ($1-$25) contingent on seeing photos before committing labor/shipping - confidence capped low since construction (solid wood vs. veneer vs. particleboard) and joinery cannot be verified from text alone.",
     "style_era": "Likely late Victorian/Eastlake to Depression-era (c. 1880-1940) mass-produced bedroom suite piece, based on \"antique + mirror\" phrasing common to that furniture class; could also be a later reproduction \u2014 cannot confirm without photos"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 100,
    "appraised_with_photos": false,
@@ -2275,6 +2416,7 @@
    "id": "1329984805955947",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Morehead, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1329984805955947.jpg",
    "photo_urls": [
@@ -2298,6 +2440,7 @@
   },
   "1331280395618142": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2310,6 +2453,7 @@
    "id": "1331280395618142",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Versailles, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2326,6 +2470,7 @@
   },
   "1333556271676853": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2338,6 +2483,7 @@
    "id": "1333556271676853",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2355,6 +2501,7 @@
   },
   "1334049362155089": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2367,6 +2514,7 @@
    "id": "1334049362155089",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2401,6 +2549,7 @@
     "reasoning": "No photos, no maker marks, no era or joinery detail given \u2014 the 'solid wood' and 'good condition' claims are entirely unverified, so confidence is capped low. Description suggests a generic, undistinguished dresser rather than a notable antique, so value should be anchored to typical local-marketplace prices for plain solid-wood dressers ($150-200 restored), not aspirational dealer pricing. The listed defect (hair-dye stain) is a simple cosmetic fix: sand/strip the affected area and refinish or repaint, plus a light overall cleaning/wax \u2014 a few hours of labor and cheap materials, no veneer repair or joinery work implied. At $80 asking plus ~$30 in restoration cost against a ~$175 realistic resale, the margin is decent but unremarkable, and the deal quality hinges entirely on the unverified condition claims \u2014 an in-person inspection for actual wood construction, drawer joinery (dovetail vs. stapled), and stain penetration depth is essential before committing.",
     "style_era": "Unspecified/unclear \u2014 description gives no stylistic cues (no maker marks, hardware style, or joinery detail); likely a mid-20th-century-to-modern mass-market or vintage secondhand piece rather than a documented period antique"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 8000,
    "appraised_with_photos": false,
@@ -2416,6 +2565,7 @@
    "id": "1337568671342152",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1337568671342152.jpg",
    "photo_urls": [
@@ -2434,6 +2584,7 @@
   },
   "1347222690689767": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2446,6 +2597,7 @@
    "id": "1347222690689767",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2464,6 +2616,7 @@
   },
   "1347223044192211": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2476,6 +2629,7 @@
    "id": "1347223044192211",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2494,6 +2648,7 @@
   },
   "1349056653442028": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2506,6 +2661,7 @@
    "id": "1349056653442028",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2529,6 +2685,7 @@
   },
   "1349784520678982": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2541,6 +2698,7 @@
    "id": "1349784520678982",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2562,6 +2720,7 @@
   },
   "1350377839898329": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2574,6 +2733,7 @@
    "id": "1350377839898329",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2592,6 +2752,7 @@
   },
   "1350614583830756": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2604,6 +2765,7 @@
    "id": "1350614583830756",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2621,6 +2783,7 @@
   },
   "1352396026802534": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2636,6 +2799,7 @@
    "id": "1352396026802534",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1352396026802534.jpg",
    "photo_urls": [
@@ -2654,6 +2818,7 @@
   },
   "1352939443651939": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2666,6 +2831,7 @@
    "id": "1352939443651939",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2688,6 +2854,7 @@
   },
   "1354850866078068": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2700,6 +2867,7 @@
    "id": "1354850866078068",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Hartsville, TN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2716,6 +2884,7 @@
   },
   "1354896586000188": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2728,6 +2897,7 @@
    "id": "1354896586000188",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2745,6 +2915,7 @@
   },
   "1355393902676736": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2757,6 +2928,7 @@
    "id": "1355393902676736",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2778,6 +2950,7 @@
   },
   "1358915172236371": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2790,6 +2963,7 @@
    "id": "1358915172236371",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2807,6 +2981,7 @@
   },
   "1360345639359834": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2822,6 +2997,7 @@
    "id": "1360345639359834",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1360345639359834.jpg",
    "photo_urls": [
@@ -2840,6 +3016,7 @@
   },
   "1365992365675136": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2852,6 +3029,7 @@
    "id": "1365992365675136",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Dayton, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2874,6 +3052,7 @@
   },
   "1368527461910444": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2886,6 +3065,7 @@
    "id": "1368527461910444",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2904,6 +3084,7 @@
   },
   "1368996261846845": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2916,6 +3097,7 @@
    "id": "1368996261846845",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2934,6 +3116,7 @@
   },
   "1369324812014185": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2946,6 +3129,7 @@
    "id": "1369324812014185",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -2969,6 +3153,7 @@
   },
   "1373841321333352": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -2983,6 +3168,7 @@
    "id": "1373841321333352",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1373841321333352.jpg",
    "photo_urls": [
@@ -3000,6 +3186,7 @@
   },
   "1376874727702318": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3012,6 +3199,7 @@
    "id": "1376874727702318",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Springfield, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3030,6 +3218,7 @@
   },
   "1379258234104274": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3042,6 +3231,7 @@
    "id": "1379258234104274",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Clarksville, IN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3058,6 +3248,7 @@
   },
   "1380908430629639": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3070,6 +3261,7 @@
    "id": "1380908430629639",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3088,6 +3280,7 @@
   },
   "1382762653699106": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3100,6 +3293,7 @@
    "id": "1382762653699106",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3118,6 +3312,7 @@
   },
   "1386180410053760": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3130,6 +3325,7 @@
    "id": "1386180410053760",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3151,6 +3347,7 @@
   },
   "1394972672683607": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3163,6 +3360,7 @@
    "id": "1394972672683607",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lancaster, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3198,6 +3396,7 @@
     "reasoning": "At $50 OBO the downside is small, but the water-swelling disclosure is the key unknown: if the set is genuinely solid oak, this is a straightforward strip/sand/reglue/refinish job (table top + 6 chairs) landing around $150-200 in materials and ~12-16 hours of labor, yielding a set that resells regionally (FB Marketplace/Craigslist/local eBay pickup) in the $300-450 range for a sturdy, refinished traditional oak dining set with chairs - solid but unremarkable sets rarely command more without a documented maker or notable design. If instead the top is veneer over particleboard, the swelling may be irreversible (bubbling, soft spots, delamination) and could force a full top replacement or kill the piece's resale value entirely, since buyers pay a premium specifically for 'solid wood' claims. No maker marks or joinery are mentioned, so an antique/collectible upside cannot be assumed - treat this as a generic mid-market set rather than a valuable period piece. Given the total inability to verify construction, joinery, or the true extent/reversibility of the water damage from text alone, confidence is capped at 0.3 and the deal score reflects a decent but not slam-dunk flip contingent on the swelling being cosmetic.",
     "style_era": "Generic 'traditional/farmhouse cottage' style; carved chair backs with spindle details suggest a mass-market case-goods design most common from the 1980s-2000s, though a similar look was produced from the early 1900s onward. Cannot date more precisely without photos of joinery, finish, or hardware."
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 5000,
    "appraised_with_photos": false,
@@ -3212,6 +3411,7 @@
    "id": "1396410792335616",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Berea, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1396410792335616.jpg",
    "photo_urls": [
@@ -3234,6 +3434,7 @@
   },
   "1398932712131134": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3246,6 +3447,7 @@
    "id": "1398932712131134",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3273,6 +3475,7 @@
   },
   "1401014141849853": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3285,6 +3488,7 @@
    "id": "1401014141849853",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3320,6 +3524,7 @@
     "reasoning": "No maker, materials, or photos given, and reclining upholstered sets are mass-produced with no meaningful joinery or maker-mark value to verify \u2014 this is a generic used-furniture appraisal, not an antique/fine-furniture one, so confidence is set below the 0.35 cap. Used reclining sofa+loveseat pairs (non-designer) typically resell locally for $400-900 depending on fabric/leather and working mechanisms; 'restoration' here means cleaning, minor mechanism lubrication/repair, and possibly spot upholstery fixes rather than cabinetmaking work. At $1800 asking, the piece is priced roughly 2-4x realistic resold value even assuming the 'perfect condition' claim holds, making this a poor deal unless the price is very negotiable or the set is a high-end leather brand not disclosed.",
     "style_era": "Contemporary/mass-production, likely 2000s-2020s"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 180000,
    "appraised_with_photos": false,
@@ -3335,6 +3540,7 @@
    "id": "1407296814592313",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1407296814592313.jpg",
    "photo_urls": [
@@ -3358,6 +3564,7 @@
   },
   "1410690060954946": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3370,6 +3577,7 @@
    "id": "1410690060954946",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3388,6 +3596,7 @@
   },
   "1418431873679655": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3400,6 +3609,7 @@
    "id": "1418431873679655",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Covington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3423,6 +3633,7 @@
   },
   "1420583202607464": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3435,6 +3646,7 @@
    "id": "1420583202607464",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lawrenceburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3471,6 +3683,7 @@
     "reasoning": "This is not a restoration-grade antique or solid-wood piece: storage beds with integrated drawers are almost exclusively a modern manufactured category built from particleboard/MDF with laminate or veneer skins and knockdown cam-lock/bolt joinery, not dovetailed or mortise-and-tenon casework. No maker marks or brand are given, and construction can't be verified from text alone, so confidence is capped low. There is essentially no 'restoration' opportunity here in the traditional refinishing sense \u2014 at 7 months old the realistic work is cleaning, re-tightening hardware, and possibly replacing a stripped cam bolt. Used flat-pack king storage beds typically resell locally (FB Marketplace/Craigslist/eBay local pickup) for roughly 40-55% of original retail due to bulk/shipping friction and abundant used supply; that puts realistic resale around $220-300 even in great condition. At a $390 ask, a reseller has little to no margin once transport (king storage beds are heavy and awkward to move) and minor touch-up costs are factored in, making this a weak flip candidate unless the frame can be acquired well below asking.",
     "style_era": "Contemporary, purchased new December 2025 (~7 months old, not vintage or antique)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 39000,
    "appraised_with_photos": false,
@@ -3486,6 +3699,7 @@
    "id": "1432160245389492",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1432160245389492.jpg",
    "photo_urls": [
@@ -3509,6 +3723,7 @@
   },
   "1432545758921271": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3521,6 +3736,7 @@
    "id": "1432545758921271",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3537,6 +3753,7 @@
   },
   "1439187397973749": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3549,6 +3766,7 @@
    "id": "1439187397973749",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3567,6 +3785,7 @@
   },
   "1446591693899699": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3579,6 +3798,7 @@
    "id": "1446591693899699",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3597,6 +3817,7 @@
   },
   "1468857248594653": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3609,6 +3830,7 @@
    "id": "1468857248594653",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3627,6 +3849,7 @@
   },
   "1470426517743964": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3639,6 +3862,7 @@
    "id": "1470426517743964",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3655,6 +3879,7 @@
   },
   "1473187527607639": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3667,6 +3892,7 @@
    "id": "1473187527607639",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Versailles, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3685,6 +3911,7 @@
   },
   "1480892867058506": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3697,6 +3924,7 @@
    "id": "1480892867058506",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3715,6 +3943,7 @@
   },
   "1484442943726415": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3727,6 +3956,7 @@
    "id": "1484442943726415",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Taylorsville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3743,6 +3973,7 @@
   },
   "1490393199012968": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3755,6 +3986,7 @@
    "id": "1490393199012968",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Harrodsburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3773,6 +4005,7 @@
   },
   "1493749365839358": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3785,6 +4018,7 @@
    "id": "1493749365839358",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3802,6 +4036,7 @@
   },
   "1501045058458510": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3814,6 +4049,7 @@
    "id": "1501045058458510",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3832,6 +4068,7 @@
   },
   "1501445761456417": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3844,6 +4081,7 @@
    "id": "1501445761456417",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3862,6 +4100,7 @@
   },
   "1503220704265341": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3874,6 +4113,7 @@
    "id": "1503220704265341",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3892,6 +4132,7 @@
   },
   "1507194430730733": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3904,6 +4145,7 @@
    "id": "1507194430730733",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3922,6 +4164,7 @@
   },
   "1509361367043353": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3934,6 +4177,7 @@
    "id": "1509361367043353",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3952,6 +4196,7 @@
   },
   "1511892886813829": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3964,6 +4209,7 @@
    "id": "1511892886813829",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Danville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -3980,6 +4226,7 @@
   },
   "1525518855728745": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -3992,6 +4239,7 @@
    "id": "1525518855728745",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4015,6 +4263,7 @@
   },
   "1530919741859232": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4027,6 +4276,7 @@
    "id": "1530919741859232",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4045,6 +4295,7 @@
   },
   "1531661311963135": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4057,6 +4308,7 @@
    "id": "1531661311963135",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Mt Sterling, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4075,6 +4327,7 @@
   },
   "1533016861648960": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4087,6 +4340,7 @@
    "id": "1533016861648960",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Burlington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4103,6 +4357,7 @@
   },
   "1536215481630967": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4115,6 +4370,7 @@
    "id": "1536215481630967",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Harrodsburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4136,6 +4392,7 @@
   },
   "1536520251438322": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4148,6 +4405,7 @@
    "id": "1536520251438322",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Berea, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4181,6 +4439,7 @@
     "reasoning": "No photos means construction (solid wood vs veneer vs particleboard) and joinery (dovetails vs stapled/dowelled) can't be verified, so confidence is capped low per instructions. The listing is generic and unbranded with no maker marks, no wood species named, and dimensions typical of a mass-produced mid-to-late 20th century American bedroom suite rather than a documented period antique - most likely a look-alike/utility piece rather than a high-value antique. At $75 for a matching two-piece set the as-is value is roughly in line with asking (typical local market rate for unbranded, unverified wood bedroom furniture in usable condition). Realistic restoration for a flip would be cleaning, minor drawer/glide repair, hardware refresh or replacement, and a refinish (strip/stain/poly or paint) across both pieces - budgeting materials plus DIY-equivalent labor around $180 and roughly 10 hours of combined work. Restored, a clean matching set sells modestly on local marketplace/FB/Craigslist in the Lexington, KY area for around $200-300 for the pair; eBay/1stDibs-style national or dealer pricing is not realistic for an unbranded, unverified piece requiring local pickup of bulky furniture. Net economics (asking + restoration vs. realistic resale) are roughly break-even to slightly favorable, and the lack of verifiable construction detail keeps this a marginal, higher-risk flip rather than a clear win.",
     "style_era": "Likely mid-to-late 20th century American bedroom suite (c. 1960s-1980s); unconfirmed without photos"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 7500,
    "appraised_with_photos": false,
@@ -4196,6 +4455,7 @@
    "id": "1538385981061764",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1538385981061764.jpg",
    "photo_urls": [
@@ -4236,6 +4496,7 @@
     "reasoning": "At $20 cash, even a modest solid-wood painted cupboard is a strong margin if the seller's claims hold up. No maker marks or joinery details are given, so this is priced as an unbranded vintage/cottage piece rather than a documented antique \u2014 construction (dovetails vs. nails, solid panels vs. plywood backs) cannot be confirmed without photos, hence confidence is capped low. Realistic restoration is light: reglue/wax drawer runners, adjust door alignment, spot-touch or refresh the chippy paint (a look many buyers want preserved, not stripped), and possibly swap or polish the metal pulls \u2014 roughly $100 in materials and 4 hours of labor, not a full refinish. Regional resale for a clean, functional green-and-white farmhouse cupboard of this modest size (57.5x39x17.5) realistically lands around $250-350 on local marketplace/eBay-sold comps, well below aspirational dealer pricing for similar-looking pieces. Deal score reflects good theoretical upside but is tempered by the total lack of verifiable construction/maker detail and the generic (not rare) nature of the form.",
     "style_era": "Painted cottage/farmhouse cabinet; body construction could be older (early-mid 20th c.) but green-and-white paint scheme reads as a later decorative repaint, possibly done for the farmhouse-decor trend"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 2000,
    "appraised_with_photos": false,
@@ -4251,6 +4512,7 @@
    "id": "1539598741047412",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1539598741047412.jpg",
    "photo_urls": [
@@ -4269,6 +4531,7 @@
   },
   "1540358351121947": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4283,6 +4546,7 @@
    "id": "1540358351121947",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1540358351121947.jpg",
    "photo_urls": [
@@ -4300,6 +4564,7 @@
   },
   "1543700170558820": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4312,6 +4577,7 @@
    "id": "1543700170558820",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4330,6 +4596,7 @@
   },
   "1544915290427449": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4342,6 +4609,7 @@
    "id": "1544915290427449",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4360,6 +4628,7 @@
   },
   "1546072687032162": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4372,6 +4641,7 @@
    "id": "1546072687032162",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4388,6 +4658,7 @@
   },
   "1546854223832819": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4400,6 +4671,7 @@
    "id": "1546854223832819",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4418,6 +4690,7 @@
   },
   "1547172090533669": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4430,6 +4703,7 @@
    "id": "1547172090533669",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4448,6 +4722,7 @@
   },
   "1547749350127268": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4460,6 +4735,7 @@
    "id": "1547749350127268",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Parksville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4478,6 +4754,7 @@
   },
   "1549096020106451": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4490,6 +4767,7 @@
    "id": "1549096020106451",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4529,6 +4807,7 @@
     "reasoning": "No photos or maker marks to verify construction, so this reads as a generic white-painted flat-pack nightstand cosmetically styled with MCM tapered legs rather than a genuine vintage solid-wood piece with dovetail joinery. At this price point and generic description, particleboard/MDF case construction with applied solid-wood legs is far more probable than true MCM craftsmanship. Realistic restoration is light: clean, tighten hardware/joints, maybe touch up paint or swap knobs \u2014 not a full refinish. Restored resale should be valued at realistic local marketplace pricing for a nice-looking but mass-produced nightstand ($35-55), not aspirational MCM dealer pricing. Margin is decent relative to the trivial $15 buy-in and low restoration cost, but confidence is capped low since construction, joinery, and authenticity can't be confirmed without photos.",
     "style_era": "Contemporary mass-market piece styled after Mid-Century Modern (not period-authentic; likely 2000s-2020s big-box/flat-pack)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 1500,
    "appraised_with_photos": false,
@@ -4544,6 +4823,7 @@
    "id": "1549815250125258",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1549815250125258.jpg",
    "photo_urls": [
@@ -4567,6 +4847,7 @@
   },
   "1550814156528940": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4579,6 +4860,7 @@
    "id": "1550814156528940",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4595,6 +4877,7 @@
   },
   "1551486483309795": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4607,6 +4890,7 @@
    "id": "1551486483309795",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1551486483309795.jpg",
    "photo_urls": [
@@ -4625,6 +4909,7 @@
   },
   "1558667959072212": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4637,6 +4922,7 @@
    "id": "1558667959072212",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4655,6 +4941,7 @@
   },
   "1563287015312478": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4667,6 +4954,7 @@
    "id": "1563287015312478",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Versailles, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4685,6 +4973,7 @@
   },
   "1567522958339914": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4697,6 +4986,7 @@
    "id": "1567522958339914",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4720,6 +5010,7 @@
   },
   "1568095201326742": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4732,6 +5023,7 @@
    "id": "1568095201326742",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4750,6 +5042,7 @@
   },
   "1569588154699573": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4765,6 +5058,7 @@
    "id": "1569588154699573",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Versailles, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1569588154699573.jpg",
    "photo_urls": [
@@ -4788,6 +5082,7 @@
   },
   "1573368381157611": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4800,6 +5095,7 @@
    "id": "1573368381157611",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4822,6 +5118,7 @@
   },
   "1575297970677451": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4834,6 +5131,7 @@
    "id": "1575297970677451",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4867,6 +5165,7 @@
     "reasoning": "No photos means construction, joinery, and 'solid oak' claim can't be verified \u2014 this could easily be oak veneer over particleboard/plywood, common in mass-market colonial-style dining sets from the 70s-90s. No maker marks mentioned, no evidence of dovetail or mortise-and-tenon joinery, and 'spindle' chair style plus generic description points to factory production rather than a period or artisan piece. Needed restoration is modest if the piece is genuinely solid wood: turning/sourcing a matching spindle (cheap, a few hours) and sanding/refinishing the scratched tabletop (moderate labor, inexpensive materials) \u2014 roughly $100 and 6 hours all-in. Oak dining sets are extremely oversupplied in secondhand markets, so even a fully restored set realistically clears $250-350 locally, not more, despite higher aspirational listings elsewhere. At $125 asking, the deal is only moderately attractive \u2014 enough margin to justify labor if genuinely solid wood, but real risk the asking price already reflects an inflated 'solid oak' claim on what may be veneer/composite construction.",
     "style_era": "Colonial/Early American style reproduction, likely mass-produced ca. 1970s-1990s"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 12500,
    "appraised_with_photos": false,
@@ -4881,6 +5180,7 @@
    "id": "1576635034096120",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1576635034096120.jpg",
    "photo_urls": [
@@ -4903,6 +5203,7 @@
   },
   "1580260750197344": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4915,6 +5216,7 @@
    "id": "1580260750197344",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4933,6 +5235,7 @@
   },
   "1583264446649272": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4945,6 +5248,7 @@
    "id": "1583264446649272",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4966,6 +5270,7 @@
   },
   "1583377196637618": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -4978,6 +5283,7 @@
    "id": "1583377196637618",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -4996,6 +5302,7 @@
   },
   "1595430952006726": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5008,6 +5315,7 @@
    "id": "1595430952006726",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5029,6 +5337,7 @@
   },
   "1596641025500785": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5041,6 +5350,7 @@
    "id": "1596641025500785",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5059,6 +5369,7 @@
   },
   "1599086024959962": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5071,6 +5382,7 @@
    "id": "1599086024959962",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5094,6 +5406,7 @@
   },
   "1599964638312791": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5106,6 +5419,7 @@
    "id": "1599964638312791",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5124,6 +5438,7 @@
   },
   "1602402114828676": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5136,6 +5451,7 @@
    "id": "1602402114828676",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Irvine, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5152,6 +5468,7 @@
   },
   "1606404404384755": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5164,6 +5481,7 @@
    "id": "1606404404384755",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lawrenceburg, IN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5180,6 +5498,7 @@
   },
   "1610782670248633": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5192,6 +5511,7 @@
    "id": "1610782670248633",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5210,6 +5530,7 @@
   },
   "1616078209497497": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5222,6 +5543,7 @@
    "id": "1616078209497497",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5238,6 +5560,7 @@
   },
   "1630837798129737": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5250,6 +5573,7 @@
    "id": "1630837798129737",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Morehead, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5268,6 +5592,7 @@
   },
   "1636687951801415": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5280,6 +5605,7 @@
    "id": "1636687951801415",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5297,6 +5623,7 @@
   },
   "1641691594495861": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5309,6 +5636,7 @@
    "id": "1641691594495861",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5325,6 +5653,7 @@
   },
   "1643363637797268": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5337,6 +5666,7 @@
    "id": "1643363637797268",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5355,6 +5685,7 @@
   },
   "1651097590358502": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5370,6 +5701,7 @@
    "id": "1651097590358502",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Midway, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1651097590358502.jpg",
    "photo_urls": [
@@ -5388,6 +5720,7 @@
   },
   "1652493842513147": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5400,6 +5733,7 @@
    "id": "1652493842513147",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5418,6 +5752,7 @@
   },
   "1653412559295425": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5430,6 +5765,7 @@
    "id": "1653412559295425",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5446,6 +5782,7 @@
   },
   "1656337893168532": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5458,6 +5795,7 @@
    "id": "1656337893168532",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5476,6 +5814,7 @@
   },
   "1658234331894487": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5488,6 +5827,7 @@
    "id": "1658234331894487",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5506,6 +5846,7 @@
   },
   "1662015838239311": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5518,6 +5859,7 @@
    "id": "1662015838239311",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5536,6 +5878,7 @@
   },
   "1662949891448694": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5548,6 +5891,7 @@
    "id": "1662949891448694",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5566,6 +5910,7 @@
   },
   "1665449691212510": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5578,6 +5923,7 @@
    "id": "1665449691212510",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5596,6 +5942,7 @@
   },
   "1674451423659108": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5608,6 +5955,7 @@
    "id": "1674451423659108",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5626,6 +5974,7 @@
   },
   "1681755769543636": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5641,6 +5990,7 @@
    "id": "1681755769543636",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1681755769543636.jpg",
    "photo_urls": [
@@ -5659,6 +6009,7 @@
   },
   "1681853956410678": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5671,6 +6022,7 @@
    "id": "1681853956410678",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5688,6 +6040,7 @@
   },
   "1685132812787778": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5700,6 +6053,7 @@
    "id": "1685132812787778",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5721,6 +6075,7 @@
   },
   "1689631552276259": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5733,6 +6088,7 @@
    "id": "1689631552276259",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5749,6 +6105,7 @@
   },
   "1692107991869123": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5761,6 +6118,7 @@
    "id": "1692107991869123",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5779,6 +6137,7 @@
   },
   "1693736695161360": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5791,6 +6150,7 @@
    "id": "1693736695161360",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5827,6 +6187,7 @@
     "reasoning": "No photos, no maker marks cited, and no joinery details (dovetails/M&T) mentioned despite the listing being detailed about hardware \u2014 the cable-management hole on the console is a strong tell for post-1990s mass production, and a $50 asking price for three disparate case pieces sold as one lot is classic clearance/moving-sale pricing for particleboard-and-veneer furniture, not solid-wood antiques. This is very likely 'traditional/asymmetrical style' veneer furniture rather than genuine hardwood construction, so treat any refinishing plans skeptically \u2014 veneer doesn't tolerate heavy sanding/stripping. Realistic restoration is limited to cleaning, tightening hardware, replacing a few pulls/knobs, and touch-up wax/marker for scuffs; it would not support full strip-and-refinish economics. Split and sold separately locally (used furniture marketplace, not 1stDibs-style aspirational pricing), the three pieces might fetch roughly $40-50 (dresser), $50-70 (console), $30-40 (bookshelf) after light cleanup \u2014 around $120-160 total against a $50 buy-in plus modest labor/materials, a modest but plausible flip if pickup logistics and demand cooperate. Confidence capped low given total inability to verify construction, wood species, or condition from text alone.",
     "style_era": "Contemporary big-box furniture, likely 1990s-2010s; 'traditional design' and 'bracket feet' on the dresser are decorative veneer styling over a modern carcass, not genuine period furniture"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 5000,
    "appraised_with_photos": false,
@@ -5842,6 +6203,7 @@
    "id": "1697195071582592",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1697195071582592.jpg",
    "photo_urls": [
@@ -5860,6 +6222,7 @@
   },
   "1698808641360382": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5872,6 +6235,7 @@
    "id": "1698808641360382",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5890,6 +6254,7 @@
   },
   "1704213040699058": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5905,6 +6270,7 @@
    "id": "1704213040699058",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1704213040699058.jpg",
    "photo_urls": [
@@ -5923,6 +6289,7 @@
   },
   "1704682374175205": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5935,6 +6302,7 @@
    "id": "1704682374175205",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5956,6 +6324,7 @@
   },
   "1709295653307302": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5968,6 +6337,7 @@
    "id": "1709295653307302",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -5986,6 +6356,7 @@
   },
   "1712210183121791": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -5998,6 +6369,7 @@
    "id": "1712210183121791",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6016,6 +6388,7 @@
   },
   "1714496793084969": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6028,6 +6401,7 @@
    "id": "1714496793084969",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6063,6 +6437,7 @@
     "reasoning": "No photos and no maker mark mean 'solid wood' and joinery quality are seller claims only, capping confidence low. This reads as a common mass-produced spindle/turned-post bed (not a documented antique) - full-size beds also have weaker resale demand than queen/king in most local markets, limiting upside. The mattress/box spring, while described as near-new, are hard to monetize as used bedding (buyer hygiene concerns, no warranty) and shouldn't be counted at anything near retail value. Realistic play: negotiate to buy just the frame well under the $170 combined ask (seller is open to splitting), refinish (strip/sand/restain or paint, tighten joints/hardware) for roughly $70 in materials and ~6 hours labor, then resell locally in the $180-240 range. Treating the full $170 as the cost basis for the frame alone yields thin margin; the deal only clearly works if the frame can be acquired separately for materially less than $170, so deal score is moderate rather than strong.",
     "style_era": "Country/cottage 'Jenny Lind' style spindle bed, mass-market production likely 1980s-2000s (not an antique despite 'older' framing)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 17000,
    "appraised_with_photos": false,
@@ -6078,6 +6453,7 @@
    "id": "1722164608784679",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1722164608784679.jpg",
    "photo_urls": [
@@ -6096,6 +6472,7 @@
   },
   "1722976842056555": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6108,6 +6485,7 @@
    "id": "1722976842056555",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6124,6 +6502,7 @@
   },
   "1723344768790855": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6136,6 +6515,7 @@
    "id": "1723344768790855",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Frankfort, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6154,6 +6534,7 @@
   },
   "1728247504987505": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6166,6 +6547,7 @@
    "id": "1728247504987505",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6184,6 +6566,7 @@
   },
   "1728890758307628": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6196,6 +6579,7 @@
    "id": "1728890758307628",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6214,6 +6598,7 @@
   },
   "1730695141585130": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6226,6 +6611,7 @@
    "id": "1730695141585130",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6244,6 +6630,7 @@
   },
   "1735648047748378": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6256,6 +6643,7 @@
    "id": "1735648047748378",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Union, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6291,6 +6679,7 @@
     "reasoning": "This reads as a genuine period waterfall-style vanity rather than a reproduction \u2014 the construction description (heavy, two full pedestals, trifold mirror, functioning joinery after a century) is consistent with 1920s-30s factory case goods, which commonly used solid wood frames/drawer boxes with figured veneer panels; particleboard didn't enter mass furniture production until decades later, so the weight claim is a good (if unverifiable) signal against it. No maker mark is mentioned, which is typical \u2014 most of this era's mid-market bedroom suites were unbranded or branded with paper labels long since lost, so treat maker as unknown. Dovetailing can't be confirmed from text but is likely present on at least the top drawers given the era. Restoration for this category realistically means: strip and refinish (or careful French-polish touch-up) rather than paint given the seller's own note, veneer chip repair/reglue, hardware cleaning or replacement, and cleaning or resilvering the mirror panels \u2014 a moderate but not trivial job given the surface area of a mirror-back vanity plus stool. Market reality check: 'brown furniture' from this era is currently soft; trifold-mirror vanities are heavy and awkward to ship, so realistic resale is local-pickup marketplace or regional eBay-sold prices in the $200-350 range for a nicely refinished example, not the $500+ aspirational listings seen on dealer/1stDibs-style sites. At $100 asking with functional joinery already confirmed by the seller, this is a fair-to-slightly-favorable buy with modest but real margin after materials and labor; confidence is capped low because none of the construction, wood species, or condition details can be visually verified.",
     "style_era": "Art Deco / Waterfall style, c. 1925-1935"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 10000,
    "appraised_with_photos": false,
@@ -6306,6 +6695,7 @@
    "id": "1745001666717512",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Irvine, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1745001666717512.jpg",
    "photo_urls": [
@@ -6329,6 +6719,7 @@
   },
   "1746331813394294": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6341,6 +6732,7 @@
    "id": "1746331813394294",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6377,6 +6769,7 @@
     "reasoning": "Listing provides only dimensions and a generic title with no photos, wood species, joinery, hardware, or maker marks \u2014 far too little to distinguish solid-wood/dovetailed construction from veneer-over-plywood or particleboard hidden under black paint, which is common in mass-market pieces of this exact size. Standard double-dresser proportions are consistent with anything from 1950s to modern IKEA-tier furniture, so no era can be pinned down. Assuming typical odds (most unmarked black dressers at this price point are mid-grade veneer/particleboard rather than solid hardwood with dovetails), realistic as-is resale is modest. Restoration (strip/repaint or refinish, hardware replacement, drawer glide repair) would run roughly $150 and several hours, pushing restored resale to only ~$200-250 in a regional marketplace \u2014 meaning the $200 asking price offers thin-to-negative margin once restoration costs are included. Confidence is capped low both by the no-photo policy and by the unusually sparse listing text itself (no maker, no wood, no hardware description).",
     "style_era": "Indeterminate \u2014 dimensions (56.5\"W x 35\"H x 20\"D) fit a standard mid-century-to-contemporary double dresser; no leg style, hardware, or joinery described to narrow era"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 20000,
    "appraised_with_photos": false,
@@ -6392,6 +6785,7 @@
    "id": "1747310869953366",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1747310869953366.jpg",
    "photo_urls": [
@@ -6415,6 +6809,7 @@
   },
   "1752316049281783": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6427,6 +6822,7 @@
    "id": "1752316049281783",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6444,6 +6840,7 @@
   },
   "1758205048646939": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6459,6 +6856,7 @@
    "id": "1758205048646939",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1758205048646939.jpg",
    "photo_urls": [
@@ -6482,6 +6880,7 @@
   },
   "1760105195040372": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6494,6 +6893,7 @@
    "id": "1760105195040372",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lawrenceburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6535,6 +6935,7 @@
     "reasoning": "Text-only listing with no images, so construction/condition cannot be verified \u2014 confidence capped low. This reads as a generic imported flat-pack TV console (particleboard/MDF with laminate finish, metal legs, built-in power strip) rather than a genuine wood piece with joinery or maker marks; there is no antique or solid-wood upside, and 'restoration' here means only cleaning, tightening hardware, and testing the electrical outlets for safety, not refinishing or repair of real wood/veneer. Comparable used flat-pack TV stands with power outlets typically resell locally for $50-80 depending on size/brand recognition; at a $60 ask there is only modest margin after minimal cleanup effort, and real risk that the power strip is worn or the laminate has chips not disclosed. Deal is mediocre, not compelling, and hinges entirely on the outlet strip working safely.",
     "style_era": "Contemporary mass-market import furniture, likely 2020s (Amazon/Wayfair-tier design)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 6000,
    "appraised_with_photos": false,
@@ -6550,6 +6951,7 @@
    "id": "1768375487938678",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1768375487938678.jpg",
    "photo_urls": [
@@ -6573,6 +6975,7 @@
   },
   "1774233010689606": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6585,6 +6988,7 @@
    "id": "1774233010689606",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Paris, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6603,6 +7007,7 @@
   },
   "1775568563615388": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6615,6 +7020,7 @@
    "id": "1775568563615388",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6633,6 +7039,7 @@
   },
   "1785190922664753": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6645,6 +7052,7 @@
    "id": "1785190922664753",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6668,6 +7076,7 @@
   },
   "1799018564413823": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6680,6 +7089,7 @@
    "id": "1799018564413823",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6701,6 +7111,7 @@
   },
   "1830927941216071": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6713,6 +7124,7 @@
    "id": "1830927941216071",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6746,6 +7158,7 @@
     "reasoning": "No photos, no maker mark, no material claims, and no joinery details means construction and authenticity cannot be assessed \u2014 confidence is capped low per instructions. The dimensions (31Wx15Dx35H) don't match typical vintage credenza proportions, suggesting this is more likely a modern mass-produced cabinet (veneer/laminate over particleboard) than a genuine restorable hardwood piece, which caps realistic upside. Even generously assuming presentable condition, regional resale for an unbranded small cabinet like this typically lands $100-150 restored, well under the $195 ask. Restoration would likely be limited to cosmetic cleaning/touch-up (low hours, low cost) rather than true refinishing, since particleboard/veneer doesn't support sanding or deep repair. At the current asking price this is a weak flip candidate \u2014 cost plus restoration likely meets or exceeds realistic resale, yielding thin or negative margin, hence the low deal score.",
     "style_era": "Unclear/unverified \u2014 dimensions (narrow width, unusually tall at 35\") and vague multi-purpose title ('Credenza/Bookshelf/Cabinet') are inconsistent with genuine mid-century credenzas (typically 60-72\"W, 24-30\"H); reads as a modern mass-market piece, not a period design"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:34:30.158359Z",
    "appraised_price_cents": 19500,
    "appraised_with_photos": false,
@@ -6761,6 +7174,7 @@
    "id": "1831513537810902",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Shelbyville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/1831513537810902.jpg",
    "photo_urls": [
@@ -6784,6 +7198,7 @@
   },
   "1833252411415719": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6796,6 +7211,7 @@
    "id": "1833252411415719",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6819,6 +7235,7 @@
   },
   "1852937552344275": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6831,6 +7248,7 @@
    "id": "1852937552344275",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6847,6 +7265,7 @@
   },
   "1904252516955790": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6859,6 +7278,7 @@
    "id": "1904252516955790",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lancaster, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6875,6 +7295,7 @@
   },
   "1913355652679396": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6887,6 +7308,7 @@
    "id": "1913355652679396",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Flemingsburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6903,6 +7325,7 @@
   },
   "1918212132179879": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6915,6 +7338,7 @@
    "id": "1918212132179879",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6933,6 +7357,7 @@
   },
   "1948725579149710": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6945,6 +7370,7 @@
    "id": "1948725579149710",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Frankfort, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6961,6 +7387,7 @@
   },
   "1970162566970013": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -6973,6 +7400,7 @@
    "id": "1970162566970013",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Cynthiana, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -6990,6 +7418,7 @@
   },
   "1975390489807465": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7002,6 +7431,7 @@
    "id": "1975390489807465",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7020,6 +7450,7 @@
   },
   "1980161782685557": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7032,6 +7463,7 @@
    "id": "1980161782685557",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Danville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7048,6 +7480,7 @@
   },
   "1995294111143008": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7060,6 +7493,7 @@
    "id": "1995294111143008",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7083,6 +7517,7 @@
   },
   "1996891167635468": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7095,6 +7530,7 @@
    "id": "1996891167635468",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Hixson, TN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7113,6 +7549,7 @@
   },
   "2003823200501904": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7125,6 +7562,7 @@
    "id": "2003823200501904",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7143,6 +7581,7 @@
   },
   "2006403393382000": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7155,6 +7594,7 @@
    "id": "2006403393382000",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7173,6 +7613,7 @@
   },
   "2044137429510629": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7185,6 +7626,7 @@
    "id": "2044137429510629",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7202,6 +7644,7 @@
   },
   "2045714572699155": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7214,6 +7657,7 @@
    "id": "2045714572699155",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Monticello, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7232,6 +7676,7 @@
   },
   "2048146086091135": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7244,6 +7689,7 @@
    "id": "2048146086091135",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7267,6 +7713,7 @@
   },
   "2056264988613412": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7279,6 +7726,7 @@
    "id": "2056264988613412",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7297,6 +7745,7 @@
   },
   "2064439784503210": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7309,6 +7758,7 @@
    "id": "2064439784503210",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7326,6 +7776,7 @@
   },
   "2073599049857278": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7338,6 +7789,7 @@
    "id": "2073599049857278",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7356,6 +7808,7 @@
   },
   "2081206726106412": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7368,6 +7821,7 @@
    "id": "2081206726106412",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2081206726106412.jpg",
    "photo_urls": [
@@ -7386,6 +7840,7 @@
   },
   "2086222558770647": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7398,6 +7853,7 @@
    "id": "2086222558770647",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7415,6 +7871,7 @@
   },
   "2086302155432160": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7427,6 +7884,7 @@
    "id": "2086302155432160",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Carlisle, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7443,6 +7901,7 @@
   },
   "2097557398311159": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7455,6 +7914,7 @@
    "id": "2097557398311159",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7477,6 +7937,7 @@
   },
   "2099242354325035": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7492,6 +7953,7 @@
    "id": "2099242354325035",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2099242354325035.jpg",
    "photo_urls": [
@@ -7515,6 +7977,7 @@
   },
   "2100079787242507": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7527,6 +7990,7 @@
    "id": "2100079787242507",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lawrenceburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7549,6 +8013,7 @@
   },
   "2101910947076064": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7561,6 +8026,7 @@
    "id": "2101910947076064",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Prospect, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7597,6 +8063,7 @@
     "reasoning": "No photos means construction, joinery, and true condition are unverifiable \u2014 confidence capped low. Listing tone and lack of any maker/antique cues (no dovetails, no mortise-and-tenon, no maker mark, no specific era claimed) point to a common mass-market 'oak' bedroom set, which in this segment is very often oak veneer over engineered wood cores with solid oak used only for legs/rails/trim, not a genuine solid-oak antique. Seller's 'comparable sets are a few thousand' framing is aspirational retail-new pricing, not a realistic used-market comp, and should be discounted heavily \u2014 regional resale for a clean, complete 3-piece oak-look queen set on marketplace/eBay-local is realistically $600\u2013900, not thousands. As-is value is set below the $500 ask because the unpictured mirror and total lack of condition detail carry real risk. Likely restoration is light (cleaning, hardware tightening, minor touch-up, possible reglue of a joint or two, mirror sourcing/replacement) rather than a full strip-and-refinish, since a genuine hand-dovetailed antique was not indicated. At the $500 ask plus ~$200 restoration cost against a ~$750 realistic restored resale, margin is thin \u2014 a fair but not great flip, and the deal quality hinges entirely on unverifiable as-is condition, hence the moderate deal score and low confidence.",
     "style_era": "Mass-market traditional/mission-influenced oak bedroom furniture, likely factory production from the 1990s\u20132000s rather than an antique or designer piece"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 50000,
    "appraised_with_photos": false,
@@ -7612,6 +8079,7 @@
    "id": "2105305880334082",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Falmouth, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2105305880334082.jpg",
    "photo_urls": [
@@ -7635,6 +8103,7 @@
   },
   "2126103204983198": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7647,6 +8116,7 @@
    "id": "2126103204983198",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7665,6 +8135,7 @@
   },
   "2130601317854546": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7677,6 +8148,7 @@
    "id": "2130601317854546",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7699,6 +8171,7 @@
   },
   "2131640254440453": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7711,6 +8184,7 @@
    "id": "2131640254440453",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7729,6 +8203,7 @@
   },
   "2144666309594475": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7741,6 +8216,7 @@
    "id": "2144666309594475",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7777,6 +8253,7 @@
     "reasoning": "Cabriole legs and a scalloped apron strongly suggest at least a solid-wood frame (particleboard doesn't carve into cabriole shapes economically), which is a positive construction signal even without photos. However, the drawer front, apron panels, and painted top could still be veneer over ply \u2014 a common cost-saving move in this genre \u2014 and joinery (dovetail vs. stapled drawer box) can't be assessed from text. Absence of any maker mark strongly implies this is generic 1960s-80s French Provincial reproduction furniture, extremely common in the US secondary market, not a collectible or designer piece \u2014 so value should be judged as a decorative look-alike, not a period antique. The navy top is already a non-original repaint, which cuts two ways: it could mean a previous refinisher covered veneer damage or color mismatch (negative), or it could be an intentional and market-friendly two-tone 'farmhouse/shabby-chic' treatment that many resellers replicate on purpose (neutral-to-positive, since two-tone French Provincial pieces sell reasonably well locally). Realistic restoration is light: assess and tighten joints, clean/wax or re-lacquer the base, inspect and possibly repaint or distress the top to a clean finish, and check/replace the drawer glide and pull if tarnished or loose \u2014 a few hours of labor, not a full strip-and-rebuild. At $85 asking with modest restoration cost (~$40 material/labor), a realistic resold price on local marketplace/eBay (not 1stDibs-style aspirational pricing) for a clean two-tone French Provincial end table is roughly $110-150, leaving a thin-to-moderate margin. Given the total inability to verify construction, joinery, or actual paint/veneer condition from text alone, confidence is capped low and the deal should be treated as speculative until physically inspected.",
     "style_era": "Mid-century American French Provincial reproduction, likely 1960s-1980s mass production (not period French antique)"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 8500,
    "appraised_with_photos": false,
@@ -7792,6 +8269,7 @@
    "id": "2147821552434160",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2147821552434160.jpg",
    "photo_urls": [
@@ -7810,6 +8288,7 @@
   },
   "2153324308564066": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7822,6 +8301,7 @@
    "id": "2153324308564066",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7839,6 +8319,7 @@
   },
   "2179354536197524": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7851,6 +8332,7 @@
    "id": "2179354536197524",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7869,6 +8351,7 @@
   },
   "2206067993525689": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7881,6 +8364,7 @@
    "id": "2206067993525689",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Bardstown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7897,6 +8381,7 @@
   },
   "2218826558943113": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7909,6 +8394,7 @@
    "id": "2218826558943113",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -7925,6 +8411,7 @@
   },
   "2228502754613114": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7937,6 +8424,7 @@
    "id": "2228502754613114",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2228502754613114.jpg",
    "photo_urls": [
@@ -7955,6 +8443,7 @@
   },
   "2246798129421071": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -7967,6 +8456,7 @@
    "id": "2246798129421071",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8002,6 +8492,7 @@
     "reasoning": "No photos, no maker mark, no joinery detail, and no condition notes make this listing essentially unverifiable - seller's 'solid wood' claim in a title is a common overstatement and cannot be confirmed (could be solid-front/veneer-side hybrid construction typical of the era, or lower-grade case goods). The 62in-long, low 30in-tall proportions suggest a generic long dresser rather than a documented design or branded maker (no maker mark cited), so treat as a look-alike/generic piece rather than a verified quality antique. At $100 asking with no red flags but no green flags either, as-is value is roughly in line with asking. Realistic regional resale (Facebook Marketplace/Craigslist/eBay local pickup) for a cleaned-up, refinished plain dresser of this type is modest - $150-250 is typical for unbranded pieces, not the $500+ seen on aspirational dealer sites. Restoration would likely involve stripping/refinishing, hardware cleaning or replacement, drawer glide adjustment, and structural check, estimated at ~$90 in materials and ~10 hours labor. Margin after purchase price and restoration cost is thin, making this a marginal rather than strong flip - proceed only if in-person inspection confirms genuine solid wood construction and sound joinery, which would meaningfully improve the economics.",
     "style_era": "Likely mid-to-late 20th century mass-market bedroom furniture (c. 1960s-1980s), possibly Colonial/Traditional reproduction or early MCM-influenced long dresser given the 62in x 17in x 30in proportions; no distinctive style cues given"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:18:46.063963Z",
    "appraised_price_cents": 10000,
    "appraised_with_photos": false,
@@ -8014,6 +8505,7 @@
    "id": "2262069701213212",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2262069701213212.jpg",
    "photo_urls": [
@@ -8030,6 +8522,7 @@
   },
   "2273342916802927": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8042,6 +8535,7 @@
    "id": "2273342916802927",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8058,6 +8552,7 @@
   },
   "2340898716318360": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8070,6 +8565,7 @@
    "id": "2340898716318360",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8088,6 +8584,7 @@
   },
   "2348150136584077": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8100,6 +8597,7 @@
    "id": "2348150136584077",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8116,6 +8614,7 @@
   },
   "2428993480844970": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8131,6 +8630,7 @@
    "id": "2428993480844970",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2428993480844970.jpg",
    "photo_urls": [
@@ -8149,6 +8649,7 @@
   },
   "2429198024240787": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8161,6 +8662,7 @@
    "id": "2429198024240787",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Frankfort, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8184,6 +8686,7 @@
   },
   "2432627677218403": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8196,6 +8699,7 @@
    "id": "2432627677218403",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Perryville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8217,6 +8721,7 @@
   },
   "2466590910530171": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8229,6 +8734,7 @@
    "id": "2466590910530171",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Prospect, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8247,6 +8753,7 @@
   },
   "2491333091331040": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8259,6 +8766,7 @@
    "id": "2491333091331040",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Eminence, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8277,6 +8785,7 @@
   },
   "2531610663964407": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8289,6 +8798,7 @@
    "id": "2531610663964407",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2531610663964407.jpg",
    "photo_urls": [
@@ -8307,6 +8817,7 @@
   },
   "2537018430466236": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8319,6 +8830,7 @@
    "id": "2537018430466236",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Milton, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8335,6 +8847,7 @@
   },
   "25473054865692868": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8347,6 +8860,7 @@
    "id": "25473054865692868",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8364,6 +8878,7 @@
   },
   "26505224572440487": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8376,6 +8891,7 @@
    "id": "26505224572440487",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8393,6 +8909,7 @@
   },
   "27065328869792165": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8405,6 +8922,7 @@
    "id": "27065328869792165",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Mackville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8427,6 +8945,7 @@
   },
   "27165717999776445": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8439,6 +8958,7 @@
    "id": "27165717999776445",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Waco, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8462,6 +8982,7 @@
   },
   "27616290001372453": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8474,6 +8995,7 @@
    "id": "27616290001372453",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Stanford, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8492,6 +9014,7 @@
   },
   "2763547517347156": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8504,6 +9027,7 @@
    "id": "2763547517347156",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Wilmore, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8522,6 +9046,7 @@
   },
   "27728467906804258": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8534,6 +9059,7 @@
    "id": "27728467906804258",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8552,6 +9078,7 @@
   },
   "27859193963675232": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8564,6 +9091,7 @@
    "id": "27859193963675232",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Canton, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8582,6 +9110,7 @@
   },
   "27925330173725688": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8594,6 +9123,7 @@
    "id": "27925330173725688",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Shelbyville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8616,6 +9146,7 @@
   },
   "28094412643476782": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8628,6 +9159,7 @@
    "id": "28094412643476782",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8646,6 +9178,7 @@
   },
   "28243300765268080": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8658,6 +9191,7 @@
    "id": "28243300765268080",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8675,6 +9209,7 @@
   },
   "2829481977419908": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8687,6 +9222,7 @@
    "id": "2829481977419908",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Versailles, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/2829481977419908.jpg",
    "photo_urls": [
@@ -8705,6 +9241,7 @@
   },
   "28341515352120856": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8717,6 +9254,7 @@
    "id": "28341515352120856",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8735,6 +9273,7 @@
   },
   "2838216489872012": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8747,6 +9286,7 @@
    "id": "2838216489872012",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8763,6 +9303,7 @@
   },
   "28422316624035636": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8775,6 +9316,7 @@
    "id": "28422316624035636",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Salvisa, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8793,6 +9335,7 @@
   },
   "2844551592572180": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8805,6 +9348,7 @@
    "id": "2844551592572180",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8823,6 +9367,7 @@
   },
   "28810804025176674": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8835,6 +9380,7 @@
    "id": "28810804025176674",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8853,6 +9399,7 @@
   },
   "2930475833966982": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8865,6 +9412,7 @@
    "id": "2930475833966982",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8883,6 +9431,7 @@
   },
   "2997725340573867": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8895,6 +9444,7 @@
    "id": "2997725340573867",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Roanoke, VA",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8913,6 +9463,7 @@
   },
   "3031345417203185": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8925,6 +9476,7 @@
    "id": "3031345417203185",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Winchester, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8947,6 +9499,7 @@
   },
   "3209978095871888": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8959,6 +9512,7 @@
    "id": "3209978095871888",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -8981,6 +9535,7 @@
   },
   "3243562069187612": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -8993,6 +9548,7 @@
    "id": "3243562069187612",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9011,6 +9567,7 @@
   },
   "3316276492012811": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9023,6 +9580,7 @@
    "id": "3316276492012811",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Perryville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9046,6 +9604,7 @@
   },
   "3328682244097166": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9058,6 +9617,7 @@
    "id": "3328682244097166",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9074,6 +9634,7 @@
   },
   "3385862774953721": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9089,6 +9650,7 @@
    "id": "3385862774953721",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/3385862774953721.jpg",
    "photo_urls": [
@@ -9107,6 +9669,7 @@
   },
   "3389748554536124": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9119,6 +9682,7 @@
    "id": "3389748554536124",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9135,6 +9699,7 @@
   },
   "3478008769046044": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9147,6 +9712,7 @@
    "id": "3478008769046044",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Scottsville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9165,6 +9731,7 @@
   },
   "35965113169800164": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9177,6 +9744,7 @@
    "id": "35965113169800164",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Nicholasville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9195,6 +9763,7 @@
   },
   "36943043312008205": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9207,6 +9776,7 @@
    "id": "36943043312008205",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9225,6 +9795,7 @@
   },
   "3948297881968865": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9237,6 +9808,7 @@
    "id": "3948297881968865",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9253,6 +9825,7 @@
   },
   "4112927138932234": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9265,6 +9838,7 @@
    "id": "4112927138932234",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9282,6 +9856,7 @@
   },
   "4302928169947502": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9297,6 +9872,7 @@
    "id": "4302928169947502",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Frankfort, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/4302928169947502.jpg",
    "photo_urls": [
@@ -9320,6 +9896,7 @@
   },
   "4328032187447352": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9332,6 +9909,7 @@
    "id": "4328032187447352",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9350,6 +9928,7 @@
   },
   "4338183219763228": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9362,6 +9941,7 @@
    "id": "4338183219763228",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Englewood, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9380,6 +9960,7 @@
   },
   "4417890915090412": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9392,6 +9973,7 @@
    "id": "4417890915090412",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9410,6 +9992,7 @@
   },
   "4426841457637476": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9422,6 +10005,7 @@
    "id": "4426841457637476",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Berea, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9439,6 +10023,7 @@
   },
   "4438555766366295": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9451,6 +10036,7 @@
    "id": "4438555766366295",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Findlay, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9467,6 +10053,7 @@
   },
   "4475296949391172": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9479,6 +10066,7 @@
    "id": "4475296949391172",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/4475296949391172.jpg",
    "photo_urls": [
@@ -9497,6 +10085,7 @@
   },
   "4478211629063580": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9509,6 +10098,7 @@
    "id": "4478211629063580",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9527,6 +10117,7 @@
   },
   "4490984707852880": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9539,6 +10130,7 @@
    "id": "4490984707852880",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9556,6 +10148,7 @@
   },
   "4556239551327628": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9568,6 +10161,7 @@
    "id": "4556239551327628",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9586,6 +10180,7 @@
   },
   "4607758362826607": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9598,6 +10193,7 @@
    "id": "4607758362826607",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9620,6 +10216,7 @@
   },
   "790721437464808": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9632,6 +10229,7 @@
    "id": "790721437464808",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/790721437464808.jpg",
    "photo_urls": [
@@ -9650,6 +10248,7 @@
   },
   "842568905502325": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9662,6 +10261,7 @@
    "id": "842568905502325",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9680,6 +10280,7 @@
   },
   "867320083123931": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9692,6 +10293,7 @@
    "id": "867320083123931",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9708,6 +10310,7 @@
   },
   "875946668539400": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9720,6 +10323,7 @@
    "id": "875946668539400",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9738,6 +10342,7 @@
   },
   "882862098200921": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9750,6 +10355,7 @@
    "id": "882862098200921",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9767,6 +10373,7 @@
   },
   "885880540796705": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9779,6 +10386,7 @@
    "id": "885880540796705",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9800,6 +10408,7 @@
   },
   "886413350585008": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9812,6 +10421,7 @@
    "id": "886413350585008",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Eminence, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/886413350585008.jpg",
    "photo_urls": [
@@ -9830,6 +10440,7 @@
   },
   "899438812627398": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9842,6 +10453,7 @@
    "id": "899438812627398",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9860,6 +10472,7 @@
   },
   "901605709653189": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9872,6 +10485,7 @@
    "id": "901605709653189",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Willisburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9894,6 +10508,7 @@
   },
   "904663745990349": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9906,6 +10521,7 @@
    "id": "904663745990349",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Georgetown, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9924,6 +10540,7 @@
   },
   "904855499333132": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9936,6 +10553,7 @@
    "id": "904855499333132",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9954,6 +10572,7 @@
   },
   "909089318361821": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -9966,6 +10585,7 @@
    "id": "909089318361821",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -9989,6 +10609,7 @@
   },
   "912861147865609": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10001,6 +10622,7 @@
    "id": "912861147865609",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Alexandria, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10019,6 +10641,7 @@
   },
   "915884988210040": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10034,6 +10657,7 @@
    "id": "915884988210040",
    "last_seen": "2026-07-25T17:17:20.827000Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/915884988210040.jpg",
    "photo_urls": [
@@ -10057,6 +10681,7 @@
   },
   "918933197152129": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10069,6 +10694,7 @@
    "id": "918933197152129",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Cincinnati, OH",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10085,6 +10711,7 @@
   },
   "928437016952461": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10097,6 +10724,7 @@
    "id": "928437016952461",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Harrodsburg, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10115,6 +10743,7 @@
   },
   "953197937790547": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10127,6 +10756,7 @@
    "id": "953197937790547",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10150,6 +10780,7 @@
   },
   "960328957019877": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10162,6 +10793,7 @@
    "id": "960328957019877",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Madison, IN",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10178,6 +10810,7 @@
   },
   "960340627018431": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10190,6 +10823,7 @@
    "id": "960340627018431",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10208,6 +10842,7 @@
   },
   "964699363290731": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10220,6 +10855,7 @@
    "id": "964699363290731",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10255,6 +10891,7 @@
     "reasoning": "No photos, no maker marks, no joinery details, and a generic 'excellent/heavy/solid wood' seller description that could describe anything from a genuine mid-century solid cherry piece to a veneered reproduction \u2014 this is a common pattern in local marketplace listings that overstate quality/materials. Modest dimensions suggest a standard low dresser rather than a rare or large case piece, capping upside even if solid wood is confirmed in person. Absent verification, realistic as-is value is ~$200 and a light-restoration ceiling (~$60, 3 hrs for cleaning, hardware polish, minor touch-up) lands resale around $320 regionally (Facebook Marketplace/eBay local pickup for unbranded traditional dressers, not 1stDibs-style pricing). At the $400 asking price, this deal likely loses money for a reseller unless in-person inspection reveals genuine solid wood construction, dovetailed drawers, and no hidden damage \u2014 recommend in-person verification before any offer, and negotiate well below asking.",
     "style_era": "Likely Colonial Revival/Traditional reproduction, c. 1960s-1980s based on 'cherry/dark wood finish' description and typical furniture-belt (KY/OH/NC) production of that period"
    },
+   "appraisal_prompt_version": 0,
    "appraised_at": "2026-07-25T19:11:41.304066Z",
    "appraised_price_cents": 40000,
    "appraised_with_photos": false,
@@ -10270,6 +10907,7 @@
    "id": "969553609454287",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Salvisa, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": "photos/969553609454287.jpg",
    "photo_urls": [
@@ -10293,6 +10931,7 @@
   },
   "972609848467932": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10305,6 +10944,7 @@
    "id": "972609848467932",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10323,6 +10963,7 @@
   },
   "974577118932632": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10335,6 +10976,7 @@
    "id": "974577118932632",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Louisville, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10351,6 +10993,7 @@
   },
   "975819085036662": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10363,6 +11006,7 @@
    "id": "975819085036662",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10380,6 +11024,7 @@
   },
   "978399141911247": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10392,6 +11037,7 @@
    "id": "978399141911247",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10409,6 +11055,7 @@
   },
   "980287498389603": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10421,6 +11068,7 @@
    "id": "980287498389603",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10437,6 +11085,7 @@
   },
   "983343471310240": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10449,6 +11098,7 @@
    "id": "983343471310240",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Richmond, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10467,6 +11117,7 @@
   },
   "987790857414962": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10479,6 +11130,7 @@
    "id": "987790857414962",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10495,6 +11147,7 @@
   },
   "990814970246256": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10507,6 +11160,7 @@
    "id": "990814970246256",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Independence, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10525,6 +11179,7 @@
   },
   "993067383627015": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10537,6 +11192,7 @@
    "id": "993067383627015",
    "last_seen": "2026-07-25T19:33:57.419735Z",
    "location_text": "Paris, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10558,6 +11214,7 @@
   },
   "997941652824010": {
    "appraisal": null,
+   "appraisal_prompt_version": 0,
    "appraised_at": null,
    "appraised_price_cents": null,
    "appraised_with_photos": false,
@@ -10570,6 +11227,7 @@
    "id": "997941652824010",
    "last_seen": "2026-07-25T19:33:15.344196Z",
    "location_text": "Lexington, KY",
+   "market_supply": null,
    "misses": 0,
    "photo_rel": null,
    "photo_urls": [
@@ -10592,6 +11250,6 @@
   "last_probe_at": null,
   "searches": {}
  },
- "updated_at": "2026-07-30T13:40:27.771603Z",
+ "updated_at": "2026-07-31T14:00:00.085901Z",
  "version": 1
 }
