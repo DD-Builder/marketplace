@@ -20,8 +20,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import urllib.request
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -198,6 +200,32 @@ def _store_extra_photos(
             rels.append(f"photos/{dest.name}")
         if rels:
             entry.extra_photo_rels = rels
+
+
+#: Credential-shaped text is stripped before any failure reason is published. status.json is
+#: served from the public Pages site, and the reason is an error string we did not author.
+_SECRETISH = re.compile(
+    r"sk-ant-[\w-]+|github_pat_[\w]+|gh[pousr]_[\w]+|apify_api_[\w]+", re.I
+)
+
+
+def failure_reason(failures: list[str]) -> str:
+    """One line saying why the valuations actually failed, for the board's banner.
+
+    Worth the plumbing: the banner used to assert "usually an expired
+    CLAUDE_CODE_OAUTH_TOKEN" no matter what went wrong. On 2026-08-06 every appraisal
+    failed with "You've hit your session limit · resets 4:10pm (UTC)" — a spent
+    subscription quota that fixes itself in an hour — and the board sent its operator off
+    to regenerate a credential that was working perfectly. Reporting the real message is
+    the difference between waiting an hour and losing an evening.
+
+    The *most common* message wins rather than the first: one odd listing shouldn't get to
+    describe a run where the other eleven died of the same thing.
+    """
+    if not failures:
+        return ""
+    common = Counter(str(f) for f in failures).most_common(1)[0][0]
+    return _SECRETISH.sub("[redacted]", " ".join(common.split()))[:200]
 
 
 def _write_status(out_dir: Path, state: str, **counts) -> None:
@@ -642,7 +670,8 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         _write_status(out_dir, "appraisals_failed",
-                      failed=len(plan.to_appraise), on_board=len(board_pieces))
+                      failed=len(plan.to_appraise), on_board=len(board_pieces),
+                      reason=failure_reason(result.failures))
         return 4
     # The board is up to date either way, but a run that couldn't reach Marketplace still
     # exits non-zero — a silent success would hide a scraper that has stopped working.

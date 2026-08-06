@@ -81,6 +81,11 @@ class EvaluatedPiece:
 class RunResult:
     pieces: list[EvaluatedPiece]      # sorted by viewing priority, best first
     plan: AppraisalPlan               # cost-control audit (what was scraped/skipped/appraised)
+    #: Why appraisals failed, in the order they failed. The board's failure banner used to
+    #: guess ("usually an expired token") because this was logged and dropped on the floor.
+    #: A real run then failed on a spent subscription quota and the guess sent the operator
+    #: to regenerate a credential that was working fine.
+    failures: list[str] = field(default_factory=list)
 
     @property
     def killers(self) -> list[EvaluatedPiece]:
@@ -127,6 +132,7 @@ def run_valuation(
     )
 
     pieces: list[EvaluatedPiece] = []
+    failures: list[str] = []
     for listing in plan.to_appraise:
         try:
             imgs = (image_paths_by_id or {}).get(listing.fb_listing_id)
@@ -145,6 +151,7 @@ def run_valuation(
             appr = provider.appraise(listing, vertical, image_paths=imgs, comps=comps)
         except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
             log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
+            failures.append(str(exc))
             continue
         pieces.append(
             evaluate_piece(
@@ -154,7 +161,7 @@ def run_valuation(
         )
 
     pieces.sort(key=lambda p: p.priority, reverse=True)
-    return RunResult(pieces=pieces, plan=plan)
+    return RunResult(pieces=pieces, plan=plan, failures=failures)
 
 
 def evaluate_piece(
