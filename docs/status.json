@@ -1,6 +1,6 @@
 {
- "state": "appraisals_failed",
- "generated_at": "2026-08-06T14:55:25.325499+00:00",
- "failed": 12,
- "on_board": 18
+ "state": "scan_blocked",
+ "generated_at": "2026-08-07T13:53:45.885725+00:00",
+ "on_board": 24,
+ "appraised": 12
 }

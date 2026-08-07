@@ -1,12 +1,30 @@
 {
  "listings": {
   "1000266262732258": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Presents in genuinely good, largely original condition consistent with the listing claims: finish has even color and sheen with no visible major sun-fading, veneer lifting, water rings, or missing glass; hardware is matched and intact with consistent patina (not replaced); drawers/doors appear square and functional. No maker's label or stamp is visible in these shots (would need to check drawer interiors/case backs to confirm). Typical age wear (light finish crazing, minor handling marks) likely present but not evident in photos.",
+    "confidence": 0.55,
+    "deal_score": 58.0,
+    "est_asis_value_cents": 30000,
+    "est_restoration_cost_cents": 10000,
+    "est_restoration_effort_hours": 5.0,
+    "est_restored_resale_value_cents": 55000,
+    "identified_item": "Mid-century (1960s) French Provincial-style china cabinet/hutch (two-piece construction, sold as one unit) with matching bow-front buffet/sideboard \u2014 two-piece set",
+    "maker_guess": null,
+    "materials": [
+     "Solid wood (likely cherry, fruitwood, or maple) for frames, legs, and door/drawer stiles",
+     "Wood veneer over plywood/shaped substrate on bow-front drawer faces and case tops (curved fronts are almost never solid wood at this price tier)",
+     "Glass door panels with applied brass/wood muntin grille and brass center medallion insert",
+     "Brass-plated cast hardware (teardrop ring pulls and diamond bail pulls)"
+    ],
+    "reasoning": "This is a solid, unpretentious mid-century French Provincial set rather than a high-end or notably branded piece \u2014 no maker mark is visible in any photo, and the bow-front drawer faces and tabletops are almost certainly veneer over a shaped substrate (curved solid-wood fronts would be unusual at this market tier), even though the frame, legs, and stiles are likely solid wood as claimed. The claimed dovetail joinery on the drawers is plausible for the era and quality level but isn't visible in these images and should be verified before pricing up. Cosmetic condition looks good already \u2014 clean glass, intact original brass hardware, no obvious veneer damage or water rings \u2014 so realistic restoration is light: cleaning, wax/oil conditioning, tightening joints, polishing hardware, and possibly re-securing a glass door track, roughly $75-125 in materials and 4-6 hours of labor rather than a full strip-and-refinish. Sets like this (china cabinet + buffet) typically sell regionally via local marketplace/estate-sale channels for $400-700 for the pair when clean and functional \u2014 1stDibs-style dealer listings for 'Country French' sets run much higher but aren't representative of realistic resale. At $275 for both pieces, there's a workable but not exceptional margin once you account for the cost and difficulty of moving two large, heavy case pieces; the deal is decent chiefly because the item needs so little actual restoration work.",
+    "style_era": "1960s American \"Country French\" / French Provincial revival \u2014 light fruitwood/cherry-tone case goods with fluted quarter-columns, bow-front drawers, cabriole-influenced tapered feet, and brass diamond-bail + ring pulls; typical of mid-century manufacturers like Thomasville, Davis Cabinet Co., White Furniture, or Kroehler"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 27500,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 27500,
    "description": "Crafted from solid wood and VERY sturdy. In great overall condition. All original brass hardware is intact. Designed in a contemporary mid century modern style and dating 1960s.\nChina Cabinet: (*Top and bottom hutches are one connected piece*).\nTop hutch features two side doors to access three display or storage levels. All levels have display plate ridges.\nCenter glass features a brass insert.\nBottom hutch has three center bow front drawers, all clean and functional with dovetail joints, flanked by two cabinets with half shelves.\nDimensions: 51\"W 18\"D 70\"T\nBuffet: Has three center bow front d",
    "detail_fetched": true,
@@ -1257,12 +1275,30 @@
    "was_price_cents": null
   },
   "1048403807574819": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Piece has already been fully refinished/repainted and re-hardwared prior to listing \u2014 case and drawers photograph straight, square, and free of visible damage, veneer intact on drawer fronts, no chips/water rings visible, drawers appear to operate normally. No close-up of drawer box joinery or interior construction was provided, so dovetail/joinery claims are inferred from known Kent-Coffey Tempo construction rather than directly verified. Original hardware has been discarded/replaced, which is a value detractor for MCM purists even though it improves modern buyer appeal.",
+    "confidence": 0.55,
+    "deal_score": 28.0,
+    "est_asis_value_cents": 95000,
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 2.0,
+    "est_restored_resale_value_cents": 110000,
+    "identified_item": "Kent-Coffey \"Tempo\" line triple dresser, 12 drawers, mid-century modern case good, refinished two-tone (sage green case / walnut drawer fronts) with replacement gold bar pulls",
+    "maker_guess": "Kent-Coffey, \"Tempo\" line \u2014 confirmed by branded/stamped maker mark visible inside drawer",
+    "materials": [
+     "Walnut veneer drawer fronts",
+     "Painted (likely lacquer or chalk-type paint) case, probably veneered hardwood/plywood case construction typical of the line",
+     "Solid wood drawer boxes (Kent-Coffey Tempo typically used solid secondary wood with dovetail joinery, not visible in these photos but consistent with maker/era)",
+     "New reproduction brass/gold bar pulls (not original hardware)"
+    ],
+    "reasoning": "Maker mark clearly confirms genuine Kent-Coffey Tempo, a legitimate and collectible MCM line, which supports authenticity. However the piece has already been repainted in a trendy two-tone sage/walnut scheme with non-original hardware \u2014 this is a completed flip, not a restoration opportunity, so there is no upside from the reseller doing the work themselves (only minor touch-up/glide servicing remains, ~2 hrs). Painted MCM case goods with swapped hardware sell for meaningfully less than original-finish walnut examples to serious MCM collectors, and 1stDibs-style asks ($2000+) for this line are aspirational dealer pricing, not representative of realistic sold comps. Realistic regional/eBay-sold comps for a repainted 12-drawer Kent-Coffey triple dresser land roughly $900-$1300. At the $1400 asking price, there is little to no margin left for a reseller buying to flip \u2014 this only becomes a reasonable acquisition if negotiated down to the $700-800 range. Confidence is moderate: authenticity is solid, but the repaint obscures original veneer/wood condition and no interior/joinery photos were provided to verify drawer box construction.",
+    "style_era": "American Mid-Century Modern, c. 1960s (Kent-Coffey Tempo collection)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 140000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 140000,
    "description": "This stunning Kent-Coffey 12-drawer dresser is a true vintage gem, thoughtfully refinished to highlight its clean lines and timeless elegance. Featuring a beautiful two-tone design with a soft sage green base and warm walnut drawer fronts, this piece brings effortless style and storage to any space.\n\nFeatures:\n \u2022 Authentic Kent-Coffey craftsmanship\n \u2022 Solid wood construction \u2013 built to last\n \u2022 12 spacious drawers for maximum storage\n \u2022 Refinished in a durable sage green with walnut accents\n \u2022 Sleek gold hardware for a modern touch\n \u2022 Dimensions: (Still getting them)\n\nPerfect for a bedroom, ent",
    "detail_fetched": true,
@@ -1323,12 +1359,28 @@
    "was_price_cents": 5000
   },
   "1050533147500358": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Cosmetically excellent \u2014 glossy, even paint/finish on the top with no visible chips, delamination, or sun-fading; plywood edge lamination is clean and tight; wire base is straight, bright, and shows no rust or weld failures. No Herman Miller medallion, label, or stamp is visible in any of the three photos, and the base assembly looks smaller/simpler than the genuine Eames ETR 'double Eiffel' wire base, which raises real doubt about authenticity. No damage requiring structural repair is visible.",
+    "confidence": 0.3,
+    "deal_score": 12.0,
+    "est_asis_value_cents": 25000,
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 40000,
+    "identified_item": "Eames Elliptical 'Surfboard' Coffee Table (design attributed to Charles & Ray Eames for Herman Miller) \u2014 likely a later reproduction/look-alike rather than an authenticated vintage Herman Miller piece",
+    "maker_guess": null,
+    "materials": [
+     "Molded birch plywood top with painted/lacquered navy-blue face and exposed laminated plywood edge banding",
+     "Nickel/chrome-plated welded steel wire-rod base"
+    ],
+    "reasoning": "The seller's description claims a genuine 1951 Eames/Herman Miller Elliptical 'surfboard' table, but nothing in the photos substantiates that: there's no visible Herman Miller medallion or paper label, and the wire-rod base shown in the close-up looks like a simplified single strut cluster rather than the genuine ETR's elaborate fused double-Eiffel wire base. Genuine examples in this condition typically bring $2,500-6,000+ at auction/dealer level and still $1,500-3,000 on regional resale markets \u2014 an asking price of only $1,000 for a purportedly authentic piece is itself a red flag, since real ones rarely trade that cheap even distressed. Treating this conservatively as a well-made reproduction/look-alike: it needs essentially no restoration (light cleaning/polish of the base, maybe touch-up of the paint edge), so restored resale value on the local/eBay market for a nice-quality repro surfboard table is realistically $300-500. At the $1,000 asking price this is a poor deal for a reseller \u2014 you'd be paying at or above genuine-article resale levels for what appears to be a reproduction. Recommend requesting close-up photos of the underside/base joinery and any maker's mark before proceeding; if authenticity can be confirmed the value calculus changes dramatically, but as documented, confidence in authenticity is low.",
+    "style_era": "Mid-Century Modern, original design dates to 1951; base geometry and lack of any visible maker's mark/medallion suggest this is a modern-production reproduction rather than a period or licensed Herman Miller example"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 100000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 100000,
    "description": "Mid-Century Modern Icon: Herman Miller Eames Elliptical \"Surfboard\" Table\n\nElevate your living room with a true masterpiece of mid-century modern design. I am selling an authentic Eames Elliptical Table\u2014affectionately known by MCM collectors as the \u201csurfboard\u201d table. Designed in 1951 by the legendary husband-and-wife team Charles and Ray Eames, this striking piece represents the peak of post-war American furniture innovation. \n\nCharles and Ray created this design by bridging two of their signature welded chrome wire-rod bases together to support a massive, aircraft-wing-inspired tabletop. Desp",
    "detail_fetched": true,
@@ -2782,12 +2834,30 @@
    "was_price_cents": 4000
   },
   "1352396026802534": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Excellent, ready-to-use condition: legs, brass hardware, and shade all appear clean and unmarked with no dents, splits, or shade staining; cord looks intact. No structural or cosmetic damage visible in any of the three photos. As a knock-down big-box lamp there is no traditional joinery (no dovetails or mortise-and-tenon) \u2014 legs are turned dowels pinned/bolted into a cast brass folding hinge collar, which is standard and functioning correctly here.",
+    "confidence": 0.72,
+    "deal_score": 28.0,
+    "est_asis_value_cents": 5500,
+    "est_restoration_cost_cents": 0,
+    "est_restoration_effort_hours": 0.25,
+    "est_restored_resale_value_cents": 6500,
+    "identified_item": "Threshold (Target private label) tripod floor lamp with drum shade",
+    "maker_guess": "Threshold (Target Corporation house brand)",
+    "materials": [
+     "turned solid wood tripod legs (walnut-stained, likely rubberwood or beech, not veneer or particleboard)",
+     "brass-plated steel or zinc-alloy collar, hinges, and leg-tip caps",
+     "steel/aluminum center support rod",
+     "fabric (linen-look poly/cotton blend) drum shade over a wire frame"
+    ],
+    "reasoning": "This is a current/recent Target (Threshold) tripod floor lamp \u2014 a mid-century-styled mass-market reproduction, not a genuine vintage or handmade piece, so there's no maker's mark, dovetail, or mortise-and-tenon joinery to evaluate; construction is turned solid-wood legs with brass-plated cast hardware, which is decent for the price point but not fine furniture. It's in essentially sale-ready condition already, so 'restoration' is really just a wipe-down (~15 min, no material cost). These lamps retail new around $90-140 and commonly resell used on Facebook Marketplace/OfferUp/eBay in the $40-70 range once shipping-prohibitive bulk (lamps rarely sell well on eBay due to shipping) pushes buyers to local pickup. At a $100 asking price, the seller is asking close to or above realistic secondary-market value, leaving little to no margin for a reseller \u2014 decent item, weak flip because there's no restoration value-add to capture and the ceiling is a $60-70 local sale.",
+    "style_era": "Contemporary mass-market reproduction in mid-century-modern/industrial style; not a vintage or antique piece"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 10000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 10000,
    "description": "Threshold (Target brand) walnut finish with brass accents tripod floor lamp, with white drum shade. Industrial/mid century style. Has clear chords, 59\u201d height, beautiful in person and nice quality!",
    "detail_fetched": true,
@@ -2980,12 +3050,30 @@
    "was_price_cents": null
   },
   "1360345639359834": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Structurally sound - shell shows no cracks or delamination, base and swivel mechanism appear solid with no rust. Leather is a mixed picture: caramel body leather shows age-appropriate creasing/patina but visible splitting/cracking at tufted button points (see close-up), and the armrests are a noticeably different olive-green leather from the seat/back, indicating a prior non-matching arm pad replacement or heavy differential fading/wear. No rips or missing upholstery panels. Wood shell has light surface wear but original finish intact.",
+    "confidence": 0.5,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 80000,
+    "est_restoration_cost_cents": 40000,
+    "est_restoration_effort_hours": 6.0,
+    "est_restored_resale_value_cents": 160000,
+    "identified_item": "Mid-century modern reclining lounge chair and ottoman, Eames Lounge (670/671)-style, bentwood-shell/leather design",
+    "maker_guess": "Plycraft 'Mr. Chair' (attributed per seller/style \u2014 no maker tag or medallion visible in any photo to confirm; swivel-tilt cast base and molded plywood shell are consistent with Plycraft but this form was widely copied by other makers too)",
+    "materials": [
+     "Molded/laminated bentwood plywood shell (walnut veneer laminate, visible ply layers at shell edge)",
+     "Leather upholstery over foam padding",
+     "Cast aluminum swivel-tilt star base",
+     "Steel glides"
+    ],
+    "reasoning": "This reads as a Plycraft-type Eames-lookalike lounge/ottoman rather than a confirmed authenticated example - no maker's medallion, stamped tag, or Herman Miller/Plycraft label is visible in any of the three photos, so attribution rests on shell/base styling alone. Genuine, well-matched examples of this chair sell in the $1,200-2,200 range regionally (Facebook Marketplace/eBay sold comps), well below 1stDibs dealer asks of $3,000+. Condition here is the main issue: cracked leather at tuft points and mismatched arm-pad leather color will read as a flaw to most buyers and should be addressed before resale \u2014 full reupholstery isn't justified given the value ceiling, but conditioning/re-dyeing the body leather, replacing or re-dyeing the two arm pads to match, tightening the frame screws, and a light oil/wax on the wood shell (roughly $400 and a half-day of labor) should bring it to a clean, consistent-looking piece sellable around $1,500-1,700. At the $1,000 ask, margin after restoration is modest (~$150-200) unless the seller can be negotiated down to $700-800, which would make this a solid flip.",
+    "style_era": "Mid-Century Modern, c. 1965-1975"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 100000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 100000,
    "description": "Vintage Plycraft Lounge chair. Some minor wear from general use (pictured).\nPickup in Richmond or I can deliver for a small fee. Thanks!",
    "detail_fetched": true,
@@ -3152,12 +3240,31 @@
    "was_price_cents": null
   },
   "1373841321333352": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Presents in clean, well-preserved original condition: finish has good color and gloss with only light expected wear, glass panes intact and unclogged, chrome trim strips present and not pitted, hinges and drawer hardware functional. Drawer joinery appears to be dowel/glued construction typical of mass-production Bassett case goods rather than hand-cut dovetails, consistent with mid-tier factory manufacture rather than a high-end studio maker. No visible veneer lifting, water damage, or structural issues in the photos provided.",
+    "confidence": 0.6,
+    "deal_score": 25.0,
+    "est_asis_value_cents": 85000,
+    "est_restoration_cost_cents": 15000,
+    "est_restoration_effort_hours": 3.0,
+    "est_restored_resale_value_cents": 110000,
+    "identified_item": "Tall three-door glass-front china/curio cabinet with two-drawer base, by Bassett Furniture Industries",
+    "maker_guess": "Bassett Furniture Industries, Inc. (confirmed via stamped maker's mark inside drawer)",
+    "materials": [
+     "walnut veneer over plywood/particleboard case panels",
+     "solid walnut face frame, door stiles and trim",
+     "glass door panes (3, with mullions)",
+     "aluminum/chrome accent strips on doors and drawer fronts",
+     "solid wood (likely oak/poplar) drawer boxes"
+    ],
+    "reasoning": "This is a genuine, identifiable Bassett piece (maker's stamp visible inside drawer), which adds legitimacy but caps value since Bassett was a mass-market manufacturer rather than a sought-after MCM name like Lane, Founders, or Dillingham. Construction is veneer-over-substrate case work with solid wood trim/face frame \u2014 decent quality but not premium solid-wood casework, and drawer joinery looks like factory dowel construction rather than dovetails, which further limits collector appeal. The piece already looks close to sale-ready in the photos (clean finish, intact glass and chrome trim), so restoration needs are minor: cleaning, hinge lubrication, minor touch-up, maybe re-gluing a veneer edge \u2014 not a full refinish. Realistic regional resale for a nice but non-premium Bassett china cabinet in this style runs roughly $800-1200 depending on market, well below the $1,350 asking price, making this a marginal deal unless it can be acquired below asking.",
+    "style_era": "Mid-Century Modern, early 1970s (Bassett 'Contemporary' case goods line)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 135000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 135000,
    "description": "f you\u2019re looking for the perfect display cabinet, then this is the piece for you! \n\nTall and sleek walnut China/curio cabinet made by Bassett furniture co. In the early 70\u2019s. \n\nHighlight some of your favorite tchotchkes or your Pyrex collection \ud83e\udd2b\n\nClean and modern, with tons of storage throughout! \n\n$1,350",
    "detail_fetched": true,
@@ -4538,12 +4645,29 @@
    "was_price_cents": null
   },
   "1540358351121947": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "The close-up joinery photo shows genuine through-dovetails with irregular, slightly asymmetric pin spacing consistent with an older, non-mass-IKEA piece; there is visible dust/grime buildup and a small gap/separation at the joint suggesting the drawer needs to be pulled apart, cleaned, re-glued and clamped. The wide-shot listing photo is a glossy staged/lifestyle image (plant, lamp, art, curtains) that looks more like a stock or AI-styled render than an as-is photo of this exact unit, so I'm discounting how much I trust the 'beautiful finish' claim and leaning on the joinery photo instead. No maker's label, stamp, or paper tag is visible in either photo. Hardware (bail pulls with stamped rosette backplates) appears to be later reproduction 'antique-style' brass rather than original period hardware, which is common on refinished mid-century case pieces.",
+    "confidence": 0.4,
+    "deal_score": 62.0,
+    "est_asis_value_cents": 10000,
+    "est_restoration_cost_cents": 6000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 32500,
+    "identified_item": "Traditional/Colonial-style 6-drawer tall chest (highboy dresser)",
+    "maker_guess": null,
+    "materials": [
+     "solid hardwood drawer fronts and case (grain in photo 2 reads as mahogany or birch/cherry)",
+     "hand/machine-cut dovetailed drawer boxes",
+     "likely plywood drawer bottoms and case back (standard even on solid-wood period pieces)"
+    ],
+    "reasoning": "At $100 for a genuinely solid-wood, dovetailed 6-drawer chest this is priced to move regardless of exact age \u2014 particleboard/veneer chests of this size routinely ask more. The dovetail photo is the strongest evidence: irregular hand/early-machine-cut pins and real wear/dust argue against a cheap modern knockoff and support a mid-20th-century solid hardwood case good, honest but not rare or 'brown furniture' desirable in the current market. Realistic restoration is light-duty: disassemble and re-glue the loosened drawer joint(s), clean out the interior, tighten case joinery, strip/refresh a worn finish or just clean-and-wax if the existing finish (as shown in the hero photo) is intact, lubricate drawer runners, and polish or swap the reproduction brass pulls. This is a 3-5 hour job for someone with basic furniture-repair skills, not a full strip-and-refinish. Comparable solid-wood traditional 6-drawer chests in clean, functional condition sell in the $250-400 range on local marketplace/eBay-sold comps (not 1stDibs-style dealer asking prices, which run far higher and rarely reflect actual sale prices). Confidence is capped at moderate because the two photos may not depict the same actual condition \u2014 photo 1 looks like a staged/stock lifestyle shot rather than an as-is picture of the listed item, so the true cosmetic condition (finish wear, water rings, veneer chips if any trim is veneered) can't be fully verified from these images alone.",
+    "style_era": "Colonial Revival / traditional, likely mid-20th century (c. 1940s-1960s) based on the bail-and-rosette brass pull style, bracket feet, and case proportions"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 10000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 10000,
    "description": "Solid hardwood dresser - well made with dovetail joints. \n\n48h x 34w x 18.5d\n\nBeautiful solid hardwood tall dresser in a classic finish. This dresser features six spacious drawers with traditional antique-style brass pulls, making it perfect for a bedroom, guest room, or farmhouse-style home.\n\nThe drawers slide smoothly and provide plenty of storage for clothes, blankets, or linens. The warm wood tone and timeless design fit well with traditional, colonial, or vintage d\u00e9cor.\n\nFeatures:\n\n* Solid hardwood construction\n* 6 large storage drawers\n* Antique-style brass hardware\n* Sturdy, and ready t",
    "detail_fetched": true,
@@ -5692,12 +5816,29 @@
    "was_price_cents": null
   },
   "1651097590358502": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Original finish present and largely intact per listing photos; frames show good patina with no visible breaks, splits, or veneer lifting. Joinery is doweled/mortise-and-tenon at arm-to-seat and leg-to-stretcher junctions (typical of the line) and appears tight with no racking visible. Brass sabots show tarnish/oxidation typical of age. Seat/back shells show light surface wear and finish crazing consistent with 60+ years of use; no upholstery to assess since seats are wood shell. Overall solid, structurally sound pair needing cosmetic refresh rather than structural repair.",
+    "confidence": 0.78,
+    "deal_score": 66.0,
+    "est_asis_value_cents": 42000,
+    "est_restoration_cost_cents": 15000,
+    "est_restoration_effort_hours": 6.0,
+    "est_restored_resale_value_cents": 68000,
+    "identified_item": "Pair of mid-century 'executive posture' armchairs, B.L. Marble Furniture (Executive Series 2000), Bedford, OH",
+    "maker_guess": "B.L. Marble Furniture Inc., Bedford, Ohio",
+    "materials": [
+     "Solid walnut frame (arms, legs, stretchers)",
+     "Molded/bent plywood-and-veneer contoured seat and back shells",
+     "Brass sabots/ferrules on feet"
+    ],
+    "reasoning": "This is a documented, maker-marked pair (original metal tags + handwritten finish cards cited) from B.L. Marble's Executive Series 2000, a known-quality mid-century producer of banker's/executive seating \u2014 the period trade ad photo corroborates authenticity. Construction is genuine solid walnut with molded plywood shell seats/backs and brass-capped feet, a durable and desirable combination; joinery appears sound with no structural distress visible. As-is, matched documented pairs like this typically sell in the $350-500 range on regional marketplaces, so the $475 asking price is near fair retail already, not a steep discount. Realistic restoration is light: strip/refresh or hand-rub the original shellac/lacquer finish, tighten any loose joints, polish brass sabots, and detail the wood shells \u2014 roughly 5-7 hours of work and modest material cost, no need for reupholstery or structural rebuild. Restored/detailed pairs with this maker pedigree and matching tags realistically resell in the $600-750 range on eBay sold listings or higher-end local marketplace sales (not 1stDibs aspirational pricing). Confidence is fairly high given visible tags and matching trade literature, but slightly tempered since interior joinery and finish integrity can't be fully verified from photos alone.",
+    "style_era": "Mid-Century Modern, c. 1960s (ad shows Executive Series 2000 debuting at NOFA show, likely early-to-mid 1960s)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 47500,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 47500,
    "description": "Based in Bedford, Ohio, B.L. Marble was known for banker's and executive chairs. Manufactured as \u201cexecutive posture chairs\u201d in the 1960\u2019s, these heavy, solid walnut armchairs are beautiful and comfortable. The original finish is in excellent vintage condition, and both retain the original metal tags and handwritten model/finish cards. \n\nThey are striking enough to stand on their own (I used them side-by-side as a bench alternative for many years), but they would also work beautifully with a variety of table and desk styles. \n\nThe chairs have been used in a clean, temperature-controlled, and no",
    "detail_fetched": true,
@@ -5981,12 +6122,29 @@
    "was_price_cents": null
   },
   "1681755769543636": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Structurally sound frame with attractive, consistent original brass patina and no visible dents or major corner damage. Brass shows light overall tarnish/haze and fine surface scratching consistent with age and use, especially at leg edges and top rail. The glass top has a distinct cloudy/etched ring mark (visible in the top-down shot) likely from a wet vase or hot item left directly on the glass \u2014 this looks like mineral/etch staining rather than surface grime, meaning it may not fully polish out. No signature, label, or foundry mark visible in any photo to confirm Mastercraft authorship.",
+    "confidence": 0.45,
+    "deal_score": 52.0,
+    "est_asis_value_cents": 65000,
+    "est_restoration_cost_cents": 22000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 110000,
+    "identified_item": "Brass-and-glass 'waterfall' cocktail table, Hollywood Regency/Mid-Century Modern style, attributed to Mastercraft (in the manner of John Widdicomb)",
+    "maker_guess": "Possibly Mastercraft (unconfirmed \u2014 no maker's label, tag, or stamp visible in any of the three photos; attribution rests on seller's claim and design vocabulary alone)",
+    "materials": [
+     "Solid brass-clad steel/tubular frame (rounded 'waterfall' corners typical of Mastercraft/Pace construction)",
+     "Beveled glass inset top",
+     "No wood, veneer, or particleboard present \u2014 this is an all-metal-and-glass case piece, so wood joinery (dovetails, M&T) is not applicable"
+    ],
+    "reasoning": "The form (tubular brass waterfall frame, beveled glass inset) is a well-known and desirable 1970s Hollywood Regency silhouette that Mastercraft, Pace Collection, and DIA all produced, and pieces with confirmed maker marks in this style regularly sell in the $900-1,800 range restored on 1stDibs/Chairish, with more realistic local-marketplace/eBay-sold comps landing closer to $800-1,200 for genuine, well-preserved examples. However, none of the three supplied photos show a label, engraved mark, or stamp anywhere on the frame or glass, so the 'Mastercraft' attribution in the listing cannot be verified from the images \u2014 it may be an unmarked look-alike, which meaningfully caps resale value and confidence. Restoration is light: a professional brass polish/reseal (or DIY with brass polish + microfiber, ~1-2 hrs) and cleaning/possible replacement of the glass top if the ring etching doesn't buff out (bevel-cut glass replacement typically runs $150-250 depending on size). At $900 asking with unconfirmed maker marks, the piece is a fair-to-slightly-optimistic buy \u2014 reasonable margin exists if it can be authenticated or if the buyer is comfortable marketing it as 'style of' rather than a confirmed Mastercraft, but the deal isn't a slam dunk given the mark uncertainty and glass condition risk.",
+    "style_era": "Mid-1970s Hollywood Regency / Mid-Century Modern"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 90000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 90000,
    "description": "Absolute Mid 70s icon in the style of John Widdicomb, this brass and glass table from Mastercraft is a Mid Century Modern stunner. Featuring a solid brass frame and beveled glass top, this table screams hollywood regency. Perfect as a cocktail table or coffee table in your space, this piece is in exceptional condition; minor wear consistent with age. Beautifully deep original patina, gorgeous lines, and a stunning name in design come together perfectly. \nDimensions:\n38\u201d x 38\u201d x 16.5\u201d\nKeep an eye on my listings for a treasure trove of must-have MCM pieces. ",
    "detail_fetched": true,
@@ -6261,12 +6419,29 @@
    "was_price_cents": null
   },
   "1704213040699058": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Photographed outdoors on pavement/grass, chairs and table base show surface grime and light oxidation typical of outdoor storage; no visible major bends, breaks, or heavy rust-through in the shots; seat pads/cushions appear absent; glass top for the table is claimed but not shown, so its condition and even its existence with this base cannot be verified.",
+    "confidence": 0.3,
+    "deal_score": 18.0,
+    "est_asis_value_cents": 18000,
+    "est_restoration_cost_cents": 9000,
+    "est_restoration_effort_hours": 5.0,
+    "est_restored_resale_value_cents": 35000,
+    "identified_item": "Chrome wire-frame kitchen/patio chair set (4) with matching stacked-coil chrome pedestal table base (glass top not pictured)",
+    "maker_guess": null,
+    "materials": [
+     "chrome-plated welded steel wire (chairs)",
+     "chrome-plated steel tubing/rings (table pedestal)",
+     "glass (table top, not shown in photos)"
+    ],
+    "reasoning": "The listing claims genuine Knoll Bertoia, but the chairs' basket-shaped wire shell does not match Harry Bertoia's iconic continuous diamond-mesh Side/Bertoia chair silhouette, and no maker tags or stamps are visible in any photo. Genuine Knoll Bertoia was also never produced with this stacked-ring/coil pedestal table base, which is a novelty design unrelated to Knoll's wire-grid Bertoia table bases. This is almost certainly a generic vintage chrome wire dinette/patio set styled loosely after Bertoia, not an authentic Knoll piece \u2014 confidence in attribution is low. As metal furniture there is no wood, veneer, or joinery to assess (no dovetails/mortise-tenon applicable). Realistic restoration is limited to degreasing, chrome polishing, spot rust removal, and possibly reupholstering/replacing missing seat pads; full replating would rarely pencil out on a set like this. Given the missing/unverified glass top and the unlikely authenticity, the $600 asking price is well above realistic regional resale even after cleanup (comparable generic chrome wire kitchen sets sell in the $150-350 range locally; the novelty coil table adds some value but is unproven with its top). This is a marginal-to-poor flip at the asking price.",
+    "style_era": "Mid-century modern inspired, likely 1960s-80s production or later reproduction"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 60000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 60000,
    "description": "Very nice. Heavy. Dining room set. Kitchen table. We have the Glass top just not in pictures   with 4 chairs vintage knoll Bertoia chrome. Vintage",
    "detail_fetched": true,
@@ -8621,12 +8796,30 @@
    "was_price_cents": null
   },
   "2428993480844970": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Presents in excellent, largely retail-ready condition: finish is glossy and even with no visible water rings, veneer lifting, or chips; sculpted pulls and arched door panels are intact and crisp; legs appear solid and true with no wobble visible. No maker's label/stamp visible in the three photos provided, so identification rests on design match rather than confirmed mark. No structural or major cosmetic defects are apparent from these angles.",
+    "confidence": 0.82,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 155000,
+    "est_restoration_cost_cents": 20000,
+    "est_restoration_effort_hours": 2.5,
+    "est_restored_resale_value_cents": 220000,
+    "identified_item": "Broyhill Brasilia line triple dresser, 9-drawer, with sculpted arched center doors",
+    "maker_guess": "Broyhill (Brasilia line) \u2014 no maker label visible in photos but design details (sculpted 'eyebrow' brass-inlaid pulls, arched recessed door panels, sculpted sled legs/apron) are unmistakable hallmarks of the line",
+    "materials": [
+     "Walnut veneer case panels",
+     "Solid walnut sculpted drawer fronts, doors, legs and pulls",
+     "Dovetailed solid-wood drawer boxes (typical of genuine Broyhill Brasilia construction)",
+     "Likely hardboard/masonite drawer bottoms and back panel"
+    ],
+    "reasoning": "This is a highly recognizable Broyhill Brasilia 9-drawer triple dresser \u2014 the sculpted arched center doors, brass-accented 'eyebrow' pulls, and sculpted sled-leg base are the line's signature design elements, and genuine Brasilia case pieces use solid walnut sculpted fronts/legs with dovetailed drawer boxes over veneered plywood carcasses (not particleboard), which supports a mid-to-upper value estimate. However, no maker's label is visible in these photos, so identification is based on style match alone, capping confidence below 'certain.' The piece already appears refinished or very well preserved with a glossy, even finish and no visible veneer damage, water rings, or structural issues, so realistic restoration needs are minor: a deep clean/wax, drawer glide lubrication or minor track adjustment, and spot touch-up of any hidden veneer edge wear \u2014 roughly 2-3 hours and under $250. Brasilia triple dressers of this size (66in, 9-drawer) realistically sell in the $1,800-$2,400 range on eBay sold listings and regional marketplaces when clean and fully functional (1stDibs-style asking prices of $3,000+ are not representative of real achieved sales). At the $1,750 asking price, margin after minor restoration is modest (~$250-450), making this a fair but not exceptional flip unless it can be negotiated down or a maker's label is confirmed in person to support a premium listing.",
+    "style_era": "Mid-Century Modern, c. 1965-1971 (Broyhill Premier 'Brasilia' line)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 175000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 175000,
    "description": "1960\u2019s Broyhill Brasilia mid century modern walnut 9 drawer dresser. 66\u201d wide, 19\u201d deep, 31\u201d tall\n\nItem can be viewed at Subject Matter. A vintage shop on the corner of Main & Newtown Pike 771 W Main St in Lexington, KY! Featuring antique, vintage and second hand furniture, decor, art, rugs and clothing. Follow us on Facebook and instagram @subjectmatterlex for new arrivals.\n\nMessage for additional info, but all transactions will be through the shop and sales tax will be added. \n\nNo shipping\nLocal pickup only\nNo holds\nAll sales final\nCash, Venmo, square invoice or credit card via phone for pay",
    "detail_fetched": true,
@@ -9641,12 +9834,29 @@
    "was_price_cents": 32500
   },
   "3385862774953721": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Presented as professionally refinished \u2014 case has been fully repainted in a deep forest green with a contrasting natural wood top edge and base left exposed. No drawer interiors, backs, joinery, or maker's label are visible in any of the three photos, so dovetail vs. stapled/doweled drawer construction and any factory mark cannot be confirmed. Surfaces in the photos look clean, level, and free of obvious veneer lifting, chips, or hardware damage; drawers appear to close flush.",
+    "confidence": 0.4,
+    "deal_score": 25.0,
+    "est_asis_value_cents": 55000,
+    "est_restoration_cost_cents": 7500,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 70000,
+    "identified_item": "9-drawer triple-dresser lowboy, Spanish/Mediterranean Revival style (mislabeled by seller as 'Mid Century Modern')",
+    "maker_guess": null,
+    "materials": [
+     "solid wood frame/base and legs (walnut-toned, per listing and visible base)",
+     "case/drawer fronts likely veneered plywood over a wood substrate \u2014 typical of this era's mid-tier production furniture",
+     "brass-plated pulls (possibly base metal, not solid brass)"
+    ],
+    "reasoning": "The piece is a solidly built but mass-market Spanish/Mediterranean Revival lowboy, not genuine mid-century modern \u2014 the title's MCM label is a common reseller mislabel that inflates perceived desirability. Without drawer-interior or back-panel photos, dovetail joinery and any maker's stamp can't be verified, and a full repaint conceals the original wood/veneer condition and grain, which lowers appraisal confidence and typically reduces value versus an original-finish example for vintage buyers. Because the case is already repainted with what looks like a competent finish, remaining 'restoration' is minor (hardware polish/tightening, drawer glide wax, minor touch-up) rather than a real project \u2014 so there's little value-add left to capture. Realistic regional resale for an unmarked, painted Mediterranean-style 9-drawer dresser (FB Marketplace/eBay sold comps) runs roughly $500-750, well under the $900 ask, making this a marginal buy unless it can be acquired meaningfully below asking.",
+    "style_era": "Mediterranean/Spanish Revival case goods, c. 1965-1978 \u2014 the recessed panel drawer fronts, ornate cast 'campaign-style' brass pulls, and heavy tapered-block legs are hallmarks of this era's mass-produced Broyhill/Bassett/Dixie/Thomasville-type lines, not true mid-century modern (which would have cleaner lines and minimal ornament)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-07T13:53:45.812599Z",
+   "appraised_price_cents": 90000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "asking_price_cents": 90000,
    "description": "Stunning 9-Drawer Vintage Dresser \u2013 Deep Green & Brass Accents\n\nThis beautifully refinished 9-drawer dresser makes a bold yet elegant statement. Painted in a rich, deep green and finished with original vintage brass hardware, it\u2019s perfect as a dresser, buffet, or entryway piece.\n    \u2022    Color: Deep forest green with walnut wood base\n    \u2022    Hardware: Original brass pulls\n    \u2022    Drawers: 9 spacious drawers \u2013 smooth glide\n    \u2022    Condition: Professionally refinished \u2013 excellent condition\n    \u2022    Dimensions: \n\nThis piece is solid wood, timeless in design, and versatile enough to elevate any",
    "detail_fetched": true,
@@ -11258,6 +11468,6 @@
   "last_probe_at": null,
   "searches": {}
  },
- "updated_at": "2026-08-06T14:55:25.313677Z",
+ "updated_at": "2026-08-07T13:53:45.873869Z",
  "version": 1
 }
