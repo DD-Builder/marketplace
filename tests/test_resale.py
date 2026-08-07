@@ -45,14 +45,22 @@ def test_known_item_anchors_to_market_plus_premium():
     assert s.list_price_cents == 44000  # 40000 + 10%
 
 
-def test_hot_but_ambiguous_prices_above_market():
+def test_hot_but_ambiguous_offers_a_higher_opening_ask():
+    """Updated: the markup moved from the recommendation to an explicit opening ask.
+
+    Confidence also moved from 0.4 to 0.5, because 0.4 no longer qualifies at all. A
+    ceiling test extrapolates upward from the market anchor, so it needs an anchor worth
+    extrapolating from; below 0.45 the model has not identified the piece well enough for
+    its own estimate to bear a 35% markup. See tests/test_resale_uncertainty.py.
+    """
     s = suggest_resale_price(
-        _appraisal(restored=30000, asis=10000, conf=0.4, maker=None),
+        _appraisal(restored=30000, asis=10000, conf=0.5, maker=None),
         PieceCosts(acquisition_cents=4000, materials_cents=1000, labor_hours=2.0),
         RATE,
     )
     assert s.posture is Posture.CEILING_TEST
-    assert s.list_price_cents > 30000  # priced above market to test the ceiling
+    assert s.list_price_cents == 33000            # market + premium, unmarked-up
+    assert s.stretch_price_cents > 33000          # the ceiling is offered, not imposed
 
 
 def test_ambiguous_but_not_desirable_stays_at_market():
@@ -198,15 +206,24 @@ def test_the_underwater_verdict_still_reaches_the_personal_tier():
     assert plan.market.list_price_cents > 0          # the piece is still worth what it's worth
 
 
-def test_the_range_spans_the_plain_estimate_to_the_posture_adjusted_ask():
+def test_the_range_spans_the_plain_estimate_to_the_highest_ask_worth_trying():
+    """Updated: the top of the range is the *stretch*, not the recommendation.
+
+    This test used to assert `list_price_cents > 44000` for an ambiguous piece — that is,
+    it pinned the bug. The ceiling markup was folded into the recommended ask, so the
+    range reported its own inflation back and the card told you to ask a third more for a
+    piece the model could not identify. The markup now lives in stretch_price_cents, so
+    the range still widens with ambiguity while the recommendation stays at market.
+    """
     from dealfinder.resale import price_piece
 
     low, high = price_piece(_appraisal(restored=40000), hourly_rate_cents=RATE).range_cents
     assert (low, high) == (40000, 44000)
 
     ceiling = price_piece(
-        _appraisal(restored=40000, asis=10000, conf=0.4, maker=None), hourly_rate_cents=RATE
+        _appraisal(restored=40000, asis=10000, conf=0.5, maker=None), hourly_rate_cents=RATE
     )
     assert ceiling.market.posture is Posture.CEILING_TEST
-    assert ceiling.range_cents == (40000, ceiling.market.list_price_cents)
-    assert ceiling.market.list_price_cents > 44000   # priced above market to test demand
+    assert ceiling.market.list_price_cents == 44000, "recommendation stays anchored"
+    assert ceiling.market.stretch_price_cents > 44000, "the ambiguity widens the range"
+    assert ceiling.range_cents == (40000, ceiling.market.stretch_price_cents)
