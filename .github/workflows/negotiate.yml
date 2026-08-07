@@ -87,9 +87,4 @@ jobs:
           # The draft step may have crashed before creating the directory; an empty
           # add must not fail the publish (the page relies on *something* landing).
           mkdir -p .drafts
-          git add .drafts
-          git diff --staged --quiet || git commit -m "Negotiation drafts [skip ci]"
-          for i in 1 2 3; do
-            git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push && break
-            sleep $((i * 5))
-          done
+          bash .github/scripts/publish.sh "Negotiation drafts [skip ci]" .drafts

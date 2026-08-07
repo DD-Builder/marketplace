@@ -40,12 +40,17 @@ const tierSections = [...board.querySelectorAll('section.tier')];
       scan_blocked: 'The last scrape couldn’t reach Marketplace (usually the Apify '
         + 'monthly limit). The board below is re-ranked from the catalogue — fresh '
         + 'listings will appear once scraping resumes.',
-      appraisals_failed: 'The last run scraped fine but every AI valuation failed — '
-        + 'usually an expired CLAUDE_CODE_OAUTH_TOKEN. New finds are waiting unvalued.',
+      appraisals_failed: 'The last run scraped fine but every AI valuation failed. '
+        + 'New finds are waiting unvalued.',
       catalog_corrupt: 'The catalogue file is damaged and the run stopped to protect your '
         + 'stored appraisals. See the Actions log.'
     };
-    n.textContent = msgs[s.state] || ('Last run reported: ' + s.state);
+    // The run's own error text, when it recorded one. This is the difference between
+    // "go regenerate your token" (a guess, and on 2026-08-06 the wrong one) and the
+    // actual "You've hit your session limit · resets 4:10pm (UTC)". textContent, never
+    // innerHTML — the string comes from a third-party CLI, not from us.
+    n.textContent = (msgs[s.state] || ('Last run reported: ' + s.state))
+      + (s.reason ? ' Reason: ' + s.reason : '');
     n.className = 'notice' + (s.state === 'catalog_corrupt' ? ' bad' : '');
     n.hidden = false;
     if (cards.length === 0 && s.state === 'scan_blocked')

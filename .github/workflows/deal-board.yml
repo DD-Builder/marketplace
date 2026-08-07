@@ -120,11 +120,8 @@ jobs:
           rm -rf docs/_photos
           git config user.name "deal-board"
           git config user.email "deal-board@users.noreply.github.com"
-          git add docs
-          git diff --staged --quiet || git commit -m "Update deal board [skip ci]"
-          # Another workflow (negotiate) or a board button may have pushed while
-          # this ran; rebase onto whatever landed rather than failing the publish.
-          for i in 1 2 3; do
-            git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push && break
-            sleep $((i * 5))
-          done
+          # Another workflow (negotiate) or a board button may have pushed while this
+          # ran. docs/ is regenerated from scratch every run, so the publish helper
+          # rewinds onto whatever landed and lays this board back down whole — rebasing
+          # it conflicts on all three generated files and strands the repo mid-rebase.
+          bash .github/scripts/publish.sh "Update deal board [skip ci]" docs
