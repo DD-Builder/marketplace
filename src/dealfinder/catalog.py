@@ -151,6 +151,9 @@ class PruneReport(BaseModel):
     removed_ids: list[str] = Field(default_factory=list)
     #: Entries kept, but whose photos are past the retention window and should be deleted.
     expired_photo_ids: list[str] = Field(default_factory=list)
+    #: True when a blind run declined to age any photo out. Reported rather than silent,
+    #: because "no photos expired" and "we refused to judge" are different facts.
+    photo_expiry_suspended: bool = False
 
     @property
     def count(self) -> int:
@@ -485,6 +488,7 @@ def prune(
     sold_days: int = 180,
     max_entries: int = 1200,
     photo_retention_days: int = 30,
+    scan_ok: bool = True,
 ) -> PruneReport:
     """Bound the file. Never drops a live entry; returns ids so photos are cleaned too.
 
@@ -493,6 +497,19 @@ def prune(
     the price history it leaves behind stays useful and costs almost nothing to keep.
     Photos are the only part of this repo with real bulk, so this is what keeps the
     published site from growing without bound.
+
+    ``scan_ok=False`` suspends photo expiry for a run that never reached the market.
+    Retention is measured from ``last_seen``, which only advances when a scrape actually
+    returns rows — so during an outage the clock keeps moving while every listing's
+    timestamp stands still, and the window closes on pieces nobody has looked at. That is
+    not a stale piece, it is a blind observer, and the two must not be confused.
+
+    It nearly cost the catalogue everything. Apify's monthly credit ran out on 2026-07-25
+    and froze ``last_seen`` on all 329 entries; with a 30-day window, every retained photo
+    was due for deletion on 2026-08-24. Facebook's CDN links expire within hours, so they
+    could never have been re-fetched — and the twelve appraisals those photos back were
+    made at up to 0.82 confidence, where a text-only re-appraisal is capped at 0.35.
+    A silent outage would have quietly destroyed the best evidence in the system.
     """
     now = now or _now()
     rep = PruneReport()
@@ -512,12 +529,15 @@ def prune(
             rep.removed_ids.append(entry.id)
             del catalog.listings[entry.id]
 
-    photo_cutoff = now - timedelta(days=photo_retention_days)
-    for entry in catalog.listings.values():
-        if (entry.photo_rel or entry.extra_photo_rels) and entry.last_seen < photo_cutoff:
-            rep.expired_photo_ids.append(entry.id)
-            entry.photo_rel = None
-            entry.extra_photo_rels = []
+    if scan_ok:
+        photo_cutoff = now - timedelta(days=photo_retention_days)
+        for entry in catalog.listings.values():
+            if (entry.photo_rel or entry.extra_photo_rels) and entry.last_seen < photo_cutoff:
+                rep.expired_photo_ids.append(entry.id)
+                entry.photo_rel = None
+                entry.extra_photo_rels = []
+    else:
+        rep.photo_expiry_suspended = True
 
     if len(catalog.listings) > max_entries:
         expendable = sorted(

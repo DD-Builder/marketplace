@@ -560,9 +560,15 @@ def main(argv: list[str] | None = None) -> int:
                        for lid, p in cover.items()},
             saw_photos=photos.keys(),
         )
+    # A run that never reached Marketplace may not age photos out: last_seen cannot
+    # advance while the scraper is blind, so the retention window would close on every
+    # entry at once and delete evidence that can never be re-fetched.
     pruned = catalog_mod.prune(
-        catalog, photo_retention_days=_int_env("PHOTO_RETENTION_DAYS") or 30
+        catalog, photo_retention_days=_int_env("PHOTO_RETENTION_DAYS") or 30,
+        scan_ok=not scan_failed,
     )
+    if pruned.photo_expiry_suspended:
+        log.info("photo_expiry_suspended", reason="scan blocked — cannot age unseen listings")
     # Photos of departed entries, and of entries whose pictures have aged out. Both are
     # deleted the same way: by exact stem, since `{id}*` would also match ids that merely
     # start with this one.
