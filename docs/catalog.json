@@ -748,12 +748,29 @@
    "was_price_cents": null
   },
   "1027772329694129": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
+   "appraisal": {
+    "condition_assessment": "Seller claims 'original color, near perfect condition' but this is unverifiable from text alone \u2014 no photos, no maker mark cited, no piece-by-piece detail. Colonial Revival maple suites of this vintage commonly show finish alligatoring/darkening, loose mortise-and-tenon or dowel joints in case backs, sticking drawers (glued dovetails typically hold up well, but drawer runners wear), and veneer lifting at panel edges even in 'good' examples. Treat the near-perfect claim with moderate skepticism until inspected in person.",
+    "confidence": 0.28,
+    "deal_score": 18.0,
+    "est_asis_value_cents": 35000,
+    "est_restoration_cost_cents": 12000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 55000,
+    "identified_item": "1940s-1950s solid maple 'Colonial Revival' bedroom set (likely dresser w/ mirror, chest, bed, and/or nightstand \u2014 piece count unstated)",
+    "maker_guess": null,
+    "materials": [
+     "solid maple (legs, frames, stretchers \u2014 typical for this era/tier)",
+     "maple veneer likely on larger case tops/panels and drawer fronts (standard cost-saving practice for period maple suites)",
+     "secondary wood probably poplar or pine for drawer sides/backs (unconfirmed, no photos)"
+    ],
+    "reasoning": "This reads as a mass-produced Early American maple suite (Cushman/Willett/Conant Ball-tier regional manufacturers were the typical source for this look) rather than genuine sought-after Mid-Century Modern \u2014 the title's 'mid-century' likely refers to the decade, not the design movement, which is a common seller conflation that inflates perceived value. No maker mark is mentioned, joinery can't be verified without photos, and construction is presumed solid maple frame with veneered case panels, standard for the era's mid-tier furniture. Colonial Revival maple bedroom suites currently have soft secondary-market demand versus true MCM teak/walnut pieces, so even a well-restored example realistically sells in the $400-700 range locally (Facebook Marketplace/estate circuit), not aspirational designer-listing prices. Restoration needs are likely light if condition claims hold \u2014 cleaning, wax/oil refresh, minor glue and hardware touch-up \u2014 estimated $120 and ~4 hours. At a $650 asking price for a set whose realistic restored resale ceiling is only ~$550, plus pickup-only logistics in rural Lancaster, KY (narrow buyer pool, transport cost/hassle for a bulky multi-piece set), the margin is thin to negative before any surprises are found on inspection. Confidence is capped low given the complete absence of photos, maker confirmation, or piece count.",
+    "style_era": "Early American / Colonial Revival, c. 1940s-1950s \u2014 often mislabeled 'mid-century' by sellers but stylistically distinct from Mid-Century Modern; turned/tapered maple legs, simple raised-panel or plank drawer fronts typical of the genre"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
+   "appraised_price_cents": 65000,
    "appraised_with_photos": false,
-   "appraiser": "",
+   "appraiser": "claude-code",
    "asking_price_cents": 65000,
    "description": "1940s-1950s maple bedroom set. Original color. Near perfect condition. Must pick up in Lancaster, ky. Serious inquiries only!",
    "detail_fetched": true,
@@ -893,12 +910,29 @@
    "was_price_cents": 12500
   },
   "1029637473146311": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
+   "appraisal": {
+    "condition_assessment": "Cannot verify condition, joinery, or construction quality without photos. No mention of stains, tears, sagging, or structural damage, but none of that is confirmed absent either \u2014 listing only gives dimensions and a one-word ('cute') condition cue. Low 13\" seat height and 24\" overall height are consistent with genuine low-slung MCM design rather than a cut-down piece, but this can't be confirmed. No maker marks, labels, or designer attribution mentioned, which for MCM sofas usually means unmarked/anonymous production rather than a name-brand piece (Adrian Pearsall, Milo Baughman, etc. listings are almost always marketed with the name front and center).",
+    "confidence": 0.22,
+    "deal_score": 42.0,
+    "est_asis_value_cents": 22000,
+    "est_restoration_cost_cents": 15000,
+    "est_restoration_effort_hours": 6.0,
+    "est_restored_resale_value_cents": 45000,
+    "identified_item": "Two-piece mid-century modern style low-profile sofa/sectional (\"low rider\")",
+    "maker_guess": null,
+    "materials": [
+     "wood frame (species/solidity unstated)",
+     "upholstery fabric (type/condition unstated)",
+     "cushion fill, likely foam"
+    ],
+    "reasoning": "Without photos there is no way to confirm solid wood vs. veneer/particleboard framing, joinery (dovetail vs. staple/dowel construction typical of mass-market MCM-style sofas), or whether this is a genuine period piece vs. a modern look-alike \u2014 the generic title and absence of any maker/designer name both point toward an unmarked or reproduction piece rather than a documented mid-century design, which caps realistic resale well below 1stDibs-tier MCM prices. Assuming typical condition for a $250 unmarked 104\" two-piece sofa (usable but dated fabric, no major structural damage disclosed), realistic restoration is light: deep clean or professional upholstery spot-treatment, tightening frame joints, and cosmetic touch-up of any exposed wood legs \u2014 full reupholstery of a piece this size would run $800-1500 and likely isn't justified unless the frame proves to be a documented/solid design. At $250 asking, as-is value roughly matches typical local marketplace pricing for an attractive but unattributed low MCM sofa; a light refresh could realistically bring $400-500 on local marketplace/eBay to a niche MCM buyer, yielding a modest but real margin. Confidence is capped low because construction, joinery, and true condition are all unverified.",
+    "style_era": "Mid-Century Modern aesthetic, likely 1960s-70s production or a later MCM-style reproduction \u2014 era unconfirmable from text alone"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
+   "appraised_price_cents": 25000,
    "appraised_with_photos": false,
-   "appraiser": "",
+   "appraiser": "claude-code",
    "asking_price_cents": 25000,
    "description": "104\" L 30\" D 24\" H \nSeat Height 13\" \n\nCute 2 PC mcm sofa \n\n",
    "detail_fetched": true,
@@ -1860,25 +1894,24 @@
   },
   "1136587782123091": {
    "appraisal": {
-    "condition_assessment": "Seller reports 'great condition' (self-assessment, discount accordingly) with a single functional flaw: one leg is missing its leveling screw/glide, causing a wobble that is more noticeable on hardwood than carpet. No mention of joinery (dovetails, mortise-and-tenon), drawer construction, veneer condition, finish wear, water rings, or maker marks/labels \u2014 these are all unverifiable from the listing text, which caps confidence in any quality assessment.",
+    "condition_assessment": "Described as structurally sound overall; single reported defect is a missing leveling screw/glide on one angled leg causing a wobble, more noticeable on hardwood than carpet. No mention of veneer lifting, drawer function, water rings, finish wear, or joinery condition - these are unknowns that materially affect value and cannot be assessed from text alone.",
     "confidence": 0.3,
     "deal_score": 58.0,
-    "est_asis_value_cents": 3800,
-    "est_restoration_cost_cents": 700,
-    "est_restoration_effort_hours": 0.5,
-    "est_restored_resale_value_cents": 9000,
-    "identified_item": "Single mid-century-modern-style nightstand, cherry wood claimed",
+    "est_asis_value_cents": 4000,
+    "est_restoration_cost_cents": 1500,
+    "est_restoration_effort_hours": 1.0,
+    "est_restored_resale_value_cents": 9500,
+    "identified_item": "Unbranded mid-century modern style nightstand, single (not a pair)",
     "maker_guess": null,
     "materials": [
-     "Cherry wood (seller-claimed, species and solid-vs-veneer unverified)",
-     "Likely secondary/composite materials possible in unseen drawer box or back panel",
-     "Metal leveling screw/glide (one missing)"
+     "Claimed solid cherry wood (unverified from text alone)",
+     "Possible cherry veneer over secondary wood/plywood - cannot confirm construction without photos"
     ],
-    "reasoning": "The listing gives no maker mark, no joinery detail, and no photos, so solid-cherry-vs-veneer and build quality can't be confirmed \u2014 this is treated as a plausible but unverified unbranded MCM-style nightstand rather than a documented designer piece. The stated flaw (missing leveling screw) is minor, cheap, and fast to fix (a replacement glide/screw plus a light cleaning/wax pass, under an hour, well under $10 in parts). At $45 asking, there's little room below asking, so as-is value is set near the ask. Realistic regional resale for a clean, unbranded solid-wood single MCM nightstand on marketplace/eBay-sold comps runs roughly $70-110 (not 1stDibs-style dealer pricing), justifying ~$90 restored. That yields a modest but real margin (~$37 profit before time value) on very low capital and effort, making it a reasonable small flip if the in-person inspection confirms solid wood and no hidden veneer damage or odor/pest issues \u2014 but the deal score is held mid-range because the wood claim and overall construction quality are unverified.",
-    "style_era": "Mid-century modern (angled/tapered leg profile) \u2014 could be a genuine c.1950s-60s piece or a later reproduction in the MCM idiom; text alone can't distinguish these"
+    "reasoning": "No photos means construction (solid wood vs veneer), joinery quality, and authenticity of era can't be verified - confidence capped low per instructions. Absence of any maker mark (no Heywood-Wakefield, Lane, Drexel, Broyhill, etc.) suggests this is likely an unbranded piece or possibly a newer look-alike, so no branded-maker premium applies. The listed flaw (missing leveling screw) is a trivial, cheap fix - a $2-5 furniture glide/screw plus glue/touch-up, roughly 30-60 minutes of labor including a light clean/wax for resale photos. At $45 asking with such a minor, well-disclosed defect, the piece is already near fair as-is value; a single (unpaired) generic MCM nightstand in good cosmetic condition realistically sells for $75-125 on local marketplace/eBay once fixed and photographed well, not the $200+ seen on curated dealer sites. Margin is modest but positive given the very low repair cost, though the deal score is tempered by inability to verify solid-wood construction or true condition (drawer glides, finish, veneer integrity) sight-unseen.",
+    "style_era": "Mid-century modern, likely 1950s-1960s original OR a modern MCM-style reproduction; angled/splayed legs are the strongest era cue but are also the most commonly imitated MCM feature"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-08T13:41:06.406595Z",
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 4500,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -3901,27 +3934,27 @@
   },
   "1439187397973749": {
    "appraisal": {
-    "condition_assessment": "Unverifiable without photos. Text describes cosmetic completeness (glass door, legs, brass caps, 'original plug') but gives no confirmation the radio/turntable actually power on or the veneer is free of delamination, water rings, or sun fade. Claimed 'rare side speakers' are an unverified add-on. No mention of joinery quality, drawer/door alignment, or interior wear \u2014 treat as unknown/likely fair condition pending inspection.",
-    "confidence": 0.3,
-    "deal_score": 15.0,
+    "condition_assessment": "Unverifiable from text alone \u2014 no photos, dimensions, or explicit condition notes (finish wear, veneer lifting, glass door track function, electronics power-on status) are given. Listing emphasizes cosmetic/marketing language ('beautiful,' 'rare,' 'amazing') rather than condition facts, and claims an 'original plug,' implying electronics have not been safety-tested or rewired \u2014 a real concern on 55-60 year old tube/early transistor gear. Treat as as-is/untested until inspected",
+    "confidence": 0.25,
+    "deal_score": 8.0,
     "est_asis_value_cents": 55000,
-    "est_restoration_cost_cents": 40000,
+    "est_restoration_cost_cents": 45000,
     "est_restoration_effort_hours": 10.0,
-    "est_restored_resale_value_cents": 110000,
-    "identified_item": "Mid-century German stereo console/bar cabinet with Blaupunkt \"Arkansas\" radio-phono chassis",
-    "maker_guess": "Blaupunkt (electronics only; cabinet maker unbranded/unknown \u2014 likely a contract furniture maker such as Kuba, Saba, Nordmende or a generic German cabinet shop, not confirmed)",
+    "est_restored_resale_value_cents": 95000,
+    "identified_item": "Mid-century German stereo/bar console with Blaupunkt 'Arkansas' radio-phono chassis, sliding glass display door, tapered legs with brass ferrules, and detachable side speakers",
+    "maker_guess": "Cabinet maker not identified; electronics chassis by Blaupunkt. These consoles were typically mass-produced by German furniture/radio combines (e.g. Blaupunkt-branded chassis installed by contract cabinet shops), not a named studio designer \u2014 no evidence of a premium pedigree maker (e.g. Wilhelm Renz, Rudolf Glatzel) is given",
     "materials": [
-     "Wood veneer (likely walnut) over engineered/composite substrate for main cabinet panels \u2014 typical of era, not solid wood carcass",
-     "Solid wood tapered legs",
-     "Brass-plated leg caps and hardware",
-     "Sliding glass display door",
-     "Original cloth-insulated electrical cord (likely ungrounded, period-correct but a safety concern)"
+     "Wood veneer (likely walnut or rosewood-faced) over plywood/particleboard carcass \u2014 typical for this consumer-grade console category",
+     "Solid wood likely limited to legs and door frame",
+     "Glass sliding door panel",
+     "Brass/gold-tone leg caps and hardware accents",
+     "Original tube or early solid-state radio-phono chassis and turntable"
     ],
-    "reasoning": "This is a mass-produced German mid-century stereo/bar console \u2014 a common category on the vintage market, not the rare high-end 'space-age' Kuba Komet-tier piece the listing's tone implies. Cabinets of this type typically use veneer over particleboard/composite panels with basic glued/stapled case construction rather than fine hand joinery (dovetails/M&T are not expected in this furniture class); the tapered legs are usually the only solid-wood structural element. 'Blaupunkt' identifies the electronics supplier, not a furniture maker, so there's no verified maker mark on the cabinet itself. The listed 'Value $4,000**' carries a footnote marker with no visible disclosure \u2014 a classic inflated-comp red flag \u2014 and 'very rare' is unsubstantiated marketing language for what is a commonly-found piece; the $1,500 speaker add-on valuation is similarly unverified. Realistic restoration needs: full re-cord/rewire for electrical safety (period cloth cords are a fire hazard), electronics servicing (cap replacement, tuner cleaning, turntable belt/needle), veneer cleaning or spot refinishing, and hardware polishing \u2014 roughly 8-12 hours and $300-500 in materials/labor for a reseller doing it in-house, more if a tech services the chassis. Comparable German console/bar units in working, cosmetically clean condition realistically sell in the $800-$1,500 range on eBay sold listings and regional marketplaces, well below the aspirational $4,000 figure. Against a $2,250 asking price, this deal only pencils out if the electronics are confirmed working and the speakers are genuine and desirable \u2014 absent photo/verification, it looks overpriced relative to realistic restored resale, hence a low deal score and capped confidence.",
+    "reasoning": "This is a common category of German mid-century stereo/bar console (Blaupunkt-chassis consoles with sliding glass doors and tapered brass-capped legs turn up regularly on the secondhand market) rather than a documented high-end design piece. The listing's self-assigned 'Value $4,000**' and 'speakers valued at $1,500' are unsubstantiated aspirational figures (note the asterisks, a common inflation tactic) and should be discounted as a ceiling, not treated as market evidence. Realistic comps for this class of piece \u2014 refinished cabinet, verified-working electronics, on eBay sold listings or regional marketplace \u2014 land in the $700-1,200 range; exceptional, fully-restored examples with strong provenance can exceed that, but nothing here supports that tier. Likely veneer-over-particleboard/plywood construction (not solid wood), which caps restoration ceiling and makes veneer damage a real risk during refinishing. Expected restoration: cabinet refinishing/veneer repair, glass door track service, brass polishing, and electronics service (recap, belt/stylus replacement, safety rewiring given the 'original plug' claim) \u2014 estimated $400-500 and ~10 hours. At the $2,250 asking price, even before restoration spend, the deal is underwater against realistic restored resale (~$950-1,000); this only becomes viable if negotiated down to roughly $300-500. Confidence is capped low (0.25) because construction, maker, and true condition cannot be verified without photos or in-person inspection.",
     "style_era": "Mid-century modern, West Germany, c. 1965-1969"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-08T13:41:06.406595Z",
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 225000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -4331,26 +4364,25 @@
   },
   "1509361367043353": {
    "appraisal": {
-    "condition_assessment": "Seller states dresser is 'newly restored' (implies refinished/reconditioned); nightstands' condition not specified. No photos to confirm veneer lifting/delamination, drawer glide wear, joint looseness, or refinish quality \u2014 a common risk on veneer MCM casegoods is chipped/bubbled veneer at edges and veneer mismatch after refinishing. Treat as a mid-tier production piece in cosmetically presentable but structurally unverified condition.",
+    "condition_assessment": "Seller states the highboy dresser is 'newly restored'; nightstand condition is unstated. No photos are available to verify joinery (dovetails vs. stapled/dowel construction), veneer integrity, drawer glide function, or the quality of the claimed restoration, so condition cannot be independently confirmed \u2014 treat seller's 'restored' claim with caution until inspected in person.",
     "confidence": 0.3,
-    "deal_score": 27.0,
-    "est_asis_value_cents": 190000,
+    "deal_score": 20.0,
+    "est_asis_value_cents": 70000,
     "est_restoration_cost_cents": 15000,
     "est_restoration_effort_hours": 3.0,
-    "est_restored_resale_value_cents": 205000,
-    "identified_item": "United Furniture Corp. 'Discovery' collection MCM bedroom set \u2014 tall walnut highboy dresser plus matching nightstand(s), sculpted/recessed wood pulls, tapered legs",
-    "maker_guess": "United Furniture Corporation (mid-market North Carolina/Southern manufacturer, 'Discovery' line) \u2014 not a premium name like Lane, Dixie, Kent-Coffey, or a designer-attributed line",
+    "est_restored_resale_value_cents": 110000,
+    "identified_item": "United Furniture Corp. 'Discovery' line walnut MCM bedroom set (tall highboy dresser plus matching nightstands)",
+    "maker_guess": "United Furniture Corporation (mid-market American case goods manufacturer, not a top-tier/designer MCM name like Drexel, Kent-Coffey, or Founders)",
     "materials": [
-     "Walnut veneer over plywood/particleboard case panels (typical for large flat surfaces \u2014 tops, sides, drawer faces of this era/price tier)",
-     "Solid walnut for legs, frame rails, and sculpted integral pulls",
-     "Probable solid secondary wood (poplar/oak) drawer boxes with machine-cut (likely English or dowel-and-glue) joinery rather than hand-cut dovetails \u2014 hand dovetails uncommon at this manufacturer's price point",
-     "No maker mark visible/described; ID relies entirely on seller's stated line name 'Discovery' by United Furniture, unverified by photo or label"
+     "walnut solid wood likely used for face frames, tapered legs, and the sculpted/recessed pulls",
+     "walnut veneer over plywood or particleboard case tops/sides/back panels (standard construction for mid-tier 1960s casegoods)",
+     "probable engineered wood (plywood/hardboard) drawer bottoms and case backs"
     ],
-    "reasoning": "United Furniture Corp is a recognizable but mid-market 1960s casegoods maker (not premium like Lane/Dixie/Kent-Coffey, no designer name attached), so its ceiling is well below designer MCM pricing. Construction is almost certainly veneer-over-substrate case panels with solid wood legs/frames/pulls \u2014 standard cost-saving practice for this tier, not a red flag but not a premium-materials piece either. Because the dresser is already advertised as 'newly restored,' there is little restoration arbitrage left for a reseller to capture \u2014 the seller has already captured most of the value uplift from refinishing, leaving mainly minor touch-up work (hardware tightening, drawer glide lube, spot polish). Combined asking price ($1,450 dresser + $1,250 nightstand \u2248 $2,700, vs. the $2,450 headline figure suggesting some bundle flexibility) sits at or above realistic regional resale for a mid-market maker set in a secondary MCM market like Lexington, KY \u2014 comparable sold listings for non-premium walnut MCM dresser+nightstand sets typically clear $1,500-2,200 on eBay/local marketplace, not $2,450+. Thin-to-negative margin for a reseller buying at ask; only attractive if negotiated meaningfully below asking. Confidence capped low since no photos exist to verify veneer condition, joinery quality, or the presence/legibility of any maker label confirming the United Furniture/Discovery attribution.",
-    "style_era": "Mid-Century Modern, c. 1960-1969"
+    "reasoning": "United Furniture Corp. was a mid-market manufacturer, not a sought-after designer MCM label \u2014 pieces with recessed sculpted pulls and tapered legs are attractive but don't carry the premium of Drexel Declaration, Kent-Coffey Perspecta, or studio-maker pieces. Listing math is internally inconsistent (title asking $2450 vs. itemized $1450 dresser + $1250 for the other lot = $2700), suggesting aspirational or bundled dealer pricing rather than a verified market rate. Realistic regional/eBay-sold comps for a mid-tier walnut MCM highboy plus nightstands run roughly $600-900 for the dresser and $150-250 each for nightstands, well under this shop's asking prices \u2014 showroom listings like this should be treated as a ceiling, not a comp. Because the dresser is already claimed restored, there's little value-add margin left for a reseller to capture (restoration cost/effort here is just touch-up, not a full rebuild), and paying near asking would leave thin or negative margin against realistic resale. No photos means construction (solid vs. veneer ratio, dovetail joinery, hidden damage) can't be verified, capping confidence low; in person, check drawer joinery, veneer lifting/bubbling, and look for a maker's paper label or stamp to confirm this is genuine United Furniture 'Discovery' line rather than a similar unmarked competitor piece.",
+    "style_era": "Mid-Century Modern, c. 1960s"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-08T13:41:06.406595Z",
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 245000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -4664,27 +4696,28 @@
   },
   "1539598741047412": {
    "appraisal": {
-    "condition_assessment": "Fair per seller: no structural damage reported, but drawers do not slide smoothly (probable swollen wood, worn/dirty runners, or minor rack in the case), doors and joints unverified. No mention of veneer lifting, water damage, or missing parts, but also no confirmation of dovetails, mortise-and-tenon joinery, or maker marks since no photos exist.",
-    "confidence": 0.3,
-    "deal_score": 72.0,
-    "est_asis_value_cents": 8000,
+    "condition_assessment": "Fair, structurally intact but heavily worn cosmetically: multiple layers of chipped green-and-white paint, visible gouges/chips on molding edges, one side panel has a broken/delaminated corner exposing a thin veneered substrate (confirms plywood rather than solid panel construction there), drawers rack and bind (worn wood glides, no metal slides visible), hardware is oxidized/paint-clogged. No maker's mark or label visible in the photos provided.",
+    "confidence": 0.55,
+    "deal_score": 64.0,
+    "est_asis_value_cents": 2000,
     "est_restoration_cost_cents": 10000,
-    "est_restoration_effort_hours": 4.0,
+    "est_restoration_effort_hours": 14.0,
     "est_restored_resale_value_cents": 30000,
-    "identified_item": "Small painted armoire/linen cupboard (cottage/farmhouse style) \u2014 two upper cabinet doors concealing two drawers and an open shelf, plus two wide base drawers",
+    "identified_item": "Vintage Mediterranean/Spanish-Revival style painted armoire (wardrobe/dresser combo) \u2014 two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls",
     "maker_guess": null,
     "materials": [
-     "solid wood (species unconfirmed, seller states solid and heavy \u2014 likely pine, poplar, or similar softwood typical of painted cottage furniture)",
-     "painted finish, white body with green trim",
-     "white-painted metal drawer pulls, likely later replacements rather than original hardware"
+     "Solid wood face-frame, crown molding, and turned half-column accents",
+     "Plywood/veneer panel construction for case sides and door panels",
+     "Likely particleboard or hardboard in drawer bottoms/back panel",
+     "Cast/stamped white-metal (pot metal) decorative drawer and door pulls"
     ],
-    "reasoning": "At $20 cash, even a modest solid-wood painted cupboard is a strong margin if the seller's claims hold up. No maker marks or joinery details are given, so this is priced as an unbranded vintage/cottage piece rather than a documented antique \u2014 construction (dovetails vs. nails, solid panels vs. plywood backs) cannot be confirmed without photos, hence confidence is capped low. Realistic restoration is light: reglue/wax drawer runners, adjust door alignment, spot-touch or refresh the chippy paint (a look many buyers want preserved, not stripped), and possibly swap or polish the metal pulls \u2014 roughly $100 in materials and 4 hours of labor, not a full refinish. Regional resale for a clean, functional green-and-white farmhouse cupboard of this modest size (57.5x39x17.5) realistically lands around $250-350 on local marketplace/eBay-sold comps, well below aspirational dealer pricing for similar-looking pieces. Deal score reflects good theoretical upside but is tempered by the total lack of verifiable construction/maker detail and the generic (not rare) nature of the form.",
-    "style_era": "Painted cottage/farmhouse cabinet; body construction could be older (early-mid 20th c.) but green-and-white paint scheme reads as a later decorative repaint, possibly done for the farmhouse-decor trend"
+    "reasoning": "This is a mid-century Mediterranean-style painted armoire, not an antique \u2014 the arched door panels, turned half-columns, and ornate pot-metal pulls are hallmarks of 1960s-70s American bedroom suites (Bassett/Broyhill/Stanley-type lines), typically built with solid wood trim over plywood/veneer case panels rather than full solid wood or fine dovetail joinery. The exposed side-panel damage in photo 3 confirms veneered plywood construction on at least the case sides, which limits options for a strip-to-bare-wood restoration and points toward a repaint/refresh strategy instead. At $20 asking, the item is priced as a functional flip candidate: labor is the main cost driver (stripping/sanding ornate molding, repairing the damaged veneer corner, freeing up sticky drawers, and refinishing hardware), estimated at ~10-14 hours plus ~$100 in paint, filler, and hardware supplies. A clean two-tone or trending color repaint (this green/white scheme is already resale-friendly) realistically resells for $250-350 on local marketplace/eBay given size and demand for statement storage pieces, yielding solid margin over the ~$120 all-in cost. Confidence is moderate since no maker mark is visible and drawer joinery (dovetail vs. stapled) can't be confirmed from these photos alone \u2014 a buyer should pull a drawer fully and inspect joints before committing to restoration approach.",
+    "style_era": "American Mediterranean Revival case goods, likely mass-produced c. 1960s-1970s"
    },
-   "appraisal_prompt_version": 0,
-   "appraised_at": "2026-07-25T19:11:41.304066Z",
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 2000,
-   "appraised_with_photos": false,
+   "appraised_with_photos": true,
    "appraiser": "claude-code",
    "asking_price_cents": 2000,
    "description": "Armoire / dresser is old, solid wood, heavy.   It is in FAIR condition.  Drawers open & \nClose but NOT smoothly. \n\nVintage wooden armoire is painted white with green trim accents. This piece has two large upper cabinet doors that open to reveal two internal drawers and an open storage compartment. Two additional wide drawers are located at the base with decorative white metal pulls. \n\nDementions\nHeight 57.5\u201d\nWidth 39\u201d\nDepth 17.5\u201d\n\nCash or Venmo only.\nMust be able to transport yourselves.  I have a dolly that can be utilized.",
@@ -5048,12 +5081,29 @@
    "was_price_cents": 3000
   },
   "1550814156528940": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
+   "appraisal": {
+    "condition_assessment": "Unknown from listing text; no photos to verify. Typical risks for this type: rust or paint wear on the metal frame, chipped/delaminating edges on the laminate panels, loose joints where panels meet frame, and scuffed or loose wood ball feet. No mention of cracks, rust, or missing parts, so assume light-to-moderate wear consistent with age.",
+    "confidence": 0.3,
+    "deal_score": 58.0,
+    "est_asis_value_cents": 1500,
+    "est_restoration_cost_cents": 800,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 4000,
+    "identified_item": "Mid-century modern magazine rack, black metal frame with pink faux-marble laminate side panels, wood handle and wood ball feet",
+    "maker_guess": null,
+    "materials": [
+     "painted/black-finished steel or wrought metal frame",
+     "laminate or Formica-style panels (marble-pattern print, not genuine stone)",
+     "solid wood handle and ball feet (turned wood, likely beech or similar)"
+    ],
+    "reasoning": "No joinery to assess (metal-frame construction, not wood carcass), so dovetail/mortise-tenon evaluation is moot; wood is limited to the handle and ball feet, likely solid but decorative rather than structural. 'Marble-patterned' strongly implies a printed laminate or Formica surface rather than genuine marble, which caps value versus a true stone or solid hardwood MCM piece. No maker marks noted, so this reads as an unbranded mass-market decorative accessory rather than a named-designer collectible. At $20 asking, the piece is cheap enough to be a low-risk flip: a light restoration (metal polish/rust treatment, laminate panel cleaning or minor edge touch-up, tightening hardware, feet refinishing) is typically under an hour or two and low material cost. Realistic regional resale (local marketplace/eBay sold) for a clean MCM metal-and-laminate magazine rack in this style is modest, roughly $30-50, not the higher prices sometimes seen on aspirational dealer sites. Confidence is capped at 0.3 because construction, true material composition, and condition cannot be verified without photos.",
+    "style_era": "Mid-century modern, likely 1960s-1970s"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
+   "appraised_price_cents": 2000,
    "appraised_with_photos": false,
-   "appraiser": "",
+   "appraiser": "claude-code",
    "asking_price_cents": 2000,
    "description": "Vintage magazine rack is constructed with a black metal frame and features pink marble-patterned side panels. It has a wooden handle and four legs with wooden ball feet.",
    "detail_fetched": true,
@@ -6755,24 +6805,24 @@
   },
   "1723344768790855": {
    "appraisal": {
-    "condition_assessment": "Cannot verify from text alone; listing uses generic promotional language ('authentic vintage', 'well-made') without describing surface condition, veneer lifting, water rings, sliding door track function, or drawer glide condition \u2014 treat as unknown/moderate wear typical of an unrestored decades-old piece until inspected in person",
+    "condition_assessment": "Unknown from text alone. Listing uses vague, boilerplate-sounding language ('brown furniture,' 'authentic vintage piece,' 'well-made unit') typical of resale-flip or auto-generated listings rather than a knowledgeable dealer description \u2014 no mention of maker mark, wood species, joinery, drawer construction, or specific flaws. Sliding door track and drawer glides are the most likely wear points on this style; veneer chipping/delamination and finish wear are common at this era and price point. Treat 'solid wood' claim skeptically until verified in person.",
     "confidence": 0.3,
     "deal_score": 32.0,
-    "est_asis_value_cents": 28000,
-    "est_restoration_cost_cents": 15000,
+    "est_asis_value_cents": 32000,
+    "est_restoration_cost_cents": 20000,
     "est_restoration_effort_hours": 8.0,
-    "est_restored_resale_value_cents": 52000,
-    "identified_item": "Unbranded mid-century modern sideboard/credenza with center sliding-door compartment and two flanking drawer cabinets",
+    "est_restored_resale_value_cents": 55000,
+    "identified_item": "Mid-century modern sideboard/credenza with center sliding-door compartment and two flanking drawer cabinets",
     "maker_guess": null,
     "materials": [
-     "Wood (species unspecified, possibly walnut, teak-finish, or oak veneer)",
-     "Likely veneer over plywood/particleboard case with solid wood frame, legs, and drawer fronts (unverifiable from listing)"
+     "Unverified \u2014 seller claims 'solid wood'; era-typical construction for this price tier is usually veneer (walnut/teak-look) over plywood or particleboard casework with solid wood face frame, legs, and drawer fronts",
+     "No maker mark, joinery, or wood species mentioned in listing"
     ],
-    "reasoning": "No maker mark, label, or joinery detail (dovetails, mortise-and-tenon) is mentioned in the listing, so authenticity and true solid-wood construction can't be confirmed \u2014 'solid wood' is a seller claim typical of casual resale listings and many period sideboards of this configuration (center sliding door + side drawer cabinets) actually mix solid wood frames with veneered plywood panels and drawer boxes. The silhouette matches common unbranded American/European MCM credenzas from the 1960s-70s rather than a documented high-end maker (e.g. Lane, Dixie, Broyhill would typically be named if present). Realistic restoration would involve cleaning and re-oiling/refinishing the case, lubricating or repairing the sliding door track, servicing drawer glides, tightening joinery, and polishing or replacing pulls \u2014 a modest job (~6-10 hours, ~$150 in materials/labor) rather than a full veneer or structural rebuild. Regional resold value (local marketplace/eBay) for a clean, functional, unbranded MCM sideboard in this configuration realistically lands in the $450-600 range, not the $800-1500+ seen on aspirational dealer sites like 1stDibs. At a $360 asking price against an as-is value closer to $280 (discounted for unverifiable condition/authenticity) and thin post-restoration margin, this is a mediocre-to-fair flip rather than a strong deal. Confidence is capped low given the complete absence of photos, maker marks, or joinery detail.",
-    "style_era": "Mid-century modern, likely 1960s-1970s mass-market American or European production"
+    "reasoning": "No maker mark or wood species is cited, and the description reads like generic resale copy rather than an informed appraisal, so this is most plausibly a mass-market MCM-style credenza (veneer over plywood/particleboard) rather than a designer/solid-hardwood piece \u2014 'solid wood' should be verified, not assumed. Absent evidence of high-end joinery (dovetailed drawers, mortise-and-tenon frame) or a known maker (e.g., Lane, Dyrlund, Broyhill Brasilia), regional resold value for a clean, generic MCM sideboard of this configuration realistically lands $400-650, not aspirational dealer prices. At $360 asking, after typical refinishing/hardware/track repair (~$200, ~8 hrs), the margin is thin to roughly breakeven \u2014 a mediocre deal unless in-person inspection reveals a maker mark or genuine solid hardwood construction that would justify a higher price. Confidence capped low since construction, condition, and authenticity cannot be verified without photos.",
+    "style_era": "Mid-century modern, likely 1960s-1970s mass-market production"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-08T13:41:06.406595Z",
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 36000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -8350,28 +8400,28 @@
   },
   "2105305880334082": {
    "appraisal": {
-    "condition_assessment": "Cannot be verified without photos. Seller's language ('very nice,' 'solid oak') is typical FB-Marketplace-style self-appraisal and not confirmed by any description of joinery, maker marks, or wood grain/end-grain detail. No mention of damage, but also none of finish quality, drawer function, or veneer lifting \u2014 all common issues at this price tier. The unphotographed mirror is a specific red flag (often cracked, mismatched, or omitted in practice). Absence of any dovetail/mortise-and-tenon mention suggests standard doweled/screwed mass-production joinery rather than fine casework.",
-    "confidence": 0.3,
-    "deal_score": 42.0,
+    "condition_assessment": "Structurally sound factory suite in average used condition. Headboard/footboard have solid turned posts and spindles with an applied carved oval medallion, in decent shape with only light surface wear. Dresser top shows a glossy factory finish with sheen intact but visible surface scuffing. Nightstand top has clear finish wear, scattered white water/heat marks, and edge chipping that exposes a thin veneer layer over a composite substrate, contradicting the 'solid oak' claim \u2014 case goods are veneer-over-particleboard construction typical of this era's suites, not solid wood. No dovetail joinery visible in any photo (drawer construction likely stapled/doweled). No maker's mark or label visible in the photos provided.",
+    "confidence": 0.55,
+    "deal_score": 52.0,
     "est_asis_value_cents": 40000,
-    "est_restoration_cost_cents": 20000,
-    "est_restoration_effort_hours": 10.0,
-    "est_restored_resale_value_cents": 75000,
-    "identified_item": "3-piece queen bedroom set: bed frame (headboard/footboard), dresser with mirror, nightstand \u2014 advertised as solid oak",
+    "est_restoration_cost_cents": 9000,
+    "est_restoration_effort_hours": 5.0,
+    "est_restored_resale_value_cents": 60000,
+    "identified_item": "Late 20th-century Early American/Colonial-style oak bedroom set (queen headboard/footboard, 9-drawer dresser with mirror not pictured, matching nightstand)",
     "maker_guess": null,
     "materials": [
-     "Oak (species and solid-vs-veneer split unverified from text alone)",
-     "Likely oak veneer over engineered wood (plywood/MDF/particleboard) panels on dresser case and headboard/footboard, common for this market tier",
-     "Probable solid oak only on frame rails, legs, and face trim",
-     "Standard drawer hardware and mirror glass (mirror not pictured, condition unknown)"
+     "oak veneer over particleboard/MDF case and top panels",
+     "solid oak turned bedposts and spindles",
+     "solid oak face-frame and drawer fronts (likely oak-veneered MDF drawer fronts)",
+     "stamped/cast faux-pewter colonial pull hardware"
     ],
-    "reasoning": "No photos means construction, joinery, and true condition are unverifiable \u2014 confidence capped low. Listing tone and lack of any maker/antique cues (no dovetails, no mortise-and-tenon, no maker mark, no specific era claimed) point to a common mass-market 'oak' bedroom set, which in this segment is very often oak veneer over engineered wood cores with solid oak used only for legs/rails/trim, not a genuine solid-oak antique. Seller's 'comparable sets are a few thousand' framing is aspirational retail-new pricing, not a realistic used-market comp, and should be discounted heavily \u2014 regional resale for a clean, complete 3-piece oak-look queen set on marketplace/eBay-local is realistically $600\u2013900, not thousands. As-is value is set below the $500 ask because the unpictured mirror and total lack of condition detail carry real risk. Likely restoration is light (cleaning, hardware tightening, minor touch-up, possible reglue of a joint or two, mirror sourcing/replacement) rather than a full strip-and-refinish, since a genuine hand-dovetailed antique was not indicated. At the $500 ask plus ~$200 restoration cost against a ~$750 realistic restored resale, margin is thin \u2014 a fair but not great flip, and the deal quality hinges entirely on unverifiable as-is condition, hence the moderate deal score and low confidence.",
-    "style_era": "Mass-market traditional/mission-influenced oak bedroom furniture, likely factory production from the 1990s\u20132000s rather than an antique or designer piece"
+    "reasoning": "This is a common, mass-produced Colonial/Early American oak-veneer bedroom suite from the 1980s-90s, not a solid-oak antique \u2014 the nightstand photo shows veneer chipping at the top edge, revealing a composite core, which undercuts the 'solid oak' claim in the listing (the posts/spindles are likely solid, but the case tops and drawer fronts are veneer). No dovetails or maker's mark are visible to support higher-end construction. Realistic restoration is light: clean and re-oil/wax the finish, touch up or veneer-patch the chipped nightstand edge, tighten hardware, and polish the pulls \u2014 a few hours of cosmetic work, not a full refinish. As a complete 3-piece set (with the unpictured mirror) in working, presentable condition, regional marketplace comps for similar veneer oak suites run roughly $400-500 as-is and $550-700 cleaned up and well-staged; the $500 asking price is close to fair market value already, so the deal margin after minor restoration is modest rather than a steal.",
+    "style_era": "Colonial Revival / Early American oak suite, mass-produced c. 1980s\u20131990s"
    },
-   "appraisal_prompt_version": 0,
-   "appraised_at": "2026-07-25T19:11:41.304066Z",
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 50000,
-   "appraised_with_photos": false,
+   "appraised_with_photos": true,
    "appraiser": "claude-code",
    "asking_price_cents": 50000,
    "description": "Very nice queen bedroom set. Solid oak. \n\nIncluded: \n\n-queen bed frame with headboard and footboard. \n-dresser with mirror ( not pictured) \n-night stand \n\nYou won\u2019t find a better quality oak bedroom set for this price. $500\n\nMost comparable sets are a few thousand \n\nWill help load but will not haul. \n\nOnly reason for selling is because we needed an adjustable base frame. ",
@@ -11020,12 +11070,27 @@
    "was_price_cents": null
   },
   "912861147865609": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
+   "appraisal": {
+    "condition_assessment": "Side doors do not open (likely warped, swollen, or misaligned hinges/latches \u2014 a common MCM veneer-cabinet issue), only center door functions; seller claims no major knicks/scratches but this is unverified and no photos or dimensions were provided in the text. Listing is for the hutch top only, not a full china cabinet with base, which caps its standalone utility and value.",
+    "confidence": 0.2,
+    "deal_score": 18.0,
+    "est_asis_value_cents": 20000,
+    "est_restoration_cost_cents": 10000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 35000,
+    "identified_item": "Mid-Century Modern hutch-top china cabinet/bookcase (upper section only, no base/buffet shown)",
+    "maker_guess": null,
+    "materials": [
+     "Unconfirmed from text \u2014 no wood species, veneer, or maker mark mentioned; MCM hutches of this type are commonly walnut veneer over plywood or particleboard casework with solid wood face frames"
+    ],
+    "reasoning": "No photos, dimensions, wood species, or maker mark were given, so construction and true condition can't be verified \u2014 confidence is capped low. Non-functional side doors point to warping or hardware failure typical of veneer/particleboard MCM casework, and a hutch-top-only piece (no base) sells for meaningfully less than a matched set locally. At the $450 ask, even after a modest ~$100 hinge/hardware/touch-up restoration, realistic regional resale (FB Marketplace/local eBay sold comps, not 1stDibs) lands around $300-400, meaning the buyer likely loses money at asking price unless it can be negotiated down substantially (ideally under $150-200) before restoration.",
+    "style_era": "Mid-Century Modern, likely 1950s-1960s"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
+   "appraised_price_cents": 45000,
    "appraised_with_photos": false,
-   "appraiser": "",
+   "appraiser": "claude-code",
    "asking_price_cents": 45000,
    "description": "Measurements are in last picture. No big knicks or scratches. Message me if interested! \n\nOnly the middle door opens. The side doors do not.",
    "detail_fetched": true,
@@ -11253,12 +11318,27 @@
    "was_price_cents": null
   },
   "964699363290731": {
-   "appraisal": null,
-   "appraisal_prompt_version": 0,
-   "appraised_at": null,
-   "appraised_price_cents": null,
+   "appraisal": {
+    "condition_assessment": "Unverifiable without photos; cast brass of this type typically survives with surface tarnish/oxidation and minor edge wear but rarely structural damage; assume moderate untreated patina and possibly loose or replaced hanging hardware",
+    "confidence": 0.3,
+    "deal_score": 28.0,
+    "est_asis_value_cents": 4000,
+    "est_restoration_cost_cents": 1500,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 7500,
+    "identified_item": "Pair of vintage mid-century Korean cast brass zodiac wall plaques, anthropomorphic zodiac-guardian figures, 8 inches",
+    "maker_guess": null,
+    "materials": [
+     "cast brass"
+    ],
+    "reasoning": "These 'anthropomorphic Korean zodiac' brass plaques (based on the 12 sipjigan guardian generals seen at Silla-era tomb sites like Gyeongju) were mass-produced as export/souvenir decor for US servicemen and tourists in the mid-20th century \u2014 they are common on the secondary market, not rare fine art or studio-marked pieces, so no maker mark is expected and none should be assumed. Construction is cast brass (metal, not wood), so wood-joinery/veneer criteria don't apply; 'restoration' here means cleaning and repatinating rather than structural repair, and over-polishing can actually reduce collector value versus preserving natural patina, so recommended work is light: degrease, spot-polish high points, stabilize any active corrosion, check/replace picture-hanging hardware \u2014 roughly 1-1.5 hours, low material cost. Realistic resale is set from typical eBay-sold/local-marketplace comps for small pairs of this ware (roughly $60-90/pair in clean, well-photographed condition), not 1stDibs-style aspirational listings. At a $60 asking price plus ~$15 restoration cost against an ~$75 realistic resold value, the margin is thin (~0 net after modest selling fees/time), making this a marginal rather than strong flip. Confidence is capped at 0.3 since construction, marks, and condition can't be verified without photos. Note: the listing description contains an out-of-place line ('The correct zip code is 40220 near the TJMAX on Taylorsville Road') that reads like injected/irrelevant metadata rather than genuine item description \u2014 it was disregarded for valuation purposes and is flagged here for awareness.",
+    "style_era": "Korean export/souvenir brassware, likely 1950s-1970s (Korean War/post-war tourist trade era)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
+   "appraised_price_cents": 6000,
    "appraised_with_photos": false,
-   "appraiser": "",
+   "appraiser": "claude-code",
    "asking_price_cents": 6000,
    "description": "The correct zip code is 40220 near the TJMAX on Taylorsville Road ",
    "detail_fetched": true,
@@ -11286,27 +11366,28 @@
   },
   "969553609454287": {
    "appraisal": {
-    "condition_assessment": "Seller self-reports 'excellent condition' with no photos or detail on drawer glides, veneer lifting, water rings, or structural issues; dimensions (52\"L x 19\"W x 36\"T) indicate a modest-size low/triple dresser, not an oversized statement piece; claims are unverifiable from text alone",
-    "confidence": 0.22,
-    "deal_score": 18.0,
-    "est_asis_value_cents": 20000,
-    "est_restoration_cost_cents": 6000,
-    "est_restoration_effort_hours": 3.0,
-    "est_restored_resale_value_cents": 32000,
-    "identified_item": "Unbranded bedroom dresser (likely a low/triple 4-6 drawer chest), style and construction unverified",
+    "condition_assessment": "Excellent cosmetic condition as described and shown - finish is glossy, unmarred, no visible veneer lifting, water rings, or structural damage. Drawers, feet, and mirror bracket all appear intact and square. No visible maker's label, stamp, or dovetail joinery in the photos, consistent with a mass-market factory piece rather than a hand-joined antique.",
+    "confidence": 0.55,
+    "deal_score": 42.0,
+    "est_asis_value_cents": 30000,
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 2.0,
+    "est_restored_resale_value_cents": 40000,
+    "identified_item": "8-drawer bedroom dresser with attached arched-top mirror",
     "maker_guess": null,
     "materials": [
-     "Seller claims 'solid wood' \u2014 unverified",
-     "Probable solid wood frame/drawer fronts with veneered case panels, typical of the claimed era",
-     "No mention of dovetails, mortise-and-tenon, or maker stamps"
+     "Solid hardwood (cherry or cherry-stained maple/poplar) drawer fronts and case",
+     "likely plywood drawer sides/case-back panels typical of this production class",
+     "cherry-toned stain/lacquer finish",
+     "brass-tone metal drawer knobs"
     ],
-    "reasoning": "No photos, no maker marks, no joinery details, and a generic 'excellent/heavy/solid wood' seller description that could describe anything from a genuine mid-century solid cherry piece to a veneered reproduction \u2014 this is a common pattern in local marketplace listings that overstate quality/materials. Modest dimensions suggest a standard low dresser rather than a rare or large case piece, capping upside even if solid wood is confirmed in person. Absent verification, realistic as-is value is ~$200 and a light-restoration ceiling (~$60, 3 hrs for cleaning, hardware polish, minor touch-up) lands resale around $320 regionally (Facebook Marketplace/eBay local pickup for unbranded traditional dressers, not 1stDibs-style pricing). At the $400 asking price, this deal likely loses money for a reseller unless in-person inspection reveals genuine solid wood construction, dovetailed drawers, and no hidden damage \u2014 recommend in-person verification before any offer, and negotiate well below asking.",
-    "style_era": "Likely Colonial Revival/Traditional reproduction, c. 1960s-1980s based on 'cherry/dark wood finish' description and typical furniture-belt (KY/OH/NC) production of that period"
+    "reasoning": "This is a well-made but common contemporary bedroom dresser in a Queen Anne/traditional style with an attached arched mirror - the bonnet-top mirror profile, bracket feet, and turned brass knobs are hallmarks of mid-range furniture-store production (e.g. Vaughan-Bassett, Pennsylvania House, or similar), not a period antique. No maker's mark, label, or visible dovetail joinery is discernible in the photos to confirm premium construction; drawer fronts look applied/routed rather than hand-cut dovetailed. It does appear to be solid wood (not obvious veneer delamination or particleboard chip-out), which supports the seller's claim and gives it real functional value. Because condition is already excellent, restoration needs are minimal - light cleaning, wax/oil conditioning, tightening hardware, maybe re-securing the mirror bracket - not a full refinish. At $400 asking, this is priced close to or slightly above realistic regional resale for a non-antique cherry-finish dresser+mirror combo, which typically clears $250-450 on local marketplaces depending on demand; there's little restoration upside to flip profitably unless it can be acquired well under $250. Confidence is moderate since maker identity and true dovetail/joinery details can't be confirmed from these images alone.",
+    "style_era": "Contemporary traditional/Queen Anne-style reproduction, likely 1990s-2010s factory production (not antique)"
    },
-   "appraisal_prompt_version": 0,
-   "appraised_at": "2026-07-25T19:11:41.304066Z",
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-09T13:43:09.176011Z",
    "appraised_price_cents": 40000,
-   "appraised_with_photos": false,
+   "appraised_with_photos": true,
    "appraiser": "claude-code",
    "asking_price_cents": 40000,
    "description": "Very well made bedroom dresser.  Heavy, solid wood. Cherry/dark wood finish. In excellent condition. Pick up in Harrodsburg, $400. \n\nDimensions:\n\n52\" Long\n19\" WIDE\n36\" TALL",
@@ -11662,6 +11743,6 @@
   "last_probe_at": null,
   "searches": {}
  },
- "updated_at": "2026-08-08T13:41:18.803393Z",
+ "updated_at": "2026-08-09T13:43:21.975332Z",
  "version": 1
 }
