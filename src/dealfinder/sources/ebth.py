@@ -485,6 +485,22 @@ def mine_bid_context(js: str, *, window: int = 90, cap: int = 24) -> list[str]:
     return out
 
 
+def _applied_parameters(captures: list) -> dict | None:
+    """The search API's own echo of what it understood from the request, when present —
+    exactly what's needed to tell a real filtered search from a degraded browse-all."""
+    for c in captures:
+        if isinstance(c, dict) and isinstance(c.get("applied_parameters"), dict):
+            return c["applied_parameters"]
+    return None
+
+
+def _search_page_count(captures: list) -> dict | None:
+    for c in captures:
+        if isinstance(c, dict) and isinstance(c.get("pages"), dict):
+            return c["pages"]
+    return None
+
+
 def _non_item_fields(payload, *, max_depth: int = 2) -> dict:
     """A search response's top-level fields, minus the big listing arrays — this is
     where pagination (page/total/per_page) and facets live, and unlike listing content
@@ -741,6 +757,15 @@ class EbthClient:
                 page["shell"] = analyze_shell(html)
                 shell_html = shell_html or html
             report["pages"].append(page)
+            applied = _applied_parameters(captures)
+            if applied is not None and applied.get("q") is None:
+                # The query text never reached their API (search silently degraded to
+                # "browse everything" — total_items came back as the whole catalogue,
+                # not a filtered result). Try known EBTH query-param shapes and report
+                # which one, if any, actually gets echoed back non-null.
+                report.setdefault("query_variant_trials", []).extend(
+                    self._try_query_variants(url)
+                )
         if first_item_url:
             page = {"url": first_item_url, "kind": "item"}
             try:
@@ -820,6 +845,42 @@ class EbthClient:
                         trial["introspection_body"] = body2[:400]
             except Exception as exc:  # noqa: BLE001
                 trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+            trials.append(trial)
+        return trials
+
+    def _try_query_variants(self, search_url: str) -> list[dict]:
+        """When a query string produced ``applied_parameters.q == null`` (search silently
+        degraded to browse-everything), try the URL shapes EBTH's search box plausibly
+        uses and report which one gets echoed back non-null — the evidence for how to
+        actually filter, rather than guessing one shape and hoping.
+        """
+        parsed = urllib.parse.urlparse(search_url)
+        q = (urllib.parse.parse_qs(parsed.query).get("q") or ["furniture"])[0]
+        enc = urllib.parse.quote(q)
+        slug = q.replace(" ", "-").lower()
+        candidates = [
+            f"{_BASE}/search?query={enc}",
+            f"{_BASE}/search?keywords={enc}",
+            f"{_BASE}/search?term={enc}",
+            f"{_BASE}/search?search={enc}",
+            f"{_BASE}/search?utf8=%E2%9C%93&q={enc}",
+            f"{_BASE}/search/{slug}",
+            f"{_BASE}/marketplace/search?q={enc}",
+        ]
+        trials: list[dict] = []
+        for url in candidates:
+            trial: dict = {"url": url}
+            try:
+                _html, captures = self._fetch_page(url)
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:160]
+                trials.append(trial)
+                continue
+            applied = _applied_parameters(captures)
+            pages = _search_page_count(captures)
+            trial["applied_q"] = applied.get("q") if applied else None
+            trial["total_items"] = pages.get("total_items") if pages else None
+            trial["harvested_items"] = sum(len(harvest_json(c)) for c in captures)
             trials.append(trial)
         return trials
 
