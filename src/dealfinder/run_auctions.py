@@ -53,9 +53,13 @@ from dealfinder.verticals import get_vertical
 
 log = get_logger(__name__)
 
+# EBTH's search box submits GET /browse?q=... (confirmed off the live DOM — the header
+# search form's action is /browse, not /search; /search silently degrades to browsing
+# the entire unfiltered catalogue, which is how an early version of this pipeline ended
+# up treating all 6,148 live lots as one query's results).
 _DEFAULT_SEARCHES = (
-    "https://www.ebth.com/search?q=mid%20century%20furniture\n"
-    "https://www.ebth.com/search?q=danish%20modern"
+    "https://www.ebth.com/browse?q=mid%20century%20furniture\n"
+    "https://www.ebth.com/browse?q=danish%20modern"
 )
 
 
