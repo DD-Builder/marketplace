@@ -382,7 +382,30 @@ _API_URL_RE = re.compile(
     r'|(/(?:api|graphql)[^"\'\s]*))["\']', re.I
 )
 _VENDOR_HINTS = ("algolia", "typesense", "elastic", "graphql", "apollo", "relay",
-                 "next", "nuxt", "webpack", "vite", "react", "turbo")
+                 "next", "nuxt", "webpack", "vite", "react", "turbo", "pubnub")
+
+#: Quoted strings inside a JS bundle that look like routes or endpoints. The React app's
+#: data paths are compiled into its bundle as plain string literals, so mining them is
+#: how we learn the real API without being able to run the app.
+_BUNDLE_STRING_RE = re.compile(
+    r'"(/[a-zA-Z0-9_\-/.{}$:]{3,90})"|"(https?://[^"\\\s]{8,140})"'
+)
+_INTERESTING_PATH = re.compile(
+    r"api|graphql|algolia|search|item|sale|browse|bid|listing|lot|\.json", re.I
+)
+
+
+def mine_bundle(js: str, *, cap: int = 100) -> list[str]:
+    """Route/endpoint-shaped string literals from a JS bundle, deduped in order."""
+    found: dict[str, None] = {}
+    for m in _BUNDLE_STRING_RE.finditer(js):
+        s = m.group(1) or m.group(2)
+        if _INTERESTING_PATH.search(s) and not s.endswith((".js", ".css", ".png",
+                                                           ".svg", ".woff", ".woff2")):
+            found[s] = None
+        if len(found) >= cap:
+            break
+    return list(found)
 
 
 def analyze_shell(html: str) -> dict:
@@ -515,9 +538,26 @@ class EbthClient:
                 page["error"] = f"{type(exc).__name__}: {exc}"[:300]
             report["pages"].append(page)
         if shell_html and search_urls:
-            report["endpoint_trials"] = self._try_endpoints(
-                analyze_shell(shell_html), search_urls[0]
-            )
+            shell = analyze_shell(shell_html)
+            # The app's real data routes live inside its compiled bundle as string
+            # literals. Mine the public chunks (never the vendors — they're framework).
+            mined: list[str] = []
+            for src in shell.get("script_srcs", []):
+                if "public" not in src or "vendors" in src:
+                    continue
+                try:
+                    mined += mine_bundle(self._fetch(urllib.parse.urljoin(_BASE, src)))
+                except Exception as exc:  # noqa: BLE001
+                    report.setdefault("bundle_errors", []).append(
+                        f"{src}: {type(exc).__name__}"[:160])
+                if len(mined) >= 100:
+                    break
+            report["bundle_paths"] = mined[:100]
+            shell["api_urls"] = list(dict.fromkeys(
+                shell.get("api_urls", [])
+                + [p for p in mined if _INTERESTING_PATH.search(p)]
+            ))
+            report["endpoint_trials"] = self._try_endpoints(shell, search_urls[0])
         return report
 
     def _try_endpoints(self, shell: dict, search_url: str) -> list[dict]:
@@ -527,7 +567,12 @@ class EbthClient:
         query = urllib.parse.parse_qs(urllib.parse.urlparse(search_url).query)
         q = (query.get("q") or ["furniture"])[0]
         candidates: list[str] = []
+        # Rails answers the .json format suffix on ordinary routes — the single most
+        # likely door on a sprockets/webpacker app, so it knocks first.
+        candidates.append(f"{_BASE}/search.json?q={urllib.parse.quote(q)}")
         for u in shell.get("api_urls", []):
+            if "{" in u or "$" in u:      # a route template needs params we don't have
+                continue
             full = urllib.parse.urljoin(_BASE, u)
             # Endpoints that look like search/browse get the query attached.
             if any(w in full.lower() for w in ("search", "browse", "query", "item", "sale")):
@@ -542,7 +587,7 @@ class EbthClient:
         trials: list[dict] = []
         seen: set[str] = set()
         for url in candidates:
-            if url in seen or len(trials) >= 10:
+            if url in seen or len(trials) >= 14:
                 continue
             seen.add(url)
             trial: dict = {"url": url}
