@@ -1,5 +1,5 @@
 {
- "probed_at": "2026-08-17T18:24:58.271719+00:00",
+ "probed_at": "2026-08-17T18:35:58.100124+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
@@ -124,6 +124,32 @@
   "https://storage.googleapis.com/ebth-video/Appearance%20Release_EBTHonline.pdf",
   "/anon-graphql"
  ],
+ "bundle_bid_context": [
+  "emainingInWords:\"\"},this.interval=void 0,this.updateTimeRemaining=()=>{const e=this.props.endsAt;if(!e)return;const t=new Date(this.props.getReferenceTime());this.setState({timeRemaining",
+  "WillUnmount(){this.interval&&clearInterval(this.interval)}render(){const e=this.props,t=e.endsAt,n=e.aasmState,r=e.extended,i=e.getReferenceTime,s=e.className,c=this.state.timeRemainingI",
+  "100:e<25e3?250:e<5e4?500:e<1e5?1e3:2e3,h=(e,t)=>t>e?parseInt(t,10):e+p(e),m=(e,t)=>e.id?t.highBidAmount:h(t.highBidAmount,t.minimumBidAmount),f=e=>e.max&&e.amount&&e.max>e.amount?e.max:nu",
+  "e4?500:e<1e5?1e3:2e3,h=(e,t)=>t>e?parseInt(t,10):e+p(e),m=(e,t)=>e.id?t.highBidAmount:h(t.highBidAmount,t.minimumBidAmount),f=e=>e.max&&e.amount&&e.max>e.amount?e.max:null,v=e=>e.addresse",
+  ":2e3,h=(e,t)=>t>e?parseInt(t,10):e+p(e),m=(e,t)=>e.id?t.highBidAmount:h(t.highBidAmount,t.minimumBidAmount),f=e=>e.max&&e.amount&&e.max>e.amount?e.max:null,v=e=>e.addresses.filter(e=>e.isDel",
+  "er(e=>\"active\"===e.aasmState);return e.find(e=>e.isPrimary)||e[0]}},E=(e,t)=>{const n=h(t.highBidAmount,t.minimumBidAmount);let r=!1;const a={errors:null,confirmationError:!1,amountErrors",
+  "=e.aasmState);return e.find(e=>e.isPrimary)||e[0]}},E=(e,t)=>{const n=h(t.highBidAmount,t.minimumBidAmount);let r=!1;const a={errors:null,confirmationError:!1,amountErrors:[],maxErrors:[],fu",
+  "ction;if(h===f||!f){const u=new Promise(c=>{let u;if(u=t&&0!==t?t>1e4?1e4:t:o().item.item.highBidAmount||1,u!==o().seelQuote.quotedForAmount||d){const t=Object(r.cloneDeep)(e);t.is_defaul",
+  "t fetch(c),p=await u.json(),m=p.data,f=p.default_opt_out;let v;v=\"buy_now\"===r.typeName?r.minimumBidAmount:o&&o.max?o.max:a.max,h({seelQuoteData:m,optOut:f,amount:v,force:!0,dispatch:e,getSt",
+  "his.props,t=e.itemDetailContext,n=e.bid,i=e.item,o=e.user,s=i.aasmState,d=i.bidderIds,p=i.highBidUserId,h=i.highBidAmount,m=i.minimumBidAmount,f=i.bidsCount,v=i.typeName,b=[\"sold\",\"unsold",
+  "DetailContext,n=e.bid,i=e.item,o=e.user,s=i.aasmState,d=i.bidderIds,p=i.highBidUserId,h=i.highBidAmount,m=i.minimumBidAmount,f=i.bidsCount,v=i.typeName,b=[\"sold\",\"unsold\",\"invoiced\",\"paid",
+  "bid,i=e.item,o=e.user,s=i.aasmState,d=i.bidderIds,p=i.highBidUserId,h=i.highBidAmount,m=i.minimumBidAmount,f=i.bidsCount,v=i.typeName,b=[\"sold\",\"unsold\",\"invoiced\",\"paid\"].includes(s),y=null",
+  "n void e({type:c});const d=u.address,p=u.fulfillmentType;let h;h=\"buy_now\"===r.typeName?r.minimumBidAmount:u&&u.max?u.max:u&&u.amount?u.amount:i.max||r.highBidAmount||r.minimumBidAmount;cons",
+  ";h=\"buy_now\"===r.typeName?r.minimumBidAmount:u&&u.max?u.max:u&&u.amount?u.amount:i.max||r.highBidAmount||r.minimumBidAmount;const m=new URL(`/api/v1/items/${r.id}/care_plan_quote`,window.",
+  "typeName?r.minimumBidAmount:u&&u.max?u.max:u&&u.amount?u.amount:i.max||r.highBidAmount||r.minimumBidAmount;const m=new URL(`/api/v1/items/${r.id}/care_plan_quote`,window.location.origin);m.s",
+  ".bidder_ids.map(e=>String(e)),bidsCount:Number(n.bids_count),extended:Boolean(n.extended),highBidAmount:Number(n.high_bid_amount),minimumBidAmount:Number(n.minimum_bid_amount),highBidId:S",
+  "Number(n.bids_count),extended:Boolean(n.extended),highBidAmount:Number(n.high_bid_amount),minimumBidAmount:Number(n.minimum_bid_amount),highBidId:String(n.high_bid_id),highBidUserId:String(n",
+  "ed),highBidAmount:Number(n.high_bid_amount),minimumBidAmount:Number(n.minimum_bid_amount),highBidId:String(n.high_bid_id),highBidUserId:String(n.high_bid_user_id),saleEndsAt:r(n.sale_ends",
+  "bid_amount),minimumBidAmount:Number(n.minimum_bid_amount),highBidId:String(n.high_bid_id),highBidUserId:String(n.high_bid_user_id),saleEndsAt:r(n.sale_ends_at),saleCode:n.sale_code,pickup",
+  "imum_bid_amount),highBidId:String(n.high_bid_id),highBidUserId:String(n.high_bid_user_id),saleEndsAt:r(n.sale_ends_at),saleCode:n.sale_code,pickupAssistanceFee:null})}};this.pubnub.addListen",
+  ")):t.itemChange.bidderIds,bidsCount:t.itemChange.bidsCount,extended:t.itemChange.extended,highBidAmount:t.itemChange.highBidAmount,minimumBidAmount:null!=t.itemChange.minimumBidAmount?t.i",
+  "idsCount:t.itemChange.bidsCount,extended:t.itemChange.extended,highBidAmount:t.itemChange.highBidAmount,minimumBidAmount:null!=t.itemChange.minimumBidAmount?t.itemChange.minimumBidAmount:",
+  "mChange.bidsCount,extended:t.itemChange.extended,highBidAmount:t.itemChange.highBidAmount,minimumBidAmount:null!=t.itemChange.minimumBidAmount?t.itemChange.minimumBidAmount:e.item.minimumBid",
+  "nge.extended,highBidAmount:t.itemChange.highBidAmount,minimumBidAmount:null!=t.itemChange.minimumBidAmount?t.itemChange.minimumBidAmount:e.item.minimumBidAmount,highBidUserId:t.itemChange.hi"
+ ],
  "endpoint_trials": [
   {
    "url": "https://www.ebth.com/search.json?q=mid%20century%20furniture",
@@ -138,7 +164,7 @@
   {
    "url": "https://www.ebth.com/users/item_searches?q=mid%20century%20furniture",
    "status": 200,
-   "bytes": 112131,
+   "bytes": 112210,
    "shape": "html"
   },
   {
@@ -158,7 +184,7 @@
   {
    "url": "https://www.ebth.com/sales/?q=mid%20century%20furniture",
    "status": 200,
-   "bytes": 413092,
+   "bytes": 413108,
    "shape": "html"
   },
   {
@@ -174,7 +200,7 @@
   {
    "url": "https://www.ebth.com/items/submitted/?q=mid%20century%20furniture",
    "status": 200,
-   "bytes": 179965,
+   "bytes": 180214,
    "shape": "html"
   },
   {
@@ -184,7 +210,7 @@
   {
    "url": "https://www.ebth.com/items/:itemNumber?q=mid%20century%20furniture",
    "status": 200,
-   "bytes": 179958,
+   "bytes": 179972,
    "shape": "html"
   },
   {
@@ -199,5 +225,64 @@
    "bytes": 2306,
    "shape": "html"
   }
- ]
+ ],
+ "graphql_trials": [
+  {
+   "url": "https://www.ebth.com/graphql",
+   "handshake_status": 422,
+   "handshake_body": "{\"error\":\"Invalid client\"}"
+  },
+  {
+   "url": "https://www.ebth.com/anon-graphql",
+   "handshake_status": 422,
+   "handshake_body": "{\"error\":\"Invalid client\"}"
+  }
+ ],
+ "sales_index": {
+  "url": "https://www.ebth.com/sales/",
+  "bytes": 413100,
+  "jsonld_blocks": 0,
+  "embedded_json_blobs": 0,
+  "harvested_items": 0,
+  "field_coverage": {
+   "title": 0,
+   "current_bid_cents": 0,
+   "bid_count": 0,
+   "ends_at": 0,
+   "photo_urls": 0,
+   "url": 0
+  },
+  "parsed_by": [],
+  "sample_raw_keys": [],
+  "sale_links": 52,
+  "sample_sale_links": [
+   "/sales/ended",
+   "/sales/90269-august-remarkable-finds",
+   "/sales/90435-the-autumn-atelier-fall-couture-fine-jewelry-vault-sale",
+   "/sales/90277-this-week-s-sensational-finds",
+   "/sales/90273-premier-luxury",
+   "/sales/90383-the-grandest-chapter-collectible-editions-decorous-decor-to-build-your-library",
+   "/sales/90157-premier-southwestern-art-jewelry-decor",
+   "/sales/90281-cut-to-perfection-fine-diamond-jewelry-loose-gemstones"
+  ],
+  "item_links": 5,
+  "first_sale_page": {
+   "bytes": 193779,
+   "jsonld_blocks": 0,
+   "embedded_json_blobs": 0,
+   "harvested_items": 0,
+   "field_coverage": {
+    "title": 0,
+    "current_bid_cents": 0,
+    "bid_count": 0,
+    "ends_at": 0,
+    "photo_urls": 0,
+    "url": 0
+   },
+   "parsed_by": [],
+   "sample_raw_keys": [],
+   "item_links": 0,
+   "url": "/sales/ended"
+  }
+ }
 }
