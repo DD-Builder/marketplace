@@ -408,6 +408,30 @@ def mine_bundle(js: str, *, cap: int = 100) -> list[str]:
     return list(found)
 
 
+#: Identifiers a bidding UI cannot avoid naming. Context windows around these inside the
+#: bundle reveal the GraphQL field names and query shapes the app actually uses.
+_BID_IDENT_RE = re.compile(
+    r"currentBid|highBid|bidCount|endsAt|saleEndsAt|minimumBid|nextBid|startingBid|"
+    r"biddingEndsAt|auctionEnd",
+)
+
+
+def mine_bid_context(js: str, *, window: int = 90, cap: int = 24) -> list[str]:
+    """Code snippets around bid-ish identifiers — query shapes, not page content."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for m in _BID_IDENT_RE.finditer(js):
+        snippet = js[max(0, m.start() - window): m.end() + window]
+        snippet = " ".join(snippet.split())
+        key = snippet[:40]
+        if key not in seen:
+            seen.add(key)
+            out.append(snippet)
+        if len(out) >= cap:
+            break
+    return out
+
+
 def analyze_shell(html: str) -> dict:
     """Forensics on an app shell that rendered nothing: which script bundles it loads,
     which API-ish URLs its code references, and which frameworks it names. Everything
@@ -430,11 +454,32 @@ class EbthClient:
     """Polite fetch + parse against ebth.com. All knobs overridable for tests."""
 
     def __init__(self, *, timeout: float = 25.0, delay: float = _POLITE_DELAY,
-                 fetch=None) -> None:
+                 fetch=None, post=None) -> None:
         self.timeout = timeout
         self.delay = delay
         self._fetch = fetch or self._http_get
+        self._post = post or self._http_post_json
         self._last_request = 0.0
+
+    def _http_post_json(self, url: str, payload: dict) -> tuple[int, str]:
+        """POST JSON, returning (status, body) — GraphQL answers 4xx with a body worth
+        reading, so unlike GET this never raises on HTTP errors."""
+        wait = self.delay - (time.monotonic() - self._last_request)
+        if wait > 0:
+            time.sleep(wait)
+        req = urllib.request.Request(
+            url, data=json.dumps(payload).encode(),
+            headers={"User-Agent": _UA, "Content-Type": "application/json",
+                     "Accept": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:  # noqa: S310
+                return resp.status, resp.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as exc:
+            return exc.code, (exc.read() or b"").decode("utf-8", errors="replace")
+        finally:
+            self._last_request = time.monotonic()
 
     def _http_get(self, url: str) -> str:
         wait = self.delay - (time.monotonic() - self._last_request)
@@ -542,23 +587,87 @@ class EbthClient:
             # The app's real data routes live inside its compiled bundle as string
             # literals. Mine the public chunks (never the vendors — they're framework).
             mined: list[str] = []
+            bid_context: list[str] = []
             for src in shell.get("script_srcs", []):
                 if "public" not in src or "vendors" in src:
                     continue
                 try:
-                    mined += mine_bundle(self._fetch(urllib.parse.urljoin(_BASE, src)))
+                    js = self._fetch(urllib.parse.urljoin(_BASE, src))
                 except Exception as exc:  # noqa: BLE001
                     report.setdefault("bundle_errors", []).append(
                         f"{src}: {type(exc).__name__}"[:160])
+                    continue
+                mined += mine_bundle(js)
+                bid_context += mine_bid_context(js)
                 if len(mined) >= 100:
                     break
             report["bundle_paths"] = mined[:100]
+            report["bundle_bid_context"] = bid_context[:24]
             shell["api_urls"] = list(dict.fromkeys(
                 shell.get("api_urls", [])
                 + [p for p in mined if _INTERESTING_PATH.search(p)]
             ))
             report["endpoint_trials"] = self._try_endpoints(shell, search_urls[0])
+            report["graphql_trials"] = self._try_graphql(mined)
+            report["sales_index"] = self._analyze_sales_index()
         return report
+
+    def _try_graphql(self, mined_paths: list[str]) -> list[dict]:
+        """Handshake with every GraphQL-shaped route: a {__typename} probe, then — if it
+        answers — introspection of the query root's field names. Field names are the
+        entire prize: they are what a real client's queries get written against."""
+        endpoints = [p for p in dict.fromkeys(mined_paths) if "graphql" in p.lower()]
+        endpoints = endpoints or ["/anon-graphql", "/graphql"]
+        trials: list[dict] = []
+        for path in endpoints[:4]:
+            url = urllib.parse.urljoin(_BASE, path)
+            trial: dict = {"url": url}
+            try:
+                status, body = self._post(url, {"query": "{__typename}"})
+                trial["handshake_status"] = status
+                trial["handshake_body"] = body[:300]
+                if status == 200:
+                    status2, body2 = self._post(url, {
+                        "query": "{__schema{queryType{fields{name}}}}"
+                    })
+                    trial["introspection_status"] = status2
+                    try:
+                        fields = json.loads(body2)["data"]["__schema"]["queryType"]["fields"]
+                        trial["query_fields"] = sorted(f["name"] for f in fields)[:80]
+                    except (json.JSONDecodeError, KeyError, TypeError):
+                        trial["introspection_body"] = body2[:400]
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+            trials.append(trial)
+        return trials
+
+    def _analyze_sales_index(self) -> dict:
+        """The /sales/ page came back 3x the shell's size — server-rendered content.
+        Report what it links to and whether the standard layers can already read it."""
+        out: dict = {"url": f"{_BASE}/sales/"}
+        try:
+            html = self._fetch(f"{_BASE}/sales/")
+        except Exception as exc:  # noqa: BLE001
+            out["error"] = f"{type(exc).__name__}: {exc}"[:200]
+            return out
+        out.update(self._analyze(html, f"{_BASE}/sales/"))
+        sale_links = list(dict.fromkeys(
+            m.group(1) for m in re.finditer(r'href="(/sales/[^"#?]+)"', html)
+        ))
+        out["sale_links"] = len(sale_links)
+        out["sample_sale_links"] = sale_links[:8]
+        out["item_links"] = len(item_links(html))
+        # One level down: does a sale page carry its lots server-side?
+        if sale_links:
+            try:
+                sale_html = self._fetch(urllib.parse.urljoin(_BASE, sale_links[0]))
+                sub = self._analyze(sale_html, sale_links[0])
+                sub["item_links"] = len(item_links(sale_html))
+                sub["url"] = sale_links[0]
+                out["first_sale_page"] = sub
+            except Exception as exc:  # noqa: BLE001
+                out["first_sale_page"] = {"error": f"{type(exc).__name__}"[:120]}
+        return out
 
     def _try_endpoints(self, shell: dict, search_url: str) -> list[dict]:
         """Knock politely on every API-shaped door the shell references (plus the usual
