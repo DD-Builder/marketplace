@@ -615,6 +615,11 @@ class EbthClient:
         drain = getattr(owner, "drain_netlog", None)
         return drain() if callable(drain) else []
 
+    def _inspect_search_ui(self, url: str) -> dict | None:
+        owner = getattr(self._fetch, "__self__", None)
+        inspect = getattr(owner, "inspect_search_ui", None)
+        return inspect(url) if callable(inspect) else None
+
     def _http_post_json(self, url: str, payload: dict) -> tuple[int, str]:
         """POST JSON, returning (status, body) — GraphQL answers 4xx with a body worth
         reading, so unlike GET this never raises on HTTP errors."""
@@ -763,9 +768,15 @@ class EbthClient:
                 # "browse everything" — total_items came back as the whole catalogue,
                 # not a filtered result). Try known EBTH query-param shapes and report
                 # which one, if any, actually gets echoed back non-null.
-                report.setdefault("query_variant_trials", []).extend(
-                    self._try_query_variants(url)
-                )
+                trials = self._try_query_variants(url)
+                report.setdefault("query_variant_trials", []).extend(trials)
+                if all(t.get("applied_q") is None for t in trials):
+                    # No URL shape filtered anything — this is very likely a
+                    # client-driven (type + submit) search, not a navigable URL. Read
+                    # the real search box off the DOM instead of guessing further.
+                    ui = self._inspect_search_ui(_BASE)
+                    if ui is not None:
+                        report["search_ui"] = ui
         if first_item_url:
             page = {"url": first_item_url, "kind": "item"}
             try:

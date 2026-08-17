@@ -195,6 +195,58 @@ class BrowserSession:
         log_, self._netlog = self._netlog, []
         return log_
 
+    # --- diagnostics ----------------------------------------------------------------
+
+    def inspect_search_ui(self, url: str) -> dict:
+        """Load ``url`` and report the shape of any search-looking form/input on the
+        page: tag, name/id/placeholder, and the enclosing form's action/method.
+
+        Attributes only, never values — this exists because URL query parameters
+        (``?q=``, ``?query=``, seven shapes tried) all failed to filter EBTH's search;
+        the app's search is client-driven (type + submit), so the real integration
+        point is whatever element actually carries the interaction, and that has to be
+        read off the DOM rather than guessed.
+        """
+        self._ensure()
+        self._page.goto(url, wait_until="domcontentloaded", timeout=self.timeout_ms)
+        try:
+            self._page.wait_for_load_state("networkidle", timeout=self.hydrate_ms)
+        except Exception:  # noqa: BLE001
+            self._page.wait_for_timeout(self.hydrate_ms)
+        return self._page.evaluate(
+            """() => {
+                const attrs = (el) => ({
+                    tag: el.tagName.toLowerCase(),
+                    type: el.getAttribute('type'),
+                    name: el.getAttribute('name'),
+                    id: el.getAttribute('id'),
+                    placeholder: el.getAttribute('placeholder'),
+                    aria_label: el.getAttribute('aria-label'),
+                    data_testid: el.getAttribute('data-testid'),
+                    class_hint: (el.className || '').toString().slice(0, 80),
+                    form_action: el.form ? el.form.getAttribute('action') : null,
+                    form_method: el.form ? el.form.getAttribute('method') : null,
+                });
+                const isSearchy = (el) => {
+                    const hay = [el.getAttribute('name'), el.getAttribute('id'),
+                        el.getAttribute('placeholder'), el.getAttribute('aria-label'),
+                        el.getAttribute('data-testid'), el.className]
+                        .filter(Boolean).join(' ').toLowerCase();
+                    return hay.includes('search');
+                };
+                const inputs = Array.from(document.querySelectorAll('input,textarea'))
+                    .filter(isSearchy).slice(0, 10).map(attrs);
+                const forms = Array.from(document.querySelectorAll('form'))
+                    .filter(isSearchy).slice(0, 5)
+                    .map(f => ({action: f.getAttribute('action'),
+                                method: f.getAttribute('method'),
+                                class_hint: (f.className || '').toString().slice(0, 80)}));
+                const buttons = Array.from(document.querySelectorAll('button,[role=button]'))
+                    .filter(isSearchy).slice(0, 5).map(attrs);
+                return {inputs, forms, buttons, title: document.title};
+            }"""
+        )
+
     # --- the fetch the client calls -----------------------------------------------------
 
     def fetch(self, url: str) -> str:
