@@ -1,5 +1,5 @@
 {
- "last_discovery_at": "2026-08-17T21:03:05.043276Z",
+ "last_discovery_at": "2026-08-17T21:52:16.401621Z",
  "lots": {
   "14500181": {
    "appraisal": null,
@@ -9,7 +9,7 @@
    "bid_count": 5,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 20100,
      "bid_count": 5
     }
@@ -21,7 +21,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14500181",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/06/02/12/26/06/Attachment-91842f70-41e7-4985-8af7-3e7b6cceb2bf.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -45,7 +45,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -57,7 +57,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14500181-victorian-gothic-revival-carved-walnut-hall-chair-with-underseat-storage",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -74,7 +74,7 @@
    "bid_count": 11,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 6500,
      "bid_count": 11
     }
@@ -86,7 +86,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14552559",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/07/18/31/24/Attachment-98660785-5e95-46a1-a7e9-49decb605e45.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -110,7 +110,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -122,7 +122,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14552559-queen-anne-style-mahogany-and-glass-vitrine-table-mid-to-late-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -139,7 +139,7 @@
    "bid_count": 11,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 5000,
      "bid_count": 11
     }
@@ -151,7 +151,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554491",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/13/44/18/Attachment-0b6bc5e1-c330-430a-83da-3ca8ba223a3e.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -175,7 +175,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -187,7 +187,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554491-regency-revival-mahogany-pedestal-drum-table-with-glass-top-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -197,14 +197,31 @@
    "watch": false
   },
   "14554538": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Structurally sound with no visible breaks, splits, or missing elements. Finish is aged and consistent (light crazing/wear typical of shellac), with general surface grime and handling wear on top. Some veneer seam lines on the top are visible and one seam near the front edge shows possible slight lifting/telegraphing. Turned legs and carved apron (shell/scroll motif) are crisp and undamaged. No maker's mark or label visible in provided photos (underside/interior not shown).",
+    "confidence": 0.55,
+    "deal_score": 48.0,
+    "est_asis_value_cents": 6000,
+    "est_restoration_cost_cents": 9000,
+    "est_restoration_effort_hours": 3.5,
+    "est_restored_resale_value_cents": 17500,
+    "identified_item": "Two-tier demilune (half-round) accent/console table, Edwardian-style, mahogany with veneered fan top",
+    "maker_guess": null,
+    "materials": [
+     "Solid mahogany (turned/reeded legs, apron, lower shelf frame)",
+     "Mahogany veneer over solid or laminated substrate (radial book-matched top, visible seam lines)",
+     "Old shellac/lacquer finish, no synthetic modern coating visible"
+    ],
+    "reasoning": "This is a decorative, mass-produced reproduction demilune occasional table in the Edwardian/Chippendale-revival taste, not a genuine period antique \u2014 the turned/reeded legs, applied shell-and-scroll apron carving, and radially veneered fan top are hallmarks of early-to-mid 20th century American or English 'brown furniture' shop production (e.g. Kling, Continental Furniture, or similar), sold widely through department stores. Solid mahogany legs and shelf give it decent bones, but the veneered top means restoration must avoid aggressive stripping/sanding near seams. Needs only light conservation: clean and re-amalgamate the shellac finish, wax/polish, tighten any loose joints, and address the one questionable veneer seam \u2014 no major structural repair anticipated. Realistic regional resale (estate sale/eBay/local marketplace) for small accent tables like this runs $120-220 once cleaned and photographed well; 1stDibs-style dealer asks of $600-900 are not achievable outside a curated shop context. Because no maker's mark is visible and the piece reads as decorative rather than rare, confidence is moderate and the deal only works if acquired cheaply (well under $60) given modest margins after restoration labor and listing/selling fees.",
+    "style_era": "Edwardian-revival / Colonial Revival, produced early-to-mid 20th century (not a genuine 1901-1910 Edwardian antique)"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "bid_count": 9,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1400,
      "bid_count": 9
     }
@@ -216,8 +233,8 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554538",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14554538.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/16/45/Attachment-1df0b273-646a-4572-8764-ba49054b77e8.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/14/56/01/Attachment-dc8ce4e3-afa0-4785-bb3e-02d8efaa5bf3.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -240,7 +257,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -252,7 +269,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554538-edwardian-inlaid-mahogany-tiered-demilune-accent-table-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -269,7 +286,7 @@
    "bid_count": 13,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 4500,
      "bid_count": 13
     }
@@ -281,7 +298,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554541",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/13/43/19/Attachment-3e4af654-bf75-41c2-8162-0b8c03a62726.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -305,7 +322,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -317,7 +334,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554541-pair-of-mersman-traditional-style-end-tables",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -334,7 +351,7 @@
    "bid_count": 3,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1500,
      "bid_count": 3
     }
@@ -346,7 +363,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554557",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/17/39/Attachment-05da4c3c-3cc2-4704-bede-4624b90cea5b.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -363,14 +380,31 @@
    "watch": true
   },
   "14554589": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Fabric appears clean, unstained, and unfaded in the photos with no visible tears, sagging, or pet damage; cushions hold shape and the skirt hangs straight, suggesting a sound frame underneath. No maker's label, tag, or stamp visible in any photo. The floral print reads as dated (1980s/90s 'country' decor) rather than currently in-demand, which is the main drag on resale rather than physical condition.",
+    "confidence": 0.35,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 35000,
+    "est_restoration_cost_cents": 10000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 55000,
+    "identified_item": "Custom-upholstered English/box-arm skirted sofa (three-cushion, kick-pleat skirt, tight back with loose seat cushions) in floral jacquard/brocade fabric",
+    "maker_guess": null,
+    "materials": [
+     "Fully upholstered \u2014 no exposed wood, so frame species/joinery cannot be verified from photos",
+     "Fabric: polyester/cotton-blend floral jacquard or brocade (custom order, not a designer archival print)",
+     "Presumed kiln-dried hardwood frame with 8-way hand-tied or webbed/coil spring seat base, typical of this construction style (unverifiable without removing skirt/cushions)"
+    ],
+    "reasoning": "This is a fully skirted, fully upholstered sofa with zero exposed wood or joinery visible in any photo, so genuine construction quality (frame wood, spring type, joinery) cannot be verified \u2014 confidence is capped accordingly. No maker mark is visible, and the fabric is a generic custom floral jacquard rather than an identifiable designer textile (e.g., not Scalamandre/Brunschwig branded), so this reads as a well-made but anonymous custom-order sofa rather than a collectible or designer piece. Given the apparently clean, undamaged condition shown, 'restoration' likely means professional steam cleaning, spot repair, and tightening/re-tying loose skirt seams rather than a full reupholster \u2014 a full reupholster job (~$1,500-2,500) would not be economical given the sofa's generic pedigree and dated fabric, since resale even in perfect condition is capped by weak current demand for chintz florals. At a light-restoration cost of roughly $100, resale in the $450-650 range regionally (Craigslist/Facebook Marketplace/local estate-sale circuit) is realistic; treating any higher '1stDibs'-style listing price as an aspirational ceiling, not a comp.",
+    "style_era": "Traditional English roll/box-arm silhouette, custom-order upholstery likely 1980s-1990s given the chintz-style floral jacquard and box-pleat skirt treatment"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "bid_count": 4,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 3500,
      "bid_count": 4
     }
@@ -382,8 +416,8 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554589",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14554589.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/14/55/05/Attachment-e3de7012-fc32-4a17-997a-ac4ece7d854f.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/14/51/37/Attachment-b7e27da2-22e9-4cca-9e70-762f413731d1.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -406,7 +440,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -418,7 +452,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554589-vintage-skirted-sofa-in-custom-floral-upholstery",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -428,27 +462,50 @@
    "watch": false
   },
   "14554625": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
-   "bid_count": 6,
+   "appraisal": {
+    "condition_assessment": "Structurally sound Ethan Allen production furniture; finish shows typical age wear, surface scratches, and dulled/oxidized varnish consistent with decades of use; turned legs and joinery appear tight with no visible breaks, splits, or veneer lifting (none applicable, solid wood); one leaf/extension mechanism present in table, functionality not confirmed from photos; chairs show normal wear to seats and stretchers but no structural damage visible",
+    "confidence": 0.82,
+    "deal_score": 58.0,
+    "est_asis_value_cents": 25000,
+    "est_restoration_cost_cents": 18000,
+    "est_restoration_effort_hours": 16.0,
+    "est_restored_resale_value_cents": 55000,
+    "identified_item": "Ethan Allen Heirloom maple dining set: rectangular extension table with 4 turned-spindle Windsor-style side chairs",
+    "maker_guess": "Ethan Allen (Heirloom Nutmeg Maple collection) - confirmed by branded ink stamp on underside apron with model/batch number",
+    "materials": [
+     "solid maple (table top, apron, legs)",
+     "solid maple/birch turned spindles and legs on chairs",
+     "likely solid maple seats (saddle-shaped)",
+     "no veneer or particleboard visible in construction"
+    ],
+    "reasoning": "This is a genuine, maker-marked Ethan Allen Heirloom maple dining set, not a style-alike - the branded stamp with model number is clearly legible on the underside, which materially raises confidence and resale value versus generic Colonial Revival reproductions. Construction is solid maple throughout (no veneer or particleboard), with traditional turned/spindle joinery typical of Ethan Allen's Heirloom line; no dovetails are visible since there are no drawers in this configuration. These sets are common on the secondary market and don't command premium 'antique' prices, but branded, complete 5-piece sets in solid maple consistently outsell unbranded equivalents on regional marketplaces and eBay. Restoration is straightforward - strip and refinish (or deep clean/wax if finish is merely dull rather than damaged), tighten any loose joints, and check/lubricate the extension slide - well within a modest labor and material budget. Realistic restored resale sits in the $450-650 range regionally rather than aspirational dealer pricing; as-is value reflects typical 'needs refinishing' Ethan Allen sets seen in local listings.",
+    "style_era": "Colonial Revival / Early American, mid-to-late 20th century (Ethan Allen Heirloom Maple line, likely 1960s-1980s based on model stamp '10 6003 3P')"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "bid_count": 20,
    "bid_history": [
     {
      "at": "2026-08-17T21:03:05.043276Z",
      "bid_cents": 4200,
      "bid_count": 6
+    },
+    {
+     "at": "2026-08-17T21:52:16.401621Z",
+     "bid_cents": 11000,
+     "bid_count": 20
     }
    ],
-   "current_bid_cents": 4200,
+   "current_bid_cents": 11000,
    "description": "",
    "ends_at": "2026-08-17T23:45:40Z",
    "extra_photo_rels": [],
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554625",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14554625.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/16/08/08/Attachment-afda41d5-6c60-43fd-abf3-0ec2634f3570.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/15/27/25/Attachment-dd527287-3a2d-4d9e-a6cb-e68e7eecf2d2.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -471,7 +528,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -483,7 +540,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554625-ethan-allen-colonial-revival-style-maple-dining-set-mid-to-late-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -493,14 +550,31 @@
    "watch": false
   },
   "14554728": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Structurally sound with an intact, undamaged mirror and original turned wood pulls. Finish shows an even amber/orange tone typical of an old varnish or shellac coat, with light surface wear, some sheen loss and minor scuffs visible on the top; no visible veneer lifting, splits, or missing hardware. Compact 'apartment-size' scale rather than a full-size dresser. No maker's mark or label visible in photos; drawer joinery/interior not shown so dovetail construction cannot be confirmed from images.",
+    "confidence": 0.45,
+    "deal_score": 35.0,
+    "est_asis_value_cents": 8000,
+    "est_restoration_cost_cents": 12000,
+    "est_restoration_effort_hours": 6.0,
+    "est_restored_resale_value_cents": 20000,
+    "identified_item": "Small Colonial Revival-style four-drawer dresser with attached swing mirror",
+    "maker_guess": null,
+    "materials": [
+     "solid cherry or maple (case, drawer fronts, mirror frame)",
+     "secondary wood likely poplar/pine for drawer sides/back",
+     "plywood mirror backing"
+    ],
+    "reasoning": "This reads as mass-produced mid-century American 'Colonial Revival' maple/cherry bedroom furniture rather than a genuine period antique \u2014 the turned wood knobs, scalloped skirt, plywood-backed mirror on a simple post, and small scale are all hallmarks of 1930s-1950s factory case goods (common makers included Cushman, Willett, Heywood-Wakefield-adjacent lines), not hand-cut 18th/19th century work. No maker's mark is visible and drawer interiors/joinery aren't shown, so I can't confirm solid-wood dovetailed construction versus a mix with plywood drawer bottoms \u2014 a common feature in this era's furniture that would still be considered honest quality but not premium. This category is currently oversupplied in the secondary/vintage market ('brown furniture' glut), so even clean examples sell modestly on local marketplaces; matching mirror-topped dressers typically move for $150-300 restored, rarely more, regardless of aspirational dealer asking prices. Restoration needs are likely light \u2014 clean, wax/reamalgamate the shellac or apply a fresh coat of finish, tighten joints, polish hardware \u2014 a few hours of labor, not a full strip-and-refinish. Given the modest spread between as-is and restored value, this is a low-margin flip unless acquired very cheaply.",
+    "style_era": "Mid-20th century American Colonial Revival (likely 1930s-1950s maple/cherry bedroom furniture)"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "bid_count": 11,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 4200,
      "bid_count": 11
     }
@@ -512,8 +586,8 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554728",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14554728.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/23/39/Attachment-eea8e91c-e07b-4d3d-903b-78e8e0754da5.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/15/03/37/Attachment-73ac7f16-e613-48f6-bf12-769bc27ec902.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -536,7 +610,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -548,7 +622,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554728-vintage-colonial-revival-style-cherry-dresser",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -558,27 +632,50 @@
    "watch": false
   },
   "14554734": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
-   "bid_count": 3,
+   "appraisal": {
+    "condition_assessment": "Structurally sound and complete: bookcase headboard with two small drawers and open cubby, standard footboard, turned bulbous maple legs and finial posts, wood side rails with slat supports. Finish shows an even amber/honey stain with light overall wear, some finish crazing and minor edge dings typical of age, no visible cracks, splits, or veneer lifting. Bed bolts/rail hardware appear serviceable. No maker's stamp or label visible in the photographed areas (undersides/drawer interiors not shown).",
+    "confidence": 0.55,
+    "deal_score": 52.0,
+    "est_asis_value_cents": 11000,
+    "est_restoration_cost_cents": 4500,
+    "est_restoration_effort_hours": 3.5,
+    "est_restored_resale_value_cents": 24000,
+    "identified_item": "Colonial Revival-style bookcase-headboard full/double bed frame in stained maple",
+    "maker_guess": "Unmarked; turning/hardware style consistent with makers like Cushman Colonial Creations, Tell City Chair Co., or Ethan Allen 'Heirloom Maple' line, but no maker's mark visible in photos provided",
+    "materials": [
+     "Solid maple (turned posts, legs, rails, footboard)",
+     "Solid maple or maple-veneered panel headboard face",
+     "Wood corner blocks/dowel slats for mattress support (replacement-style pine slats visible, likely non-original or added)",
+     "Brass/bronze ring drawer pulls"
+    ],
+    "reasoning": "This is a solid-maple, turned-leg Colonial Revival bookcase-headboard bed, a very common mid-century American 'grandma's maple bedroom set' item produced by numerous regional makers (Cushman, Tell City, Ethan Allen, and others) rather than a documented high-end maker piece \u2014 no visible label/stamp in these photos, so attribution stays speculative. Construction is legitimate solid maple with proper turned joinery (not veneer-over-particleboard), which is good, but full/double-size bed frames are the least desirable size in today's market (most buyers want queen), and bed frames are near-impossible to ship economically, so realistic value is local-pickup/regional marketplace pricing, not aspirational dealer pricing. Restoration needs are light: clean and wax or a light hand-rubbed oil refresh, tighten/verify bed bolt hardware, check and possibly replace mismatched slats, minor touch-up on the finish wear \u2014 a few hours of work, no structural repair anticipated. Given modest as-is value, cheap restoration, but a size-constrained resale ceiling, this is a fair but unexciting flip: worth taking only if acquisition cost is low.",
+    "style_era": "Mid-20th century Colonial Revival / Early American revival (likely 1950s-1960s)"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "bid_count": 10,
    "bid_history": [
     {
      "at": "2026-08-17T21:03:05.043276Z",
      "bid_cents": 300,
      "bid_count": 3
+    },
+    {
+     "at": "2026-08-17T21:52:16.401621Z",
+     "bid_cents": 5200,
+     "bid_count": 10
     }
    ],
-   "current_bid_cents": 300,
+   "current_bid_cents": 5200,
    "description": "",
    "ends_at": "2026-08-18T00:04:40Z",
    "extra_photo_rels": [],
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554734",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14554734.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/04/21/Attachment-46929df2-5234-49ce-a1fc-e6484ff1b9cf.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/14/43/32/Attachment-dee305bd-32ee-4070-8d22-39b6989a151e.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -601,7 +698,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -613,7 +710,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14554734-colonial-revival-style-modern-stained-maple-bookcase-headboard-full-bed-frame",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -630,7 +727,7 @@
    "bid_count": 9,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 2600,
      "bid_count": 9
     }
@@ -642,7 +739,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14557665",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/49/28/Attachment-89aaf731-07b4-44e3-8d27-67e34bca1cf0.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -666,7 +763,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -678,7 +775,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14557665-jamestown-sterling-dresser-with-mirror-and-sumter-cabinet-co-nightstand",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -695,7 +792,7 @@
    "bid_count": 6,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1000,
      "bid_count": 6
     }
@@ -707,7 +804,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14557887",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/40/13/Attachment-8837e184-43f7-4180-a243-97e3e282f4d3.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -731,7 +828,7 @@
    "bid_count": 22,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 20000,
      "bid_count": 22
     }
@@ -743,7 +840,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558136",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/19/50/07/Attachment-7c563959-1fe1-4fec-b796-f2d73ba2e14d.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -767,7 +864,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -779,7 +876,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558136-mid-century-modern-four-drawer-dresser-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -796,7 +893,7 @@
    "bid_count": 18,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 17000,
      "bid_count": 18
     }
@@ -808,7 +905,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558186",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/13/31/13/Attachment-c7f7a60e-ad91-4896-a45f-1e96d785978d.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -832,7 +929,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -844,7 +941,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558186-mid-century-modern-walnut-triple-dresser-with-mirrors-and-nightstand",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -861,7 +958,7 @@
    "bid_count": 2,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 200,
      "bid_count": 2
     }
@@ -873,7 +970,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558285",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/29/53/Attachment-99d0538b-fc87-4367-bf5c-a19cbb6cbcde.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -897,7 +994,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -909,7 +1006,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558285-set-of-five-the-lloyd-mfg-co-chrome-and-vinyl-swivel-barstools",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -926,7 +1023,7 @@
    "bid_count": 3,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 600,
      "bid_count": 3
     }
@@ -938,7 +1035,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558300",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/31/55/Attachment-c8ad65d3-74ee-4cfd-b867-dbbb0120d396.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -962,7 +1059,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -974,7 +1071,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558300-georgian-style-leather-top-drinks-table-and-green-painted-accent-chair",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -991,7 +1088,7 @@
    "bid_count": 10,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 7000,
      "bid_count": 10
     }
@@ -1003,7 +1100,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558302",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/31/35/Attachment-bb42e067-b946-4b35-9523-5d059aeaabaf.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1027,7 +1124,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1039,7 +1136,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558302-chippendale-style-mahogany-two-tier-dumbwaiter-table-and-needlepoint-side-chair",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1056,7 +1153,7 @@
    "bid_count": 3,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 300,
      "bid_count": 3
     }
@@ -1068,7 +1165,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558305",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/18/29/05/Attachment-311a86f6-d70f-4000-9566-97cc2f19f173.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1092,7 +1189,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1104,7 +1201,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558305-rj-jirak-early-american-style-windsor-chair-and-scalloped-console-table",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1114,14 +1211,33 @@
    "watch": false
   },
   "14558311": {
-   "appraisal": null,
-   "appraised_at": null,
-   "appraised_with_photos": false,
-   "appraiser": "",
+   "appraisal": {
+    "condition_assessment": "Good, presentable condition \u2014 finish appears even and largely intact with typical light wear/sheen loss, top shows consistent mahogany color without obvious veneer lifting or water rings, drawer operates and dovetail-style joinery is visible at the front corner, brass hardware and paw caps present and unbroken. No evidence of active structural issues, splits, or veneer loss in the photos provided.",
+    "confidence": 0.55,
+    "deal_score": 50.0,
+    "est_asis_value_cents": 15000,
+    "est_restoration_cost_cents": 6000,
+    "est_restoration_effort_hours": 3.0,
+    "est_restored_resale_value_cents": 25000,
+    "identified_item": "Regency-style mahogany drum/pedestal side table with single frieze drawer, brass paw casters",
+    "maker_guess": "Possibly Mersman Furniture Co. (Ohio) per title, unconfirmed \u2014 no visible maker stamp in photos",
+    "materials": [
+     "mahogany veneer top with crossbanded edge",
+     "solid mahogany or stained hardwood (likely poplar/gumwood secondary) turned and reeded pedestal",
+     "solid wood tripod saber legs",
+     "brass paw feet/toe caps with casters",
+     "brass ring drawer pull"
+    ],
+    "reasoning": "This reads as a mass-produced mid-century occasional/drum table in the Regency Revival idiom (reeded urn pedestal, saber tripod legs, brass paw casters, single frieze drawer with cast brass ring pull) \u2014 the type of piece companies like Mersman turned out in volume rather than a hand-made period Regency drum table. Construction is mahogany veneer over a mixed solid/veneer carcass with machine-cut (not hand-cut) drawer joinery typical of the era's factory shops; no maker mark is visible in the supplied photos so the Mersman attribution rests on the listing title alone, which caps confidence. Condition looks solid already \u2014 finish is even, no visible veneer lifting, joints appear tight \u2014 so restoration needs are light: a clean/wax or light French-polish refresh, minor hardware tightening, and possibly re-gluing a loose stretcher or two, on the order of a few hours and modest material cost rather than a full strip-and-refinish. As-is this sells quickly in the $100-200 range on local marketplace/eBay; after a light cosmetic refresh it's realistic to land $200-300 in a regional resale market \u2014 solid but unremarkable mid-century brown furniture, not a piece that commands premium 1stDibs-style pricing. Deal score is neutral/uncertain since asking price is unknown.",
+    "style_era": "Regency Revival, mid-20th century (c. 1950s-1960s)"
+   },
+   "appraised_at": "2026-08-17T21:52:16.401621Z",
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
    "bid_count": 15,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 5600,
      "bid_count": 15
     }
@@ -1133,8 +1249,8 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558311",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
-   "photo_rel": null,
+   "last_seen": "2026-08-17T21:52:16.401621Z",
+   "photo_rel": "photos/14558311.jpg",
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/56/49/Attachment-fea29b5c-5e21-4b03-9ffc-3ec4b96867de.jpg?fit=crop&auto=format&w=400&h=400&q=25",
     "https://imgix-prod.ebth.com/2026/08/10/15/23/30/Attachment-851e909e-006e-49a4-bc7f-4c1912367346.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1157,7 +1273,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1169,7 +1285,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14558311-mersman-regency-style-mahogany-pedestal-drum-table-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1186,7 +1302,7 @@
    "bid_count": 8,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1500,
      "bid_count": 8
     }
@@ -1198,7 +1314,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14560826",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/20/24/27/Attachment-940cb800-e942-4923-9f9b-b3467bc4afba.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1222,7 +1338,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1234,7 +1350,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14560826-vintage-painted-wrought-iron-tiled-patio-table-and-metal-spring-rocking-chairs",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1251,7 +1367,7 @@
    "bid_count": 8,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 2500,
      "bid_count": 8
     }
@@ -1263,7 +1379,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14561779",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/19/11/07/Attachment-c9c7c26d-4777-4869-b8e6-ab816aa2c4b3.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1287,7 +1403,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1299,7 +1415,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14561779-maddox-tables-mid-century-modern-walnut-desk-with-office-chair",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1316,7 +1432,7 @@
    "bid_count": 7,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 2200,
      "bid_count": 7
     }
@@ -1328,7 +1444,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564240",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/18/59/10/Attachment-930244fe-d735-4dfb-9853-9644af972d47.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1352,7 +1468,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1364,7 +1480,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564240-american-empire-style-cherry-chest-of-drawers-mid-to-late-19th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1381,7 +1497,7 @@
    "bid_count": 4,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 600,
      "bid_count": 4
     }
@@ -1393,7 +1509,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564304",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/21/53/15/Attachment-c10110b7-6e63-49e6-a2ae-f67589a2e35a.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1417,7 +1533,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1429,7 +1545,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564304-united-furniture-mid-century-modern-walnut-highboy",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1446,7 +1562,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -1458,7 +1574,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564306",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/19/54/11/Attachment-bf5f79d3-1586-4022-a53e-75e3ee575f0c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1482,7 +1598,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1494,7 +1610,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564306-united-furniture-corporation-mid-century-modern-walnut-bedroom-suite",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1511,7 +1627,7 @@
    "bid_count": 9,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 13500,
      "bid_count": 9
     }
@@ -1523,7 +1639,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564320",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/18/54/59/Attachment-e53311d4-4978-4d6c-9306-c99909a26427.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1547,7 +1663,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1559,7 +1675,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564320-dutailier-leather-avantglide-swivel-glider-recliner-21st-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1576,7 +1692,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -1588,7 +1704,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564399",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/12/29/42/Attachment-7ba27d07-03f1-441f-a037-08d32d34b870.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1612,7 +1728,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1624,7 +1740,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14564399-lane-mid-century-modern-style-walnut-cedar-lined-chest-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1641,7 +1757,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -1653,7 +1769,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14565647",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/15/35/05/Attachment-e28a1ee2-d08e-43cc-a99c-cc1f7c492c78.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1677,7 +1793,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -1689,7 +1805,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14565660",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/13/09/16/Attachment-518bc243-c8f4-43a0-898d-0c108277000f.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1713,7 +1829,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1725,7 +1841,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14565660-bernhardt-furniture-jacobean-style-oak-court-cupboard",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1742,7 +1858,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -1754,7 +1870,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567430",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/51/16/Attachment-1d00525e-083a-424e-867f-314d2fbcb7e8.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1778,7 +1894,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1790,7 +1906,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567430-louis-philippe-style-painted-chest-on-chest-dresser-early-to-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1807,7 +1923,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -1819,7 +1935,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567438",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/57/32/Attachment-47c4758a-1f16-4324-9125-b9ab7a72453c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1843,7 +1959,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1855,7 +1971,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567438-pair-of-louis-philippe-style-painted-wood-twin-bed-frames",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1872,7 +1988,7 @@
    "bid_count": 5,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 5000,
      "bid_count": 5
     }
@@ -1884,7 +2000,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567566",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/48/41/Attachment-5f22deaf-8139-4c79-b1ef-79ef77ca08f0.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1908,7 +2024,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1920,7 +2036,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567566-pennsylvania-house-colonial-revival-style-cherry-commode-cabinet",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -1937,7 +2053,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -1949,7 +2065,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567595",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/42/35/Attachment-5a141f6d-cfea-47ba-b26b-bc2758174e28.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -1973,7 +2089,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -1985,7 +2101,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567595-blonde-finished-wood-jewelry-chest-on-stand-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2002,7 +2118,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -2014,7 +2130,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567976",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/42/25/Attachment-364a3354-218f-4a76-b49b-1fc1b2c09257.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2038,7 +2154,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2050,7 +2166,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14567976-american-empire-style-mahogany-chest-of-drawers-mid-to-late-19th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2067,7 +2183,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -2079,7 +2195,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14568801",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/15/24/38/Attachment-962cdbf7-c86f-4b8e-8b93-a543d454945c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2103,7 +2219,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2115,7 +2231,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14568801-mid-century-modern-blonde-wood-five-drawer-chest-1950s",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2132,7 +2248,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -2144,7 +2260,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14568856",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/19/54/23/Attachment-5f73ddbd-28f6-42d0-bbd2-2c6ae82ad057.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2168,7 +2284,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2180,7 +2296,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14568856-edwardian-style-mahogany-veneer-glass-door-bookcase-early-to-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2197,7 +2313,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -2209,7 +2325,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573011",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/17/38/11/Attachment-5fdd3f84-3e56-4725-bdc6-49c5905279eb.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2233,7 +2349,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2245,7 +2361,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573011-mid-century-modern-teak-and-felt-top-games-table-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2262,7 +2378,7 @@
    "bid_count": 2,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 200,
      "bid_count": 2
     }
@@ -2274,7 +2390,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573016",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/13/33/24/Attachment-a246ad63-ba13-4dd3-8a37-53cee6f1fd99.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2298,7 +2414,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2310,7 +2426,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573016-modecraft-manicure-or-makeup-rolling-cart-with-sterilizer-drawer",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2327,7 +2443,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -2339,7 +2455,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573300",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/06/19/50/44/Attachment-d881d5b8-c663-453a-8bf3-f51e863fec5a.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2363,7 +2479,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2375,7 +2491,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14573300-american-empire-style-flame-mahogany-veneered-dresser-mid-to-late-19th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2392,7 +2508,7 @@
    "bid_count": 16,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 6400,
      "bid_count": 16
     }
@@ -2404,7 +2520,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14575550",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/13/19/48/Attachment-5873c24b-ec93-4558-b7e5-e1d016a144e2.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2428,7 +2544,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2440,7 +2556,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14575550-mid-century-modern-style-walnut-veneer-five-drawer-chest-2025",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2457,7 +2573,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -2469,7 +2585,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14575552",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/38/30/Attachment-3f1fcb64-2b19-478f-8a83-a25e56f3add2.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2493,7 +2609,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -2505,7 +2621,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576731",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/06/18/42/18/Attachment-1115012e-554c-4613-817e-ad7b5f9ed8e6.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2529,7 +2645,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2541,7 +2657,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576731-danish-modern-style-fondue-pots-and-accessories-mid-to-late-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2558,7 +2674,7 @@
    "bid_count": 8,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1600,
      "bid_count": 8
     }
@@ -2570,7 +2686,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576733",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/06/18/41/58/Attachment-4ae87f26-8b13-4e1c-941a-64221c282af4.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2594,7 +2710,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2606,7 +2722,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576733-danish-modern-style-enameled-metal-fondue-pots-and-accessories",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2623,7 +2739,7 @@
    "bid_count": 31,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 30000,
      "bid_count": 31
     }
@@ -2635,7 +2751,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576906",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/07/14/40/09/Attachment-5ee5b88e-d833-4675-acfe-9faa96acfc14.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2659,7 +2775,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2671,7 +2787,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14576906-hand-painted-indian-black-lacquered-cabinet-mid-to-late-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2688,7 +2804,7 @@
    "bid_count": 8,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1200,
      "bid_count": 8
     }
@@ -2700,7 +2816,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578024",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/17/42/54/Attachment-3db768c9-90aa-47d0-9b62-5481bcd05f8f.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2724,7 +2840,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2736,7 +2852,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578024-danish-modern-teak-bar-cart-late-20th-to-early-21st-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2753,7 +2869,7 @@
    "bid_count": 16,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 13200,
      "bid_count": 16
     }
@@ -2765,7 +2881,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578025",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/17/22/05/Attachment-2e4c282f-3ad7-4144-8958-f7e602beaabc.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2789,7 +2905,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2801,7 +2917,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578025-pair-of-foster-mcdavid-walnut-and-off-white-vinyl-dining-chairs-mid-20th-c",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2818,7 +2934,7 @@
    "bid_count": 9,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 3000,
      "bid_count": 9
     }
@@ -2830,7 +2946,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578519",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/10/15/23/23/Attachment-87e535e6-1916-4480-abe8-57df585cca03.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2854,7 +2970,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2866,7 +2982,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578519-mid-century-teak-lazy-susan-and-trays-with-glass-inserts",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2883,7 +2999,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -2895,7 +3011,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578551",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/17/21/49/Attachment-5eb3f0a9-392b-43d0-9f20-299c99d884d4.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2919,7 +3035,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2931,7 +3047,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578551-mid-century-modern-style-walnut-china-cabinet-hutch-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -2948,7 +3064,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -2960,7 +3076,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578749",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/15/18/27/Attachment-0617e46e-9c85-4ff0-8dc4-b0a0ede6abb1.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -2984,7 +3100,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -2996,7 +3112,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578749-american-empire-style-mahogany-drop-leaf-pedestal-table-mid-19th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3013,7 +3129,7 @@
    "bid_count": 9,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 17000,
      "bid_count": 9
     }
@@ -3025,7 +3141,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578824",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/18/54/40/Attachment-325073ed-64e9-4015-a1d8-c8bb4d85f75c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3049,7 +3165,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3061,7 +3177,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578824-vintage-mid-century-modern-walnut-six-drawer-chest",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3078,7 +3194,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3090,7 +3206,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578845",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/15/35/33/Attachment-a5f00a6f-f50a-4d00-9d01-b5ee56373f4d.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3114,7 +3230,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -3126,7 +3242,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578885",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/15/58/57/Attachment-97ead118-a539-487f-a6fa-24c9386934ea.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3150,7 +3266,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3162,7 +3278,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578918",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/17/15/19/Attachment-7de3a473-7c43-40bf-bb48-5b1569860ba7.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3186,7 +3302,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3198,7 +3314,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14578918-andre-bus-for-lane-acclaim-walnut-desk-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3215,7 +3331,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3227,7 +3343,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579535",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/08/15/31/58/Attachment-7de9bb6f-6fcf-4057-9048-8a3eb6d25398.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3251,7 +3367,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3263,7 +3379,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579535-classical-revival-carved-mahogany-curule-base-stool-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3280,7 +3396,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3292,7 +3408,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579543",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/23/44/Attachment-02f5dc6d-0a2c-45c3-a3c8-1ebcfcd4087e.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3316,7 +3432,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3328,7 +3444,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579543-federal-style-mahogany-bowfront-chest-on-chest-mid-to-late-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3345,7 +3461,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -3357,7 +3473,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579544",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/18/32/41/Attachment-d816b499-7681-4ba9-9eda-c7be40165d84.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3381,7 +3497,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3393,7 +3509,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579578",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/19/12/01/Attachment-cd9f08e2-9d3a-48f6-a0ce-bf2b94dfd7ce.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3417,7 +3533,7 @@
    "bid_count": 2,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 200,
      "bid_count": 2
     }
@@ -3429,7 +3545,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579801",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/18/53/13/Attachment-d6497347-1f43-4cac-9de4-f5c753807f88.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3453,7 +3569,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3465,7 +3581,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14579801-lane-virginia-maid-paint-decorated-cedar-chest",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3482,7 +3598,7 @@
    "bid_count": 7,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 4000,
      "bid_count": 7
     }
@@ -3494,7 +3610,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580075",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/17/15/18/Attachment-977224ca-5b40-418d-b1f8-b6e3516d4b05.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3518,7 +3634,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3530,7 +3646,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580075-huntley-furniture-by-thomasville-oak-chest-of-drawers",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3547,7 +3663,7 @@
    "bid_count": 4,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 1300,
      "bid_count": 4
     }
@@ -3559,7 +3675,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580203",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/11/18/51/49/Attachment-c2a308c0-74cb-45e0-a02e-4feb69b8da4b.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3582,7 +3698,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3594,7 +3710,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580203-vintage-georg-jensen-sterling-floral-brooch-71",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3611,7 +3727,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -3623,7 +3739,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580393",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/17/42/22/Attachment-c59b9e1a-8b0d-4a3d-9f5d-1a2468cc07e1.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3646,7 +3762,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3658,7 +3774,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580393-mid-century-modern-walnut-piano-bench-with-yellow-cushion-mid-20th-century",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3675,7 +3791,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -3687,7 +3803,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580444",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/17/20/09/Attachment-251c43ea-1ea5-4bdb-a157-d6c0311a3a1e.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3711,7 +3827,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3723,7 +3839,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580444-vintage-hollywood-regency-tufted-orange-velvet-armchair",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3740,7 +3856,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3752,7 +3868,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580488",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/18/37/11/Attachment-4c7852f7-9f38-4ec6-bc4f-5c3f9780d71c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3776,7 +3892,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3788,7 +3904,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580541",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/17/15/40/Attachment-a73739a7-d419-4ddf-b2d4-0b45e3bf2892.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3812,7 +3928,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3824,7 +3940,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580541-pair-of-mid-century-modern-walnut-nightstands",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3841,7 +3957,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -3853,7 +3969,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14580551",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/16/42/20/Attachment-ba8867d3-c0b7-46e5-99bc-3db371c84130.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3877,7 +3993,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3889,7 +4005,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14583142",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/12/17/13/52/Attachment-01faf774-a516-4dc8-8027-f4cdacfaa898.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3913,7 +4029,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3925,7 +4041,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14583142-mid-century-modern-style-teak-storage-unit-with-sliding-doors-and-media-dividers",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -3942,7 +4058,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -3954,7 +4070,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14584307",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/13/16/15/27/Attachment-f2010782-eb22-4781-a5bc-a1554f01c49c.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -3978,7 +4094,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -3990,7 +4106,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14584307-pair-of-bauhaus-green-sofas",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -4007,7 +4123,7 @@
    "bid_count": 0,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 0,
      "bid_count": 0
     }
@@ -4019,7 +4135,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14584990",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/15/41/30/Attachment-daf214ac-e01c-45e5-855e-413f6897d4d8.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -4043,7 +4159,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -4055,7 +4171,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14584990-pair-of-danish-modern-teak-wall-mount-floating-nightstands-mid-to-late-20th-c",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -4072,7 +4188,7 @@
    "bid_count": 1,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": 100,
      "bid_count": 1
     }
@@ -4084,7 +4200,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14585517",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [
     "https://imgix-prod.ebth.com/2026/08/14/19/56/34/Attachment-40826275-8bfa-439f-be31-20180258b7df.jpg?fit=crop&auto=format&w=400&h=400&q=25",
@@ -4108,7 +4224,7 @@
    "bid_count": null,
    "bid_history": [
     {
-     "at": "2026-08-17T21:03:05.043276Z",
+     "at": "2026-08-17T21:52:16.401621Z",
      "bid_cents": null,
      "bid_count": null
     }
@@ -4120,7 +4236,7 @@
    "final_price_cents": null,
    "first_seen": "2026-08-17T21:03:05.043276Z",
    "id": "14585517-ferguson-brothers-mahogany-magazine-rack-three-tier-side-table-and-more",
-   "last_seen": "2026-08-17T21:03:05.043276Z",
+   "last_seen": "2026-08-17T21:52:16.401621Z",
    "photo_rel": null,
    "photo_urls": [],
    "state": "live",
@@ -4130,6 +4246,6 @@
    "watch": false
   }
  },
- "updated_at": "2026-08-17T21:03:12.880476Z",
+ "updated_at": "2026-08-17T21:55:24.515168Z",
  "version": 1
 }
