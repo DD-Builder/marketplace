@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T20:22:47.461558+00:00",
+ "probed_at": "2026-08-17T20:26:07.095433+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 333215,
+   "bytes": 345684,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -48,7 +48,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 76,
+    "responses": 115,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -64,9 +64,10 @@
      }
     ],
     "status_tally": {
-     "200": 72,
-     "204": 2,
+     "200": 108,
+     "204": 4,
      "301": 1,
+     "302": 1,
      "404": 1
     }
    },
@@ -173,7 +174,7 @@
   {
    "url": "https://www.ebth.com/search?q=danish%20modern",
    "kind": "search",
-   "bytes": 334368,
+   "bytes": 335136,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -217,8 +218,86 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 174,
+    "responses": 967,
     "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/search",
+      "status": 301,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/search",
+      "status": 301,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/search",
+      "status": 301,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/search",
+      "status": 301,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/search",
+      "status": 301,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/search/mid-century-furniture",
+      "status": 404,
+      "ctype": "text/html"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/marketplace/search",
+      "status": 404,
+      "ctype": "text/html"
+     },
+     {
+      "host": "pippio.com",
+      "path": "/api/sync",
+      "status": 307,
+      "ctype": ""
+     },
      {
       "host": "www.ebth.com",
       "path": "/search",
@@ -233,12 +312,14 @@
      }
     ],
     "status_tally": {
-     "200": 153,
-     "204": 9,
-     "301": 1,
-     "302": 9,
-     "304": 1,
-     "404": 1
+     "200": 838,
+     "204": 42,
+     "301": 6,
+     "302": 53,
+     "303": 3,
+     "304": 13,
+     "307": 4,
+     "404": 8
     }
    },
    "captured_payloads": [
@@ -344,7 +425,7 @@
   {
    "url": "https://www.ebth.com/items/14572938-leaded-stained-glass-window-panels-late-19th-century",
    "kind": "item",
-   "bytes": 210082,
+   "bytes": 208299,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -359,8 +440,38 @@
    "parsed_by": [],
    "sample_raw_keys": [],
    "network": {
-    "responses": 53,
+    "responses": 831,
     "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     },
      {
       "host": "www.ebth.com",
       "path": "/items/14572938-leaded-stained-glass-window-panels-late-19th",
@@ -369,11 +480,100 @@
      }
     ],
     "status_tally": {
-     "200": 51,
-     "304": 1,
-     "404": 1
+     "200": 747,
+     "204": 35,
+     "301": 5,
+     "302": 24,
+     "304": 12,
+     "404": 8
     }
    }
+  }
+ ],
+ "query_variant_trials": [
+  {
+   "url": "https://www.ebth.com/search?query=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?keywords=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?term=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?search=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?utf8=%E2%9C%93&q=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search/mid-century-furniture",
+   "applied_q": null,
+   "total_items": null,
+   "harvested_items": 0
+  },
+  {
+   "url": "https://www.ebth.com/marketplace/search?q=mid%20century%20furniture",
+   "applied_q": null,
+   "total_items": null,
+   "harvested_items": 0
+  },
+  {
+   "url": "https://www.ebth.com/search?query=danish%20modern",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?keywords=danish%20modern",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?term=danish%20modern",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?search=danish%20modern",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search?utf8=%E2%9C%93&q=danish%20modern",
+   "applied_q": null,
+   "total_items": 6148,
+   "harvested_items": 48
+  },
+  {
+   "url": "https://www.ebth.com/search/danish-modern",
+   "applied_q": null,
+   "total_items": null,
+   "harvested_items": 0
+  },
+  {
+   "url": "https://www.ebth.com/marketplace/search?q=danish%20modern",
+   "applied_q": null,
+   "total_items": null,
+   "harvested_items": 0
   }
  ]
 }
