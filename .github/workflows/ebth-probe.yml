@@ -26,10 +26,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install the app
-        run: pip install -e .
+        run: pip install -e '.[browser]'
+      - name: Install Chromium for Playwright
+        run: python -m playwright install --with-deps chromium
       - name: Probe ebth.com
         env:
           EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
+          EBTH_FETCH: ${{ vars.EBTH_FETCH || 'browser' }}
         run: |
           python -m dealfinder.run_auctions --probe \
             --out docs/auctions --catalog docs/auctions/catalog.json || true

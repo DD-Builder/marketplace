@@ -48,7 +48,7 @@ from dealfinder.run_board import (
     _search_urls,
     failure_reason,
 )
-from dealfinder.sources.ebth import EbthClient
+from dealfinder.sources.ebth import EbthClient, build_client
 from dealfinder.verticals import get_vertical
 
 log = get_logger(__name__)
@@ -120,6 +120,12 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, vertical, cap: int) -> int:
     return min(len(candidates), room)
 
 
+def _make_client() -> EbthClient:
+    """The default EBTH client for a real run — a browser fetcher unless EBTH_FETCH says
+    otherwise. Split out as a seam so tests inject a fake without a browser."""
+    return build_client()
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Track EBTH auctions and publish bid guidance")
     ap.add_argument("--out", default="docs/auctions")
@@ -135,8 +141,15 @@ def main(argv: list[str] | None = None) -> int:
 
     out_dir = Path(args.out)
     urls = _search_urls(_env("EBTH_SEARCH_URLS", _DEFAULT_SEARCHES))
-    client = EbthClient()
+    # A browser client owns a Chromium process; close it no matter how main() exits.
+    client = _make_client()
+    try:
+        return _run(args, out_dir, urls, client)
+    finally:
+        client.close()
 
+
+def _run(args, out_dir: Path, urls: list[str], client: EbthClient) -> int:
     if args.probe:
         return _probe(client, urls, out_dir)
 

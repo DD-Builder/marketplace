@@ -92,10 +92,17 @@ a positive signal) it holds the full bid history and answers three questions:
 - **Stance** — `BID LATE` (final day, headroom), `WATCH` (early — never bid early, it only
   feeds the price), `OUTPRICED` (bidding or its projection passed your ceiling), `PASS`.
 
-The dev sandbox can't reach ebth.com, so the parsers are layered (JSON-LD → any embedded
-JSON state → HTML) and self-reporting: run the workflow with **probe** checked and it
-commits `docs/auctions/probe.json` describing what the site actually serves, so extraction
-is tightened from evidence, not guesswork.
+**How it gets the data.** The probe (run the workflow with **probe** checked; it commits
+`docs/auctions/probe.json`) established that ebth.com is a locked-down React SPA: every URL
+returns an empty shell, the lots come over a GraphQL API that refuses anonymous callers,
+and there's no server-rendered fallback. So the fetch path is a **headless browser**
+(`sources/ebth_browser.py`) that runs the app's own JavaScript, lets it authenticate
+itself the way it does for any visitor, and captures the JSON the app fetches for itself —
+the same structured payloads it consumes, with no credential extracted or replayed. The
+field names (`highBidAmount`, `endsAt`, `aasmState`, `bidCount`) are confirmed against
+EBTH's own compiled bundle. Parsing stays layered (captured JSON → JSON-LD/embedded state
+→ HTML) so a redesign degrades coverage rather than zeroing it, and the probe re-checks
+the shape on demand.
 
 ## Setup
 
@@ -166,6 +173,7 @@ python -m dealfinder.sources.scrape
 | `restoration.py` | bounds on the model's cost/effort estimate, from published survey data |
 | `sources/ebay.py` | free Browse API comps — market anchors for the appraisal |
 | `sources/ebth.py` | EBTH auction source: layered parsing + the CI structure probe |
+| `sources/ebth_browser.py` | headless-Chromium fetcher that captures the SPA's own JSON |
 | `auctions/` | auction catalogue, max-bid math, endgame calibration, the Gavel page |
 | `run_auctions.py` | the hourly auction run: snapshot → appraise → advise → publish |
 | `pieces.py` | your books: costs, sales, realised hourly wage |

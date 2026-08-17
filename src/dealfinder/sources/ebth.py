@@ -6,22 +6,27 @@ changes what a source must return — not "what does it cost" but "where is the 
 now, how many bids, and when does it end" — and the auction pipeline built on top of
 this (:mod:`dealfinder.auctions`) is what turns those into a max-bid recommendation.
 
-A structural honesty note: this module was written *blind*. The development environment
-cannot reach ebth.com (egress-filtered), while the GitHub Actions runners that actually
-execute the pipeline can. So instead of hard-coding one page shape and hoping, extraction
-is layered from most- to least-durable:
+What the probe established (see ``run_auctions --probe`` and the committed reports):
+ebth.com is a locked-down React SPA on a Rails backend. Every URL returns a byte-
+identical empty shell, its lots arrive over a GraphQL API that refuses anonymous callers
+with ``{"error":"Invalid client"}``, and there is no server-rendered fallback — plain
+HTTP gets nothing. So the real fetch path is a headless browser
+(:mod:`dealfinder.sources.ebth_browser`) that runs the app's own JavaScript, lets it
+authenticate itself, and **captures the JSON the app fetches for itself** — the same
+structured payloads it consumes, obtained without extracting or replaying any credential.
 
-1. **JSON-LD** (``<script type="application/ld+json">``) — schema.org Product/Offer
-   markup that commerce sites ship for SEO and rarely break;
-2. **any embedded JSON state** (``__NEXT_DATA__``, ``window.__INITIAL_STATE__``, plain
-   application/json scripts) — walked shape-agnostically for dicts that *look like*
-   auction lots (an id + a bid-ish or end-time-ish field), so a framework migration on
-   their side degrades coverage rather than zeroing it;
+Extraction is still layered from most- to least-durable, so the parser needs no knowledge
+of EBTH's exact query shape and a redesign degrades coverage rather than zeroing it:
+
+1. **captured GraphQL/XHR payloads** (the browser path) — walked shape-agnostically for
+   dicts that look like lots (an id + a bid-ish or end-time-ish field). The field aliases
+   (``highBidAmount``, ``endsAt``, ``aasmState``, ``bidCount``) are confirmed against
+   EBTH's own compiled bundle;
+2. **JSON-LD and embedded JSON state** — for any server-rendered page or SEO markup;
 3. **HTML regexes** for the handful of fields worth a last-ditch guess.
 
-``probe()`` fetches the configured pages and reports which layers fired and what field
-coverage they achieved — run it in CI (``run_auctions --probe``) and read the committed
-report to see what the site actually serves, then tighten the parsers from evidence.
+``probe()`` reports which layers fired and what field coverage they achieved — keys and
+counts only, never values — so extraction stays tightened from evidence, not guesswork.
 """
 
 from __future__ import annotations
@@ -132,28 +137,47 @@ def parse_when(value) -> datetime | None:
 
 # Field aliases, most-specific first. Lowercased, underscores stripped, so "currentBid",
 # "current_bid" and "CurrentBid" all resolve alike.
+# Confirmed against EBTH's own bundle (the probe pulled these names straight from their
+# compiled JS): a lot carries highBidAmount / minimumBidAmount, bidCount, endsAt, and an
+# aasmState string ("active" | "ended" | ...). The generic aliases stay so the harvester
+# still works on other sources, but EBTH's real names lead.
 _BID_KEYS = (
-    "currentbidcents", "currentbid", "currentbidamount", "highbid", "highestbid",
-    "winningbid", "currentprice", "salesprice", "price",
+    "highbidamount", "currentbidcents", "currentbid", "currentbidamount", "highbid",
+    "highestbid", "winningbid", "minimumbidamount", "nextbidamount", "currentprice",
+    "salesprice", "price",
 )
 _COUNT_KEYS = ("bidcount", "bidscount", "numberofbids", "totalbids", "bids")
 _END_KEYS = (
-    "endsat", "endat", "endtime", "endingat", "auctionend", "enddate", "endson",
-    "saleendsat", "availabilityends", "scheduledendtime",
+    "endsat", "biddingendsat", "endat", "endtime", "endingat", "auctionend", "enddate",
+    "endson", "saleendsat", "availabilityends", "scheduledendtime",
 )
 _ID_KEYS = ("itemid", "id", "uuid", "slug")
 _TITLE_KEYS = ("title", "name", "shortdescription")
 _IMAGE_KEYS = ("imageurl", "image", "images", "photos", "mainimage", "primaryimage", "heroimage")
+#: State fields. ``aasmState`` is AASM (the Rails state-machine gem) — a *string*, so it
+#: needs interpreting, not truthiness: "active" is live, "ended"/"sold"/"closed" is done.
 _ENDED_KEYS = ("isended", "ended", "isclosed", "closed", "iscomplete", "issold")
+_STATE_KEYS = ("aasmstate", "state", "status", "salestate", "itemstate")
+_ENDED_STATES = frozenset({"ended", "closed", "sold", "complete", "completed",
+                           "finished", "won", "unsold", "passed"})
 
 
 def _norm_key(key: str) -> str:
     return key.replace("_", "").replace("-", "").lower()
 
 
-def _first(d: dict, aliases: tuple[str, ...]):
-    """The first alias present, returned with its ORIGINAL key (unit hints live there)."""
-    normed = {_norm_key(k): (k, v) for k, v in d.items() if not isinstance(v, dict)}
+def _first(d: dict, aliases: tuple[str, ...], *, allow_dict: bool = False):
+    """The first alias present, returned with its ORIGINAL key (unit hints live there).
+
+    Dict-valued keys are skipped by default: a scalar field like ``price`` must not match
+    a nested ``price: {amount, currency}`` object and return the whole dict. Image fields
+    are the exception (``primaryImage: {url: ...}`` is exactly the shape we want), so they
+    pass ``allow_dict=True``.
+    """
+    normed = {
+        _norm_key(k): (k, v) for k, v in d.items()
+        if allow_dict or not isinstance(v, dict)
+    }
     for a in aliases:
         if a in normed:
             return normed[a]
@@ -193,6 +217,23 @@ def _walk(obj, depth: int = 0):
             yield from _walk(v, depth + 1)
 
 
+def _interpret_ended(ended_val, state_val) -> bool | None:
+    """Resolve a lot's over/not-over status from a boolean flag or a state string.
+
+    A boolean ``isEnded`` is taken at face value. A state string (AASM's ``aasmState``)
+    is matched against the known terminal states — crucially, "active" must read as *not
+    ended*, which naive truthiness (``bool("active") is True``) would get exactly wrong.
+    """
+    if isinstance(ended_val, bool):
+        return ended_val
+    if ended_val is not None and not isinstance(ended_val, str):
+        return bool(ended_val)
+    for val in (ended_val, state_val):
+        if isinstance(val, str) and val.strip():
+            return val.strip().lower() in _ENDED_STATES
+    return None
+
+
 def _looks_like_lot(d: dict) -> bool:
     """An id plus at least one auction-shaped field. Titles alone are everywhere."""
     _, ident = _first(d, _ID_KEYS)
@@ -216,8 +257,9 @@ def harvest_json(blob, *, base_url: str = _BASE, parsed_by: str = "embedded-json
         _, count_val = _first(d, _COUNT_KEYS)
         _, end_val = _first(d, _END_KEYS)
         _, title_val = _first(d, _TITLE_KEYS)
-        _, image_val = _first(d, _IMAGE_KEYS)
+        _, image_val = _first(d, _IMAGE_KEYS, allow_dict=True)
         _, ended_val = _first(d, _ENDED_KEYS)
+        _, state_val = _first(d, _STATE_KEYS)
         _, url_val = _first(d, ("url", "path", "href", "itemurl", "webpath"))
 
         url = str(url_val) if isinstance(url_val, str) else ""
@@ -233,7 +275,7 @@ def harvest_json(blob, *, base_url: str = _BASE, parsed_by: str = "embedded-json
             bid_count=int(count_val) if isinstance(count_val, (int, float))
             and not isinstance(count_val, bool) else None,
             ends_at=parse_when(end_val),
-            is_ended=bool(ended_val) if ended_val is not None else None,
+            is_ended=_interpret_ended(ended_val, state_val),
             parsed_by=parsed_by,
             raw={k: d[k] for k in list(d)[:40] if isinstance(d[k], (str, int, float, bool))},
         )
@@ -345,11 +387,19 @@ def _embedded_json_blobs(html: str) -> list:
     return blobs
 
 
-def parse_page(html: str, *, page_url: str = "") -> list[AuctionItem]:
-    """All layers over one page, best record per id."""
+def parse_page(html: str, *, page_url: str = "", captures=()) -> list[AuctionItem]:
+    """All layers over one page, best record per id.
+
+    ``captures`` are JSON payloads the page fetched for itself (the app's own GraphQL/XHR
+    responses, grabbed by the browser fetcher). They are the richest source when the HTML
+    is an empty SPA shell, and are harvested through the same shape-agnostic walk as any
+    embedded blob — so the parser needs no knowledge of EBTH's exact query shape.
+    """
     merged: dict[str, AuctionItem] = {}
     harvested = harvest_jsonld(html, page_url=page_url)
     for blob in _embedded_json_blobs(html):
+        harvested += harvest_json(blob)
+    for blob in captures:
         harvested += harvest_json(blob)
     for item in harvested:
         prev = merged.get(item.item_id)
@@ -450,16 +500,64 @@ def analyze_shell(html: str) -> dict:
 
 # --- the client -------------------------------------------------------------------------
 
+def build_client(*, mode: str | None = None, timeout: float = 25.0,
+                 delay: float = _POLITE_DELAY, **browser_kwargs) -> "EbthClient":
+    """Construct an :class:`EbthClient` with the right fetch path for the environment.
+
+    ``mode`` (or ``EBTH_FETCH``): ``"browser"`` (default) runs headless Chromium and
+    intercepts the app's own JSON — the only thing that actually gets data off this SPA;
+    ``"http"`` is the plain-HTTP path, kept for the item-page/HTML case and for anywhere
+    a browser can't run. If the browser is requested but Playwright/Chromium isn't
+    available, this logs and falls back to HTTP rather than failing the run.
+    """
+    import os
+
+    chosen = (mode or os.getenv("EBTH_FETCH") or "browser").strip().lower()
+    if chosen == "browser":
+        try:
+            from dealfinder.sources.ebth_browser import BrowserSession
+
+            session = BrowserSession(**browser_kwargs)
+            client = EbthClient(timeout=timeout, delay=delay, fetch=session.fetch)
+            client._closer = session.close
+            return client
+        except Exception as exc:  # noqa: BLE001 — includes PlaywrightUnavailable
+            log.warning("ebth_browser_unavailable", error=str(exc)[:160],
+                        action="falling back to http")
+    return EbthClient(timeout=timeout, delay=delay)
+
+
 class EbthClient:
     """Polite fetch + parse against ebth.com. All knobs overridable for tests."""
 
     def __init__(self, *, timeout: float = 25.0, delay: float = _POLITE_DELAY,
-                 fetch=None, post=None) -> None:
+                 fetch=None, post=None, closer=None) -> None:
         self.timeout = timeout
         self.delay = delay
         self._fetch = fetch or self._http_get
         self._post = post or self._http_post_json
+        self._closer = closer
         self._last_request = 0.0
+
+    def close(self) -> None:
+        """Release any browser the fetcher owns. Safe to call on an HTTP-only client."""
+        if self._closer is not None:
+            self._closer()
+
+    def _fetch_page(self, url: str) -> tuple[str, list]:
+        """Fetch ``url`` and, if the fetcher captured the page's own JSON traffic (the
+        browser path), return those payloads alongside the HTML.
+
+        The capture channel is duck-typed: a browser session exposes ``drain_captures``
+        on the object that owns the ``fetch`` method, so a plain-HTTP or lambda fetcher
+        simply yields no captures and the caller falls back to HTML parsing. This keeps
+        the browser dependency out of every existing test's injected ``fetch=lambda``.
+        """
+        html = self._fetch(url)
+        owner = getattr(self._fetch, "__self__", None)
+        drain = getattr(owner, "drain_captures", None)
+        captures = drain() if callable(drain) else []
+        return html, captures
 
     def _http_post_json(self, url: str, payload: dict) -> tuple[int, str]:
         """POST JSON, returning (status, body) — GraphQL answers 4xx with a body worth
@@ -500,8 +598,8 @@ class EbthClient:
     def search(self, url: str, *, follow_items: int = 0) -> list[AuctionItem]:
         """Harvest a search/browse page; optionally fetch the first N item pages whose
         grid records came back thin (no end time — useless to an auction tracker)."""
-        html = self._fetch(url)
-        items = parse_page(html, page_url=url)
+        html, captures = self._fetch_page(url)
+        items = parse_page(html, page_url=url, captures=captures)
         by_id = {i.item_id: i for i in items}
         links = item_links(html)
         # Grid records lacking an id are invisible above; links are the safety net.
@@ -524,8 +622,8 @@ class EbthClient:
 
     def item(self, url: str) -> AuctionItem | None:
         """Fetch one lot's page and return its fullest record."""
-        html = self._fetch(url)
-        items = parse_page(html, page_url=url)
+        html, captures = self._fetch_page(url)
+        items = parse_page(html, page_url=url, captures=captures)
         wanted = item_id_from_url(url)
         for it in items:
             if it.item_id == wanted:
@@ -558,27 +656,45 @@ class EbthClient:
         for url in search_urls:
             page: dict = {"url": url, "kind": "search"}
             try:
-                html = self._fetch(url)
+                html, captures = self._fetch_page(url)
             except Exception as exc:  # noqa: BLE001 — the report IS the error channel
                 page["error"] = f"{type(exc).__name__}: {exc}"[:300]
                 report["pages"].append(page)
                 continue
-            page.update(self._analyze(html, url))
+            page.update(self._analyze(html, url, captures=captures))
             links = item_links(html)
             page["item_links"] = len(links)
             if links and not first_item_url:
                 first_item_url = links[0]
-            if page.get("harvested_items", 0) == 0:
-                # An app shell. The lots arrive over XHR after JavaScript runs, so the
-                # useful evidence is which endpoints the shell's code references.
+            if captures:
+                # The browser path: report what the app fetched for itself (structure
+                # only — top-level keys and how many lots harvest from each payload).
+                page["captured_payloads"] = [
+                    {
+                        "top_level_keys": sorted(c)[:20] if isinstance(c, dict)
+                        else f"array[{len(c)}]",
+                        "harvested_items": len(harvest_json(c)),
+                    }
+                    for c in captures[:12]
+                ]
+            if page.get("harvested_items", 0) == 0 and not captures:
+                # A raw app shell with no capture channel (HTTP path). The lots arrive
+                # over XHR after JS runs, so the evidence is the endpoints the code names.
                 page["shell"] = analyze_shell(html)
                 shell_html = shell_html or html
             report["pages"].append(page)
         if first_item_url:
             page = {"url": first_item_url, "kind": "item"}
             try:
-                html = self._fetch(first_item_url)
-                page.update(self._analyze(html, first_item_url))
+                html, captures = self._fetch_page(first_item_url)
+                page.update(self._analyze(html, first_item_url, captures=captures))
+                if captures:
+                    page["captured_payloads"] = [
+                        {"top_level_keys": sorted(c)[:20] if isinstance(c, dict)
+                         else f"array[{len(c)}]",
+                         "harvested_items": len(harvest_json(c))}
+                        for c in captures[:12]
+                    ]
             except Exception as exc:  # noqa: BLE001
                 page["error"] = f"{type(exc).__name__}: {exc}"[:300]
             report["pages"].append(page)
@@ -731,8 +847,8 @@ class EbthClient:
         return trials
 
     @staticmethod
-    def _analyze(html: str, url: str) -> dict:
-        items = parse_page(html, page_url=url)
+    def _analyze(html: str, url: str, *, captures=()) -> dict:
+        items = parse_page(html, page_url=url, captures=captures)
 
         def coverage(attr) -> int:
             return sum(1 for i in items if getattr(i, attr) not in (None, "", []))

@@ -40,8 +40,11 @@ class Harness:
                 raise urllib.error.HTTPError(url, 404, "gone", None, None)
             return _page([self.items[slug]])
 
-        monkeypatch.setattr(run_auctions, "EbthClient",
-                            lambda **kw: EbthClient(fetch=fetch, delay=0))
+        # main() builds its client through _make_client; inject the fake there so no
+        # browser is ever launched under test.
+        self._fetch = fetch
+        monkeypatch.setattr(run_auctions, "_make_client",
+                            lambda: EbthClient(fetch=fetch, delay=0))
 
         class Stub:
             name = "stub"
@@ -125,8 +128,8 @@ def test_a_dead_site_renders_from_the_catalogue_and_says_so(tmp_path, monkeypatc
     def broken(url):
         raise OSError("connection refused")
 
-    monkeypatch.setattr(run_auctions, "EbthClient",
-                        lambda **kw: EbthClient(fetch=broken, delay=0))
+    monkeypatch.setattr(run_auctions, "_make_client",
+                        lambda: EbthClient(fetch=broken, delay=0))
     # Force discovery to be due again so the failure is actually exercised.
     cat = h.catalog
     cat.last_discovery_at = datetime.now(timezone.utc) - timedelta(hours=48)
