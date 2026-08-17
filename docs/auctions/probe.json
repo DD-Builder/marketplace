@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T20:33:11.736316+00:00",
+ "probed_at": "2026-08-17T20:37:23.751421+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/browse?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 330596,
+   "bytes": 348126,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -48,7 +48,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 68,
+    "responses": 128,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -58,8 +58,9 @@
      }
     ],
     "status_tally": {
-     "200": 65,
-     "204": 2,
+     "200": 116,
+     "204": 8,
+     "302": 3,
      "404": 1
     }
    },
@@ -166,7 +167,7 @@
   {
    "url": "https://www.ebth.com/browse?q=danish%20modern",
    "kind": "search",
-   "bytes": 263756,
+   "bytes": 270148,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 12,
@@ -210,7 +211,7 @@
    ],
    "item_links": 12,
    "network": {
-    "responses": 66,
+    "responses": 140,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -220,8 +221,10 @@
      }
     ],
     "status_tally": {
-     "200": 63,
-     "204": 1,
+     "200": 131,
+     "204": 4,
+     "302": 1,
+     "303": 2,
      "304": 1,
      "404": 1
     }
@@ -329,7 +332,7 @@
   {
    "url": "https://www.ebth.com/items/14576906-hand-painted-indian-black-lacquered-cabinet-mid-to-late-20th-century",
    "kind": "item",
-   "bytes": 277237,
+   "bytes": 205817,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -344,7 +347,7 @@
    "parsed_by": [],
    "sample_raw_keys": [],
    "network": {
-    "responses": 48,
+    "responses": 45,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -354,7 +357,9 @@
      }
     ],
     "status_tally": {
-     "200": 46,
+     "200": 39,
+     "204": 1,
+     "302": 3,
      "304": 1,
      "404": 1
     }
