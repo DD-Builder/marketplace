@@ -1,5 +1,5 @@
 {
- "probed_at": "2026-08-17T18:20:08.519603+00:00",
+ "probed_at": "2026-08-17T18:22:57.616901+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
@@ -18,7 +18,31 @@
    },
    "parsed_by": [],
    "sample_raw_keys": [],
-   "item_links": 0
+   "item_links": 0,
+   "shell": {
+    "script_srcs": [
+     "/gtg/",
+     "0",
+     "https://cdn.pubnub.com/sdk/javascript/pubnub.4.24.3.min.js",
+     "/assets/public-ca8d34b3f168cbf0dde07030a6512dbd5f77e1955d51e36109e986847df13261.js",
+     "/packs/js/runtime~public-352ab49a8e30845c6dae.js",
+     "/packs/js/vendors~admin_broadcasting~admin_cataloging~admin_contract_schedule~admin_lasso~admin_packing~admin_~eb08708a-851ed86da7a6e04fd120.chunk.js",
+     "/packs/js/vendors~admin_broadcasting~admin_cataloging~admin_contract_schedule~admin_lasso~admin_packing~admin_~ceb883ec-a0efe793cdfe3a9185a2.chunk.js",
+     "/packs/js/public-63488a19738c33588a21.chunk.js",
+     "/packs/js/runtime~polyfill-fe40ab02dc0581b4e14d.js",
+     "/packs/js/vendors~polyfill-59e433a1ebbff3c040be.chunk.js",
+     "/packs/js/polyfill-badcd046aeb8901d2999.chunk.js",
+     "https://cdn.plaid.com/link/v2/stable/link-initialize.js",
+     "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
+    ],
+    "api_urls": [
+     "https://apib.maxaccess.io/scripts/toolbar/"
+    ],
+    "framework_hints": [
+     "react",
+     "turbo"
+    ]
+   }
   },
   {
    "url": "https://www.ebth.com/search?q=danish%20modern",
@@ -37,7 +61,57 @@
    },
    "parsed_by": [],
    "sample_raw_keys": [],
-   "item_links": 0
+   "item_links": 0,
+   "shell": {
+    "script_srcs": [
+     "/gtg/",
+     "0",
+     "https://cdn.pubnub.com/sdk/javascript/pubnub.4.24.3.min.js",
+     "/assets/public-ca8d34b3f168cbf0dde07030a6512dbd5f77e1955d51e36109e986847df13261.js",
+     "/packs/js/runtime~public-352ab49a8e30845c6dae.js",
+     "/packs/js/vendors~admin_broadcasting~admin_cataloging~admin_contract_schedule~admin_lasso~admin_packing~admin_~eb08708a-851ed86da7a6e04fd120.chunk.js",
+     "/packs/js/vendors~admin_broadcasting~admin_cataloging~admin_contract_schedule~admin_lasso~admin_packing~admin_~ceb883ec-a0efe793cdfe3a9185a2.chunk.js",
+     "/packs/js/public-63488a19738c33588a21.chunk.js",
+     "/packs/js/runtime~polyfill-fe40ab02dc0581b4e14d.js",
+     "/packs/js/vendors~polyfill-59e433a1ebbff3c040be.chunk.js",
+     "/packs/js/polyfill-badcd046aeb8901d2999.chunk.js",
+     "https://cdn.plaid.com/link/v2/stable/link-initialize.js",
+     "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
+    ],
+    "api_urls": [
+     "https://apib.maxaccess.io/scripts/toolbar/"
+    ],
+    "framework_hints": [
+     "react",
+     "turbo"
+    ]
+   }
+  }
+ ],
+ "endpoint_trials": [
+  {
+   "url": "https://apib.maxaccess.io/scripts/toolbar/",
+   "status": 404
+  },
+  {
+   "url": "https://www.ebth.com/api/v2/search?q=mid%20century%20furniture",
+   "status": 404
+  },
+  {
+   "url": "https://www.ebth.com/api/v3/search?q=mid%20century%20furniture",
+   "status": 404
+  },
+  {
+   "url": "https://www.ebth.com/api/search?q=mid%20century%20furniture",
+   "status": 404
+  },
+  {
+   "url": "https://www.ebth.com/api/v2/items?q=mid%20century%20furniture",
+   "status": 404
+  },
+  {
+   "url": "https://www.ebth.com/api/items?q=mid%20century%20furniture",
+   "status": 404
   }
  ]
 }
