@@ -20,6 +20,13 @@ on:
   schedule:
     # :43 — GitHub's scheduler is congested on the hour and drops on-the-hour jobs.
     - cron: "43 * * * *"
+  push:
+    # The GitHub App driving development can't call workflow_dispatch (403), so an
+    # on-demand run is requested the same tokenless way the EBTH probe is: push a
+    # marker file. Its content ("dry" or anything else) picks the mode, read in the
+    # "Determine run mode" step below since `if:` conditions can't read file content.
+    paths:
+      - ".github/auction-run-request"
 
 permissions:
   contents: write
@@ -45,8 +52,22 @@ jobs:
       - name: Install Chromium for Playwright
         run: python -m playwright install --with-deps chromium
 
+      - name: Determine run mode
+        id: mode
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            content=$(cat .github/auction-run-request 2>/dev/null || echo live)
+            [ "$(echo "$content" | tr -d '[:space:]')" = "dry" ] \
+              && echo "dry_run=true" >> "$GITHUB_OUTPUT" \
+              || echo "dry_run=false" >> "$GITHUB_OUTPUT"
+            echo "probe=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "dry_run=${{ inputs.dry_run || false }}" >> "$GITHUB_OUTPUT"
+            echo "probe=${{ inputs.probe || false }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install Claude Code
-        if: ${{ !inputs.dry_run && !inputs.probe }}
+        if: ${{ steps.mode.outputs.dry_run != 'true' && steps.mode.outputs.probe != 'true' }}
         run: npm install -g @anthropic-ai/claude-code
 
       - name: Run the auction tracker
@@ -65,8 +86,8 @@ jobs:
           MAX_AUCTION_APPRAISALS: ${{ vars.MAX_AUCTION_APPRAISALS }}
           HOURLY_RATE_CENTS: ${{ vars.HOURLY_RATE_CENTS }}
           VERTICAL: ${{ vars.VERTICAL }}
-          PROBE: ${{ inputs.probe }}
-          DRY_RUN: ${{ inputs.dry_run }}
+          PROBE: ${{ steps.mode.outputs.probe }}
+          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
         run: |
           ARGS=""
           [ "$PROBE" = "true" ] && ARGS="$ARGS --probe"
