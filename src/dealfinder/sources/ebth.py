@@ -485,6 +485,29 @@ def mine_bid_context(js: str, *, window: int = 90, cap: int = 24) -> list[str]:
     return out
 
 
+def _non_item_fields(payload, *, max_depth: int = 2) -> dict:
+    """A search response's top-level fields, minus the big listing arrays — this is
+    where pagination (page/total/per_page) and facets live, and unlike listing content
+    it's safe to report verbatim: it describes the response shape, not any one lot."""
+    if not isinstance(payload, dict):
+        return {}
+
+    def small(v, depth=0):
+        if isinstance(v, (str, int, float, bool)) or v is None:
+            return v
+        if depth >= max_depth:
+            return f"{type(v).__name__}(...)"
+        if isinstance(v, list):
+            if len(v) > 5 or (v and isinstance(v[0], dict) and len(v[0]) > 6):
+                return f"array[{len(v)}]"  # this is the listing array — key names only
+            return [small(x, depth + 1) for x in v]
+        if isinstance(v, dict):
+            return {k: small(x, depth + 1) for k, x in list(v.items())[:15]}
+        return str(type(v))
+
+    return {k: small(v) for k, v in payload.items()}
+
+
 def _tally(items) -> dict:
     """{value: count}, for a compact status/kind histogram in the probe report."""
     out: dict = {}
@@ -704,6 +727,11 @@ class EbthClient:
                         "top_level_keys": sorted(c)[:20] if isinstance(c, dict)
                         else f"array[{len(c)}]",
                         "harvested_items": len(harvest_json(c)),
+                        # Small scalar/dict top-level fields, in full — this is where a
+                        # search API reports its pagination (page/total/per_page), and
+                        # that shape is metadata about the *response*, not listing data,
+                        # so it's safe to report verbatim rather than just its keys.
+                        "non_item_fields": _non_item_fields(c),
                     }
                     for c in captures[:12]
                 ]
