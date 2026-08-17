@@ -1,0 +1,40 @@
+name: EBTH structure probe
+
+# Fires when the probe marker is touched. This exists because the GitHub App driving
+# development can't call workflow_dispatch (403) — pushing a marker file is the
+# API-tokenless way to ask a runner (which, unlike the dev sandbox, can reach ebth.com)
+# what the site actually serves. The report lands in docs/auctions/probe.json.
+on:
+  push:
+    paths:
+      - ".github/probe-request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ebth-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the app
+        run: pip install -e .
+      - name: Probe ebth.com
+        env:
+          EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
+        run: |
+          python -m dealfinder.run_auctions --probe \
+            --out docs/auctions --catalog docs/auctions/catalog.json || true
+      - name: Publish the report
+        run: |
+          git config user.name "ebth-probe"
+          git config user.email "ebth-probe@users.noreply.github.com"
+          bash .github/scripts/publish.sh "EBTH structure probe [skip ci]" docs/auctions/probe.json
