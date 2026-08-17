@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>The Gavel — EBTH auction watch</title>
+<style>
+:root{
+  --paper:#f4efe4; --card:#fbf7ec; --ink:#2b2118; --soft:#6b5c49; --line:#e0d5c2;
+  --accent:#a8431a; --teal:#2f6d62; --good:#2f6d62; --warn:#8a5a10; --warn-bg:#f3e6c8;
+  --crit:#9a3524; --crit-bg:#f4ded6;
+  --shadow:0 1px 0 #fff9, 0 2px 12px #6b5c4922;
+  --display:"Iowan Old Style","Palatino Nova",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#211a13; --card:#2c241b; --ink:#f2e8d8; --soft:#b3a48d; --line:#4a3e2f;
+  --accent:#e8804c; --teal:#6fbfae; --good:#6fbfae; --warn:#e0b45e; --warn-bg:#3d3016;
+  --crit:#e08a72; --crit-bg:#42241b;
+  --shadow:0 1px 0 #ffffff0a, 0 3px 16px #00000059;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  line-height:1.45;-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+header.top,main,footer{max-width:1200px;margin:0 auto;padding:0 20px}
+header.top{padding-top:28px}
+.brandrow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-size:34px;margin:0;font-weight:600}
+.tag{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);
+  border:1.5px solid var(--teal);border-radius:999px;padding:4px 12px}
+.sub{color:var(--soft);font-size:13px}
+.notice{font-size:14px;border-radius:10px;padding:10px 14px;margin:12px 0 0}
+.notice.bad{background:var(--crit-bg);color:var(--crit);border:1px solid var(--crit)}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:10px 16px;box-shadow:var(--shadow);min-width:96px}
+.stat .n{font-family:var(--display);font-size:24px;font-weight:600}
+.stat .l{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.09em}
+.stat.killer .n{color:var(--accent)}
+h2{font-family:var(--display);font-size:22px;margin:34px 0 12px}
+h2 .hint{font-family:var(--sans);font-size:12.5px;color:var(--soft);font-weight:400;margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.lot{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.lot.crit{border-color:var(--crit)}
+.media{position:relative;aspect-ratio:4/3;background:var(--line)}
+.media img{width:100%;height:100%;object-fit:cover;display:block}
+.nophoto{display:flex;align-items:center;justify-content:center;height:100%;
+  color:var(--soft);font-size:13px}
+.stance{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;
+  letter-spacing:.1em;padding:4px 10px;border-radius:999px;background:var(--warn-bg);
+  color:var(--warn)}
+.stance.good{background:var(--teal);color:#fff}
+.stance.crit{background:var(--crit-bg);color:var(--crit)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px}
+h3{font-size:15.5px;margin:0;font-weight:650}
+.ident{margin:0;font-size:13px;color:var(--soft)}
+.clockrow{margin:2px 0 4px}
+.clock{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent)}
+.clock.unknown{color:var(--soft);font-weight:400}
+.row{display:flex;justify-content:space-between;font-size:13.5px;gap:12px}
+.row span:first-child{color:var(--soft)}
+.v,.clock{font-variant-numeric:tabular-nums}
+.v{font-family:var(--mono)}
+.reason{font-size:13px;margin:6px 0 0;line-height:1.5}
+.note{font-size:12px;color:var(--soft);margin:2px 0 0}
+.out{font-size:13px;color:var(--teal);margin-top:8px;text-decoration:none;font-weight:600}
+.empty{color:var(--soft);font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--soft)}
+td.v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tone{font-size:12px;color:var(--soft)} .tone.good{color:var(--good);font-weight:650}
+footer{padding:40px 20px;color:var(--soft);font-size:14px}
+footer a{color:var(--teal);text-decoration:none;font-weight:600}
+</style>
+</head><body>
+<header class="top">
+  <div class="brandrow">
+    <h1>The Gavel</h1>
+    <span class="tag">EBTH auction watch</span>
+    <span class="sub">updated Aug 17, 2026 · 21:03 UTC</span>
+  </div>
+  
+  <div class="summary">
+    <div class="stat"><div class="n">11</div><div class="l">closing ≤24h</div></div>
+    <div class="stat killer"><div class="n">0</div><div class="l">worth bidding</div></div>
+    <div class="stat"><div class="n">29</div><div class="l">on watch</div></div>
+    <div class="stat"><div class="n">2.0×</div>
+      <div class="l">endgame (0 obs)</div></div>
+  </div>
+  <p class="sub note">Max bids assume a 15% buyer's premium on the
+  hammer; taxes and freight vary by lot — confirm both before bidding. </p>
+</header>
+<main>
+  <section><h2>Closing soon <span class="hint">the only window where bidding pays</span></h2>
+    <div class="grid">
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Edwardian Inlaid Mahogany Tiered Demilune Accent Table, 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-17T23:39:00+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$14 · 9 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554538-edwardian-inlaid-mahogany-tiered-demilune-accent-table-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Vintage Colonial Revival Style Cherry Dresser</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-17T23:43:20+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$42 · 11 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554728-vintage-colonial-revival-style-cherry-dresser" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Ethan Allen Colonial Revival Style Maple Dining Set, Mid to Late 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-17T23:45:40+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$42 · 6 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554625-ethan-allen-colonial-revival-style-maple-dining-set-mid-to-late-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Vintage Skirted Sofa in Custom Floral Upholstery</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:02:00+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$35 · 4 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554589-vintage-skirted-sofa-in-custom-floral-upholstery" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Colonial Revival Style Modern Stained Maple Bookcase Headboard Full Bed Frame</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:04:40+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$3 · 3 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554734-colonial-revival-style-modern-stained-maple-bookcase-headboard-full-bed-frame" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mersman Regency Style Mahogany Pedestal Drum Table, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:10:00+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$56 · 15 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14558311-mersman-regency-style-mahogany-pedestal-drum-table-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Regency Revival Mahogany Pedestal Drum Table with Glass Top, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:18:40+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$50 · 11 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554491-regency-revival-mahogany-pedestal-drum-table-with-glass-top-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Late Victorian Oak Rocking Chair, Late 19th to Early 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:19:00+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$10 · 6 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14557887-late-victorian-oak-rocking-chair-late-19th-to-early-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Chippendale Style Mahogany Two-Tier Dumbwaiter Table and Needlepoint Side Chair</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T00:25:00+00:00">3h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$70 · 10 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14558302-chippendale-style-mahogany-two-tier-dumbwaiter-table-and-needlepoint-side-chair" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid-Century Teak Lazy Susan and Trays with Glass Inserts</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T01:17:40+00:00">4h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$30 · 9 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578519-mid-century-teak-lazy-susan-and-trays-with-glass-inserts" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Four-Drawer Dresser, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-18T01:26:20+00:00">4h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$200 · 22 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14558136-mid-century-modern-four-drawer-dresser-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article></div></section>
+  <section><h2>On watch <span class="hint">hold — early bids only feed the price</span></h2>
+    <div class="grid">
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Walnut Triple Dresser with Mirrors and Nightstand</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T01:01:00+00:00">28h left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$170 · 18 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14558186-mid-century-modern-walnut-triple-dresser-with-mirrors-and-nightstand" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Huntley Furniture by Thomasville Oak Chest of Drawers</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:32:20+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$40 · 7 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14580075-huntley-furniture-by-thomasville-oak-chest-of-drawers" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Style Teak Storage Unit with Sliding Doors and Media Dividers</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:33:20+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14583142-mid-century-modern-style-teak-storage-unit-with-sliding-doors-and-media-dividers" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Style Walnut Veneer Five-Drawer Chest, 2025</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:33:40+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$64 · 16 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14575550-mid-century-modern-style-walnut-veneer-five-drawer-chest-2025" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>United Furniture Corporation Mid Century Modern Walnut Bedroom Suite</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:35:00+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14564306-united-furniture-corporation-mid-century-modern-walnut-bedroom-suite" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>American Empire Style Cherry Chest of Drawers, Mid to Late 19th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:41:20+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$22 · 7 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14564240-american-empire-style-cherry-chest-of-drawers-mid-to-late-19th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Vintage Painted Wrought Iron Tiled Patio Table and Metal Spring Rocking Chairs</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:53:00+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$15 · 8 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14560826-vintage-painted-wrought-iron-tiled-patio-table-and-metal-spring-rocking-chairs" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Lane &quot;Virginia Maid&quot; Paint-Decorated Cedar Chest</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-19T23:57:00+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$2 · 2 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14579801-lane-virginia-maid-paint-decorated-cedar-chest" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Classical Revival Carved Mahogany Curule Base Stool, 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T01:08:00+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14579535-classical-revival-carved-mahogany-curule-base-stool-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Queen Anne Style Mahogany and Glass Vitrine Table, Mid to Late 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T01:14:20+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$65 · 11 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14552559-queen-anne-style-mahogany-and-glass-vitrine-table-mid-to-late-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Campaign Style Wood End Tables with Brass Hardware, Late 20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T01:33:20+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$15 · 3 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14554557-campaign-style-wood-end-tables-with-brass-hardware-late-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Maddox Tables Mid Century Modern Walnut Desk with Office Chair</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T01:40:40+00:00">2 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$25 · 8 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14561779-maddox-tables-mid-century-modern-walnut-desk-with-office-chair" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Pair of Foster-McDavid Walnut and Off-White Vinyl Dining Chairs, Mid-20th C.</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T23:31:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$132 · 16 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578025-pair-of-foster-mcdavid-walnut-and-off-white-vinyl-dining-chairs-mid-20th-c" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>United Furniture Mid Century Modern Walnut Highboy</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T23:33:40+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$6 · 4 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14564304-united-furniture-mid-century-modern-walnut-highboy" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Style Walnut China Cabinet Hutch, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T23:34:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578551-mid-century-modern-style-walnut-china-cabinet-hutch-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Style Walnut Veneer Wall-Mounted Headboard with Nightstands</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-20T23:52:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14575552-mid-century-modern-style-walnut-veneer-wall-mounted-headboard-with-nightstands" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Danish Modern Teak Bar Cart, Late 20th to Early 21st Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T00:00:40+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$12 · 8 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578024-danish-modern-teak-bar-cart-late-20th-to-early-21st-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Lane Mid Century Modern Style Walnut Cedar Lined Chest, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T00:02:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14564399-lane-mid-century-modern-style-walnut-cedar-lined-chest-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Teak and Felt-Top Games Table, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T00:04:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14573011-mid-century-modern-teak-and-felt-top-games-table-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>American Empire Style Flame Mahogany Veneered Dresser, Mid to Late 19th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T00:33:20+00:00">3 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14573300-american-empire-style-flame-mahogany-veneered-dresser-mid-to-late-19th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>American Empire Style Mahogany Chest of Drawers, Mid to Late 19th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T23:32:00+00:00">4 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14567976-american-empire-style-mahogany-chest-of-drawers-mid-to-late-19th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Vintage Hollywood Regency Tufted Orange Velvet Armchair</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T23:36:00+00:00">4 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14580444-vintage-hollywood-regency-tufted-orange-velvet-armchair" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Pennsylvania House Colonial Revival Style Cherry Commode Cabinet</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-21T23:52:20+00:00">4 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$50 · 5 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14567566-pennsylvania-house-colonial-revival-style-cherry-commode-cabinet" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Five-Piece Chippendale Style Mahogany Dining Set, Early to Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-22T00:05:40+00:00">4 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14579544-five-piece-chippendale-style-mahogany-dining-set-early-to-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Vintage Mid-Century Modern Walnut Six-Drawer Chest</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-23T01:03:00+00:00">5 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$170 · 9 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578824-vintage-mid-century-modern-walnut-six-drawer-chest" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Andre Bus for Lane &quot;Acclaim&quot; Walnut Desk, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-23T01:05:40+00:00">5 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14578918-andre-bus-for-lane-acclaim-walnut-desk-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Pair of Mid Century Modern Walnut Nightstands</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-23T01:12:00+00:00">5 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$1 · 1 bids</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14580541-pair-of-mid-century-modern-walnut-nightstands" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Pair of Danish Modern Teak Wall Mount Floating Nightstands, Mid to Late 20th C.</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-23T01:22:20+00:00">5 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14584990-pair-of-danish-modern-teak-wall-mount-floating-nightstands-mid-to-late-20th-c" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article>
+    <article class="lot ">
+      <div class="media"><div class="nophoto">no photo</div><span class="stance ">WATCH</span></div>
+      <div class="body">
+        <h3>Mid Century Modern Walnut Piano Bench with Yellow Cushion, Mid-20th Century</h3>
+        <p class="ident">not yet appraised</p>
+        <div class="clockrow"><span class="clock" data-ends="2026-08-23T01:23:00+00:00">5 days left</span></div>
+        <div class="row"><span>Current bid</span><span class="v">$0</span></div>
+        
+        <a class="out" href="https://www.ebth.com/items/14580393-mid-century-modern-walnut-piano-bench-with-yellow-cushion-mid-20th-century" target="_blank" rel="noopener">View on EBTH ↗</a>
+      </div>
+    </article></div></section>
+  <section><h2>Recently ended <span class="hint">how the endgame actually behaves here</span></h2>
+    <p class="empty">No closed lots observed yet.</p></section>
+</main>
+<footer><a href="../index.html">← The Bench (Marketplace board)</a></footer>
+<script>
+function tick(){
+  document.querySelectorAll('.clock[data-ends]').forEach(function(el){
+    var end = Date.parse(el.dataset.ends);
+    if (isNaN(end)) return;
+    var ms = end - Date.now();
+    if (ms <= 0) { el.textContent = 'ended'; return; }
+    var h = ms / 36e5;
+    el.textContent = h < 1 ? Math.floor(ms/6e4) + ' min left'
+                   : h < 48 ? Math.round(h) + 'h left'
+                   : Math.round(h/24) + ' days left';
+    if (h < 2) el.style.color = 'var(--crit)';
+  });
+}
+tick(); setInterval(tick, 30000);
+</script>
+</body></html>
