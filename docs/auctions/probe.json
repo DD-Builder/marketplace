@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T20:29:46.645483+00:00",
+ "probed_at": "2026-08-17T20:33:11.736316+00:00",
  "pages": [
   {
-   "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
+   "url": "https://www.ebth.com/browse?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 332038,
+   "bytes": 330596,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -26,13 +26,13 @@
     "certified_authentic",
     "condition_details",
     "depth",
+    "description",
     "extended",
     "height",
     "high_bid_amount",
     "id",
     "location",
     "main_image",
-    "measurement_details",
     "minimum_bid_amount",
     "name",
     "pickup_city_state",
@@ -52,12 +52,6 @@
     "api_calls": [
      {
       "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
       "path": "/api/v1/twosearch/items",
       "status": 200,
       "ctype": "application/json"
@@ -65,8 +59,7 @@
     ],
     "status_tally": {
      "200": 65,
-     "204": 1,
-     "301": 1,
+     "204": 2,
      "404": 1
     }
    },
@@ -89,8 +82,8 @@
       "items": "array[48]",
       "pages": {
        "current_page": 1,
-       "total_pages": 129,
-       "total_items": 6148,
+       "total_pages": 2,
+       "total_items": 58,
        "items_per_page": 48
       },
       "sorts": {
@@ -102,21 +95,21 @@
       "filters": "array[5]",
       "filter_counts": {
        "category": {
-        "5008": 1,
-        "4999": 1,
-        "3313": 1,
-        "3322": 1,
-        "4291": 1,
-        "3052": 1,
-        "3013": 1,
-        "6742": 1,
+        "3499": 1,
+        "3472": 1,
+        "6746": 1,
+        "3517": 1,
+        "6751": 1,
+        "6744": 1,
+        "3514": 1,
+        "3505": 1,
+        "6743": 1,
+        "4747": 1,
+        "3490": 1,
+        "3496": 1,
         "6747": 1,
-        "4351": 1,
-        "4825": 1,
-        "4798": 1,
-        "4771": 1,
-        "5122": 1,
-        "4171": 1
+        "4360": 1,
+        "6750": 1
        }
       },
       "applied_parameters": {
@@ -131,7 +124,7 @@
        "status": null,
        "days_left": null,
        "delivery_options": [],
-       "q": null,
+       "q": "mid century furniture",
        "sale": null,
        "applicable": {},
        "seller_id": null
@@ -171,19 +164,19 @@
    ]
   },
   {
-   "url": "https://www.ebth.com/search?q=danish%20modern",
+   "url": "https://www.ebth.com/browse?q=danish%20modern",
    "kind": "search",
-   "bytes": 337004,
+   "bytes": 263756,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
-   "harvested_items": 48,
+   "harvested_items": 12,
    "field_coverage": {
-    "title": 48,
-    "current_bid_cents": 48,
-    "bid_count": 48,
-    "ends_at": 48,
-    "photo_urls": 48,
-    "url": 48
+    "title": 12,
+    "current_bid_cents": 12,
+    "bid_count": 12,
+    "ends_at": 12,
+    "photo_urls": 12,
+    "url": 12
    },
    "parsed_by": [
     "embedded-json"
@@ -215,94 +208,10 @@
     "type_name",
     "width"
    ],
-   "item_links": 48,
+   "item_links": 12,
    "network": {
-    "responses": 1091,
+    "responses": 66,
     "api_calls": [
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search/mid-century-furniture",
-      "status": 404,
-      "ctype": "text/html"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/marketplace/search",
-      "status": 404,
-      "ctype": "text/html"
-     },
-     {
-      "host": "pippio.com",
-      "path": "/api/sync",
-      "status": 307,
-      "ctype": ""
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/search",
-      "status": 301,
-      "ctype": "text/html"
-     },
      {
       "host": "www.ebth.com",
       "path": "/api/v1/twosearch/items",
@@ -311,14 +220,10 @@
      }
     ],
     "status_tally": {
-     "200": 972,
-     "204": 48,
-     "301": 6,
-     "302": 44,
-     "303": 2,
-     "304": 6,
-     "307": 4,
-     "404": 9
+     "200": 63,
+     "204": 1,
+     "304": 1,
+     "404": 1
     }
    },
    "captured_payloads": [
@@ -335,13 +240,13 @@
       "sorts",
       "valid_filters"
      ],
-     "harvested_items": 48,
+     "harvested_items": 12,
      "non_item_fields": {
-      "items": "array[48]",
+      "items": "array[12]",
       "pages": {
        "current_page": 1,
-       "total_pages": 129,
-       "total_items": 6148,
+       "total_pages": 1,
+       "total_items": 12,
        "items_per_page": 48
       },
       "sorts": {
@@ -353,21 +258,21 @@
       "filters": "array[5]",
       "filter_counts": {
        "category": {
-        "5008": 1,
-        "4999": 1,
-        "3313": 1,
-        "3322": 1,
-        "4291": 1,
-        "3052": 1,
-        "3013": 1,
-        "6742": 1,
+        "3499": 1,
+        "3472": 1,
+        "6745": 1,
+        "3517": 1,
+        "5086": 1,
+        "3604": 1,
+        "3595": 1,
+        "6746": 1,
         "6747": 1,
-        "4351": 1,
-        "4825": 1,
-        "4798": 1,
-        "4771": 1,
-        "5122": 1,
-        "4171": 1
+        "4978": 1,
+        "4668": 1,
+        "3319": 1,
+        "3313": 1,
+        "4546": 1,
+        "3493": 1
        }
       },
       "applied_parameters": {
@@ -382,7 +287,7 @@
        "status": null,
        "days_left": null,
        "delivery_options": [],
-       "q": null,
+       "q": "danish modern",
        "sale": null,
        "applicable": {},
        "seller_id": null
@@ -422,9 +327,9 @@
    ]
   },
   {
-   "url": "https://www.ebth.com/items/14572938-leaded-stained-glass-window-panels-late-19th-century",
+   "url": "https://www.ebth.com/items/14576906-hand-painted-indian-black-lacquered-cabinet-mid-to-late-20th-century",
    "kind": "item",
-   "bytes": 209798,
+   "bytes": 277237,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -439,179 +344,21 @@
    "parsed_by": [],
    "sample_raw_keys": [],
    "network": {
-    "responses": 966,
+    "responses": 48,
     "api_calls": [
      {
       "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/api/v1/twosearch/items",
-      "status": 200,
-      "ctype": "application/json"
-     },
-     {
-      "host": "www.ebth.com",
-      "path": "/items/14572938-leaded-stained-glass-window-panels-late-19th",
+      "path": "/items/14576906-hand-painted-indian-black-lacquered-cabinet-",
       "status": 200,
       "ctype": "text/html"
      }
     ],
     "status_tally": {
-     "200": 867,
-     "204": 42,
-     "301": 5,
-     "302": 36,
-     "303": 1,
-     "304": 6,
-     "404": 9
+     "200": 46,
+     "304": 1,
+     "404": 1
     }
    }
   }
- ],
- "query_variant_trials": [
-  {
-   "url": "https://www.ebth.com/search?query=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?keywords=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?term=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?search=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?utf8=%E2%9C%93&q=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search/mid-century-furniture",
-   "applied_q": null,
-   "total_items": null,
-   "harvested_items": 0
-  },
-  {
-   "url": "https://www.ebth.com/marketplace/search?q=mid%20century%20furniture",
-   "applied_q": null,
-   "total_items": null,
-   "harvested_items": 0
-  },
-  {
-   "url": "https://www.ebth.com/search?query=danish%20modern",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?keywords=danish%20modern",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?term=danish%20modern",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?search=danish%20modern",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search?utf8=%E2%9C%93&q=danish%20modern",
-   "applied_q": null,
-   "total_items": 6148,
-   "harvested_items": 48
-  },
-  {
-   "url": "https://www.ebth.com/search/danish-modern",
-   "applied_q": null,
-   "total_items": null,
-   "harvested_items": 0
-  },
-  {
-   "url": "https://www.ebth.com/marketplace/search?q=danish%20modern",
-   "applied_q": null,
-   "total_items": null,
-   "harvested_items": 0
-  }
- ],
- "search_ui": {
-  "inputs": [
-   {
-    "tag": "input",
-    "type": "search",
-    "name": "q",
-    "id": null,
-    "placeholder": "Search",
-    "aria_label": "Search Input",
-    "data_testid": null,
-    "class_hint": "input input--borderless input-group__input search header__search-input",
-    "form_action": "/browse",
-    "form_method": "get"
-   }
-  ],
-  "forms": [
-   {
-    "action": "/browse",
-    "method": "get",
-    "class_hint": "header__search-form"
-   }
-  ],
-  "buttons": [
-   {
-    "tag": "button",
-    "type": "submit",
-    "name": null,
-    "id": null,
-    "placeholder": null,
-    "aria_label": "Search Button",
-    "data_testid": null,
-    "class_hint": "btn btn--primary-contrast btn--icon-only input-group__btn",
-    "form_action": "/browse",
-    "form_method": "get"
-   }
-  ],
-  "title": "Everything But The House | Online Estate Sales & Auctions | EBTH | EBTH"
- }
+ ]
 }
