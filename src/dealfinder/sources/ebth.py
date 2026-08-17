@@ -372,6 +372,35 @@ def item_id_from_url(url: str) -> str:
     return urllib.parse.urlparse(url).path.rstrip("/").rsplit("/", 1)[-1]
 
 
+# --- shell forensics --------------------------------------------------------------------
+
+_SCRIPT_SRC_RE = re.compile(r'<script[^>]+src\s*=\s*["\']([^"\']+)["\']', re.I)
+#: URLs (absolute or path-relative) that smell like data endpoints, as referenced
+#: anywhere in an app shell — markup, inline bootstrap code, link preloads.
+_API_URL_RE = re.compile(
+    r'["\'](?:(https?://[^"\']*(?:api|graphql|algolia|search)[^"\']*)'
+    r'|(/(?:api|graphql)[^"\'\s]*))["\']', re.I
+)
+_VENDOR_HINTS = ("algolia", "typesense", "elastic", "graphql", "apollo", "relay",
+                 "next", "nuxt", "webpack", "vite", "react", "turbo")
+
+
+def analyze_shell(html: str) -> dict:
+    """Forensics on an app shell that rendered nothing: which script bundles it loads,
+    which API-ish URLs its code references, and which frameworks it names. Everything
+    reported is a URL or a framework token — no page content."""
+    scripts = [m.group(1) for m in _SCRIPT_SRC_RE.finditer(html)]
+    api_urls: dict[str, None] = {}
+    for m in _API_URL_RE.finditer(html):
+        api_urls[m.group(1) or m.group(2)] = None
+    low = html.lower()
+    return {
+        "script_srcs": scripts[:20],
+        "api_urls": list(api_urls)[:30],
+        "framework_hints": [v for v in _VENDOR_HINTS if v in low],
+    }
+
+
 # --- the client -------------------------------------------------------------------------
 
 class EbthClient:
@@ -457,6 +486,7 @@ class EbthClient:
         tightened from evidence instead of guessed at from a network-blind dev box."""
         report: dict = {"probed_at": datetime.now(timezone.utc).isoformat(), "pages": []}
         first_item_url = ""
+        shell_html = ""
         for url in search_urls:
             page: dict = {"url": url, "kind": "search"}
             try:
@@ -470,6 +500,11 @@ class EbthClient:
             page["item_links"] = len(links)
             if links and not first_item_url:
                 first_item_url = links[0]
+            if page.get("harvested_items", 0) == 0:
+                # An app shell. The lots arrive over XHR after JavaScript runs, so the
+                # useful evidence is which endpoints the shell's code references.
+                page["shell"] = analyze_shell(html)
+                shell_html = shell_html or html
             report["pages"].append(page)
         if first_item_url:
             page = {"url": first_item_url, "kind": "item"}
@@ -479,7 +514,67 @@ class EbthClient:
             except Exception as exc:  # noqa: BLE001
                 page["error"] = f"{type(exc).__name__}: {exc}"[:300]
             report["pages"].append(page)
+        if shell_html and search_urls:
+            report["endpoint_trials"] = self._try_endpoints(
+                analyze_shell(shell_html), search_urls[0]
+            )
         return report
+
+    def _try_endpoints(self, shell: dict, search_url: str) -> list[dict]:
+        """Knock politely on every API-shaped door the shell references (plus the usual
+        suspects) and record what answers. Status codes and top-level JSON keys only —
+        enough to write a real client against, nothing more."""
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(search_url).query)
+        q = (query.get("q") or ["furniture"])[0]
+        candidates: list[str] = []
+        for u in shell.get("api_urls", []):
+            full = urllib.parse.urljoin(_BASE, u)
+            # Endpoints that look like search/browse get the query attached.
+            if any(w in full.lower() for w in ("search", "browse", "query", "item", "sale")):
+                sep = "&" if "?" in full else "?"
+                candidates.append(f"{full}{sep}q={urllib.parse.quote(q)}")
+            else:
+                candidates.append(full)
+        for path in ("/api/v2/search", "/api/v3/search", "/api/search", "/api/v2/items",
+                     "/api/items"):
+            candidates.append(f"{_BASE}{path}?q={urllib.parse.quote(q)}")
+
+        trials: list[dict] = []
+        seen: set[str] = set()
+        for url in candidates:
+            if url in seen or len(trials) >= 10:
+                continue
+            seen.add(url)
+            trial: dict = {"url": url}
+            try:
+                body = self._fetch(url)
+            except urllib.error.HTTPError as exc:
+                trial["status"] = exc.code
+                trials.append(trial)
+                continue
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+                trials.append(trial)
+                continue
+            trial["status"] = 200
+            trial["bytes"] = len(body)
+            text = body.strip()
+            if text[:1] in ("{", "["):
+                try:
+                    data = json.loads(text)
+                except json.JSONDecodeError:
+                    trial["shape"] = "json-ish but unparseable"
+                else:
+                    trial["shape"] = "json"
+                    trial["top_level_keys"] = (
+                        sorted(data)[:25] if isinstance(data, dict)
+                        else f"array[{len(data)}]"
+                    )
+                    trial["harvested_items"] = len(harvest_json(data))
+            else:
+                trial["shape"] = "html"
+            trials.append(trial)
+        return trials
 
     @staticmethod
     def _analyze(html: str, url: str) -> dict:
