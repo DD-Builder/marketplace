@@ -110,15 +110,25 @@ def test_a_run_discovers_watches_appraises_and_renders(tmp_path, monkeypatch):
     assert h.status["actionable"] == 1        # inside 24h with headroom -> bid
 
 
-def test_discovery_is_rationed_but_snapshots_are_not(tmp_path, monkeypatch):
-    h = Harness(tmp_path, monkeypatch, [_lot()])
+def test_search_runs_every_run_and_refreshes_live_bids(tmp_path, monkeypatch):
+    """EBTH's search payload carries every lot's live bid, so one search per run is both
+    discovery and snapshot — the endgame gets fresh bids hourly without item-page fetches."""
+    h = Harness(tmp_path, monkeypatch, [_lot(bid=25, count=3)])
     assert h.run() == 0
-    search_fetches = sum("/search" in u for u in h.fetches)
+    assert h.catalog.lots["1-walnut-credenza"].current_bid_cents == 2500
+
+    # The bidding moves; next run's search must pick it up with no item-page fetch.
+    h.items["1-walnut-credenza"]["current_bid"] = 80
+    h.items["1-walnut-credenza"]["bid_count"] = 7
     h.fetches.clear()
-    assert h.run() == 0                       # an hour later, effectively
-    assert sum("/search" in u for u in h.fetches) == 0, "discovery not due yet"
-    assert any("/items/" in u for u in h.fetches), "the endgame lot still gets snapshotted"
-    assert search_fetches >= 1
+    assert h.run() == 0
+    assert sum("/search" in u for u in h.fetches) >= 1, "search runs every run"
+    assert not any("/items/" in u for u in h.fetches), \
+        "a lot still in search results needs no item-page fetch"
+    entry = h.catalog.lots["1-walnut-credenza"]
+    assert entry.current_bid_cents == 8000 and entry.bid_count == 7
+    # And the move was recorded as a distinct point in the bid history.
+    assert [p.bid_cents for p in entry.bid_history] == [2500, 8000]
 
 
 def test_a_dead_site_renders_from_the_catalogue_and_says_so(tmp_path, monkeypatch):

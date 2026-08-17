@@ -168,36 +168,44 @@ def _run(args, out_dir: Path, urls: list[str], client: EbthClient) -> int:
     vertical = get_vertical(args.vertical)
     now = datetime.now(timezone.utc)
 
-    # 1. Discovery — only when due. An hourly job trawling search pages hourly would be
-    #    60x the courtesy budget for at most a handful of genuinely new lots.
-    discovery_hours = _int_env("EBTH_DISCOVERY_HOURS") or 6
-    last = catalog.last_discovery_at
-    discovery_due = last is None or (now - last).total_seconds() / 3600 >= discovery_hours
+    # 1. Fetch the search endpoint(s). This is BOTH discovery and snapshot: EBTH's search
+    #    payload returns every matching lot with its live bid, count, and end time, so one
+    #    page load refreshes the whole watchlist that's still in results and surfaces new
+    #    lots at once. It runs every run — the endgame needs hourly bids, and a single
+    #    headless page load per query is a rounding error to a site this size.
     searches_failed = 0
-    if discovery_due:
-        for url in urls:
-            try:
-                items = client.search(url, follow_items=8)
-            except Exception as exc:  # noqa: BLE001 — one search must not sink the run
-                searches_failed += 1
-                log.warning("ebth_search_failed", url=url, error=str(exc)[:200])
-                continue
-            rep = acat.observe_auctions(catalog, items, now=now)
-            log.info("ebth_discovered", url=url, items=len(items), new=rep.new)
-        if searches_failed < len(urls):
-            catalog.last_discovery_at = now
-    scan_failed = discovery_due and urls and searches_failed == len(urls)
+    seen_ids: set[str] = set()
+    for url in urls:
+        try:
+            items = client.search(url)
+        except Exception as exc:  # noqa: BLE001 — one search must not sink the run
+            searches_failed += 1
+            log.warning("ebth_search_failed", url=url, error=str(exc)[:200])
+            continue
+        seen_ids.update(i.item_id for i in items)
+        rep = acat.observe_auctions(catalog, items, now=now)
+        log.info("ebth_searched", url=url, items=len(items), new=rep.new,
+                 snapshots=rep.snapshots)
+    if urls and searches_failed < len(urls):
+        catalog.last_discovery_at = now
+    scan_failed = bool(urls) and searches_failed == len(urls)
 
-    # 2. Watchlist refresh, then snapshots — endgame lots first, always.
+    # 2. Watchlist refresh from what the searches surfaced.
     promoted = _refresh_watchlist(catalog, vertical, _int_env("EBTH_MAX_WATCH") or 40)
     if promoted:
         log.info("watchlist_promoted", count=promoted)
 
-    snapshot_cap = _int_env("EBTH_SNAPSHOT_CAP") or 40
+    # 3. Item-page snapshots — only for watched endgame lots the searches did NOT return
+    #    (they scrolled off page one), since those are the ones whose bids would otherwise
+    #    go stale exactly when they matter most. Best-effort: EBTH's item route renders its
+    #    detail client-side in a shape the search payload already gives us in bulk, so a
+    #    lot that yields nothing here simply keeps its last search-sourced bid, and the
+    #    clock still finalizes it. This is why the pipeline never depends on item pages.
+    snapshot_cap = _int_env("EBTH_SNAPSHOT_CAP") or 20
     snapped = gone = 0
-    for entry in acat.snapshot_due(catalog, now=now)[:snapshot_cap]:
-        if not entry.url:
-            continue
+    stale = [e for e in acat.snapshot_due(catalog, now=now)
+             if e.id not in seen_ids and e.url]
+    for entry in stale[:snapshot_cap]:
         try:
             item = client.item(entry.url)
         except urllib.error.HTTPError as exc:

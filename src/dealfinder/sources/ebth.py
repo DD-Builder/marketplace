@@ -260,7 +260,10 @@ def harvest_json(blob, *, base_url: str = _BASE, parsed_by: str = "embedded-json
         _, image_val = _first(d, _IMAGE_KEYS, allow_dict=True)
         _, ended_val = _first(d, _ENDED_KEYS)
         _, state_val = _first(d, _STATE_KEYS)
-        _, url_val = _first(d, ("url", "path", "href", "itemurl", "webpath"))
+        # EBTH's search payload names the lot URL ``public_url``; the generic aliases
+        # keep other sources working. Confirmed against the live probe's raw keys.
+        _, url_val = _first(d, ("publicurl", "url", "path", "href", "itemurl", "webpath",
+                                "permalink", "canonicalurl"))
 
         url = str(url_val) if isinstance(url_val, str) else ""
         if url.startswith("/"):
@@ -722,6 +725,14 @@ class EbthClient:
                          "harvested_items": len(harvest_json(c))}
                         for c in captures[:12]
                     ]
+                netlog = self._drain_netlog()
+                if netlog:
+                    api = [n for n in netlog
+                           if any(h in n["path"].lower() for h in
+                                  ("graphql", "/api/", "items", "bid"))]
+                    page["network"] = {"responses": len(netlog), "api_calls": api[:25],
+                                       "status_tally": _tally(str(n["status"])
+                                                              for n in netlog)}
             except Exception as exc:  # noqa: BLE001
                 page["error"] = f"{type(exc).__name__}: {exc}"[:300]
             report["pages"].append(page)
