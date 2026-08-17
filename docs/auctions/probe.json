@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T20:26:07.095433+00:00",
+ "probed_at": "2026-08-17T20:29:46.645483+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 345684,
+   "bytes": 332038,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -48,7 +48,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 115,
+    "responses": 68,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -64,10 +64,9 @@
      }
     ],
     "status_tally": {
-     "200": 108,
-     "204": 4,
+     "200": 65,
+     "204": 1,
      "301": 1,
-     "302": 1,
      "404": 1
     }
    },
@@ -174,7 +173,7 @@
   {
    "url": "https://www.ebth.com/search?q=danish%20modern",
    "kind": "search",
-   "bytes": 335136,
+   "bytes": 337004,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -218,7 +217,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 967,
+    "responses": 1091,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -312,14 +311,14 @@
      }
     ],
     "status_tally": {
-     "200": 838,
-     "204": 42,
+     "200": 972,
+     "204": 48,
      "301": 6,
-     "302": 53,
-     "303": 3,
-     "304": 13,
+     "302": 44,
+     "303": 2,
+     "304": 6,
      "307": 4,
-     "404": 8
+     "404": 9
     }
    },
    "captured_payloads": [
@@ -425,7 +424,7 @@
   {
    "url": "https://www.ebth.com/items/14572938-leaded-stained-glass-window-panels-late-19th-century",
    "kind": "item",
-   "bytes": 208299,
+   "bytes": 209798,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -440,7 +439,7 @@
    "parsed_by": [],
    "sample_raw_keys": [],
    "network": {
-    "responses": 831,
+    "responses": 966,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -480,12 +479,13 @@
      }
     ],
     "status_tally": {
-     "200": 747,
-     "204": 35,
+     "200": 867,
+     "204": 42,
      "301": 5,
-     "302": 24,
-     "304": 12,
-     "404": 8
+     "302": 36,
+     "303": 1,
+     "304": 6,
+     "404": 9
     }
    }
   }
@@ -575,5 +575,43 @@
    "total_items": null,
    "harvested_items": 0
   }
- ]
+ ],
+ "search_ui": {
+  "inputs": [
+   {
+    "tag": "input",
+    "type": "search",
+    "name": "q",
+    "id": null,
+    "placeholder": "Search",
+    "aria_label": "Search Input",
+    "data_testid": null,
+    "class_hint": "input input--borderless input-group__input search header__search-input",
+    "form_action": "/browse",
+    "form_method": "get"
+   }
+  ],
+  "forms": [
+   {
+    "action": "/browse",
+    "method": "get",
+    "class_hint": "header__search-form"
+   }
+  ],
+  "buttons": [
+   {
+    "tag": "button",
+    "type": "submit",
+    "name": null,
+    "id": null,
+    "placeholder": null,
+    "aria_label": "Search Button",
+    "data_testid": null,
+    "class_hint": "btn btn--primary-contrast btn--icon-only input-group__btn",
+    "form_action": "/browse",
+    "form_method": "get"
+   }
+  ],
+  "title": "Everything But The House | Online Estate Sales & Auctions | EBTH | EBTH"
+ }
 }
