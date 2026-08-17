@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T19:12:49.680607+00:00",
+ "probed_at": "2026-08-17T19:17:58.835076+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 345048,
+   "bytes": 343996,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -14,7 +14,7 @@
     "bid_count": 48,
     "ends_at": 48,
     "photo_urls": 48,
-    "url": 0
+    "url": 48
    },
    "parsed_by": [
     "embedded-json"
@@ -48,7 +48,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 124,
+    "responses": 115,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -64,10 +64,10 @@
      }
     ],
     "status_tally": {
-     "200": 109,
-     "204": 7,
+     "200": 105,
+     "204": 6,
      "301": 1,
-     "302": 6,
+     "302": 2,
      "404": 1
     }
    },
@@ -92,7 +92,7 @@
   {
    "url": "https://www.ebth.com/search?q=danish%20modern",
    "kind": "search",
-   "bytes": 336368,
+   "bytes": 331232,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -102,7 +102,7 @@
     "bid_count": 48,
     "ends_at": 48,
     "photo_urls": 48,
-    "url": 0
+    "url": 48
    },
    "parsed_by": [
     "embedded-json"
@@ -136,7 +136,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 159,
+    "responses": 145,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -152,13 +152,11 @@
      }
     ],
     "status_tally": {
-     "200": 135,
-     "204": 5,
+     "200": 128,
+     "204": 6,
      "301": 1,
-     "302": 12,
-     "303": 2,
-     "304": 2,
-     "307": 1,
+     "302": 8,
+     "304": 1,
      "404": 1
     }
    },
@@ -183,7 +181,7 @@
   {
    "url": "https://www.ebth.com/items/14572938-leaded-stained-glass-window-panels-late-19th-century",
    "kind": "item",
-   "bytes": 208716,
+   "bytes": 208251,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -196,7 +194,24 @@
     "url": 0
    },
    "parsed_by": [],
-   "sample_raw_keys": []
+   "sample_raw_keys": [],
+   "network": {
+    "responses": 51,
+    "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/items/14572938-leaded-stained-glass-window-panels-late-19th",
+      "status": 200,
+      "ctype": "text/html"
+     }
+    ],
+    "status_tally": {
+     "200": 47,
+     "303": 2,
+     "304": 1,
+     "404": 1
+    }
+   }
   }
  ]
 }
