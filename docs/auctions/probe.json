@@ -1,10 +1,10 @@
 {
- "probed_at": "2026-08-17T19:17:58.835076+00:00",
+ "probed_at": "2026-08-17T20:22:47.461558+00:00",
  "pages": [
   {
    "url": "https://www.ebth.com/search?q=mid%20century%20furniture",
    "kind": "search",
-   "bytes": 343996,
+   "bytes": 333215,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -48,7 +48,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 115,
+    "responses": 76,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -64,10 +64,9 @@
      }
     ],
     "status_tally": {
-     "200": 105,
-     "204": 6,
+     "200": 72,
+     "204": 2,
      "301": 1,
-     "302": 2,
      "404": 1
     }
    },
@@ -85,14 +84,96 @@
       "sorts",
       "valid_filters"
      ],
-     "harvested_items": 48
+     "harvested_items": 48,
+     "non_item_fields": {
+      "items": "array[48]",
+      "pages": {
+       "current_page": 1,
+       "total_pages": 129,
+       "total_items": 6148,
+       "items_per_page": 48
+      },
+      "sorts": {
+       "preset": "recommended",
+       "query": "sort",
+       "data": "array[7]"
+      },
+      "valid_filters": "array[53]",
+      "filters": "array[5]",
+      "filter_counts": {
+       "category": {
+        "5008": 1,
+        "4999": 1,
+        "3313": 1,
+        "3322": 1,
+        "4291": 1,
+        "3052": 1,
+        "3013": 1,
+        "6742": 1,
+        "6747": 1,
+        "4351": 1,
+        "4825": 1,
+        "4798": 1,
+        "4771": 1,
+        "5122": 1,
+        "4171": 1
+       }
+      },
+      "applied_parameters": {
+       "category": null,
+       "boutique": null,
+       "sort": "recommended",
+       "props": {},
+       "page": 1,
+       "per_page": "48",
+       "miles": null,
+       "zip_code": null,
+       "status": null,
+       "days_left": null,
+       "delivery_options": [],
+       "q": null,
+       "sale": null,
+       "applicable": {},
+       "seller_id": null
+      },
+      "ad_space_page": "category",
+      "ad_space_items": [
+       {
+        "id": 40,
+        "name": "Kitchenware WO 8.17",
+        "link_url": "https://www.ebth.com/kitchen-and-housewares?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=kitchenware-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/36/ae1f8918-c91f-49b0-8307-999cd6b04288/8.17%20sidebar%20banner%20fine%20dining.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/37/6032a0f4-1298-47f8-b601-4023709df9ab/8.17%20Sidebar%20banner%20mobile%20fine%20dining.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 41,
+        "name": "Collectibles WO8.17",
+        "link_url": "https://www.ebth.com/collectibles?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=collectibles-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/903482c3-7790-4eca-92ad-432a5937dd71/Collectibles%20sidebar%20banner%20WO%208.17.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/8be3d85c-458b-42d0-adc5-dc3cf8b92218/Sidebar%20Banner%20%28mobile%29%20Collectibles%20WO%208.17.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 3,
+        "name": "Start Selling",
+        "link_url": "https://www.ebth.com/sell?utm_source=Sidebar&utm_medium=Banner&utm_campaign=June+1+2026&utm_id=Sidebar+Banner+Selling+%28w%2Fo+June1%29",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/03/30/13/43/54/335deda0-fab6-450c-b0ec-9f9ff5667c4d/Sidebar-Banners%20%28Desktop%29%20%281%29.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/03/30/14/23/46/937f5746-1e33-4d4d-adf1-99cbe479828b/Sidebar-Banners%20%28Mobile%29%20%28720%20x%20225%20px%29%20-%20Sell.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       }
+      ],
+      "meta_tags": {
+       "og:title": "Browse All Items",
+       "og:description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "keywords": null
+      }
+     }
     }
    ]
   },
   {
    "url": "https://www.ebth.com/search?q=danish%20modern",
    "kind": "search",
-   "bytes": 331232,
+   "bytes": 334368,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 48,
@@ -136,7 +217,7 @@
    ],
    "item_links": 48,
    "network": {
-    "responses": 145,
+    "responses": 174,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -152,10 +233,10 @@
      }
     ],
     "status_tally": {
-     "200": 128,
-     "204": 6,
+     "200": 153,
+     "204": 9,
      "301": 1,
-     "302": 8,
+     "302": 9,
      "304": 1,
      "404": 1
     }
@@ -174,14 +255,96 @@
       "sorts",
       "valid_filters"
      ],
-     "harvested_items": 48
+     "harvested_items": 48,
+     "non_item_fields": {
+      "items": "array[48]",
+      "pages": {
+       "current_page": 1,
+       "total_pages": 129,
+       "total_items": 6148,
+       "items_per_page": 48
+      },
+      "sorts": {
+       "preset": "recommended",
+       "query": "sort",
+       "data": "array[7]"
+      },
+      "valid_filters": "array[53]",
+      "filters": "array[5]",
+      "filter_counts": {
+       "category": {
+        "5008": 1,
+        "4999": 1,
+        "3313": 1,
+        "3322": 1,
+        "4291": 1,
+        "3052": 1,
+        "3013": 1,
+        "6742": 1,
+        "6747": 1,
+        "4351": 1,
+        "4825": 1,
+        "4798": 1,
+        "4771": 1,
+        "5122": 1,
+        "4171": 1
+       }
+      },
+      "applied_parameters": {
+       "category": null,
+       "boutique": null,
+       "sort": "recommended",
+       "props": {},
+       "page": 1,
+       "per_page": "48",
+       "miles": null,
+       "zip_code": null,
+       "status": null,
+       "days_left": null,
+       "delivery_options": [],
+       "q": null,
+       "sale": null,
+       "applicable": {},
+       "seller_id": null
+      },
+      "ad_space_page": "category",
+      "ad_space_items": [
+       {
+        "id": 40,
+        "name": "Kitchenware WO 8.17",
+        "link_url": "https://www.ebth.com/kitchen-and-housewares?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=kitchenware-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/36/ae1f8918-c91f-49b0-8307-999cd6b04288/8.17%20sidebar%20banner%20fine%20dining.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/37/6032a0f4-1298-47f8-b601-4023709df9ab/8.17%20Sidebar%20banner%20mobile%20fine%20dining.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 41,
+        "name": "Collectibles WO8.17",
+        "link_url": "https://www.ebth.com/collectibles?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=collectibles-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/903482c3-7790-4eca-92ad-432a5937dd71/Collectibles%20sidebar%20banner%20WO%208.17.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/8be3d85c-458b-42d0-adc5-dc3cf8b92218/Sidebar%20Banner%20%28mobile%29%20Collectibles%20WO%208.17.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 3,
+        "name": "Start Selling",
+        "link_url": "https://www.ebth.com/sell?utm_source=Sidebar&utm_medium=Banner&utm_campaign=June+1+2026&utm_id=Sidebar+Banner+Selling+%28w%2Fo+June1%29",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/03/30/13/43/54/335deda0-fab6-450c-b0ec-9f9ff5667c4d/Sidebar-Banners%20%28Desktop%29%20%281%29.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/03/30/14/23/46/937f5746-1e33-4d4d-adf1-99cbe479828b/Sidebar-Banners%20%28Mobile%29%20%28720%20x%20225%20px%29%20-%20Sell.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       }
+      ],
+      "meta_tags": {
+       "og:title": "Browse All Items",
+       "og:description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "keywords": null
+      }
+     }
     }
    ]
   },
   {
    "url": "https://www.ebth.com/items/14572938-leaded-stained-glass-window-panels-late-19th-century",
    "kind": "item",
-   "bytes": 208251,
+   "bytes": 210082,
    "jsonld_blocks": 0,
    "embedded_json_blobs": 0,
    "harvested_items": 0,
@@ -196,7 +359,7 @@
    "parsed_by": [],
    "sample_raw_keys": [],
    "network": {
-    "responses": 51,
+    "responses": 53,
     "api_calls": [
      {
       "host": "www.ebth.com",
@@ -206,8 +369,7 @@
      }
     ],
     "status_tally": {
-     "200": 47,
-     "303": 2,
+     "200": 51,
      "304": 1,
      "404": 1
     }
