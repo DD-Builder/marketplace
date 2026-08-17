@@ -26,10 +26,17 @@ and the whole existing test-suite runs without it.
 from __future__ import annotations
 
 import os
+from urllib.parse import urlparse
 
 from dealfinder.logging import get_logger
 
 log = get_logger(__name__)
+
+
+def urllib_parse(url: str) -> tuple[str, str]:
+    """(host, path) for a URL, tolerant of junk — used only for the network log."""
+    p = urlparse(url)
+    return p.netloc, p.path or "/"
 
 _UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -62,8 +69,8 @@ class BrowserSession:
         self,
         *,
         headless: bool = True,
-        timeout_ms: int = 30_000,
-        hydrate_ms: int = 4_000,
+        timeout_ms: int = 45_000,
+        hydrate_ms: int = 8_000,
         wait_selector: str = 'a[href*="/items/"]',
         capture_hints: tuple[str, ...] = _CAPTURE_HINTS,
     ) -> None:
@@ -76,33 +83,54 @@ class BrowserSession:
         self._browser = None
         self._page = None
         self._captures: list = []
+        self._netlog: list = []
+        # Fail fast, at construction, if the library isn't here — this is what lets
+        # build_client() catch it and fall back to HTTP before a run is underway,
+        # rather than discovering it mid-fetch. The expensive part (launching Chromium)
+        # still waits until the first fetch.
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError as exc:  # pragma: no cover — env-dependent
+            raise PlaywrightUnavailable(
+                "playwright is not installed. `pip install 'dealfinder[browser]'` and "
+                "`python -m playwright install chromium` (the CI runner does both)."
+            ) from exc
+        self._start = sync_playwright
 
     # --- lifecycle ----------------------------------------------------------------------
 
     def _ensure(self) -> None:
         if self._page is not None:
             return
-        try:
-            from playwright.sync_api import sync_playwright
-        except ImportError as exc:  # pragma: no cover — env-dependent
-            raise PlaywrightUnavailable(
-                "playwright is not installed. `pip install playwright` and ensure a "
-                "Chromium is present (the CI runner has one at /opt/pw-browsers)."
-            ) from exc
-
-        self._pw = sync_playwright().start()
+        self._pw = self._start().start()
         launch_kwargs: dict = {"headless": self.headless}
         # The managed runner ships Chromium at a known path and blocks re-downloads; use
         # it explicitly when present so we never trip the "run playwright install" wall.
         exe = os.getenv("PLAYWRIGHT_CHROMIUM_PATH") or "/opt/pw-browsers/chromium"
         if os.path.exists(exe):
             launch_kwargs["executable_path"] = exe
+        # Flags that make headless Chromium look like an ordinary browser rather than an
+        # automation rig — the cheapest thing that gets past a headless-detecting SPA.
+        launch_kwargs["args"] = [
+            "--disable-blink-features=AutomationControlled",
+            "--no-sandbox",
+        ]
         try:
             self._browser = self._pw.chromium.launch(**launch_kwargs)
         except Exception as exc:  # pragma: no cover — env-dependent
             self.close()
             raise PlaywrightUnavailable(f"could not launch Chromium: {exc}") from exc
-        self._page = self._browser.new_page(user_agent=_UA)
+        context = self._browser.new_context(
+            user_agent=_UA,
+            locale="en-US",
+            viewport={"width": 1366, "height": 900},
+        )
+        # navigator.webdriver === true is the single most common headless tell; hide it
+        # before any of the app's own scripts run.
+        context.add_init_script(
+            "Object.defineProperty(navigator,'webdriver',{get:()=>undefined})"
+        )
+        self._page = context.new_page()
         self._page.on("response", self._on_response)
 
     def close(self) -> None:
@@ -127,16 +155,29 @@ class BrowserSession:
     # --- interception -------------------------------------------------------------------
 
     def _on_response(self, response) -> None:
-        url = response.url.lower()
-        if any(bad in url for bad in _CAPTURE_EXCLUDE):
-            return
-        if not any(h in url for h in self.capture_hints):
-            return
+        url = response.url
+        low = url.lower()
         ctype = ""
         try:
             ctype = (response.headers or {}).get("content-type", "")
         except Exception:  # noqa: BLE001
             pass
+        # A structural network-log entry for *every* response — the diagnostic that shows
+        # whether the app's own GraphQL/API calls succeed in this (headless, datacenter)
+        # context, or are refused the way our direct probes were. Path prefix + status +
+        # content-type only; never a body.
+        try:
+            parsed = urllib_parse(url)
+            self._netlog.append({
+                "host": parsed[0], "path": parsed[1][:60],
+                "status": response.status, "ctype": ctype.split(";")[0][:40],
+            })
+        except Exception:  # noqa: BLE001
+            pass
+        if any(bad in low for bad in _CAPTURE_EXCLUDE):
+            return
+        if not any(h in low for h in self.capture_hints):
+            return
         if "json" not in ctype.lower():
             return
         try:
@@ -148,6 +189,11 @@ class BrowserSession:
         """The JSON payloads seen since the last fetch/drain, then reset."""
         caps, self._captures = self._captures, []
         return caps
+
+    def drain_netlog(self) -> list:
+        """Structural log of every response seen since the last fetch — for the probe."""
+        log_, self._netlog = self._netlog, []
+        return log_
 
     # --- the fetch the client calls -----------------------------------------------------
 

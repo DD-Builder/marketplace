@@ -482,6 +482,14 @@ def mine_bid_context(js: str, *, window: int = 90, cap: int = 24) -> list[str]:
     return out
 
 
+def _tally(items) -> dict:
+    """{value: count}, for a compact status/kind histogram in the probe report."""
+    out: dict = {}
+    for it in items:
+        out[it] = out.get(it, 0) + 1
+    return dict(sorted(out.items()))
+
+
 def analyze_shell(html: str) -> dict:
     """Forensics on an app shell that rendered nothing: which script bundles it loads,
     which API-ish URLs its code references, and which frameworks it names. Everything
@@ -558,6 +566,12 @@ class EbthClient:
         drain = getattr(owner, "drain_captures", None)
         captures = drain() if callable(drain) else []
         return html, captures
+
+    def _drain_netlog(self) -> list:
+        """The browser fetcher's structural network log for the last fetch, if any."""
+        owner = getattr(self._fetch, "__self__", None)
+        drain = getattr(owner, "drain_netlog", None)
+        return drain() if callable(drain) else []
 
     def _http_post_json(self, url: str, payload: dict) -> tuple[int, str]:
         """POST JSON, returning (status, body) — GraphQL answers 4xx with a body worth
@@ -666,6 +680,19 @@ class EbthClient:
             page["item_links"] = len(links)
             if links and not first_item_url:
                 first_item_url = links[0]
+            netlog = self._drain_netlog()
+            if netlog:
+                # The decisive diagnostic on the browser path: did the app's own data
+                # calls succeed here, or are they refused the way our direct probes were?
+                # Report the API/GraphQL responses and a status tally — never a body.
+                api = [n for n in netlog
+                       if any(h in n["path"].lower() for h in
+                              ("graphql", "/api/", "search", "items", "bid"))]
+                page["network"] = {
+                    "responses": len(netlog),
+                    "api_calls": api[:25],
+                    "status_tally": _tally(str(n["status"]) for n in netlog),
+                }
             if captures:
                 # The browser path: report what the app fetched for itself (structure
                 # only — top-level keys and how many lots harvest from each payload).
