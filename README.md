@@ -71,6 +71,39 @@ this one repository and treat it as disposable. Drafts you generate (including p
 seller messages) are committed to `.drafts/`, outside the published site — though on a
 public repo the repository itself is still readable.
 
+## The Gavel — EBTH auction watch
+
+`docs/auctions/index.html`, a second board for [Everything But The House](https://www.ebth.com)
+lots, where the problem inverts: nobody names a price, the price *finds itself* — bids sit
+low for days, then most of the money arrives in the closing hours. So the tracker runs
+**hourly** (`auctions.yml`), asymmetrically: bid snapshots every run, discovery of new lots
+every ~6h, one appraisal per lot ever.
+
+For each quality lot (the same vertical keyword gate as the Marketplace side, but requiring
+a positive signal) it holds the full bid history and answers three questions:
+
+- **Your max bid** — worked backwards from the appraisal: restored value, minus restoration,
+  your hours, your margin, freight, and the buyer's premium riding the hammer. Decided
+  before the endgame, so the endgame can't decide it for you.
+- **Projected close** — the *endgame multiplier* says what T-24h prices become by the
+  hammer. It starts as a prior (2×) and is **learned from this catalogue's own ended lots**:
+  every watched auction that closes contributes a `(T-24h bid, final price)` pair, so the
+  projection sharpens with every week the tracker runs.
+- **Stance** — `BID LATE` (final day, headroom), `WATCH` (early — never bid early, it only
+  feeds the price), `OUTPRICED` (bidding or its projection passed your ceiling), `PASS`.
+
+**How it gets the data.** The probe (run the workflow with **probe** checked; it commits
+`docs/auctions/probe.json`) established that ebth.com is a locked-down React SPA: every URL
+returns an empty shell, the lots come over a GraphQL API that refuses anonymous callers,
+and there's no server-rendered fallback. So the fetch path is a **headless browser**
+(`sources/ebth_browser.py`) that runs the app's own JavaScript, lets it authenticate
+itself the way it does for any visitor, and captures the JSON the app fetches for itself —
+the same structured payloads it consumes, with no credential extracted or replayed. The
+field names (`highBidAmount`, `endsAt`, `aasmState`, `bidCount`) are confirmed against
+EBTH's own compiled bundle. Parsing stays layered (captured JSON → JSON-LD/embedded state
+→ HTML) so a redesign degrades coverage rather than zeroing it, and the probe re-checks
+the shape on demand.
+
 ## Setup
 
 1. **Fork or clone**, then enable Pages: *Settings → Pages → Deploy from branch → `docs/`*.
@@ -139,6 +172,10 @@ python -m dealfinder.sources.scrape
 | `resale.py` | market price and your-numbers pricing |
 | `restoration.py` | bounds on the model's cost/effort estimate, from published survey data |
 | `sources/ebay.py` | free Browse API comps — market anchors for the appraisal |
+| `sources/ebth.py` | EBTH auction source: layered parsing + the CI structure probe |
+| `sources/ebth_browser.py` | headless-Chromium fetcher that captures the SPA's own JSON |
+| `auctions/` | auction catalogue, max-bid math, endgame calibration, the Gavel page |
+| `run_auctions.py` | the hourly auction run: snapshot → appraise → advise → publish |
 | `pieces.py` | your books: costs, sales, realised hourly wage |
 | `negotiation/` | posture, prompt building, drafters |
 | `board.py` + `templates/` | the static page: data → markup in Python, skeleton/CSS/JS as real files |

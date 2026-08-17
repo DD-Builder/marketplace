@@ -20,6 +20,12 @@ api = [
     "anthropic>=0.40",
     "pydantic-settings>=2.6",
 ]
+# The EBTH auction source. ebth.com is a locked-down SPA with no server-rendered data,
+# so its lots are only reachable by driving a real browser and capturing the JSON the
+# app fetches for itself. Only the auction workflow installs this.
+browser = [
+    "playwright>=1.44",
+]
 dev = [
     "pytest>=8.3",
     "dealfinder[api]",
@@ -28,6 +34,7 @@ dev = [
 [project.scripts]
 dealfinder-board = "dealfinder.run_board:main"
 dealfinder-negotiate = "dealfinder.negotiate:main"
+dealfinder-auctions = "dealfinder.run_auctions:main"
 
 [build-system]
 requires = ["hatchling"]

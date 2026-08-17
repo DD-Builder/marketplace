@@ -28,6 +28,15 @@ from dealfinder.core.schemas import AppraisalResult
 _DEFAULT_PREMIUM_PCT = 0.10        # your restoration/brand premium over raw market
 _CEILING_MARKUP_PCT = 0.35         # how far above market to price a hot-but-ambiguous piece
 _FLOOR_MARGIN_PCT = 0.15           # minimum margin over fully-loaded cost (your walk-away)
+#: A ceiling test extrapolates *upward from the market anchor*, so it is only defensible
+#: when the anchor is worth extrapolating from. "Ambiguous" has to mean "I know what this
+#: is, I just can't pin the maker" — not "I can't tell what I'm looking at". Below this
+#: line the estimate is a guess, and marking a guess up by a third does not test a ceiling,
+#: it compounds the error straight into the price the operator asks a real buyer for.
+#: Every text-only appraisal this system has ever made lands under it (capped at 0.35 by
+#: construction in appraiser.py), so the old rule aimed its most aggressive posture at
+#: precisely the pieces it understood least.
+_CEILING_TEST_MIN_CONFIDENCE = 0.45
 
 
 class Posture(str, Enum):
@@ -45,6 +54,11 @@ class PieceCosts:
     labor_hours: float = 0.0           # your hands-on restoration time
 
 
+def _money(cents: int) -> str:
+    """Whole dollars, for prose. Cents in a rationale sentence read as false precision."""
+    return f"${cents / 100:,.0f}"
+
+
 def cash_outlay_cents(costs: PieceCosts) -> int:
     """Actual money out of pocket — not counting the value of your time."""
     return costs.acquisition_cents + costs.materials_cents
@@ -60,10 +74,12 @@ def _classify(appraisal: AppraisalResult) -> Posture:
     known = appraisal.confidence >= 0.70 and bool(appraisal.maker_guess)
     if known or appraisal.confidence >= 0.85:
         return Posture.KNOWN_PREMIUM
-    # Ambiguous — but only worth a ceiling-test if it actually looks desirable
-    # (restored value comfortably above as-is), else it's just an unknown, price at market.
-    if appraisal.confidence < 0.55 and (
-        appraisal.est_restored_resale_value_cents
+    # Ambiguous — but only worth a ceiling-test if it actually looks desirable (restored
+    # value comfortably above as-is) *and* the anchor we would mark up is worth trusting.
+    # Uncertainty must widen the range you'd accept, never raise the number you ask.
+    if (
+        _CEILING_TEST_MIN_CONFIDENCE <= appraisal.confidence < 0.55
+        and appraisal.est_restored_resale_value_cents
         > appraisal.est_asis_value_cents * 1.5
     ):
         return Posture.CEILING_TEST
@@ -77,6 +93,13 @@ class ResaleSuggestion:
     market_anchor_cents: int     # the appraiser's realistic restored-resale estimate
     posture: Posture
     rationale: str
+    #: An optional higher *opening* ask for a desirable piece whose maker can't be pinned
+    #: down, offered alongside the recommendation rather than replacing it. Ambiguity is a
+    #: reason to widen the range you're willing to work through — start high, come down —
+    #: not a reason to raise the number you actually recommend. Keeping the two separate
+    #: is what stops "the model doesn't know what this is" from reading, on the card, as
+    #: "ask a third more for it". None when no ceiling test is warranted.
+    stretch_price_cents: int | None = None
     viable: bool = True          # False when the piece can't clear its own costs
     warning: str = ""            # why it isn't viable, when it isn't
     # 'ok'          — clears cash costs and pays your hourly rate
@@ -103,17 +126,27 @@ def suggest_resale_price(
     posture = _classify(appraisal)
     premium = round(market * premium_pct)
 
+    stretch: int | None = None
     if posture is Posture.CEILING_TEST:
-        base = round(market * (1 + ceiling_markup_pct)) + premium
+        base = market + premium
+        stretch = round(market * (1 + ceiling_markup_pct)) + premium
         why = (
-            f"Ambiguous but desirable (confidence {appraisal.confidence:.0%}); "
-            f"list {ceiling_markup_pct:.0%} over market to test the ceiling — you can come down."
+            f"Desirable but the maker isn't pinned down (confidence "
+            f"{appraisal.confidence:.0%}); worth opening at {_money(stretch)} to test the "
+            f"ceiling and coming down to {_money(base)} — that's the range, not a markup."
         )
     elif posture is Posture.KNOWN_PREMIUM:
         base = market + premium
         why = (
             f"Identifiable ({appraisal.maker_guess or 'known type'}, "
             f"confidence {appraisal.confidence:.0%}); anchor to market plus your premium."
+        )
+    elif appraisal.confidence < _CEILING_TEST_MIN_CONFIDENCE:
+        base = market + premium
+        why = (
+            f"Low confidence ({appraisal.confidence:.0%}) — the market estimate itself is "
+            "soft, so price at it rather than above it, and treat the figure as a "
+            "starting point to revise once you have the piece in hand."
         )
     else:
         base = market + premium
@@ -159,6 +192,7 @@ def suggest_resale_price(
         floor_price_cents=floor,
         market_anchor_cents=market,
         posture=posture,
+        stretch_price_cents=stretch,
         rationale=why,
         viable=viable,
         warning=warning,
@@ -233,9 +267,18 @@ class ResalePlan:
 
     @property
     def range_cents(self) -> tuple[int, int]:
-        """A defensible ask-range: the plain estimate up to the posture-adjusted list."""
+        """A defensible ask-range: the plain estimate up to the highest ask worth trying.
+
+        The top is the stretch when one is offered, not the recommendation. Those used to
+        be the same number — the ceiling markup was folded straight into ``list_price``,
+        so an ambiguous piece had its recommended ask inflated and the range simply
+        reported the inflation back. Splitting them lets the range widen with uncertainty
+        while the recommendation stays anchored, which is the whole point: you widen the
+        band you'll work through, you don't raise the number you stand behind.
+        """
+        top = max(self.market.list_price_cents, self.market.stretch_price_cents or 0)
         low = min(self.market.market_anchor_cents, self.market.list_price_cents)
-        return (low, self.market.list_price_cents)
+        return (low, top)
 
 
 def price_piece(

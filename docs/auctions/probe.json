@@ -1,0 +1,369 @@
+{
+ "probed_at": "2026-08-17T20:37:23.751421+00:00",
+ "pages": [
+  {
+   "url": "https://www.ebth.com/browse?q=mid%20century%20furniture",
+   "kind": "search",
+   "bytes": 348126,
+   "jsonld_blocks": 0,
+   "embedded_json_blobs": 0,
+   "harvested_items": 48,
+   "field_coverage": {
+    "title": 48,
+    "current_bid_cents": 48,
+    "bid_count": 48,
+    "ends_at": 48,
+    "photo_urls": 48,
+    "url": 48
+   },
+   "parsed_by": [
+    "embedded-json"
+   ],
+   "sample_raw_keys": [
+    "aasm_state",
+    "barcode",
+    "bids_count",
+    "certified_authentic",
+    "condition_details",
+    "depth",
+    "description",
+    "extended",
+    "height",
+    "high_bid_amount",
+    "id",
+    "location",
+    "main_image",
+    "minimum_bid_amount",
+    "name",
+    "pickup_city_state",
+    "pickup_location_name",
+    "public_url",
+    "sale_ends_at",
+    "sale_id",
+    "sale_region_id",
+    "sale_starts_at",
+    "time_status",
+    "type_name",
+    "width"
+   ],
+   "item_links": 48,
+   "network": {
+    "responses": 128,
+    "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     }
+    ],
+    "status_tally": {
+     "200": 116,
+     "204": 8,
+     "302": 3,
+     "404": 1
+    }
+   },
+   "captured_payloads": [
+    {
+     "top_level_keys": [
+      "ad_space_items",
+      "ad_space_page",
+      "applied_parameters",
+      "filter_counts",
+      "filters",
+      "items",
+      "meta_tags",
+      "pages",
+      "sorts",
+      "valid_filters"
+     ],
+     "harvested_items": 48,
+     "non_item_fields": {
+      "items": "array[48]",
+      "pages": {
+       "current_page": 1,
+       "total_pages": 2,
+       "total_items": 58,
+       "items_per_page": 48
+      },
+      "sorts": {
+       "preset": "recommended",
+       "query": "sort",
+       "data": "array[7]"
+      },
+      "valid_filters": "array[53]",
+      "filters": "array[5]",
+      "filter_counts": {
+       "category": {
+        "3499": 1,
+        "3472": 1,
+        "6746": 1,
+        "3517": 1,
+        "6751": 1,
+        "6744": 1,
+        "3514": 1,
+        "3505": 1,
+        "6743": 1,
+        "4747": 1,
+        "3490": 1,
+        "3496": 1,
+        "6747": 1,
+        "4360": 1,
+        "6750": 1
+       }
+      },
+      "applied_parameters": {
+       "category": null,
+       "boutique": null,
+       "sort": "recommended",
+       "props": {},
+       "page": 1,
+       "per_page": "48",
+       "miles": null,
+       "zip_code": null,
+       "status": null,
+       "days_left": null,
+       "delivery_options": [],
+       "q": "mid century furniture",
+       "sale": null,
+       "applicable": {},
+       "seller_id": null
+      },
+      "ad_space_page": "category",
+      "ad_space_items": [
+       {
+        "id": 40,
+        "name": "Kitchenware WO 8.17",
+        "link_url": "https://www.ebth.com/kitchen-and-housewares?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=kitchenware-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/36/ae1f8918-c91f-49b0-8307-999cd6b04288/8.17%20sidebar%20banner%20fine%20dining.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/37/6032a0f4-1298-47f8-b601-4023709df9ab/8.17%20Sidebar%20banner%20mobile%20fine%20dining.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 41,
+        "name": "Collectibles WO8.17",
+        "link_url": "https://www.ebth.com/collectibles?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=collectibles-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/903482c3-7790-4eca-92ad-432a5937dd71/Collectibles%20sidebar%20banner%20WO%208.17.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/8be3d85c-458b-42d0-adc5-dc3cf8b92218/Sidebar%20Banner%20%28mobile%29%20Collectibles%20WO%208.17.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 3,
+        "name": "Start Selling",
+        "link_url": "https://www.ebth.com/sell?utm_source=Sidebar&utm_medium=Banner&utm_campaign=June+1+2026&utm_id=Sidebar+Banner+Selling+%28w%2Fo+June1%29",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/03/30/13/43/54/335deda0-fab6-450c-b0ec-9f9ff5667c4d/Sidebar-Banners%20%28Desktop%29%20%281%29.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/03/30/14/23/46/937f5746-1e33-4d4d-adf1-99cbe479828b/Sidebar-Banners%20%28Mobile%29%20%28720%20x%20225%20px%29%20-%20Sell.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       }
+      ],
+      "meta_tags": {
+       "og:title": "Browse All Items",
+       "og:description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "keywords": null
+      }
+     }
+    }
+   ]
+  },
+  {
+   "url": "https://www.ebth.com/browse?q=danish%20modern",
+   "kind": "search",
+   "bytes": 270148,
+   "jsonld_blocks": 0,
+   "embedded_json_blobs": 0,
+   "harvested_items": 12,
+   "field_coverage": {
+    "title": 12,
+    "current_bid_cents": 12,
+    "bid_count": 12,
+    "ends_at": 12,
+    "photo_urls": 12,
+    "url": 12
+   },
+   "parsed_by": [
+    "embedded-json"
+   ],
+   "sample_raw_keys": [
+    "aasm_state",
+    "barcode",
+    "bids_count",
+    "certified_authentic",
+    "condition_details",
+    "depth",
+    "extended",
+    "height",
+    "high_bid_amount",
+    "id",
+    "location",
+    "main_image",
+    "measurement_details",
+    "minimum_bid_amount",
+    "name",
+    "pickup_city_state",
+    "pickup_location_name",
+    "public_url",
+    "sale_ends_at",
+    "sale_id",
+    "sale_region_id",
+    "sale_starts_at",
+    "time_status",
+    "type_name",
+    "width"
+   ],
+   "item_links": 12,
+   "network": {
+    "responses": 140,
+    "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/api/v1/twosearch/items",
+      "status": 200,
+      "ctype": "application/json"
+     }
+    ],
+    "status_tally": {
+     "200": 131,
+     "204": 4,
+     "302": 1,
+     "303": 2,
+     "304": 1,
+     "404": 1
+    }
+   },
+   "captured_payloads": [
+    {
+     "top_level_keys": [
+      "ad_space_items",
+      "ad_space_page",
+      "applied_parameters",
+      "filter_counts",
+      "filters",
+      "items",
+      "meta_tags",
+      "pages",
+      "sorts",
+      "valid_filters"
+     ],
+     "harvested_items": 12,
+     "non_item_fields": {
+      "items": "array[12]",
+      "pages": {
+       "current_page": 1,
+       "total_pages": 1,
+       "total_items": 12,
+       "items_per_page": 48
+      },
+      "sorts": {
+       "preset": "recommended",
+       "query": "sort",
+       "data": "array[7]"
+      },
+      "valid_filters": "array[53]",
+      "filters": "array[5]",
+      "filter_counts": {
+       "category": {
+        "3499": 1,
+        "3472": 1,
+        "6745": 1,
+        "3517": 1,
+        "5086": 1,
+        "3604": 1,
+        "3595": 1,
+        "6746": 1,
+        "6747": 1,
+        "4978": 1,
+        "4668": 1,
+        "3319": 1,
+        "3313": 1,
+        "4546": 1,
+        "3493": 1
+       }
+      },
+      "applied_parameters": {
+       "category": null,
+       "boutique": null,
+       "sort": "recommended",
+       "props": {},
+       "page": 1,
+       "per_page": "48",
+       "miles": null,
+       "zip_code": null,
+       "status": null,
+       "days_left": null,
+       "delivery_options": [],
+       "q": "danish modern",
+       "sale": null,
+       "applicable": {},
+       "seller_id": null
+      },
+      "ad_space_page": "category",
+      "ad_space_items": [
+       {
+        "id": 40,
+        "name": "Kitchenware WO 8.17",
+        "link_url": "https://www.ebth.com/kitchen-and-housewares?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=kitchenware-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/36/ae1f8918-c91f-49b0-8307-999cd6b04288/8.17%20sidebar%20banner%20fine%20dining.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/23/37/6032a0f4-1298-47f8-b601-4023709df9ab/8.17%20Sidebar%20banner%20mobile%20fine%20dining.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 41,
+        "name": "Collectibles WO8.17",
+        "link_url": "https://www.ebth.com/collectibles?page=1&utm_source=media-kit&utm_medium=sidebar-banner&utm_campaign=collectibles-awareness",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/903482c3-7790-4eca-92ad-432a5937dd71/Collectibles%20sidebar%20banner%20WO%208.17.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/08/17/12/24/36/8be3d85c-458b-42d0-adc5-dc3cf8b92218/Sidebar%20Banner%20%28mobile%29%20Collectibles%20WO%208.17.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       },
+       {
+        "id": 3,
+        "name": "Start Selling",
+        "link_url": "https://www.ebth.com/sell?utm_source=Sidebar&utm_medium=Banner&utm_campaign=June+1+2026&utm_id=Sidebar+Banner+Selling+%28w%2Fo+June1%29",
+        "web_image_url": "https://imgix-prod.ebth.com/2026/03/30/13/43/54/335deda0-fab6-450c-b0ec-9f9ff5667c4d/Sidebar-Banners%20%28Desktop%29%20%281%29.png?ixlib=rb-3.1.0&w=300&h=600&fit=crop&crop=&auto=format",
+        "mobile_image_url": "https://imgix-prod.ebth.com/2026/03/30/14/23/46/937f5746-1e33-4d4d-adf1-99cbe479828b/Sidebar-Banners%20%28Mobile%29%20%28720%20x%20225%20px%29%20-%20Sell.png?ixlib=rb-3.1.0&w=800&h=200&fit=crop&crop=&auto=format"
+       }
+      ],
+      "meta_tags": {
+       "og:title": "Browse All Items",
+       "og:description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "description": "Browse all items in the Marketplace for the Uncommon! Discover an ever-changing assortment of art, jewelry & more. Bidding starts at just $1 on most items.",
+       "keywords": null
+      }
+     }
+    }
+   ]
+  },
+  {
+   "url": "https://www.ebth.com/items/14576906-hand-painted-indian-black-lacquered-cabinet-mid-to-late-20th-century",
+   "kind": "item",
+   "bytes": 205817,
+   "jsonld_blocks": 0,
+   "embedded_json_blobs": 0,
+   "harvested_items": 0,
+   "field_coverage": {
+    "title": 0,
+    "current_bid_cents": 0,
+    "bid_count": 0,
+    "ends_at": 0,
+    "photo_urls": 0,
+    "url": 0
+   },
+   "parsed_by": [],
+   "sample_raw_keys": [],
+   "network": {
+    "responses": 45,
+    "api_calls": [
+     {
+      "host": "www.ebth.com",
+      "path": "/items/14576906-hand-painted-indian-black-lacquered-cabinet-",
+      "status": 200,
+      "ctype": "text/html"
+     }
+    ],
+    "status_tally": {
+     "200": 39,
+     "204": 1,
+     "302": 3,
+     "304": 1,
+     "404": 1
+    }
+   }
+  }
+ ]
+}

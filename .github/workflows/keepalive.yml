@@ -37,10 +37,4 @@ jobs:
           date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/last-keepalive
           git config user.name "deal-board"
           git config user.email "deal-board@users.noreply.github.com"
-          git add .github/last-keepalive
-          git diff --staged --quiet && exit 0
-          git commit -m "Keepalive [skip ci]"
-          for i in 1 2 3; do
-            git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push && break
-            sleep $((i * 5))
-          done
+          bash .github/scripts/publish.sh "Keepalive [skip ci]" .github/last-keepalive

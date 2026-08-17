@@ -1,0 +1,87 @@
+name: Auction watch
+
+# Tracks EBTH lots hourly and publishes bid guidance to docs/auctions/. Hourly is the
+# point: auctions are decided in their final day, and a daily scanner would sleep
+# through every endgame. The run itself is asymmetric so hourly stays free — bid
+# snapshots every run, discovery every ~6h, appraisals once per lot (capped).
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Publish a structure report of what ebth.com serves (no pipeline)"
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: "Track and render only — no AI appraisals"
+        type: boolean
+        required: false
+        default: false
+  schedule:
+    # :43 — GitHub's scheduler is congested on the hour and drops on-the-hour jobs.
+    - cron: "43 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auction-watch
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the app
+        run: pip install -e '.[api,browser]'
+
+      - name: Install Chromium for Playwright
+        run: python -m playwright install --with-deps chromium
+
+      - name: Install Claude Code
+        if: ${{ !inputs.dry_run && !inputs.probe }}
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the auction tracker
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APPRAISER_PROVIDER: ${{ vars.APPRAISER_PROVIDER || 'claude-code' }}
+          APPRAISE_MODEL: ${{ vars.APPRAISE_MODEL }}
+          EBTH_FETCH: ${{ vars.EBTH_FETCH || 'browser' }}
+          EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
+          EBTH_PREMIUM_PCT: ${{ vars.EBTH_PREMIUM_PCT }}
+          EBTH_SHIPPING_CENTS: ${{ vars.EBTH_SHIPPING_CENTS }}
+          EBTH_DISCOVERY_HOURS: ${{ vars.EBTH_DISCOVERY_HOURS }}
+          EBTH_SNAPSHOT_CAP: ${{ vars.EBTH_SNAPSHOT_CAP }}
+          EBTH_MAX_WATCH: ${{ vars.EBTH_MAX_WATCH }}
+          MAX_AUCTION_APPRAISALS: ${{ vars.MAX_AUCTION_APPRAISALS }}
+          HOURLY_RATE_CENTS: ${{ vars.HOURLY_RATE_CENTS }}
+          VERTICAL: ${{ vars.VERTICAL }}
+          PROBE: ${{ inputs.probe }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          ARGS=""
+          [ "$PROBE" = "true" ] && ARGS="$ARGS --probe"
+          [ "$DRY_RUN" = "true" ] && ARGS="$ARGS --dry-run"
+          python -m dealfinder.run_auctions \
+            --out docs/auctions \
+            --catalog docs/auctions/catalog.json \
+            $ARGS
+
+      - name: Publish the auction board
+        # Exit 5 (site unreachable) still rebuilt the page from the catalogue, and the
+        # probe writes its report either way — that work must reach the branch.
+        if: ${{ !cancelled() }}
+        run: |
+          rm -rf docs/auctions/_photos
+          git config user.name "auction-watch"
+          git config user.email "auction-watch@users.noreply.github.com"
+          bash .github/scripts/publish.sh "Update auction board [skip ci]" docs/auctions
