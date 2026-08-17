@@ -66,6 +66,100 @@ def test_the_client_folds_the_browsers_captures_into_search():
     assert browser.calls == ["https://www.ebth.com/search?q=teak"]
 
 
+def _search_response(items: list[dict], *, page: int, total_pages: int, total_items: int) -> dict:
+    """Shaped like EBTH's real /browse?q= response (confirmed live: items + pages +
+    applied_parameters), for pagination tests."""
+    return {
+        "items": items,
+        "pages": {"current_page": page, "total_pages": total_pages,
+                  "total_items": total_items, "items_per_page": len(items)},
+        "applied_parameters": {"q": "teak", "page": page},
+    }
+
+
+class MultiPageBrowser:
+    """Returns a different capture depending on the ``page`` query param — the shape
+    EBTH's own /browse endpoint has (confirmed against the live site)."""
+
+    def __init__(self, pages: dict[int, dict]):
+        self.pages = pages
+        self.calls: list[str] = []
+        self._next: list = []
+
+    def fetch(self, url: str) -> str:
+        self.calls.append(url)
+        import urllib.parse
+
+        q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+        page = int((q.get("page") or ["1"])[0])
+        self._next = [self.pages[page]] if page in self.pages else []
+        return _SHELL
+
+    def drain_captures(self) -> list:
+        caps, self._next = self._next, []
+        return caps
+
+
+def _ebth_item(n: int) -> dict:
+    return {"id": f"{n}-lot", "name": f"Lot {n}", "high_bid_amount": float(n),
+            "bids_count": 1, "sale_ends_at": "2026-08-20T23:30:00Z", "aasm_state": "active"}
+
+
+def test_search_pages_through_multiple_results_using_the_apis_own_page_count():
+    browser = MultiPageBrowser({
+        1: _search_response([_ebth_item(1), _ebth_item(2)], page=1, total_pages=3,
+                            total_items=5),
+        2: _search_response([_ebth_item(3), _ebth_item(4)], page=2, total_pages=3,
+                            total_items=5),
+        3: _search_response([_ebth_item(5)], page=3, total_pages=3, total_items=5),
+    })
+    client = EbthClient(fetch=browser.fetch, delay=0)
+    items = client.search("https://www.ebth.com/browse?q=teak")
+    assert {i.item_id for i in items} == {"1-lot", "2-lot", "3-lot", "4-lot", "5-lot"}
+    assert browser.calls == [
+        "https://www.ebth.com/browse?q=teak",
+        "https://www.ebth.com/browse?q=teak&page=2",
+        "https://www.ebth.com/browse?q=teak&page=3",
+    ]
+
+
+def test_search_respects_max_pages_and_does_not_crawl_the_whole_site():
+    """A 129-page unfiltered browse must not turn one hourly run into 129 fetches."""
+    browser = MultiPageBrowser({
+        n: _search_response([_ebth_item(n)], page=n, total_pages=129, total_items=6148)
+        for n in range(1, 130)
+    })
+    client = EbthClient(fetch=browser.fetch, delay=0)
+    items = client.search("https://www.ebth.com/browse", max_pages=3)
+    assert len(browser.calls) == 3
+    assert len(items) == 3
+
+
+def test_a_single_page_result_triggers_no_extra_fetches():
+    browser = MultiPageBrowser({
+        1: _search_response([_ebth_item(1)], page=1, total_pages=1, total_items=1),
+    })
+    client = EbthClient(fetch=browser.fetch, delay=0)
+    client.search("https://www.ebth.com/browse?q=teak")
+    assert browser.calls == ["https://www.ebth.com/browse?q=teak"]
+
+
+def test_a_failed_page_does_not_lose_the_pages_already_fetched():
+    class FlakyOnPage2(MultiPageBrowser):
+        def fetch(self, url):
+            if "page=2" in url:
+                raise OSError("timeout")
+            return super().fetch(url)
+
+    browser = FlakyOnPage2({
+        1: _search_response([_ebth_item(1)], page=1, total_pages=2, total_items=2),
+        2: _search_response([_ebth_item(2)], page=2, total_pages=2, total_items=2),
+    })
+    client = EbthClient(fetch=browser.fetch, delay=0)
+    items = client.search("https://www.ebth.com/browse?q=teak")
+    assert {i.item_id for i in items} == {"1-lot"}
+
+
 def test_an_http_fetch_with_no_capture_channel_still_works():
     """A plain callable (no drain_captures) must degrade to HTML-only parsing, so every
     existing test that injects `fetch=lambda` keeps working."""

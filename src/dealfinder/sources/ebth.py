@@ -656,12 +656,39 @@ class EbthClient:
         finally:
             self._last_request = time.monotonic()
 
-    def search(self, url: str, *, follow_items: int = 0) -> list[AuctionItem]:
-        """Harvest a search/browse page; optionally fetch the first N item pages whose
-        grid records came back thin (no end time — useless to an auction tracker)."""
+    def search(self, url: str, *, follow_items: int = 0, max_pages: int = 5) -> list[AuctionItem]:
+        """Harvest a search/browse page, paging through EBTH's own result count.
+
+        The search response tells us exactly how many pages exist
+        (``pages.total_pages``), so this fetches page 1, then follows up to
+        ``max_pages - 1`` more real page loads — each is a full browser navigation, so
+        the cost is genuinely ``max_pages`` fetches, not one. ``max_pages`` bounds that
+        cost per query per run: five pages of 48 covers any query up to 240 results,
+        which comfortably covers a well-scoped vertical search without turning an
+        hourly job into a 129-page crawl of the entire site.
+        """
         html, captures = self._fetch_page(url)
         items = parse_page(html, page_url=url, captures=captures)
         by_id = {i.item_id: i for i in items}
+
+        pages_meta = _search_page_count(captures)
+        total_pages = pages_meta.get("total_pages") if pages_meta else None
+        if isinstance(total_pages, (int, float)) and total_pages > 1:
+            parsed = urllib.parse.urlparse(url)
+            query = urllib.parse.parse_qs(parsed.query)
+            for page_num in range(2, min(int(total_pages), max_pages) + 1):
+                query["page"] = [str(page_num)]
+                next_url = parsed._replace(
+                    query=urllib.parse.urlencode(query, doseq=True)
+                ).geturl()
+                try:
+                    p_html, p_captures = self._fetch_page(next_url)
+                except Exception as exc:  # noqa: BLE001 — a bad page shouldn't lose the rest
+                    log.warning("ebth_page_failed", url=next_url, error=str(exc)[:160])
+                    continue
+                for item in parse_page(p_html, page_url=next_url, captures=p_captures):
+                    by_id.setdefault(item.item_id, item)
+
         links = item_links(html)
         # Grid records lacking an id are invisible above; links are the safety net.
         for link in links:
