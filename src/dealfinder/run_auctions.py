@@ -425,7 +425,12 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
             if entry is not None and not entry.vertical:
                 entry.vertical = vkey
         log.info("ebth_searched", url=url, vertical=vkey, items=len(items), new=rep.new,
-                 snapshots=rep.snapshots)
+                 snapshots=rep.snapshots,
+                 # EBTH's own result count for this query. Identical totals across
+                 # different category_id values would mean the category filter is being
+                 # ignored and every vertical is being credited with the same generic
+                 # first page — which one page of 96 items looks exactly like.
+                 total=getattr(client, "last_total_items", None))
     if targets and searches_failed < len(targets):
         catalog.last_discovery_at = now
     scan_failed = bool(targets) and searches_failed == len(targets)

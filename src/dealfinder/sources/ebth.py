@@ -683,6 +683,17 @@ class EbthClient:
         by_id = {i.item_id: i for i in items}
 
         pages_meta = _search_page_count(captures)
+        # EBTH's own count for *this* query, recorded so a caller can log it. One page of
+        # results looks identical whether a filter narrowed the set to 96 or the filter
+        # was ignored and we are reading the same unfiltered first page every time; the
+        # server's total is the only thing that tells those two apart.
+        self.last_total_items = None
+        if pages_meta:
+            for key in ("total_items", "total_count", "total", "total_entries"):
+                val = pages_meta.get(key)
+                if isinstance(val, (int, float)):
+                    self.last_total_items = int(val)
+                    break
         total_pages = pages_meta.get("total_pages") if pages_meta else None
         if isinstance(total_pages, (int, float)) and total_pages > 1:
             parsed = urllib.parse.urlparse(url)

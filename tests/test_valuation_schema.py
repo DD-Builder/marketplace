@@ -43,3 +43,39 @@ def test_confidence_out_of_range_rejected():
             }
         )
 
+
+
+def test_an_appraisal_survives_a_missing_deal_score():
+    """Observed in a live run: the model returned a complete valuation for a wristwatch
+    and omitted deal_score, so pydantic rejected the whole thing and the lot went
+    unvalued. The field is advisory — compute_deal_score is authoritative — so losing a
+    paid-for appraisal over it was pure waste."""
+    from dealfinder.core.schemas import AppraisalResult
+
+    result = AppraisalResult.model_validate({
+        "identified_item": "Men's stainless steel wristwatch",
+        "est_asis_value_cents": 30000,
+        "est_restored_resale_value_cents": 30000,
+        "est_restoration_cost_cents": 0,
+        "est_restoration_effort_hours": 0.0,
+        "confidence": 0.6,
+    })
+
+    assert result.est_asis_value_cents == 30000
+    assert result.deal_score == 0.0
+
+
+def test_an_out_of_range_deal_score_is_still_rejected():
+    """Defaulting the field must not turn off its validation — a 900 would sail into the
+    ranking maths as if the model were certain."""
+    import pytest
+    from pydantic import ValidationError
+
+    from dealfinder.core.schemas import AppraisalResult
+
+    with pytest.raises(ValidationError):
+        AppraisalResult.model_validate({
+            "identified_item": "x", "est_asis_value_cents": 1,
+            "est_restored_resale_value_cents": 1, "est_restoration_cost_cents": 0,
+            "est_restoration_effort_hours": 0.0, "confidence": 0.5, "deal_score": 900,
+        })

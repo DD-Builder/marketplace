@@ -57,7 +57,13 @@ class AppraisalResult(BaseModel):
     est_restoration_cost_cents: int
     est_restoration_effort_hours: float
     confidence: float = Field(ge=0.0, le=1.0)
-    deal_score: float = Field(ge=0.0, le=100.0)  # the model's own estimate
+    #: The model's own estimate, and purely advisory — :func:`compute_deal_score` is the
+    #: authoritative one and never reads this. It carries a default because it was the
+    #: single required field the model sometimes omits, and without one a whole appraisal
+    #: with every value field correctly populated was thrown away over it. Valuation is
+    #: the only metered step in the pipeline; discarding a good one on an unused field is
+    #: the most expensive possible way to be strict.
+    deal_score: float = Field(default=0.0, ge=0.0, le=100.0)
     reasoning: str = ""
 
 
