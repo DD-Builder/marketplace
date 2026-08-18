@@ -20,6 +20,13 @@ on:
         type: boolean
         required: false
         default: false
+  push:
+    # Same tokenless on-demand hook the auction workflows use: the GitHub App driving
+    # development can't call workflow_dispatch (403), so touching a marker file asks for
+    # a run. The board is rebuilt from the committed catalogue even when the scrape is
+    # quota-blocked, so this is also how docs/board.html gets regenerated on demand.
+    paths:
+      - ".github/board-run-request"
   schedule:
     # Daily, ~8-9am Eastern. Counter-intuitively daily is the *cheap* cadence: measured
     # on a real export, a daily re-run finds ~30% new listings and ~70% already seen, and
@@ -53,8 +60,20 @@ jobs:
         # [api] pulls the metered-path SDK too, so switching provider is one variable.
         run: pip install -e '.[api]'
 
+      - name: Determine run mode
+        id: mode
+        # A marker-file push asks only for the pages to be regenerated from the
+        # committed catalogue, so it runs dry: free, no AI, and the board still renders
+        # every stored appraisal (dry runs never record stub valuations).
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "dry_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dry_run=${{ inputs.dry_run || false }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install Claude Code
-        if: ${{ !inputs.dry_run }}
+        if: ${{ steps.mode.outputs.dry_run != 'true' }}
         run: npm install -g @anthropic-ai/claude-code
 
       - name: Run the pipeline
@@ -98,7 +117,7 @@ jobs:
           # Booleans reach the script through env, never inline interpolation —
           # same reasoning as negotiate.yml: nothing user-typed touches the shell.
           RECOVER: ${{ inputs.recover }}
-          DRY_RUN: ${{ inputs.dry_run }}
+          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
         run: |
           ARGS=""
           [ "$RECOVER" = "true" ] && ARGS="$ARGS --recover"
