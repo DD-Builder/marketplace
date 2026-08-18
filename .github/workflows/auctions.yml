@@ -50,6 +50,9 @@ jobs:
         run: pip install -e '.[api,browser]'
 
       - name: Install Chromium for Playwright
+        # A stalled apt mirror can eat the whole job budget on this one step (seen on
+        # the probe workflow) — fail it fast with a clear signal instead.
+        timeout-minutes: 6
         run: python -m playwright install --with-deps chromium
 
       - name: Determine run mode

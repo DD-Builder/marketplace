@@ -19,7 +19,7 @@ concurrency:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,6 +28,10 @@ jobs:
       - name: Install the app
         run: pip install -e '.[browser]'
       - name: Install Chromium for Playwright
+        # Occasionally the apt-based --with-deps install stalls on a slow mirror; a
+        # run was lost this way, burning the whole 10-minute job budget on this one
+        # step. A tight step-level timeout fails it fast with a clear signal instead.
+        timeout-minutes: 6
         run: python -m playwright install --with-deps chromium
       - name: Probe ebth.com
         env:
