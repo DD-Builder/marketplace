@@ -6,9 +6,20 @@ a keyword query can only ever find lots whose text happens to contain the word, 
 the lot titled "Estate Lot, Assorted" that no keyword would ever surface.
 
 The IDs and slugs here were read off the live site (the ``filters`` block of the
-/browse response names the query parameter as ``category_id`` and carries the whole
-tree); they are not invented. Only the top level is modelled — EBTH nests several levels
-deep, and a top-level id already returns everything beneath it.
+/browse response carries the whole tree); they are not invented. Only the top level is
+modelled — EBTH nests several levels deep, and a top-level id already returns everything
+beneath it.
+
+.. warning::
+   **The ``category_id`` query parameter does not filter.** Measured across a full run,
+   all 14 top-level ids on all three sorts returned ``total_items=1986`` — the identical
+   count the *unfiltered* ``days_left=2`` browse returns. ``days_left`` does work (1,986
+   with it against 6,242 without), so the request is not being dropped wholesale; only
+   the category part is silently discarded. Until the real parameter is identified (see
+   ``EbthClient._try_category_filters``), every vertical scrapes the same first page of
+   the same pool, so the vertical a lot ends up tagged with reflects which search
+   happened to see it first, not what EBTH filed it under. Treat the per-category counts
+   on the board as a partition of one shared pool, not as category coverage.
 
 Each category also names the vertical whose pricing rules and appraiser guidance should
 govern the lots it yields, which is what lets "Jewelry and Watches" be appraised as

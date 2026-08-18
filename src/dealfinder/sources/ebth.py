@@ -878,6 +878,7 @@ class EbthClient:
             report["graphql_trials"] = self._try_graphql(mined)
             report["sales_index"] = self._analyze_sales_index()
         report["time_filter_trials"] = self._try_time_filters()
+        report["category_filter_trials"] = self._try_category_filters()
         return report
 
     def _try_time_filters(self) -> list[dict]:
@@ -905,6 +906,79 @@ class EbthClient:
             trial["harvested_items"] = sum(len(harvest_json(c)) for c in captures)
             trials.append(trial)
         return trials
+
+    def _try_category_filters(self) -> dict:
+        """Find the parameter that actually narrows /browse to one category.
+
+        ``category_id`` does not. Measured across a full run, all 14 category ids on all
+        three sorts returned ``total_items=1986`` — the identical count the *unfiltered*
+        ``days_left=2`` browse returns — so every vertical was scraping the same 96 items
+        off the top of the same pool and the category taxonomy was decorative. Since
+        ``days_left`` demonstrably does work (1,986 with it, 6,242 without), the request
+        is not being dropped wholesale; only the category part of it is.
+
+        Rather than guess the right spelling, this reports the API's own
+        ``applied_parameters`` echo for each candidate. A candidate that appears in the
+        echo *and* moves ``total_items`` off the unfiltered baseline is the real one; a
+        candidate absent from the echo was silently discarded.
+        """
+        out: dict = {"note": "a candidate is real only if total_items moves off baseline"}
+
+        baseline_total = None
+        try:
+            _h, caps = self._fetch_page(f"{_BASE}/browse")
+            pages = _search_page_count(caps)
+            baseline_total = pages.get("total_items") if pages else None
+            applied = _applied_parameters(caps)
+            # The echo's own key names are the API's accepted vocabulary — the most
+            # direct evidence available for what the category parameter is called.
+            out["unfiltered_applied_keys"] = sorted(applied) if applied else None
+            out["unfiltered_total_items"] = baseline_total
+        except Exception as exc:  # noqa: BLE001
+            out["baseline_error"] = f"{type(exc).__name__}: {exc}"[:200]
+
+        # Jewelry and Watches (3313) and its slug, per the category tree read off the site.
+        candidates = [
+            "category_id=3313", "category_ids=3313", "category_ids[]=3313",
+            "categories=3313", "category=3313", "category=jewelry-and-watches",
+            "category_slug=jewelry-and-watches", "filter[category_id]=3313",
+            "refinementList[category][0]=Jewelry and Watches",
+        ]
+        trials: list[dict] = []
+        for q in candidates:
+            url = f"{_BASE}/browse?{q}"
+            trial: dict = {"url": url}
+            try:
+                _h, caps = self._fetch_page(url)
+                pages = _search_page_count(caps)
+                applied = _applied_parameters(caps)
+                total = pages.get("total_items") if pages else None
+                trial["total_items"] = total
+                trial["applied"] = applied if applied else None
+                trial["narrowed"] = (
+                    total is not None and baseline_total is not None and total < baseline_total
+                )
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+            trials.append(trial)
+        out["candidates"] = trials
+
+        # The site may key categories on a path rather than a query parameter at all.
+        paths: list[dict] = []
+        for path in ("/browse/jewelry-and-watches", "/categories/jewelry-and-watches",
+                     "/c/jewelry-and-watches", "/browse/furniture"):
+            trial = {"url": f"{_BASE}{path}"}
+            try:
+                _h, caps = self._fetch_page(trial["url"])
+                pages = _search_page_count(caps)
+                trial["total_items"] = pages.get("total_items") if pages else None
+                trial["applied"] = _applied_parameters(caps)
+                trial["items_seen"] = sum(len(harvest_json(c)) for c in caps)
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+            paths.append(trial)
+        out["path_forms"] = paths
+        return out
 
     def _try_graphql(self, mined_paths: list[str]) -> list[dict]:
         """Handshake with every GraphQL-shaped route: a {__typename} probe, then — if it
