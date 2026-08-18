@@ -436,6 +436,11 @@ h2{font-family:var(--display);font-size:22px;margin:34px 0 12px}
 h2 .hint{font-family:var(--sans);font-size:12.5px;color:var(--soft);font-weight:400;
   margin-left:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+/* The UA rule for [hidden] is display:none, but a class that sets display (.lot/.pick
+   are flex columns) beats it on specificity — so `el.hidden = true` toggled the
+   attribute while the element stayed on screen, and every category filter silently did
+   nothing. This is the rule that makes hiding actually hide. */
+[hidden]{display:none !important}
 .lot{background:var(--card);border:1px solid var(--line);border-radius:14px;
   overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
   cursor:pointer;transition:transform .12s ease,border-color .12s ease}
