@@ -86,7 +86,11 @@ _EBTH_BASE = "https://www.ebth.com"
 #: page 1 is the most relevant 48 lots by the house's own reckoning. With ~44 targets a
 #: run, following three pages each would mean 130+ browser navigations an hour to reach
 #: lots that are, by construction, the ones the sort ranked lowest.
-_DISCOVERY_MAX_PAGES = 1
+#: Pages to walk per discovery query. One page is 96 lots; the two-day window holds
+#: ~1,986, so a single page saw 5% of what was decidable. This is affordable only because
+#: the redundant per-category queries are gone — the old run spent 44 navigations to see
+#: one page, this spends a comparable budget to see most of the window.
+_DISCOVERY_MAX_PAGES = 8
 
 #: A keyword search can only ever find lots that happen to contain a guessed word — it
 #: has no way to notice a jewelry lot that doesn't say "sterling" or a rug that doesn't
@@ -134,6 +138,54 @@ def _write_status(out_dir: Path, state: str, **counts) -> None:
         log.warning("status_write_failed", error=str(exc)[:120])
 
 
+def _probe_categories(client: EbthClient, out_dir: Path) -> int:
+    """Answer one question — which parameter narrows /browse to a category — and nothing
+    else.
+
+    Two attempts at folding this into the full ``--probe`` both died on the job clock
+    without publishing a byte: the full probe does a great deal of other work first, and
+    a step-level timeout SIGKILLs the process, so no ``except`` clause and no ``finally``
+    ever runs. Evidence that only survives a graceful exit is evidence you lose exactly
+    when the run is in trouble.
+
+    So this writes each trial to disk the moment it lands. A kill at any point leaves
+    every completed trial on disk, which is all the question actually needs.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / "category-probe.json"
+    report: dict = {
+        "probed_at": datetime.now(timezone.utc).isoformat(),
+        "question": "which query parameter narrows /browse to a single category?",
+        "trials": [],
+    }
+
+    def flush() -> None:
+        try:
+            path.write_text(json.dumps(report, indent=1, default=str), encoding="utf-8")
+        except OSError as exc:
+            log.warning("probe_write_failed", error=str(exc)[:120])
+
+    flush()
+    for label, url in client.category_filter_urls():
+        trial = client.measure_query(url)
+        trial["label"] = label
+        base = report.get("baseline_total")
+        total = trial.get("total_items")
+        trial["narrowed"] = total is not None and base is not None and total < base
+        if label == "baseline":
+            report["baseline_total"] = total
+        report["trials"].append(trial)
+        flush()
+        print(f"{label:34} total={total} narrowed={trial['narrowed']}"
+              f"{' ERROR=' + trial['error'] if 'error' in trial else ''}", flush=True)
+
+    winners = [t["label"] for t in report["trials"] if t.get("narrowed")]
+    report["winners"] = winners
+    flush()
+    print(f"\nbaseline={report.get('baseline_total')}  winners={winners or 'NONE'}")
+    return 0
+
+
 def _probe(client: EbthClient, urls: list[str], out_dir: Path) -> int:
     # Whatever the probe managed to learn gets written even if it dies partway. The whole
     # report used to be built in memory and written once at the end, so when a run was
@@ -177,45 +229,62 @@ def _probe(client: EbthClient, urls: list[str], out_dir: Path) -> int:
 def _search_targets(raw: str, *, default_vertical: str) -> list[tuple[str, str]]:
     """(vertical key, search URL) pairs to run this pass.
 
-    Discovery is driven by **EBTH's own categories**, not guessed keywords. A keyword
-    query can only find a lot whose text happens to contain the word; ``category_id``
-    returns everything the house itself filed under that heading, including the lot
-    titled "Estate Lot, Assorted" that no keyword would ever surface. Each category
-    carries the vertical that should price it, so "Jewelry and Watches" is appraised
-    as jewelry rather than as whatever the run's default happens to be.
+    This used to fan out over EBTH's category tree, one query per category per sort, on
+    the reasoning that asking the house what it filed under "Jewelry and Watches" beats
+    guessing keywords. The reasoning still holds; the mechanism did not. Measured across
+    a full run, all 14 category ids returned ``total_items=1986`` — the identical count
+    the *unfiltered* ``days_left=2`` browse returns — so ``category_id`` is accepted and
+    silently ignored on this route, and 42 of the 44 requests were byte-for-byte the same
+    query. The whole run saw one page of one pool, fetched 44 times, out of the 1,986
+    lots actually closing inside the window.
 
-    For each selected category we ask for the lots that are actually decidable —
-    ``days_left`` inside the decision window — under EBTH's own sort presets:
-    ending soonest, highest bid, and most bids. Using *their* ordering matters because
-    the server decides which lots we see at all; sorting our own page could never reach
-    the hottest lots in a category that runs to thousands of items.
+    So the fetch budget goes to *depth* instead: the same handful of genuinely distinct
+    queries, paged out far enough to cover the window. ``days_left`` and ``sort`` both
+    demonstrably work (1,211 / 1,986 / 3,169 lots for 1 / 2 / 3 days), which is what
+    makes this worth doing — the server really will hand over the whole ending-soon
+    ordering a page at a time.
+
+    Set ``EBTH_CATEGORY_PARAM`` to restore per-category discovery the moment the real
+    parameter name is known (``EbthClient._try_category_filters`` is looking for it);
+    the category tree and its vertical mapping are kept intact for exactly that.
 
     ``EBTH_SEARCH_URLS`` still overrides everything with literal URLs, screened under
     ``default_vertical`` — the documented escape hatch, unchanged.
     """
+    days = _int_env("EBTH_TIME_CRITICAL_DAYS") or 2
     if raw.strip():
         targets = [(default_vertical, u) for u in _search_urls(raw)]
-        days = _int_env("EBTH_TIME_CRITICAL_DAYS") or 2
         targets.append((_AUTO_ENDING_SOON,
                         f"{_EBTH_BASE}/browse?sort={SORTS['ending_soon']}&days_left={days}"))
         return targets
 
-    days = _int_env("EBTH_TIME_CRITICAL_DAYS") or 2
     sorts = [s.strip() for s in _env("EBTH_SORTS", "ending_soon,highest_bid,most_bids").split(",")
              if s.strip() in SORTS]
     targets: list[tuple[str, str]] = []
-    for cat in resolve_categories(_env("EBTH_CATEGORIES", "")):
+
+    param = _env("EBTH_CATEGORY_PARAM", "").strip()
+    if param:
+        # A working category parameter has been identified — go back to asking per
+        # category, which is strictly better than a site-wide sweep because the vertical
+        # comes from EBTH's own filing rather than from our classifier.
+        for cat in resolve_categories(_env("EBTH_CATEGORIES", "")):
+            value = str(cat.id) if param.endswith("_id") else cat.slug
+            for sort_key in sorts:
+                targets.append((
+                    cat.vertical,
+                    f"{_EBTH_BASE}/browse?{param}={value}"
+                    f"&sort={SORTS[sort_key]}&days_left={days}",
+                ))
+    else:
         for sort_key in sorts:
-            targets.append((
-                cat.vertical,
-                f"{_EBTH_BASE}/browse?category_id={cat.id}"
-                f"&sort={SORTS[sort_key]}&days_left={days}",
-            ))
-    # Plus the two site-wide sweeps, which catch anything the category filing missed.
-    targets.append((_AUTO_ENDING_SOON,
-                    f"{_EBTH_BASE}/browse?sort={SORTS['ending_soon']}&days_left={days}"))
+            targets.append((_AUTO_ENDING_SOON,
+                            f"{_EBTH_BASE}/browse?sort={SORTS[sort_key]}&days_left={days}"))
+
     targets.append((_AUTO_RECOMMENDED, f"{_EBTH_BASE}/browse?sort={SORTS['recommended']}"))
-    return targets
+    # Distinct queries only. With category_id inert the category URLs collapse onto each
+    # other, and a duplicate request costs a full browser navigation to learn nothing.
+    seen: set[str] = set()
+    return [(v, u) for v, u in targets if not (u in seen or seen.add(u))]
 
 
 def _best_vertical(entry: acat.AuctionEntry) -> str:
@@ -392,6 +461,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--max-appraisals", type=int,
                     default=_int_env("MAX_AUCTION_APPRAISALS") or 20)
     ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
+    ap.add_argument("--probe-categories", action="store_true",
+                    help="test which query parameter narrows /browse to one category, "
+                         "writing each trial to disk as it lands")
     ap.add_argument("--probe", action="store_true",
                     help="fetch the configured pages and publish a structure report "
                          "instead of running the pipeline")
@@ -409,6 +481,8 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient) -> int:
+    if args.probe_categories:
+        return _probe_categories(client, out_dir)
     if args.probe:
         return _probe(client, [u for _v, u in targets], out_dir)
 

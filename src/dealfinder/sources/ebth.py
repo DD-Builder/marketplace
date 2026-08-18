@@ -881,9 +881,9 @@ class EbthClient:
             report["endpoint_trials"] = self._try_endpoints(shell, search_urls[0])
             report["graphql_trials"] = self._try_graphql(mined)
             report["sales_index"] = self._analyze_sales_index()
-        # Category first: it is the open question, and the section order decides what
-        # survives a timeout. Each assignment lands in ``partial_probe`` as it completes.
-        report["category_filter_trials"] = self._try_category_filters()
+        # The category-parameter question lives in --probe-categories, which writes each
+        # trial as it lands. Folding it in here cost two runs to the job clock without
+        # publishing anything, because a step timeout kills the process outright.
         report["time_filter_trials"] = self._try_time_filters()
         return report
 
@@ -913,71 +913,44 @@ class EbthClient:
             trials.append(trial)
         return trials
 
-    def _try_category_filters(self) -> dict:
-        """Find the parameter that actually narrows /browse to one category.
+    #: Candidates for the parameter that narrows /browse to one category, tried against
+    #: Jewelry and Watches (id 3313, slug jewelry-and-watches). These are not invented:
+    #: they are the names the API publishes in its own ``valid_filters`` list, plus the
+    #: ``path_slug`` form its category tree gives for every node. ``category_id`` is kept
+    #: as the control — it is what the Categories filter block names as its query
+    #: parameter, and it measurably does nothing, which is the whole reason for this.
+    CATEGORY_QUERY_CANDIDATES = (
+        ("category_id (control)", "category_id=3313"),
+        ("category_slug", "category_slug=jewelry-and-watches"),
+        ("category_name", "category_name=Jewelry and Watches"),
+        ("path_slug (leading /)", "path_slug=/jewelry-and-watches"),
+        ("path_slug (bare)", "path_slug=jewelry-and-watches"),
+    )
 
-        ``category_id`` does not. Measured across a full run, all 14 category ids on all
-        three sorts returned ``total_items=1986`` — the identical count the *unfiltered*
-        ``days_left=2`` browse returns — so every vertical was scraping the same 96 items
-        off the top of the same pool and the category taxonomy was decorative. Since
-        ``days_left`` demonstrably does work (1,211 / 1,986 / 3,169 for 1/2/3 days), the
-        request is not being dropped wholesale; only the category part of it is.
+    def category_filter_urls(self) -> list[tuple[str, str]]:
+        """(label, url) pairs for the category-parameter question, baseline first."""
+        return [("baseline", f"{_BASE}/browse")] + [
+            (label, f"{_BASE}/browse?{query}")
+            for label, query in self.CATEGORY_QUERY_CANDIDATES
+        ]
 
-        The candidates are not guesses. They are the names the API itself publishes in
-        ``valid_filters`` (``category_id``, ``category_slug``, ``category_name``,
-        ``path_slug``), tried against Jewelry and Watches, whose ``path_slug`` the
-        category tree gives as ``/jewelry-and-watches``. A first version of this probe
-        guessed nine spellings plus four speculative URL paths and timed the job out
-        after fourteen browser navigations without publishing anything — reading the
-        site's own declared vocabulary is both cheaper and better evidence.
+    def measure_query(self, url: str) -> dict:
+        """Fetch ``url`` and report only what settles whether a filter applied.
 
-        A candidate is real only if ``total_items`` moves off the unfiltered baseline;
-        ``applied_parameters`` is reported alongside because a parameter the echo drops
-        is one the server silently discarded, which is exactly how ``category_id`` failed
-        unnoticed.
+        ``total_items`` is the decisive number and ``applied_parameters`` is the API's own
+        echo of what it understood — a parameter missing from the echo was silently
+        discarded, which is exactly how ``category_id`` went unnoticed. One page of
+        results looks identical either way, so ``items`` alone can never answer this.
         """
-        out: dict = {
-            "note": "a candidate is real only if total_items moves off the baseline",
-            "candidates": [],
-        }
-
-        def measure(url: str) -> dict:
-            trial: dict = {"url": url}
-            try:
-                _h, caps = self._fetch_page(url)
-                pages = _search_page_count(caps)
-                trial["total_items"] = pages.get("total_items") if pages else None
-                trial["applied"] = _applied_parameters(caps)
-            except Exception as exc:  # noqa: BLE001
-                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
-            return trial
-
-        baseline = measure(f"{_BASE}/browse")
-        out["baseline"] = baseline
-        base_total = baseline.get("total_items")
-        log.info("ebth_probe_category_baseline", total=base_total)
-
-        # Jewelry and Watches: id 3313, slug/path per the tree in the filters block.
-        for query in (
-            "category_id=3313",
-            "category_slug=jewelry-and-watches",
-            "category_name=Jewelry and Watches",
-            "path_slug=/jewelry-and-watches",
-            "path_slug=jewelry-and-watches",
-        ):
-            url = f"{_BASE}/browse?{query}"
-            trial = measure(url)
-            total = trial.get("total_items")
-            trial["narrowed"] = (
-                total is not None and base_total is not None and total < base_total
-            )
-            # Logged per trial so a job that dies mid-probe still leaves the answer in the
-            # run log — the previous attempt was cancelled at 14m38s having printed
-            # nothing at all, so every completed trial was lost with it.
-            log.info("ebth_probe_category_trial", query=query, total=total,
-                     narrowed=trial["narrowed"])
-            out["candidates"].append(trial)
-        return out
+        trial: dict = {"url": url}
+        try:
+            _html, captures = self._fetch_page(url)
+            pages = _search_page_count(captures)
+            trial["total_items"] = pages.get("total_items") if pages else None
+            trial["applied"] = _applied_parameters(captures)
+        except Exception as exc:  # noqa: BLE001 — the report IS the error channel
+            trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+        return trial
 
     def _try_graphql(self, mined_paths: list[str]) -> list[dict]:
         """Handshake with every GraphQL-shaped route: a {__typename} probe, then — if it
