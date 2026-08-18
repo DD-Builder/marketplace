@@ -209,6 +209,18 @@ def _tools(p: EvaluatedPiece) -> str:
         </details>"""
 
 
+def _roi_pct(p: EvaluatedPiece) -> float:
+    """Margin as a percent of what you'd have in the piece, for the ROI sort.
+
+    Sorting by absolute margin always ranks expensive pieces first; this is what lets a
+    $20 find that resells for $200 outrank a $900 piece that clears $300.
+    """
+    outlay = (p.listing.asking_price_cents or 0) + p.appraisal.est_restoration_cost_cents
+    if outlay <= 0:
+        return 0.0
+    return round(100.0 * p.cash_margin_cents / outlay, 1)
+
+
 def _restoration_notes(p: EvaluatedPiece) -> str:
     """Say so when the model's restoration estimate was clamped to published reality.
 
@@ -277,6 +289,12 @@ def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
         f' data-title="{html.escape(listing.title or "Untitled")}"'
         f' data-priority="{p.priority}"'
         f' data-margin="{p.cash_margin_cents}"'
+        f' data-resale="{p.appraisal.est_restored_resale_value_cents}"'
+        f' data-work="{p.appraisal.est_restoration_effort_hours}"'
+        # Return on what you'd have in it (ask + materials), as a percent. Sorting by
+        # raw margin always favours expensive pieces; this is what surfaces the $20
+        # find that triples.
+        f' data-roi="{_roi_pct(p)}"'
         f' data-ask="{listing.asking_price_cents if listing.asking_price_cents is not None else ""}"'
         f' data-fresh="{p.days_since_seen:.2f}"'
         f' data-killer="{1 if p.is_killer else 0}"'
@@ -310,6 +328,7 @@ def _card(rank: int, p: EvaluatedPiece, photos: list[str]) -> str:
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">{_money(listing.asking_price_cents)}</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">{_money(p.appraisal.est_restored_resale_value_cents)}</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">{_money(p.appraisal.est_restoration_cost_cents)} · {p.appraisal.est_restoration_effort_hours:.1f}h</span></div>
           <div class="{net_class}"><span class="k">Est. margin</span><span class="v">{_money(p.cash_margin_cents)}</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v {_seen_tone(p.days_since_seen)}">{_seen_label(p.days_since_seen)}</span></div>
         </div>

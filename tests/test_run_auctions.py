@@ -206,30 +206,77 @@ def test_missing_token_in_ci_fails_before_any_spend(tmp_path, monkeypatch):
 # watchlist. These tests pin the fix: discovery spans every known vertical, and each lot
 # is screened/appraised under the vertical whose query actually found it.
 
-def test_search_targets_default_to_every_known_vertical_not_just_furniture():
+def test_discovery_walks_ebths_own_categories_not_guessed_keywords():
+    """A keyword query can only find a lot whose text happens to contain the word.
+    category_id returns everything the house itself filed there — including the lot
+    titled "Estate Lot, Assorted" that no keyword would ever surface."""
+    from dealfinder.auctions.categories import CATEGORIES, SORTS
+
     targets = run_auctions._search_targets("", default_vertical="furniture")
-    keyword_targets = targets[:len(run_auctions._DEFAULT_QUERIES)]
-    assert keyword_targets == [
-        (vkey, f"https://www.ebth.com/browse?q={urllib.parse.quote(q)}")
-        for vkey, q in run_auctions._DEFAULT_QUERIES
-    ]
-    verticals_covered = {v for v, _ in keyword_targets}
-    assert verticals_covered == {"furniture", "art", "electronics", "jewelry", "collectibles"}
+    urls = [u for _v, u in targets]
+    assert all("q=" not in u for u in urls), "no keyword queries left in discovery"
+
+    # Every category we can honestly price is trawled, under its own vertical.
+    on = [c for c in CATEGORIES if c.default_on]
+    for cat in on:
+        mine = [(v, u) for v, u in targets if f"category_id={cat.id}" in u]
+        assert mine, f"{cat.label} is never searched"
+        assert all(v == cat.vertical for v, _ in mine), \
+            f"{cat.label} must be priced as {cat.vertical}"
+
+    # Jewelry and Watches is a single EBTH category — exactly the ask.
+    jw = next(c for c in CATEGORIES if c.label == "Jewelry and Watches")
+    assert jw.vertical == "jewelry"
+    assert any(f"category_id={jw.id}" in u for u in urls)
+
+    # And each one is pulled under EBTH's own sort presets, not ours.
+    for key in ("ending_soon", "highest_bid", "most_bids"):
+        assert any(f"sort={SORTS[key]}" in u for u in urls), key
 
 
-def test_search_targets_always_include_ending_soon_and_recommended():
-    """A keyword search can only ever find a lot that happens to contain a guessed
-    word. These two site-wide sources are the fix — confirmed live: sort=sale_ends_at_
-    asc is EBTH's real 'Ending Soonest' preset, and days_left genuinely narrows the
-    result set (1242/2017/3200 items at days_left=1/2/3, site-wide)."""
+def test_discovery_is_narrowed_to_the_decision_window():
+    """Valuing a lot that closes next week buys nothing; every category pull is already
+    filtered to what's actually decidable."""
     targets = run_auctions._search_targets("", default_vertical="furniture")
-    by_vertical = dict(targets)
-    assert by_vertical[run_auctions._AUTO_ENDING_SOON] == (
-        "https://www.ebth.com/browse?sort=sale_ends_at_asc&days_left=2"
+    cat_urls = [u for _v, u in targets if "category_id=" in u]
+    assert cat_urls and all("days_left=2" in u for u in cat_urls)
+
+
+def test_categories_can_be_chosen_by_name_id_or_slug(monkeypatch):
+    """So a repo variable can say "Jewelry and Watches, Furniture" in EBTH's own words."""
+    from dealfinder.auctions.categories import resolve
+
+    by_name = resolve("Jewelry and Watches, Furniture")
+    assert [c.slug for c in by_name] == ["jewelry-and-watches", "furniture"]
+    assert [c.id for c in resolve("3313,3472")] == [3313, 3472]
+    assert [c.slug for c in resolve("jewelry-and-watches")] == ["jewelry-and-watches"]
+    # A typo narrows the trawl; it must never break the hourly run.
+    assert resolve("Jewelry and Watches, nonsense-category")[0].id == 3313
+
+    monkeypatch.setenv("EBTH_CATEGORIES", "Jewelry and Watches")
+    targets = run_auctions._search_targets("", default_vertical="furniture")
+    cat_urls = [u for _v, u in targets if "category_id=" in u]
+    assert cat_urls and all("category_id=3313" in u for u in cat_urls)
+
+
+def test_uncertain_categories_are_listed_but_not_trawled_by_default():
+    """Appliances and vehicles stay selectable so the taxonomy is complete, but an
+    appraisal we can't stand behind is worse than no appraisal."""
+    from dealfinder.auctions.categories import BY_SLUG
+
+    assert not BY_SLUG["appliances"].default_on
+    assert not BY_SLUG["automotive"].default_on
+    urls = [u for _v, u in run_auctions._search_targets("", default_vertical="furniture")]
+    assert not any(f"category_id={BY_SLUG['appliances'].id}" in u for u in urls)
+
+
+def test_explicit_urls_still_override_category_discovery():
+    """The documented escape hatch, unchanged."""
+    targets = run_auctions._search_targets(
+        "https://www.ebth.com/browse?q=teak", default_vertical="furniture",
     )
-    assert by_vertical[run_auctions._AUTO_RECOMMENDED] == (
-        "https://www.ebth.com/browse?sort=recommended"
-    )
+    assert targets[0] == ("furniture", "https://www.ebth.com/browse?q=teak")
+    assert not any("category_id=" in u for _v, u in targets)
 
 
 def test_time_critical_days_is_configurable(monkeypatch):
@@ -239,11 +286,12 @@ def test_time_critical_days_is_configurable(monkeypatch):
     assert "days_left=5" in by_vertical[run_auctions._AUTO_ENDING_SOON]
 
 
-def test_search_targets_honors_an_explicit_override_under_one_vertical():
-    """The documented, backward-compatible shape: user-supplied URLs are plain URLs,
-    all screened under whatever --vertical/VERTICAL says. The two site-wide sources
-    are appended even here — they exist to catch what keyword search structurally
-    can't, regardless of which keywords the user chose."""
+def test_an_explicit_override_keeps_the_clock_sweep_but_drops_the_taste_one():
+    """When you name the URLs, you've said what you want searched — so the site-wide
+    "recommended" sweep (a discovery *preference*) is dropped rather than flooding your
+    selection. The ending-soon sweep stays: time-criticality is the tracker's whole
+    purpose, not a preference, and losing it would mean a lot closing in an hour goes
+    unseen because it fell outside your query."""
     targets = run_auctions._search_targets(
         "https://www.ebth.com/browse?q=teak\nhttps://www.ebth.com/browse?q=oak",
         default_vertical="furniture",
@@ -252,9 +300,7 @@ def test_search_targets_honors_an_explicit_override_under_one_vertical():
         ("furniture", "https://www.ebth.com/browse?q=teak"),
         ("furniture", "https://www.ebth.com/browse?q=oak"),
     ]
-    assert {v for v, _ in targets[2:]} == {
-        run_auctions._AUTO_ENDING_SOON, run_auctions._AUTO_RECOMMENDED,
-    }
+    assert {v for v, _ in targets[2:]} == {run_auctions._AUTO_ENDING_SOON}
 
 
 def test_watchlist_screens_each_lot_under_its_own_discovered_vertical():
@@ -387,8 +433,9 @@ def test_best_vertical_classifies_by_content_not_discovery_source():
 
 
 def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, monkeypatch):
-    """Full pipeline, dry-run (no AI spend): every default vertical's query actually
-    fires, and a jewelry-flavored result gets tagged and watched — not silently lost."""
+    """Full pipeline, dry-run (no AI spend): every priceable EBTH category is actually
+    trawled, and a lot from Jewelry and Watches is tagged and watched under jewelry's
+    own rules — not silently lost to a furniture keyword gate."""
     from dealfinder.sources.ebth import AuctionItem
 
     monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-test")
@@ -396,9 +443,10 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
     seen_queries: list[str] = []
 
     def fake_search(self, url, **kw):
-        q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query).get("q", [""])[0]
-        seen_queries.append(q)
-        if "silver" in q or "diamond" in q:
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+        cat = qs.get("category_id", [""])[0]
+        seen_queries.append(cat)
+        if cat == "3313":          # EBTH's own "Jewelry and Watches"
             return [AuctionItem(
                 item_id="j-1", title="Sterling Silver Diamond Ring",
                 description="14k gold band, sterling silver diamond setting",
@@ -418,13 +466,15 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
         "--dry-run",
     ])
     assert rc == 0
-    # +2: the always-on ending-soon/recommended site-wide sources, alongside every
-    # per-vertical keyword query — not just furniture's.
-    assert len(seen_queries) == len(run_auctions._DEFAULT_QUERIES) + 2
+    from dealfinder.auctions.categories import CATEGORIES
+    on = [c for c in CATEGORIES if c.default_on]
+    # Every priceable category under each of EBTH's three sort presets, plus the two
+    # site-wide sweeps.
+    assert len(seen_queries) == len(on) * 3 + 2
 
     cat = load_auction_catalog(tmp_path / "site" / "catalog.json")
     entry = cat.lots["j-1"]
-    assert entry.vertical == "jewelry"
+    assert entry.vertical == "jewelry", "the category decides how the lot is priced"
     assert entry.watch, "a jewelry lot must be watched under its own vertical's rules"
 
 

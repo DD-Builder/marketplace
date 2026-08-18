@@ -86,8 +86,11 @@ function applyView() {
     c.classList.toggle('hide', !show);
     if (show) visible++;
   });
-  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh' }[state.sort];
-  const dir = state.sort === 'ask' || state.sort === 'fresh' ? 1 : -1;
+  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh',
+                resale: 'resale', roi: 'roi', work: 'work' }[state.sort];
+  // Ascending for the ones where "less is better": price, staleness, hours of work.
+  const dir = (state.sort === 'ask' || state.sort === 'fresh' || state.sort === 'work')
+    ? 1 : -1;
   tierSections.forEach(section => {
     const grid = section.querySelector('.grid');
     const own = cards.filter(c => c.dataset.tier === section.dataset.tier);
@@ -397,3 +400,53 @@ function renderDrafts(out, st, data) {
 
 applyView();      // establish sort/empty state on load, not only after a click
 checkConnection();
+
+
+// Pull-to-refresh. The page is a published artifact, so refreshing means re-fetching it.
+(function(){
+  var el = document.getElementById('ptr');
+  if (!el) return;
+  var txt = el.querySelector('.txt');
+  var startY = 0, pulling = false, dist = 0;
+  var THRESHOLD = 70, MAX = 110;
+
+  function atTop(){
+    return (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+  }
+  function set(h, armed){
+    el.style.height = h + 'px';
+    el.classList.toggle('armed', !!armed);
+    if (txt) txt.textContent = h < 8 ? '' : (armed ? 'Release to refresh' : 'Pull to refresh');
+  }
+
+  document.addEventListener('touchstart', function(e){
+    // Only arm at the very top, and never mid-gesture with several fingers down.
+    if (!atTop() || e.touches.length !== 1) { pulling = false; return; }
+    startY = e.touches[0].clientY;
+    pulling = true;
+    dist = 0;
+  }, {passive: true});
+
+  document.addEventListener('touchmove', function(e){
+    if (!pulling) return;
+    var dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { set(0, false); dist = 0; return; }
+    if (!atTop()) { pulling = false; set(0, false); return; }
+    // Resistance: the pull slows as it lengthens, so it feels anchored rather than loose.
+    dist = Math.min(MAX, dy * 0.5);
+    set(dist, dist >= THRESHOLD);
+  }, {passive: true});
+
+  document.addEventListener('touchend', function(){
+    if (!pulling) return;
+    pulling = false;
+    if (dist >= THRESHOLD) {
+      el.classList.add('busy');
+      if (txt) txt.textContent = 'Refreshing…';
+      set(46, true);
+      location.reload();
+    } else {
+      set(0, false);
+    }
+  });
+})();

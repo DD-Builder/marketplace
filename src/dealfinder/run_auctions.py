@@ -4,10 +4,10 @@ The cadence trick: this runs *hourly* (auctions are won and lost inside a day), 
 hourly job must not cost hourly money. So each run is asymmetric —
 
 * **search** (both discovery of new lots and a bid/count/end-time refresh of everything
-  still in results — EBTH's search response carries all three) happens every run, across
-  every vertical this pipeline knows how to price, not just furniture, PLUS two
-  site-wide sources keyword search structurally can't cover: everything closing soon
-  and EBTH's own "recommended" ordering (see ``_AUTO_ENDING_SOON``/``_AUTO_RECOMMENDED``);
+  still in results — EBTH's search response carries all three) happens every run, walking
+  EBTH's *own* category tree under their *own* sort presets (ending soonest, highest bid,
+  most bids), narrowed to the decision window; plus two site-wide sweeps that catch
+  whatever the filing missed (see ``_AUTO_ENDING_SOON``/``_AUTO_RECOMMENDED``);
 * **item-page snapshots** (best-effort, only for watched lots the searches didn't
   surface) happen every run too, endgame lots first;
 * **appraisals** (the only expensive step) happen once per lot, capped per run.
@@ -16,12 +16,13 @@ Environment, mirroring run_board:
 
     CLAUDE_CODE_OAUTH_TOKEN   subscription appraiser auth (CI)
     APPRAISER_PROVIDER        claude-code (default) | claude-api
-    EBTH_SEARCH_URLS          newline/comma-separated EBTH search/browse URLs. Unset by
-                              default, which runs a built-in query per vertical
-                              (furniture, art, electronics, jewelry, collectibles) —
-                              set this to replace them with your own (all screened
-                              under --vertical/VERTICAL, default furniture). Either
-                              way, the ending-soon/recommended sources below always run.
+    EBTH_CATEGORIES           which of EBTH's own categories to trawl (ids, slugs or
+                              names; empty = every category we can honestly price).
+                              e.g. "Jewelry and Watches, Furniture" or "3313,3472"
+    EBTH_SORTS                which of EBTH's sort presets to pull per category
+                              (default ending_soon,highest_bid,most_bids)
+    EBTH_SEARCH_URLS          literal browse URLs, overriding category discovery
+                              entirely; screened under --vertical/VERTICAL
     VERTICAL                  vertical for --vertical / for EBTH_SEARCH_URLS overrides
     EBTH_TIME_CRITICAL_DAYS   the site-wide "closing soon" window (default 2) — lots
                               found this way are watched with no keyword gate at all;
@@ -49,6 +50,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from dealfinder.auctions import bidding
+from dealfinder.auctions.categories import SORTS, resolve as resolve_categories
 from dealfinder.auctions import catalog as acat
 from dealfinder.auctions.board import AuctionBoardMeta, write_auction_page
 from dealfinder.appraiser import get_appraiser
@@ -73,29 +75,12 @@ log = get_logger(__name__)
 # up treating all 6,148 live lots as one query's results).
 _EBTH_BASE = "https://www.ebth.com"
 
-#: (vertical key, query) — EBTH sells far more than furniture, and a tracker whose only
-#: default queries were "mid century furniture" and "danish modern" is, in practice, a
-#: furniture-only tracker on a site that also runs jewelry, silver, coins, watches, rugs
-#: and fine art through the same auction mechanics. Two queries per vertical this
-#: pipeline actually knows how to price (see verticals.py).
-_DEFAULT_QUERIES: tuple[tuple[str, str], ...] = (
-    ("furniture", "mid century furniture"),
-    ("furniture", "danish modern"),
-    ("art", "original oil painting"),
-    ("art", "listed artist print"),
-    ("electronics", "vintage stereo receiver"),
-    ("jewelry", "sterling silver jewelry"),
-    ("jewelry", "diamond gold ring"),
-    ("collectibles", "sterling silver"),
-    ("collectibles", "antique rug"),
-)
-
-#: How many real page loads a discovery search follows per query. Lower than
-#: EbthClient.search's own default (5): with nine default queries instead of two, an
-#: hourly run needs to stay well inside its time budget, and discovery only needs to see
-#: enough of a category to seed the watchlist — the endgame-lot snapshot path is what
-#: keeps prices current, not exhaustive discovery.
-_DISCOVERY_MAX_PAGES = 3
+#: Pages to follow per discovery target. One, deliberately: every target is already
+#: narrowed to a category AND the decision window AND one of EBTH's own sort orders, so
+#: page 1 is the most relevant 48 lots by the house's own reckoning. With ~44 targets a
+#: run, following three pages each would mean 130+ browser navigations an hour to reach
+#: lots that are, by construction, the ones the sort ranked lowest.
+_DISCOVERY_MAX_PAGES = 1
 
 #: A keyword search can only ever find lots that happen to contain a guessed word — it
 #: has no way to notice a jewelry lot that doesn't say "sterling" or a rug that doesn't
@@ -156,37 +141,53 @@ def _probe(client: EbthClient, urls: list[str], out_dir: Path) -> int:
 def _search_targets(raw: str, *, default_vertical: str) -> list[tuple[str, str]]:
     """(vertical key, search URL) pairs to run this pass.
 
-    An explicit ``EBTH_SEARCH_URLS`` override is plain URLs (the documented,
-    backward-compatible shape) and is screened/appraised under ``default_vertical`` for
-    all of them. With nothing configured, EBTH is searched across every vertical this
-    pipeline knows how to price — the earlier default (two furniture queries) made "the
-    auction tracker" a de facto furniture-only tracker on a site that runs jewelry,
-    silver, coins, watches and rugs through identical auction mechanics.
+    Discovery is driven by **EBTH's own categories**, not guessed keywords. A keyword
+    query can only find a lot whose text happens to contain the word; ``category_id``
+    returns everything the house itself filed under that heading, including the lot
+    titled "Estate Lot, Assorted" that no keyword would ever surface. Each category
+    carries the vertical that should price it, so "Jewelry and Watches" is appraised
+    as jewelry rather than as whatever the run's default happens to be.
 
-    Either way, two site-wide, keyword-free sources are always appended: everything
-    closing within ``EBTH_TIME_CRITICAL_DAYS`` days (default 2), and EBTH's own
-    "recommended" ordering — see ``_AUTO_ENDING_SOON``/``_AUTO_RECOMMENDED`` above for
-    why these bypass the keyword gate entirely.
+    For each selected category we ask for the lots that are actually decidable —
+    ``days_left`` inside the decision window — under EBTH's own sort presets:
+    ending soonest, highest bid, and most bids. Using *their* ordering matters because
+    the server decides which lots we see at all; sorting our own page could never reach
+    the hottest lots in a category that runs to thousands of items.
+
+    ``EBTH_SEARCH_URLS`` still overrides everything with literal URLs, screened under
+    ``default_vertical`` — the documented escape hatch, unchanged.
     """
     if raw.strip():
         targets = [(default_vertical, u) for u in _search_urls(raw)]
-    else:
-        targets = [
-            (vkey, f"{_EBTH_BASE}/browse?q={urllib.parse.quote(q)}")
-            for vkey, q in _DEFAULT_QUERIES
-        ]
+        days = _int_env("EBTH_TIME_CRITICAL_DAYS") or 2
+        targets.append((_AUTO_ENDING_SOON,
+                        f"{_EBTH_BASE}/browse?sort={SORTS['ending_soon']}&days_left={days}"))
+        return targets
+
     days = _int_env("EBTH_TIME_CRITICAL_DAYS") or 2
+    sorts = [s.strip() for s in _env("EBTH_SORTS", "ending_soon,highest_bid,most_bids").split(",")
+             if s.strip() in SORTS]
+    targets: list[tuple[str, str]] = []
+    for cat in resolve_categories(_env("EBTH_CATEGORIES", "")):
+        for sort_key in sorts:
+            targets.append((
+                cat.vertical,
+                f"{_EBTH_BASE}/browse?category_id={cat.id}"
+                f"&sort={SORTS[sort_key]}&days_left={days}",
+            ))
+    # Plus the two site-wide sweeps, which catch anything the category filing missed.
     targets.append((_AUTO_ENDING_SOON,
-                    f"{_EBTH_BASE}/browse?sort=sale_ends_at_asc&days_left={days}"))
-    targets.append((_AUTO_RECOMMENDED, f"{_EBTH_BASE}/browse?sort=recommended"))
+                    f"{_EBTH_BASE}/browse?sort={SORTS['ending_soon']}&days_left={days}"))
+    targets.append((_AUTO_RECOMMENDED, f"{_EBTH_BASE}/browse?sort={SORTS['recommended']}"))
     return targets
 
 
 def _best_vertical(entry: acat.AuctionEntry) -> str:
     """Best-scoring vertical match across everything this pipeline knows how to price,
-    for a lot discovered without a category keyword (ending-soon / recommended
-    browsing). Classification only, for pricing/appraisal guidance — never used to
-    decide whether the lot gets watched."""
+    for a lot discovered without a category (the site-wide ending-soon / recommended
+    sweeps). Classification only, for pricing and appraiser guidance — never used to
+    decide whether the lot gets watched. Lots found *through* a category already carry
+    that category's vertical and never reach this."""
     listing = entry.to_listing()
     best_key, best_score = "furniture", -1
     for v in all_verticals():

@@ -23,6 +23,13 @@ from pathlib import Path
 from dealfinder.auctions.bidding import BidGuidance
 from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry, comparable_closes
 from dealfinder.verticals import get_vertical
+from dealfinder.webui import (
+    PULL_TO_REFRESH_CSS,
+    PULL_TO_REFRESH_HTML,
+    PULL_TO_REFRESH_JS,
+    SORT_CSS,
+    sort_select,
+)
 
 _STANCE = {
     "bid": ("BID LATE", "good"),
@@ -187,9 +194,16 @@ def _card(entry: AuctionEntry, g: BidGuidance | None, *, now: datetime) -> str:
     )
     vert = entry.vertical or ""
     hay = _esc(f"{entry.title} {a.identified_item if a else ''} {vert}".lower())
+    ends_ms = int(entry.ends_at.timestamp() * 1000) if entry.ends_at else 1 << 53
     return f"""
     <article class="lot {tone}" data-stance="{_esc(g.stance if g else 'watch')}"
              data-vertical="{_esc(vert)}" data-hay="{hay}" data-id="{_esc(entry.id)}"
+             data-ends="{ends_ms}"
+             data-margin="{g.margin_at_current_cents if g and g.margin_at_current_cents is not None else 0}"
+             data-value="{g.value_cents if g else 0}"
+             data-maxbid="{g.max_bid_cents if g else 0}"
+             data-bid="{entry.current_bid_cents or 0}"
+             data-bids="{entry.bid_count or 0}"
              tabindex="0" role="button" aria-label="Open details">
       <div class="media">{photo}<span class="stance {tone}">{label}</span></div>
       <div class="body">
@@ -262,9 +276,33 @@ def write_auction_page(
         + "</tbody></table>"
     ) if ended else '<p class="empty">No closed lots observed yet.</p>'
 
+    ptr_html = PULL_TO_REFRESH_HTML
+    sort_html = sort_select([
+        ("ends", "Closing soonest"),
+        ("margin", "Best margin now"),
+        ("value", "Highest value"),
+        ("maxbid", "Highest max bid"),
+        ("bid", "Highest current bid"),
+        ("bids", "Most bids"),
+    ])
+    # Label the chips with EBTH's own category names where one maps cleanly, so the
+    # filter reads the way their site does ("Jewelry and Watches", not "Fine & estate
+    # jewelry"). Several EBTH categories share one pricing vertical, so a vertical with
+    # more than one category keeps our own label rather than picking a category
+    # arbitrarily.
+    from dealfinder.auctions.categories import CATEGORIES
+
+    by_vertical: dict[str, list[str]] = {}
+    for c in CATEGORIES:
+        by_vertical.setdefault(c.vertical, []).append(c.label)
+
+    def chip_label(v: str) -> str:
+        names = by_vertical.get(v, [])
+        return names[0] if len(names) == 1 else get_vertical(v).label
+
     chips = "".join(
         f'<button class="chip" data-vertical="{_esc(v)}">'
-        f"{_esc(get_vertical(v).label)}</button>"
+        f"{_esc(chip_label(v))}</button>"
         for v in verticals
     )
 
@@ -274,8 +312,9 @@ def write_auction_page(
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>{_esc(meta.title)} — {_esc(meta.subtitle)}</title>
-<style>{_CSS}</style>
+<style>{_CSS}{PULL_TO_REFRESH_CSS}{SORT_CSS}</style>
 </head><body>
+{ptr_html}
 <nav class="tabs">
   <a href="../index.html">Home</a>
   <a href="../board.html">The Bench · Marketplace</a>
@@ -308,6 +347,7 @@ def write_auction_page(
       {chips}
     </div>
     <input id="q" type="search" placeholder="Search lots…" aria-label="Search lots">
+    {sort_html}
     <button id="reset" class="chip">Reset</button>
   </div>
   <p class="sub note">Values are what a piece fetches <b>as it arrives</b> — nothing here
@@ -331,7 +371,7 @@ def write_auction_page(
 <dialog id="detail"><div class="dlg"></div></dialog>
 <footer><a href="../index.html">← Home</a></footer>
 <script>window.LOTS = {json.dumps(payload)};</script>
-<script>{_JS}</script>
+<script>{_JS}{PULL_TO_REFRESH_JS}</script>
 </body></html>"""
 
     out = out_dir / "index.html"
@@ -472,7 +512,7 @@ function tick(){
 tick(); setInterval(tick, 30000);
 
 // ---- filtering: stance + category + text, all composable -----------------------
-var state = {stance: 'all', vertical: 'all', q: ''};
+var state = {stance: 'all', vertical: 'all', q: '', sort: 'ends'};
 
 function apply(){
   var shown = 0;
@@ -521,10 +561,36 @@ var q = document.getElementById('q');
 if (q) q.addEventListener('input', function(){
   state.q = q.value.trim().toLowerCase(); apply();
 });
+
+// ---- sorting: reorder within each section, never across them -------------------
+// A lot closing in an hour and one closing next week are different decisions; moving
+// one into the other's band would erase the only distinction the page is built on.
+function applySort(){
+  var key = state.sort;
+  // Ascending only for the clock — everything else is "more is better".
+  var dir = (key === 'ends') ? 1 : -1;
+  ['sec-ending','sec-live'].forEach(function(id){
+    var sec = document.getElementById(id);
+    if (!sec) return;
+    var grid = sec.querySelector('.grid');
+    if (!grid) return;
+    Array.prototype.slice.call(grid.querySelectorAll('.lot'))
+      .sort(function(a, b){
+        return dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0));
+      })
+      .forEach(function(c){ grid.appendChild(c); });
+  });
+}
+var sortSel = document.getElementById('sort');
+if (sortSel) sortSel.addEventListener('change', function(){
+  state.sort = sortSel.value; applySort();
+});
 var reset = document.getElementById('reset');
 if (reset) reset.addEventListener('click', function(){
-  state = {stance:'all', vertical:'all', q:''};
+  state = {stance:'all', vertical:'all', q:'', sort:'ends'};
   if (q) q.value = '';
+  if (sortSel) sortSel.value = 'ends';
+  applySort();
   apply();
 });
 
@@ -630,5 +696,6 @@ document.addEventListener('keydown', function(e){
   }
 });
 if (dlg) dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+applySort();
 apply();
 """

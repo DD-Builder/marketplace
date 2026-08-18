@@ -28,6 +28,13 @@ from dealfinder.auctions.catalog import (
 )
 from dealfinder.catalog import Catalog, load_catalog
 from dealfinder.logging import get_logger
+from dealfinder.webui import (
+    PULL_TO_REFRESH_CSS,
+    PULL_TO_REFRESH_HTML,
+    PULL_TO_REFRESH_JS,
+    SORT_CSS,
+    sort_select,
+)
 
 log = get_logger(__name__)
 
@@ -164,8 +171,17 @@ def _card(p: Pick) -> str:
     )
     badges = "".join(f'<span class="badge">{_esc(b)}</span>' for b in p.badges)
     hay = _esc(f"{p.title} {p.detail} {p.source_label}".lower())
+    ends_ms = 1 << 53
+    if p.ends_at:
+        try:
+            ends_ms = int(datetime.fromisoformat(p.ends_at).timestamp() * 1000)
+        except ValueError:
+            pass
     return f"""
-    <a class="pick" href="{_esc(p.href)}" data-source="{_esc(p.source)}" data-hay="{hay}">
+    <a class="pick" href="{_esc(p.href)}" data-source="{_esc(p.source)}" data-hay="{hay}"
+       data-margin="{p.margin_cents}" data-value="{p.value_cents}"
+       data-cost="{p.cost_cents}" data-multiple="{p.multiple:.3f}"
+       data-ends="{ends_ms}">
       <div class="media">{photo}<span class="src {_esc(p.source)}">
         {_esc(p.source_label)}</span></div>
       <div class="body">
@@ -190,6 +206,13 @@ def render_home(
     auction_total: int,
     notes: list[str] | None = None,
 ) -> str:
+    sort_html = sort_select([
+        ("multiple", "Best value for money"),
+        ("margin", "Biggest margin"),
+        ("ends", "Closing soonest"),
+        ("value", "Highest value"),
+        ("cost", "Cheapest"),
+    ])
     cards = "".join(_card(p) for p in picks) or (
         '<p class="empty">Nothing surfaced yet — the boards fill this in as they run.</p>'
     )
@@ -200,8 +223,9 @@ def render_home(
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>The Find — best of every source</title>
-<style>{_CSS}</style>
+<style>{_CSS}{PULL_TO_REFRESH_CSS}{SORT_CSS}</style>
 </head><body>
+{PULL_TO_REFRESH_HTML}
 <nav class="tabs">
   <a class="on" href="index.html">Home</a>
   <a href="board.html">The Bench · Marketplace</a>
@@ -226,6 +250,7 @@ def render_home(
   </div>
   <div class="controls">
     <input id="q" type="search" placeholder="Search everything…" aria-label="Search">
+    {sort_html}
     <button id="reset" class="chip">Reset</button>
   </div>
   <p class="sub note">Ranked by what a thing is worth against what it costs right now.
@@ -241,7 +266,7 @@ def render_home(
   <a href="board.html">The Bench →</a> &nbsp;·&nbsp;
   <a href="auctions/index.html">The Gavel →</a>
 </footer>
-<script>{_JS}</script>
+<script>{_JS}{PULL_TO_REFRESH_JS}</script>
 </body></html>"""
 
 
@@ -403,7 +428,7 @@ function tick(){
 }
 tick(); setInterval(tick, 30000);
 
-var state = {source: 'all', q: ''};
+var state = {source: 'all', q: '', sort: 'multiple'};
 function apply(){
   var shown = 0;
   document.querySelectorAll('.pick').forEach(function(card){
@@ -430,10 +455,31 @@ var q = document.getElementById('q');
 if (q) q.addEventListener('input', function(){
   state.q = q.value.trim().toLowerCase(); apply();
 });
+function applySort(){
+  var grid = document.querySelector('.grid');
+  if (!grid) return;
+  var key = state.sort;
+  // Ascending where less is better: the clock, and price.
+  var dir = (key === 'ends' || key === 'cost') ? 1 : -1;
+  Array.prototype.slice.call(grid.querySelectorAll('.pick'))
+    .sort(function(a, b){
+      return dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0));
+    })
+    .forEach(function(c){ grid.appendChild(c); });
+}
+var sortSel = document.getElementById('sort');
+if (sortSel) sortSel.addEventListener('change', function(){
+  state.sort = sortSel.value; applySort();
+});
+
 var reset = document.getElementById('reset');
 if (reset) reset.addEventListener('click', function(){
-  state = {source:'all', q:''}; if (q) q.value = ''; apply();
+  state = {source:'all', q:'', sort:'multiple'};
+  if (q) q.value = '';
+  if (sortSel) sortSel.value = 'multiple';
+  applySort(); apply();
 });
+applySort();
 apply();
 """
 

@@ -281,3 +281,15 @@ nav.tabs a{padding:14px 18px;color:var(--soft);text-decoration:none;font-size:14
   font-weight:600;white-space:nowrap;border-bottom:2px solid transparent}
 nav.tabs a.on{color:var(--accent);border-bottom-color:var(--accent)}
 nav.tabs a:hover{color:var(--ink)}
+
+/* ---- pull to refresh ---- */
+#ptr{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:center;gap:8px;height:0;overflow:hidden;z-index:60;
+  background:var(--card);color:var(--soft);font-size:13px;font-weight:600;
+  border-bottom:1px solid var(--line);transition:height .18s ease}
+#ptr.armed{color:var(--accent)}
+#ptr .spin{width:14px;height:14px;border:2px solid var(--line);
+  border-top-color:var(--accent);border-radius:50%}
+#ptr.busy .spin{animation:ptrspin .7s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#ptr{transition:none}#ptr.busy .spin{animation:none}}
