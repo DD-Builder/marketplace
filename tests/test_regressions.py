@@ -165,7 +165,7 @@ def test_a_quota_blocked_scrape_still_rebuilds_the_board(tmp_path, monkeypatch):
     # Non-zero, because a scraper that has stopped working must not look like success.
     assert rc == 5
     # But the board was still written, from the catalogue.
-    page = out / "index.html"
+    page = out / "board.html"
     assert page.exists()
     assert "Walnut credenza" in page.read_text()
     # And the failed scan left presence evidence untouched.

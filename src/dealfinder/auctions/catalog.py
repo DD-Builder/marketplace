@@ -300,6 +300,32 @@ def ending_soon(catalog: AuctionCatalog) -> list[AuctionEntry]:
     return sorted(out, key=lambda e: e.ends_at or datetime.max.replace(tzinfo=timezone.utc))
 
 
+def comparable_closes(
+    catalog: AuctionCatalog, entry: AuctionEntry, *, limit: int = 60
+) -> list[tuple[datetime, int]]:
+    """(closed_at, final price) for ended lots in the same category, oldest first.
+
+    This is the only *honest* price history available to this tool. There is no public
+    feed of long-run realised auction prices — eBay's sold-data API is a closed limited
+    release and EBTH publishes no results archive — so rather than draw a fabricated
+    trend line on a page whose entire job is deciding what to pay, the chart plots what
+    this tracker has actually watched close. It starts empty and thickens every week the
+    hourly job runs; the board says so plainly rather than implying a trend from three
+    points.
+    """
+    want = entry.vertical or ""
+    out = [
+        (e.ends_at or e.last_seen, e.final_price_cents)
+        for e in catalog.lots.values()
+        if e.state == "ended"
+        and e.final_price_cents
+        and e.id != entry.id
+        and (not want or e.vertical == want)
+    ]
+    out.sort(key=lambda pair: pair[0])
+    return out[-limit:]
+
+
 def calibration_pairs(catalog: AuctionCatalog) -> list[tuple[int, int]]:
     """(bid at T-24h, final price) for every ended lot where both are known and the
     endgame actually happened (final >= t24 > 0)."""

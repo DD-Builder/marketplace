@@ -109,6 +109,12 @@ jobs:
             --pieces docs/pieces.json \
             $ARGS
 
+      - name: Rebuild the combined landing page
+        # Reads both committed catalogues, so whichever board's job finishes last
+        # refreshes the landing page and it always agrees with what's on disk.
+        if: ${{ !cancelled() }}
+        run: python -m dealfinder.home --out docs
+
       - name: Publish the board
         # A run that exits 4 (appraisals failed) or 5 (scrape blocked) has still
         # rebuilt the board and updated the catalogue — that work must reach the

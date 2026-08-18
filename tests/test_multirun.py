@@ -138,7 +138,7 @@ class Harness:
 
     @property
     def page(self) -> str:
-        return (self.tmp / "site" / "index.html").read_text()
+        return (self.tmp / "site" / "board.html").read_text()
 
 
 def test_day_two_price_drop_re_ranks_without_a_single_new_appraisal(tmp_path, monkeypatch):

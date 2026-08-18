@@ -35,6 +35,7 @@ dev = [
 dealfinder-board = "dealfinder.run_board:main"
 dealfinder-negotiate = "dealfinder.negotiate:main"
 dealfinder-auctions = "dealfinder.run_auctions:main"
+dealfinder-home = "dealfinder.home:main"
 
 [build-system]
 requires = ["hatchling"]

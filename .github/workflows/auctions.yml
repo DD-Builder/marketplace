@@ -100,6 +100,10 @@ jobs:
             --catalog docs/auctions/catalog.json \
             $ARGS
 
+      - name: Rebuild the combined landing page
+        if: ${{ !cancelled() && steps.mode.outputs.probe != 'true' }}
+        run: python -m dealfinder.home --out docs
+
       - name: Publish the auction board
         # Exit 5 (site unreachable) still rebuilt the page from the catalogue, and the
         # probe writes its report either way — that work must reach the branch.
@@ -108,4 +112,5 @@ jobs:
           rm -rf docs/auctions/_photos
           git config user.name "auction-watch"
           git config user.email "auction-watch@users.noreply.github.com"
-          bash .github/scripts/publish.sh "Update auction board [skip ci]" docs/auctions
+          bash .github/scripts/publish.sh "Update auction board [skip ci]" \
+            docs/auctions docs/index.html

@@ -160,7 +160,7 @@ def test_write_site_is_idempotent_across_runs(tmp_path):
 def test_pieces_appraised_on_earlier_runs_keep_their_committed_photos(tmp_path):
     result = RunResult(pieces=[_piece("old")], plan=AppraisalPlan())
     write_site(result, tmp_path / "site", extra_photo_map={"old": "photos/old.jpg"})
-    assert 'src="photos/old.jpg"' in (tmp_path / "site" / "index.html").read_text()
+    assert 'src="photos/old.jpg"' in (tmp_path / "site" / "board.html").read_text()
 
 
 # --- the photo placeholder ----------------------------------------------------------------

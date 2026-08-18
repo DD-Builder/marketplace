@@ -446,12 +446,17 @@ def write_site(
     photo_files: dict[str, Path] | None = None,
     extra_photo_map: dict[str, str] | None = None,
     gallery_map: dict[str, list[str]] | None = None,
+    filename: str = "board.html",
 ) -> Path:
-    """Write index.html (and copy photos) into ``out_dir``; return the page path.
+    """Write the board page (and copy photos) into ``out_dir``; return the page path.
 
     ``extra_photo_map`` carries already-committed photos for pieces appraised on earlier
     runs, so they render without being copied again. ``gallery_map`` lists the extra
     committed shots per id for the lightbox.
+
+    ``filename`` defaults to ``board.html`` rather than ``index.html``: ``index.html`` is
+    now the combined landing page across every source (:mod:`dealfinder.home`), and this
+    is the Marketplace tab underneath it.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -469,7 +474,7 @@ def write_site(
             if src.resolve() != dest.resolve():
                 shutil.copyfile(src, dest)
             photo_map[listing_id] = f"photos/{dest.name}"
-    page = out_dir / "index.html"
+    page = out_dir / filename
     page.write_text(
         render_board(result, meta=meta, photo_map=photo_map, gallery_map=gallery_map),
         encoding="utf-8",

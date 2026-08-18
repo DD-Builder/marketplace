@@ -273,3 +273,11 @@ dialog menu button:first-child{background:var(--accent);border-color:var(--accen
   h1{font-size:28px}
   .grid{grid-template-columns:1fr}
 }
+
+/* ---- cross-site tabs ------------------------------------------------------------- */
+nav.tabs{display:flex;gap:2px;background:var(--card);border-bottom:1px solid var(--line);
+  padding:0 20px;overflow-x:auto;position:sticky;top:0;z-index:20}
+nav.tabs a{padding:14px 18px;color:var(--soft);text-decoration:none;font-size:14px;
+  font-weight:600;white-space:nowrap;border-bottom:2px solid transparent}
+nav.tabs a.on{color:var(--accent);border-bottom-color:var(--accent)}
+nav.tabs a:hover{color:var(--ink)}
