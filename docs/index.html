@@ -81,8 +81,25 @@ h3{font-size:15.5px;margin:0;font-weight:650;line-height:1.35}
 .empty{color:var(--soft);font-size:14px;margin-top:24px}
 footer{padding:44px 20px;color:var(--soft);font-size:14px}
 footer a{color:var(--teal);text-decoration:none;font-weight:600}
+
+#ptr{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:center;gap:8px;height:0;overflow:hidden;z-index:60;
+  background:var(--card);color:var(--soft);font-size:13px;font-weight:600;
+  border-bottom:1px solid var(--line);transition:height .18s ease}
+#ptr.armed{color:var(--accent)}
+#ptr .spin{width:14px;height:14px;border:2px solid var(--line);
+  border-top-color:var(--accent);border-radius:50%}
+#ptr.busy .spin{animation:ptrspin .7s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#ptr{transition:none}#ptr.busy .spin{animation:none}}
+
+.sortwrap{font-size:12.5px;color:var(--soft);display:flex;align-items:center;gap:6px}
+.sortwrap select{font:inherit;font-size:13.5px;min-height:40px;padding:8px 12px;
+  border-radius:999px;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);cursor:pointer}
 </style>
 </head><body>
+<div id="ptr"><span class="spin"></span><span class="txt"></span></div>
 <nav class="tabs">
   <a class="on" href="index.html">Home</a>
   <a href="board.html">The Bench · Marketplace</a>
@@ -92,7 +109,7 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
   <div class="brandrow">
     <h1>The Find</h1>
     <span class="tag">best of every source</span>
-    <span class="sub">updated Aug 18, 2026 · 20:54 UTC</span>
+    <span class="sub">updated Aug 18, 2026 · 21:34 UTC</span>
   </div>
   
   <div class="summary">
@@ -107,6 +124,7 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
   </div>
   <div class="controls">
     <input id="q" type="search" placeholder="Search everything…" aria-label="Search">
+    <label class="sortwrap">Sort <select id="sort"><option value="multiple">Best value for money</option><option value="margin">Biggest margin</option><option value="ends">Closing soonest</option><option value="value">Highest value</option><option value="cost">Cheapest</option></select></label>
     <button id="reset" class="chip">Reset</button>
   </div>
   <p class="sub note">Ranked by what a thing is worth against what it costs right now.
@@ -116,7 +134,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
 </header>
 <main>
   <div class="grid">
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="wood dresser unidentified &quot;antique&quot; wood dresser with attached/companion mirror, rural ky marketplace listing — asking $1, worth about $200 restored ($180 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="wood dresser unidentified &quot;antique&quot; wood dresser with attached/companion mirror, rural ky marketplace listing — asking $1, worth about $200 restored ($180 of work). marketplace"
+       data-margin="1900" data-value="20000"
+       data-cost="100" data-multiple="200.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1329984805955947.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -131,7 +152,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Unidentified &quot;antique&quot; wood dresser with attached/companion mirror, rural KY marketplace listing — asking $1, worth about $200 restored ($180 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="free furniture unidentified furniture piece (item type not specified in listing) — asking $1, worth about $80 restored ($50 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="free furniture unidentified furniture piece (item type not specified in listing) — asking $1, worth about $80 restored ($50 of work). marketplace"
+       data-margin="2900" data-value="8000"
+       data-cost="100" data-multiple="80.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1004805828845064.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -146,7 +170,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Unidentified furniture piece (item type not specified in listing) — asking $1, worth about $80 restored ($50 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser - vintage green and white painted armoire vintage mediterranean/spanish-revival style painted armoire (wardrobe/dresser combo) — two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls — asking $20, worth about $300 restored ($100 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser - vintage green and white painted armoire vintage mediterranean/spanish-revival style painted armoire (wardrobe/dresser combo) — two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls — asking $20, worth about $300 restored ($100 of work). marketplace"
+       data-margin="18000" data-value="30000"
+       data-cost="2000" data-multiple="15.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1539598741047412.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -161,7 +188,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Vintage Mediterranean/Spanish-Revival style painted armoire (wardrobe/dresser combo) — two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls — asking $20, worth about $300 restored ($100 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="amour small oak-finish cabinet/jewelry armoire sold under the &#x27;amour&#x27; product name, missing a door hinge — asking $5, worth about $55 restored ($25 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="amour small oak-finish cabinet/jewelry armoire sold under the &#x27;amour&#x27; product name, missing a door hinge — asking $5, worth about $55 restored ($25 of work). marketplace"
+       data-margin="2500" data-value="5500"
+       data-cost="500" data-multiple="11.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1111420097939591.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -176,7 +206,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Small oak-finish cabinet/jewelry armoire sold under the &#x27;Amour&#x27; product name, missing a door hinge — asking $5, worth about $55 restored ($25 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid oak dining table with 6 chairs 6-seat traditional oak dining set (rectangular table + 6 carved-back spindle chairs) — asking $50, worth about $350 restored ($180 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid oak dining table with 6 chairs 6-seat traditional oak dining set (rectangular table + 6 carved-back spindle chairs) — asking $50, worth about $350 restored ($180 of work). marketplace"
+       data-margin="12000" data-value="35000"
+       data-cost="5000" data-multiple="7.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1396410792335616.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -191,7 +224,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">6-seat traditional oak dining set (rectangular table + 6 carved-back spindle chairs) — asking $50, worth about $350 restored ($180 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="heavy, wood dresser tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and stacked-case chippendale-style form — asking $80, worth about $320 restored ($120 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="heavy, wood dresser tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and stacked-case chippendale-style form — asking $80, worth about $320 restored ($120 of work). marketplace"
+       data-margin="12000" data-value="32000"
+       data-cost="8000" data-multiple="4.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/2829481977419908.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -206,7 +242,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and stacked-case Chippendale-style form — asking $80, worth about $320 restored ($120 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid hardwood 6-drawer chest / tall dresser traditional/colonial-style 6-drawer tall chest (highboy dresser) — asking $100, worth about $325 restored ($60 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid hardwood 6-drawer chest / tall dresser traditional/colonial-style 6-drawer tall chest (highboy dresser) — asking $100, worth about $325 restored ($60 of work). marketplace"
+       data-margin="16500" data-value="32500"
+       data-cost="10000" data-multiple="3.250"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1540358351121947.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -221,7 +260,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Traditional/Colonial-style 6-drawer tall chest (highboy dresser) — asking $100, worth about $325 restored ($60 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="white mid-century modern 2-drawer nightstand white-painted 2-drawer nightstand, mcm-style tapered legs — asking $15, worth about $45 restored ($12 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="white mid-century modern 2-drawer nightstand white-painted 2-drawer nightstand, mcm-style tapered legs — asking $15, worth about $45 restored ($12 of work). marketplace"
+       data-margin="1800" data-value="4500"
+       data-cost="1500" data-multiple="3.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1549815250125258.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -236,7 +278,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">White-painted 2-drawer nightstand, MCM-style tapered legs — asking $15, worth about $45 restored ($12 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="furniture set: dresser, media console, and bookshelf mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/walnut-accent asymmetrical bookshelf — almost certainly mass-market flat-pack pieces sold together as one lot — asking $50, worth about $150 restored ($25 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="furniture set: dresser, media console, and bookshelf mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/walnut-accent asymmetrical bookshelf — almost certainly mass-market flat-pack pieces sold together as one lot — asking $50, worth about $150 restored ($25 of work). marketplace"
+       data-margin="7500" data-value="15000"
+       data-cost="5000" data-multiple="3.000"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1697195071582592.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -251,7 +296,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/walnut-accent asymmetrical bookshelf — almost certainly mass-market flat-pack pieces sold together as one lot — asking $50, worth about $150 restored ($25 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="vanity old depression-era double-pedestal vanity/dressing table with trifold mirror and knee-hole stool well (art deco &#x27;waterfall&#x27; style) — asking $100, worth about $275 restored ($150 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="vanity old depression-era double-pedestal vanity/dressing table with trifold mirror and knee-hole stool well (art deco &#x27;waterfall&#x27; style) — asking $100, worth about $275 restored ($150 of work). marketplace"
+       data-margin="2500" data-value="27500"
+       data-cost="10000" data-multiple="2.750"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1745001666717512.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -266,7 +314,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
         <p class="why">Depression-era double-pedestal vanity/dressing table with trifold mirror and knee-hole stool well (Art Deco &#x27;waterfall&#x27; style) — asking $100, worth about $275 restored ($150 of work).</p>
       </div>
     </a>
-    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish — asking $36, worth about $95 restored ($25 of work). marketplace">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish — asking $36, worth about $95 restored ($25 of work). marketplace"
+       data-margin="3400" data-value="9500"
+       data-cost="3600" data-multiple="2.639"
+       data-ends="9007199254740992">
       <div class="media"><img src="photos/1298036099183850.jpg" alt="" loading="lazy"><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -282,7 +333,10 @@ footer a{color:var(--teal);text-decoration:none;font-weight:600}
       </div>
     </a>
     <a class="pick" href="board.html" data-source="marketplace" data-hay="mcm china cabinets
-gonzo vintage mcm-style china cabinet (display/storage cabinet with shelves), sold by vintage furniture dealer — asking $123, worth about $320 restored ($180 of work). marketplace">
+gonzo vintage mcm-style china cabinet (display/storage cabinet with shelves), sold by vintage furniture dealer — asking $123, worth about $320 restored ($180 of work). marketplace"
+       data-margin="1700" data-value="32000"
+       data-cost="12300" data-multiple="2.602"
+       data-ends="9007199254740992">
       <div class="media"><div class="nophoto">no photo</div><span class="src marketplace">
         Marketplace</span></div>
       <div class="body">
@@ -320,7 +374,7 @@ function tick(){
 }
 tick(); setInterval(tick, 30000);
 
-var state = {source: 'all', q: ''};
+var state = {source: 'all', q: '', sort: 'multiple'};
 function apply(){
   var shown = 0;
   document.querySelectorAll('.pick').forEach(function(card){
@@ -347,10 +401,80 @@ var q = document.getElementById('q');
 if (q) q.addEventListener('input', function(){
   state.q = q.value.trim().toLowerCase(); apply();
 });
+function applySort(){
+  var grid = document.querySelector('.grid');
+  if (!grid) return;
+  var key = state.sort;
+  // Ascending where less is better: the clock, and price.
+  var dir = (key === 'ends' || key === 'cost') ? 1 : -1;
+  Array.prototype.slice.call(grid.querySelectorAll('.pick'))
+    .sort(function(a, b){
+      return dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0));
+    })
+    .forEach(function(c){ grid.appendChild(c); });
+}
+var sortSel = document.getElementById('sort');
+if (sortSel) sortSel.addEventListener('change', function(){
+  state.sort = sortSel.value; applySort();
+});
+
 var reset = document.getElementById('reset');
 if (reset) reset.addEventListener('click', function(){
-  state = {source:'all', q:''}; if (q) q.value = ''; apply();
+  state = {source:'all', q:'', sort:'multiple'};
+  if (q) q.value = '';
+  if (sortSel) sortSel.value = 'multiple';
+  applySort(); apply();
 });
+applySort();
 apply();
+
+// Pull-to-refresh. The page is a published artifact, so refreshing means re-fetching it.
+(function(){
+  var el = document.getElementById('ptr');
+  if (!el) return;
+  var txt = el.querySelector('.txt');
+  var startY = 0, pulling = false, dist = 0;
+  var THRESHOLD = 70, MAX = 110;
+
+  function atTop(){
+    return (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+  }
+  function set(h, armed){
+    el.style.height = h + 'px';
+    el.classList.toggle('armed', !!armed);
+    if (txt) txt.textContent = h < 8 ? '' : (armed ? 'Release to refresh' : 'Pull to refresh');
+  }
+
+  document.addEventListener('touchstart', function(e){
+    // Only arm at the very top, and never mid-gesture with several fingers down.
+    if (!atTop() || e.touches.length !== 1) { pulling = false; return; }
+    startY = e.touches[0].clientY;
+    pulling = true;
+    dist = 0;
+  }, {passive: true});
+
+  document.addEventListener('touchmove', function(e){
+    if (!pulling) return;
+    var dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { set(0, false); dist = 0; return; }
+    if (!atTop()) { pulling = false; set(0, false); return; }
+    // Resistance: the pull slows as it lengthens, so it feels anchored rather than loose.
+    dist = Math.min(MAX, dy * 0.5);
+    set(dist, dist >= THRESHOLD);
+  }, {passive: true});
+
+  document.addEventListener('touchend', function(){
+    if (!pulling) return;
+    pulling = false;
+    if (dist >= THRESHOLD) {
+      el.classList.add('busy');
+      if (txt) txt.textContent = 'Refreshing…';
+      set(46, true);
+      location.reload();
+    } else {
+      set(0, false);
+    }
+  });
+})();
 </script>
 </body></html>
