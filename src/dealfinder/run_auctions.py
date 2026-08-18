@@ -135,10 +135,27 @@ def _write_status(out_dir: Path, state: str, **counts) -> None:
 
 
 def _probe(client: EbthClient, urls: list[str], out_dir: Path) -> int:
-    report = client.probe(urls)
+    # Whatever the probe managed to learn gets written even if it dies partway. The whole
+    # report used to be built in memory and written once at the end, so when a run was
+    # cancelled on the job timeout it published nothing at all — including the sections
+    # that had completed in the first two minutes. A probe exists to produce evidence;
+    # losing the evidence it already has is the one failure mode worth engineering out.
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "probe.json"
-    path.write_text(json.dumps(report, indent=1), encoding="utf-8")
+
+    def dump(data: dict) -> None:
+        try:
+            path.write_text(json.dumps(data, indent=1, default=str), encoding="utf-8")
+        except OSError as exc:
+            log.warning("probe_write_failed", error=str(exc)[:120])
+
+    try:
+        report = client.probe(urls)
+    except BaseException as exc:  # noqa: BLE001 — includes the cancellation we saw
+        partial = getattr(client, "partial_probe", None)
+        dump({"aborted": f"{type(exc).__name__}: {exc}"[:300], "partial": partial or {}})
+        raise
+    dump(report)
     for page in report["pages"]:
         line = f"{page['kind']}: {page['url']}"
         if "error" in page:

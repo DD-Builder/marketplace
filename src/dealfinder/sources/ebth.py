@@ -761,6 +761,10 @@ class EbthClient:
         site serves and which parse layers fire. Committed by CI so extraction can be
         tightened from evidence instead of guessed at from a network-blind dev box."""
         report: dict = {"probed_at": datetime.now(timezone.utc).isoformat(), "pages": []}
+        # The same dict the caller salvages if this never returns. Bound before any
+        # network work so a cancellation mid-probe still surfaces every section that had
+        # already completed, rather than discarding the lot.
+        self.partial_probe = report
         first_item_url = ""
         shell_html = ""
         for url in search_urls:
@@ -877,8 +881,10 @@ class EbthClient:
             report["endpoint_trials"] = self._try_endpoints(shell, search_urls[0])
             report["graphql_trials"] = self._try_graphql(mined)
             report["sales_index"] = self._analyze_sales_index()
-        report["time_filter_trials"] = self._try_time_filters()
+        # Category first: it is the open question, and the section order decides what
+        # survives a timeout. Each assignment lands in ``partial_probe`` as it completes.
         report["category_filter_trials"] = self._try_category_filters()
+        report["time_filter_trials"] = self._try_time_filters()
         return report
 
     def _try_time_filters(self) -> list[dict]:
@@ -914,70 +920,63 @@ class EbthClient:
         three sorts returned ``total_items=1986`` — the identical count the *unfiltered*
         ``days_left=2`` browse returns — so every vertical was scraping the same 96 items
         off the top of the same pool and the category taxonomy was decorative. Since
-        ``days_left`` demonstrably does work (1,986 with it, 6,242 without), the request
-        is not being dropped wholesale; only the category part of it is.
+        ``days_left`` demonstrably does work (1,211 / 1,986 / 3,169 for 1/2/3 days), the
+        request is not being dropped wholesale; only the category part of it is.
 
-        Rather than guess the right spelling, this reports the API's own
-        ``applied_parameters`` echo for each candidate. A candidate that appears in the
-        echo *and* moves ``total_items`` off the unfiltered baseline is the real one; a
-        candidate absent from the echo was silently discarded.
+        The candidates are not guesses. They are the names the API itself publishes in
+        ``valid_filters`` (``category_id``, ``category_slug``, ``category_name``,
+        ``path_slug``), tried against Jewelry and Watches, whose ``path_slug`` the
+        category tree gives as ``/jewelry-and-watches``. A first version of this probe
+        guessed nine spellings plus four speculative URL paths and timed the job out
+        after fourteen browser navigations without publishing anything — reading the
+        site's own declared vocabulary is both cheaper and better evidence.
+
+        A candidate is real only if ``total_items`` moves off the unfiltered baseline;
+        ``applied_parameters`` is reported alongside because a parameter the echo drops
+        is one the server silently discarded, which is exactly how ``category_id`` failed
+        unnoticed.
         """
-        out: dict = {"note": "a candidate is real only if total_items moves off baseline"}
+        out: dict = {
+            "note": "a candidate is real only if total_items moves off the baseline",
+            "candidates": [],
+        }
 
-        baseline_total = None
-        try:
-            _h, caps = self._fetch_page(f"{_BASE}/browse")
-            pages = _search_page_count(caps)
-            baseline_total = pages.get("total_items") if pages else None
-            applied = _applied_parameters(caps)
-            # The echo's own key names are the API's accepted vocabulary — the most
-            # direct evidence available for what the category parameter is called.
-            out["unfiltered_applied_keys"] = sorted(applied) if applied else None
-            out["unfiltered_total_items"] = baseline_total
-        except Exception as exc:  # noqa: BLE001
-            out["baseline_error"] = f"{type(exc).__name__}: {exc}"[:200]
-
-        # Jewelry and Watches (3313) and its slug, per the category tree read off the site.
-        candidates = [
-            "category_id=3313", "category_ids=3313", "category_ids[]=3313",
-            "categories=3313", "category=3313", "category=jewelry-and-watches",
-            "category_slug=jewelry-and-watches", "filter[category_id]=3313",
-            "refinementList[category][0]=Jewelry and Watches",
-        ]
-        trials: list[dict] = []
-        for q in candidates:
-            url = f"{_BASE}/browse?{q}"
+        def measure(url: str) -> dict:
             trial: dict = {"url": url}
             try:
                 _h, caps = self._fetch_page(url)
                 pages = _search_page_count(caps)
-                applied = _applied_parameters(caps)
-                total = pages.get("total_items") if pages else None
-                trial["total_items"] = total
-                trial["applied"] = applied if applied else None
-                trial["narrowed"] = (
-                    total is not None and baseline_total is not None and total < baseline_total
-                )
-            except Exception as exc:  # noqa: BLE001
-                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
-            trials.append(trial)
-        out["candidates"] = trials
-
-        # The site may key categories on a path rather than a query parameter at all.
-        paths: list[dict] = []
-        for path in ("/browse/jewelry-and-watches", "/categories/jewelry-and-watches",
-                     "/c/jewelry-and-watches", "/browse/furniture"):
-            trial = {"url": f"{_BASE}{path}"}
-            try:
-                _h, caps = self._fetch_page(trial["url"])
-                pages = _search_page_count(caps)
                 trial["total_items"] = pages.get("total_items") if pages else None
                 trial["applied"] = _applied_parameters(caps)
-                trial["items_seen"] = sum(len(harvest_json(c)) for c in caps)
             except Exception as exc:  # noqa: BLE001
                 trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
-            paths.append(trial)
-        out["path_forms"] = paths
+            return trial
+
+        baseline = measure(f"{_BASE}/browse")
+        out["baseline"] = baseline
+        base_total = baseline.get("total_items")
+        log.info("ebth_probe_category_baseline", total=base_total)
+
+        # Jewelry and Watches: id 3313, slug/path per the tree in the filters block.
+        for query in (
+            "category_id=3313",
+            "category_slug=jewelry-and-watches",
+            "category_name=Jewelry and Watches",
+            "path_slug=/jewelry-and-watches",
+            "path_slug=jewelry-and-watches",
+        ):
+            url = f"{_BASE}/browse?{query}"
+            trial = measure(url)
+            total = trial.get("total_items")
+            trial["narrowed"] = (
+                total is not None and base_total is not None and total < base_total
+            )
+            # Logged per trial so a job that dies mid-probe still leaves the answer in the
+            # run log — the previous attempt was cancelled at 14m38s having printed
+            # nothing at all, so every completed trial was lost with it.
+            log.info("ebth_probe_category_trial", query=query, total=total,
+                     narrowed=trial["narrowed"])
+            out["candidates"].append(trial)
         return out
 
     def _try_graphql(self, mined_paths: list[str]) -> list[dict]:

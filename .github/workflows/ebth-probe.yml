@@ -19,7 +19,7 @@ concurrency:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,13 +34,22 @@ jobs:
         timeout-minutes: 6
         run: python -m playwright install --with-deps chromium
       - name: Probe ebth.com
+        # A step-level budget under the job's, so an over-running probe fails with a
+        # signal and the publish step still runs. Without one, a probe that hung ate the
+        # whole job clock and the publish step was skipped, so a run that had already
+        # gathered most of its evidence shipped nothing.
+        timeout-minutes: 16
         env:
           EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
           EBTH_FETCH: ${{ vars.EBTH_FETCH || 'browser' }}
         run: |
-          python -m dealfinder.run_auctions --probe \
+          python -u -m dealfinder.run_auctions --probe \
             --out docs/auctions --catalog docs/auctions/catalog.json || true
       - name: Publish the report
+        # always(), because the point of a probe is the evidence it gathered. `|| true`
+        # covers a probe that exits non-zero but not one the step timeout kills — and
+        # that is precisely the case that lost a whole run's findings.
+        if: always()
         run: |
           git config user.name "ebth-probe"
           git config user.email "ebth-probe@users.noreply.github.com"
