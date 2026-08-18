@@ -345,10 +345,17 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
             acat.observe_auctions(catalog, [item], now=now)
             snapped += 1
 
-    # 3. Appraise the watchlist, once per lot, closest ending first.
+    # 3. Appraise the watchlist, once per lot, closest ending first — and only lots
+    #    actually closing inside the decision window. A lot ending next week will have
+    #    its bid move many times before any decision is due, so valuing it now buys
+    #    nothing that valuing it in two days wouldn't, and valuation is the only
+    #    expensive step in the run.
     appraised = 0
     failures: list[str] = []
-    todo = acat.unappraised_watch(catalog)[: args.max_appraisals]
+    decide_days = float(_env("EBTH_DECIDE_WITHIN_DAYS", "2"))
+    todo = acat.unappraised_watch(
+        catalog, within_days=decide_days, now=now
+    )[: args.max_appraisals]
     if todo and not args.dry_run:
         provider = get_appraiser(_env("APPRAISER_PROVIDER", "claude-code"))
         listings = [e.to_listing() for e in todo]
@@ -383,9 +390,12 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
                 stale.unlink(missing_ok=True)
     acat.save_auction_catalog(catalog, Path(args.catalog))
 
-    # 5. Guidance and the page.
+    # 5. Guidance and the page. Shipping is per-lot (a flat parcel rate for small
+    #    things, a real round trip for furniture and rugs), so it isn't passed here —
+    #    `guide` derives it from each lot's own vertical unless EBTH_SHIPPING_CENTS
+    #    forces a single site-wide override.
     premium = float(_env("EBTH_PREMIUM_PCT", "0.15"))
-    shipping = _int_env("EBTH_SHIPPING_CENTS") or 0
+    shipping_override = _int_env("EBTH_SHIPPING_CENTS")
     hourly = _int_env("HOURLY_RATE_CENTS") or 3000
     pairs = acat.calibration_pairs(catalog)
     multiplier = bidding.endgame_multiplier(pairs)
@@ -396,7 +406,7 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
         g = bidding.guide(
             entry, multiplier=multiplier, calibration_n=len(pairs),
             hourly_rate_cents=hourly, premium_pct=premium,
-            shipping_cents=shipping, now=now,
+            shipping_cents=shipping_override, now=now,
         )
         if g is not None:
             guidance[entry.id] = g

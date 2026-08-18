@@ -163,3 +163,34 @@ def test_roundtrip_and_corruption_quarantine(tmp_path: Path):
     with pytest.raises(AuctionCatalogCorrupt):
         load_auction_catalog(path)
     assert list(tmp_path.glob("auctions.json.corrupt-*")), "damaged file must be preserved"
+
+
+def test_appraisal_is_reserved_for_lots_inside_the_decision_window():
+    """Valuation is the only expensive step in a run. A lot closing next week will have
+    its bid move many times before any decision is due, so paying to value it now buys
+    nothing that paying in two days wouldn't."""
+    from dealfinder.auctions.catalog import unappraised_watch
+
+    cat = AuctionCatalog()
+    for lot_id, hours in (("soon", 10), ("tomorrow", 30), ("next-week", 24 * 7)):
+        observe_auctions(cat, [_item(lot_id, ends_in_h=hours)], now=T0)
+        cat.lots[lot_id].watch = True
+
+    inside = [e.id for e in unappraised_watch(cat, within_days=2, now=T0)]
+    assert inside == ["soon", "tomorrow"]          # soonest first, next-week excluded
+    # Without a window every watched lot is still fair game (the old behaviour).
+    assert len(unappraised_watch(cat)) == 3
+
+
+def test_a_lot_with_no_end_time_is_not_treated_as_imminent():
+    """'Unknown' is not 'closing now' — guessing it in would spend real money on a lot
+    that might not close for a month."""
+    from dealfinder.auctions.catalog import unappraised_watch
+
+    cat = AuctionCatalog()
+    cat.lots["dateless"] = AuctionEntry(
+        id="dateless", title="No end time", first_seen=T0, last_seen=T0,
+        watch=True, state="live",
+    )
+    assert unappraised_watch(cat, within_days=2, now=T0) == []
+    assert len(unappraised_watch(cat)) == 1

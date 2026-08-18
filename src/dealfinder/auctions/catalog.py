@@ -312,12 +312,28 @@ def calibration_pairs(catalog: AuctionCatalog) -> list[tuple[int, int]]:
     return pairs
 
 
-def unappraised_watch(catalog: AuctionCatalog) -> list[AuctionEntry]:
-    """Watch-listed lots we haven't valued yet, most-urgent close first."""
+def unappraised_watch(
+    catalog: AuctionCatalog,
+    *,
+    within_days: float | None = None,
+    now: datetime | None = None,
+) -> list[AuctionEntry]:
+    """Watch-listed lots we haven't valued yet, most-urgent close first.
+
+    ``within_days`` restricts this to lots actually closing soon. Valuation is the only
+    expensive step in the whole pipeline, and a lot that closes next week will have its
+    bid move many times before any decision is due — so spending an appraisal on it now
+    buys nothing that spending one in two days wouldn't. A lot with no end time is
+    excluded under a window, since "unknown" is not "imminent".
+    """
     out = [
         e for e in catalog.lots.values()
         if e.watch and e.state in ("live", "ending") and e.appraisal is None
     ]
+    if within_days is not None:
+        now = now or _now()
+        cutoff = now + timedelta(days=within_days)
+        out = [e for e in out if e.ends_at is not None and e.ends_at <= cutoff]
     return sorted(out, key=lambda e: e.ends_at or datetime.max.replace(tzinfo=timezone.utc))
 
 

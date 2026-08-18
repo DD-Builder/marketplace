@@ -30,6 +30,7 @@ from datetime import datetime, timezone
 from statistics import median
 
 from dealfinder.auctions.catalog import ENDGAME_HOURS, AuctionEntry
+from dealfinder.auctions.logistics import acquisition_cost
 from dealfinder.core.schemas import AppraisalResult
 
 #: What T-24h prices tend to become by close, before this catalogue has seen enough of
@@ -113,6 +114,23 @@ def bid_velocity_cents_per_hour(
     return (pts[-1].bid_cents - pts[0].bid_cents) / dt_h
 
 
+def resale_value_cents(appraisal: AppraisalResult) -> int:
+    """What the lot is worth resold **as it arrives** — no restoration assumed.
+
+    This is the ``est_asis_value`` line, deliberately *not* ``est_restored_resale_value``.
+    The Marketplace side of this project buys projects and fixes them; the auction side
+    buys finished pieces to resell as-found, so pricing off the restored figure would
+    credit the bid with value that only exists after work nobody is going to do — the
+    single easiest way to talk yourself into overpaying at an auction.
+
+    Falls back to the restored figure only when an appraisal carries no as-is number at
+    all (older stored appraisals), since a zero there would read as "worthless" rather
+    than "unstated".
+    """
+    asis = max(0, appraisal.est_asis_value_cents)
+    return asis or max(0, appraisal.est_restored_resale_value_cents)
+
+
 def max_bid_cents(
     appraisal: AppraisalResult,
     *,
@@ -125,21 +143,24 @@ def max_bid_cents(
 
     Derivation, all in cents::
 
-        proceeds   = restored resale value
-        keep       = proceeds * (1 - margin)          # your minimum margin comes off top
-        all_in_cap = keep - restoration cost - hours * rate - shipping
-        max_hammer = all_in_cap / (1 + premium)       # the house's cut rides the hammer
+        proceeds   = as-is resale value        # sold as it arrives; nothing restored
+        keep       = proceeds * (1 - margin)   # your minimum margin comes off the top
+        all_in_cap = keep - acquisition cost   # shipping, or the round trip to collect
+        max_hammer = all_in_cap / (1 + premium)  # the house's cut rides the hammer
+
+    Restoration cost and bench hours are deliberately absent: these lots are bought to
+    resell as-found, so charging the bid for work that will not happen would understate
+    the ceiling as badly as pricing off the restored value would overstate it.
 
     Confidence scales the margin, not the value: a shaky appraisal demands more cushion,
     which shrinks the ceiling instead of pretending the estimate is better than it is.
     Never negative — a lot that can't pay returns 0, which reads as "don't bid at all".
     """
-    value = max(0, appraisal.est_restored_resale_value_cents)
+    value = resale_value_cents(appraisal)
     # Below 0.55 confidence the cushion grows: at 0.3 confidence a 25% margin becomes 40%.
     cushion = margin_pct + max(0.0, (0.55 - appraisal.confidence)) * 0.6
     keep = value * (1.0 - min(0.9, cushion))
-    labor = appraisal.est_restoration_effort_hours * hourly_rate_cents
-    all_in_cap = keep - appraisal.est_restoration_cost_cents - labor - shipping_cents
+    all_in_cap = keep - shipping_cents
     if all_in_cap <= 0:
         return 0
     return int(all_in_cap / (1.0 + max(0.0, premium_pct)))
@@ -157,6 +178,16 @@ class BidGuidance:
     velocity_cents_per_hour: float | None = None
     headroom_cents: int | None = None  # max bid minus current bid; negative = gone
     notes: list[str] = field(default_factory=list)
+    #: The as-is resale estimate the ceiling was derived from — the "what it's worth"
+    #: half of the worth-vs-bid comparison the board leads with.
+    value_cents: int = 0
+    #: Cost of taking possession, and whether that's a parcel or a drive.
+    logistics_cents: int = 0
+    logistics_label: str = ""
+    logistics_detail: str = ""
+    #: Estimated profit if you win at the current bid and resell at the estimate. None
+    #: when nobody has bid yet, since there is no "current" to reason about.
+    margin_at_current_cents: int | None = None
 
 
 def guide(
@@ -166,21 +197,32 @@ def guide(
     calibration_n: int = 0,
     hourly_rate_cents: int = 3000,
     premium_pct: float = DEFAULT_PREMIUM_PCT,
-    shipping_cents: int = 0,
+    shipping_cents: int | None = None,
     margin_pct: float = _DEFAULT_MARGIN_PCT,
     now: datetime | None = None,
 ) -> BidGuidance | None:
-    """Turn an appraised, tracked lot into a stance and a number. None if unappraised."""
+    """Turn an appraised, tracked lot into a stance and a number. None if unappraised.
+
+    ``shipping_cents`` defaults to the lot's own logistics — a flat parcel rate for a
+    shippable category, a real round-trip drive for a bulky one — rather than a single
+    site-wide guess. Pass an explicit value to override.
+    """
     if entry.appraisal is None:
         return None
     now = now or datetime.now(timezone.utc)
+
+    logistics = acquisition_cost(entry.vertical, hourly_rate_cents=hourly_rate_cents)
+    if shipping_cents is None:
+        shipping_cents = logistics.cost_cents
 
     ceiling = max_bid_cents(
         entry.appraisal, hourly_rate_cents=hourly_rate_cents,
         premium_pct=premium_pct, shipping_cents=shipping_cents, margin_pct=margin_pct,
     )
-    all_in = round(ceiling * (1 + premium_pct)) + shipping_cents \
-        + entry.appraisal.est_restoration_cost_cents
+    # What winning at the ceiling actually costs: hammer + the house's cut + getting it
+    # home. No restoration line — these are bought to resell as they arrive.
+    all_in = round(ceiling * (1 + premium_pct)) + shipping_cents
+    value = resale_value_cents(entry.appraisal)
     projected = projected_final_cents(entry, multiplier=multiplier, now=now)
     velocity = bid_velocity_cents_per_hour(entry, now=now)
     current = entry.current_bid_cents
@@ -198,9 +240,15 @@ def guide(
             f"only {calibration_n} observed ending(s) so far. It sharpens as lots close."
         )
 
+    margin_at_current = (
+        value - round(current * (1 + premium_pct)) - shipping_cents
+        if current is not None else None
+    )
+
     if ceiling <= 0:
         stance, reason = "no-value", (
-            "The economics never work: restoration and fees eat the whole resale value."
+            f"The economics never work: the buyer's premium and "
+            f"{logistics.label.lower()} eat the whole ${value / 100:,.0f} resale value."
         )
     elif current is not None and current >= ceiling:
         stance, reason = "outpriced", (
@@ -234,4 +282,9 @@ def guide(
         velocity_cents_per_hour=velocity,
         headroom_cents=headroom,
         notes=notes,
+        value_cents=value,
+        logistics_cents=logistics.cost_cents,
+        logistics_label=logistics.label,
+        logistics_detail=logistics.detail,
+        margin_at_current_cents=margin_at_current,
     )

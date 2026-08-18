@@ -51,10 +51,13 @@ class Harness:
             name = "stub"
 
             def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+                # $900 as-is: worth the round trip to Cincinnati even as a bulky lot.
+                # (The as-is figure is what the bid math prices off now — nothing here
+                # is restored — so it has to clear the pickup cost on its own.)
                 return AppraisalResult(
                     identified_item=f"appraised {listing.title}",
-                    est_asis_value_cents=20000,
-                    est_restored_resale_value_cents=60000,
+                    est_asis_value_cents=90000,
+                    est_restored_resale_value_cents=120000,
                     est_restoration_cost_cents=4000,
                     est_restoration_effort_hours=3.0,
                     confidence=0.8, deal_score=55.0,

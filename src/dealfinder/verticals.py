@@ -30,6 +30,11 @@ class Vertical:
     max_price_cents: int = 300_000
     # Injected into the appraiser's system prompt so valuation is category-aware.
     appraiser_guidance: str = ""
+    #: True when a won lot has to be *collected* rather than shipped — furniture and rugs
+    #: don't go in a flat-rate box. This is what decides whether the bid math charges a
+    #: parcel rate or a real round-trip drive, and the difference is large enough to flip
+    #: a marginal lot either way (see :mod:`dealfinder.auctions.logistics`).
+    bulky: bool = False
 
 
 FURNITURE = Vertical(
@@ -56,6 +61,7 @@ FURNITURE = Vertical(
         "construction (solid wood vs. veneer vs. particleboard), joinery (dovetails, "
         "mortise-and-tenon), maker marks, era, and what restoration it realistically needs."
     ),
+    bulky=True,
 )
 
 ART = Vertical(
@@ -161,8 +167,97 @@ COLLECTIBLES = Vertical(
 )
 
 
+WATCHES = Vertical(
+    key="watches",
+    label="Watches & timepieces",
+    positive=frozenset({
+        "automatic", "automatic movement", "manual wind", "chronograph", "swiss made",
+        "swiss", "17 jewel", "17 jewels", "21 jewel", "gold filled", "14k", "18k",
+        "stainless steel", "vintage", "estate", "serviced", "running", "gmt", "diver",
+    }),
+    makers=frozenset({
+        "rolex", "omega", "patek philippe", "audemars piguet", "vacheron", "cartier",
+        "jaeger", "jaeger-lecoultre", "longines", "hamilton", "elgin", "waltham",
+        "tudor", "breitling", "tag heuer", "heuer", "seiko", "grand seiko", "zenith",
+        "iwc", "movado", "bulova",
+    }),
+    negative=frozenset({
+        "quartz fashion", "replica", "homage", "fashion watch", "smart watch",
+        "smartwatch", "apple watch", "fitbit", "not running as is", "no movement",
+    }),
+    min_price_cents=2000,
+    max_price_cents=5_000_000,
+    appraiser_guidance=(
+        "This is a wristwatch or pocket watch. Movement is decisive — an in-house or "
+        "Swiss mechanical movement carries the value, a quartz fashion piece does not. "
+        "Weigh maker, reference/model, case material (gold vs. gold-filled vs. steel), "
+        "dial originality (redials sharply reduce value), and whether it runs. Service "
+        "history matters; a non-running mechanical needs a costly overhaul."
+    ),
+)
+
+RUGS = Vertical(
+    key="rugs",
+    label="Rugs & carpets",
+    positive=frozenset({
+        "hand knotted", "hand-knotted", "handmade", "wool", "silk", "persian",
+        "oriental", "tribal", "kilim", "runner", "room size", "vegetable dye",
+        "antique", "vintage", "heriz", "tabriz", "kashan", "serapi", "oushak",
+        "bokhara", "kerman", "sarouk",
+    }),
+    makers=frozenset({
+        "heriz", "tabriz", "kashan", "isfahan", "nain", "qum", "serapi", "oushak",
+        "bidjar", "sarouk", "kerman", "bakhtiari",
+    }),
+    negative=frozenset({
+        "machine made", "machine-made", "power loomed", "polypropylene", "olefin",
+        "printed", "area rug polyester", "backing peeling", "heavily worn",
+    }),
+    min_price_cents=2000,
+    max_price_cents=2_000_000,
+    appraiser_guidance=(
+        "This is a rug or carpet. Hand-knotted vs. machine-made is the single biggest "
+        "value split — check knot density, selvedge, fringe (integral vs. sewn on) and "
+        "the back's clarity of pattern. Weigh origin/design, wool vs. silk, natural vs. "
+        "synthetic dyes, size, and condition (wear, repairs, dry rot, pet damage)."
+    ),
+    bulky=True,
+)
+
+DECOR = Vertical(
+    key="decor",
+    label="Decorative arts & objects",
+    positive=frozenset({
+        "porcelain", "bronze", "brass", "crystal", "cut glass", "art glass",
+        "hand painted", "signed", "marked", "antique", "vintage", "mid century",
+        "art deco", "cloisonne", "majolica", "sterling", "carved", "marble",
+        "asian", "chinese", "japanese", "murano",
+    }),
+    makers=frozenset({
+        "lalique", "baccarat", "steuben", "tiffany", "waterford", "murano", "daum",
+        "wedgwood", "meissen", "royal doulton", "herend", "lladro", "orrefors",
+        "kosta boda", "roseville", "rookwood", "weller",
+    }),
+    negative=frozenset({
+        "reproduction", "replica", "resin", "made in china unmarked", "mass produced",
+        "home goods", "target", "chipped and cracked", "hobby lobby",
+    }),
+    min_price_cents=1000,
+    max_price_cents=1_000_000,
+    appraiser_guidance=(
+        "This is a decorative object — glass, ceramic, bronze, or similar. Maker marks "
+        "and signatures drive value disproportionately here, so weigh them heavily. "
+        "Judge material quality (lead crystal vs. pressed glass, bronze vs. spelter), "
+        "hand vs. machine work, condition (chips, cracks, hairlines, restoration), and "
+        "whether the form is a sought-after pattern or an ordinary one."
+    ),
+)
+
+
 _REGISTRY: dict[str, Vertical] = {
-    v.key: v for v in (FURNITURE, ART, ELECTRONICS, JEWELRY, COLLECTIBLES)
+    v.key: v for v in (
+        FURNITURE, ART, ELECTRONICS, JEWELRY, COLLECTIBLES, WATCHES, RUGS, DECOR,
+    )
 }
 
 DEFAULT_VERTICAL = FURNITURE
