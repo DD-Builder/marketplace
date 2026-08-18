@@ -501,6 +501,14 @@ def _search_page_count(captures: list) -> dict | None:
     return None
 
 
+#: These describe the API surface itself — what queries/sorts/filters exist — never any
+#: one listing's content, so they're worth reporting in full even when they're arrays
+#: longer than the usual truncation threshold. This is exactly the evidence needed to
+#: build a real "closing soon" / curated-sort discovery query instead of guessing param
+#: names the way the initial /search-vs-/browse and q= digging had to.
+_FULL_METADATA_KEYS = frozenset({"sorts", "valid_filters", "filters", "filter_counts"})
+
+
 def _non_item_fields(payload, *, max_depth: int = 2) -> dict:
     """A search response's top-level fields, minus the big listing arrays — this is
     where pagination (page/total/per_page) and facets live, and unlike listing content
@@ -521,7 +529,10 @@ def _non_item_fields(payload, *, max_depth: int = 2) -> dict:
             return {k: small(x, depth + 1) for k, x in list(v.items())[:15]}
         return str(type(v))
 
-    return {k: small(v) for k, v in payload.items()}
+    return {
+        k: (v if k in _FULL_METADATA_KEYS else small(v))
+        for k, v in payload.items()
+    }
 
 
 def _tally(items) -> dict:
@@ -855,7 +866,34 @@ class EbthClient:
             report["endpoint_trials"] = self._try_endpoints(shell, search_urls[0])
             report["graphql_trials"] = self._try_graphql(mined)
             report["sales_index"] = self._analyze_sales_index()
+        report["time_filter_trials"] = self._try_time_filters()
         return report
+
+    def _try_time_filters(self) -> list[dict]:
+        """Direct proof (not just metadata) that a site-wide 'closing soon' filter
+        works: try candidate ``days_left`` values against a query-less /browse and
+        report total_items + the echoed applied_parameters.days_left for each. A
+        keyword search can only ever find lots that happen to match a guessed word;
+        this is what lets discovery instead ask EBTH's own API for 'everything ending
+        within N days', across every category, with no keyword guessing at all.
+        """
+        trials: list[dict] = []
+        for days in (1, 2, 3):
+            url = f"{_BASE}/browse?days_left={days}"
+            trial: dict = {"url": url, "days_left_requested": days}
+            try:
+                _html, captures = self._fetch_page(url)
+            except Exception as exc:  # noqa: BLE001
+                trial["error"] = f"{type(exc).__name__}: {exc}"[:200]
+                trials.append(trial)
+                continue
+            applied = _applied_parameters(captures)
+            pages = _search_page_count(captures)
+            trial["applied_days_left"] = applied.get("days_left") if applied else None
+            trial["total_items"] = pages.get("total_items") if pages else None
+            trial["harvested_items"] = sum(len(harvest_json(c)) for c in captures)
+            trials.append(trial)
+        return trials
 
     def _try_graphql(self, mined_paths: list[str]) -> list[dict]:
         """Handshake with every GraphQL-shaped route: a {__typename} probe, then — if it

@@ -213,3 +213,61 @@ def test_probe_reports_captured_payload_structure():
     payload = search["captured_payloads"][0]
     assert payload["harvested_items"] == 2
     assert payload["top_level_keys"] == ["data"]  # keys only — no values leaked
+
+
+def test_probe_reports_sort_and_filter_metadata_in_full():
+    """sorts/valid_filters describe the API surface, not any one lot — worth reporting
+    verbatim so a real 'closing soon' query can be built from evidence, not another
+    guess-a-param-name round trip like /search-vs-/browse and q= needed."""
+    payload = {
+        "items": [{"id": f"{n}-x", "high_bid_amount": 5.0} for n in range(10)],
+        "sorts": {"preset": "recommended", "data": [
+            {"value": "recommended", "label": "Recommended"},
+            {"value": "ending_soon", "label": "Ending Soon"},
+            {"value": "newest", "label": "Newest"},
+            {"value": "price_low", "label": "Price: Low to High"},
+            {"value": "price_high", "label": "Price: High to Low"},
+            {"value": "most_bids", "label": "Most Bids"},
+            {"value": "most_watched", "label": "Most Watched"},
+        ]},
+        "valid_filters": ["category", "days_left", "status", "miles"],
+    }
+    browser = FakeBrowser([payload])
+    client = EbthClient(fetch=browser.fetch, delay=0)
+    report = client.probe(["https://www.ebth.com/browse"])
+    non_item = report["pages"][0]["captured_payloads"][0]["non_item_fields"]
+    assert len(non_item["sorts"]["data"]) == 7            # not collapsed to "array[7]"
+    assert {d["value"] for d in non_item["sorts"]["data"]} >= {"ending_soon", "recommended"}
+    assert non_item["valid_filters"] == ["category", "days_left", "status", "miles"]
+
+
+def test_probe_tries_days_left_and_reports_whether_it_actually_filters():
+    def days_payload(n: int, total: int) -> dict:
+        return {
+            "items": [{"id": f"{i}-x", "high_bid_amount": 5.0} for i in range(min(n, 48))],
+            "pages": {"current_page": 1, "total_pages": 1, "total_items": total,
+                      "items_per_page": 48},
+            "applied_parameters": {"days_left": n, "q": None},
+        }
+
+    class DaysBrowser:
+        def __init__(self):
+            self._next = []
+
+        def fetch(self, url: str) -> str:
+            import urllib.parse
+
+            q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+            days = int(q.get("days_left", [0])[0])
+            self._next = [days_payload(days, total=days * 3)]
+            return "<html></html>"
+
+        def drain_captures(self) -> list:
+            caps, self._next = self._next, []
+            return caps
+
+    client = EbthClient(fetch=DaysBrowser().fetch, delay=0)
+    trials = client._try_time_filters()
+    assert [t["days_left_requested"] for t in trials] == [1, 2, 3]
+    assert [t["applied_days_left"] for t in trials] == [1, 2, 3]
+    assert [t["total_items"] for t in trials] == [3, 6, 9]  # proves it actually filters
