@@ -268,11 +268,11 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap:
     site-wide sweeps carry no category, so one is classified for them first; a lot that
     matches no vertical at all is not watched, because there is no honest way to price it.
 
-    Slots are then shared out across verticals rather than handed to whoever scores
-    highest overall. Without that, furniture wins every slot on volume alone — its
-    keyword list is the oldest and richest, so its lots simply score higher than
-    jewelry's — and the board comes back all furniture no matter how much jewelry was
-    discovered.
+    Slots are shared across verticals rather than handed to whoever scores highest
+    overall, and every eligible lot competes for every slot each run — incumbents
+    included. Without the sharing, furniture wins on volume alone (its keyword list is
+    the oldest and richest). Without re-running the whole allocation, the list simply
+    saturates and whichever vertical qualified first keeps the board forever.
     """
     now = now or datetime.now(timezone.utc)
     cutoff = now + timedelta(days=decide_days)
@@ -285,69 +285,80 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap:
         r = prescreen(entry.to_listing(), v, require_photo=False)
         return r.score if r.keep else -1
 
+    def actionable(entry: acat.AuctionEntry) -> int:
+        """1 for lots a valuation could still act on, so they sort ahead of the rest."""
+        return int(entry.ends_at is not None and entry.ends_at <= cutoff)
+
     # Legacy entries predating category discovery carry no vertical, so they price and
     # render under the default. Give them a real one now that we can classify.
     for entry in catalog.lots.values():
         if entry.watch and not entry.vertical and entry.state in ("live", "ending"):
             entry.vertical = _best_vertical(entry) or default_vertical
 
-    # Evict lots the current gate would no longer admit. Without this the watchlist is
-    # write-once: the lots promoted under the old everything-passes gate keep their slots
-    # for as long as they run, so tightening the gate would change nothing you could see
-    # on the board for days. An appraisal saying "bid" is kept regardless — that is real
-    # evidence about the lot and it outranks a keyword heuristic about its title.
-    evicted = 0
+    # Every eligible lot competes for every slot, incumbent or not. Sharing only the
+    # *free* room was not enough: the list saturates at the cap, room goes to zero, and
+    # whichever vertical qualified first keeps the whole board forever. Observed live —
+    # jewelry held 109 of 150 slots while 89 qualifying art lots, 28 of them inside the
+    # decision window, had nowhere to go. Allocating the full list each run is what makes
+    # the share a share rather than a race.
+    by_vertical: dict[str, list[tuple[int, int, int, acat.AuctionEntry]]] = {}
     for entry in catalog.lots.values():
-        if not entry.watch or entry.state not in ("live", "ending"):
-            continue
-        if _still_promising(entry, multiplier):
-            continue
-        if signal(entry) < _MIN_SIGNAL:
-            entry.watch = False
-            evicted += 1
-    if evicted:
-        log.info("watchlist_evicted", count=evicted)
-
-    def actionable(entry: acat.AuctionEntry) -> int:
-        """1 for lots a valuation could still act on, so they sort ahead of the rest."""
-        return int(entry.ends_at is not None and entry.ends_at <= cutoff)
-
-    by_vertical: dict[str, list[tuple[int, int, acat.AuctionEntry]]] = {}
-    for entry in catalog.lots.values():
-        if entry.watch or entry.state not in ("live", "ending"):
+        if entry.state not in ("live", "ending"):
             continue
         if entry.vertical in _AUTO_SOURCES:
             # No category came with it, so give it one — and drop it if none fits.
             entry.vertical = _best_vertical(entry)
             if not entry.vertical:
+                entry.watch = False
                 continue
         v = get_vertical(entry.vertical or default_vertical)
-        result = prescreen(entry.to_listing(), v, require_photo=False)
-        if result.keep and result.score >= _MIN_SIGNAL:
-            by_vertical.setdefault(v.key, []).append((actionable(entry), result.score, entry))
+        # Appraised lots we would still act on stay eligible whatever their keywords say:
+        # that is the mistitled sleeper the pipeline exists to catch, and an appraisal is
+        # real evidence where a keyword rule is only a guess about wording.
+        paid = _still_promising(entry, multiplier)
+        if signal(entry) < _MIN_SIGNAL and not paid:
+            entry.watch = False
+            continue
+        by_vertical.setdefault(v.key, []).append(
+            (int(paid), actionable(entry), signal(entry), entry)
+        )
 
+    # Within a vertical: work already paid for first (an appraisal is money spent and its
+    # guidance is on the board), then lots the window can act on, then strongest signal,
+    # then soonest close.
     for bucket in by_vertical.values():
-        bucket.sort(key=lambda t: (-t[0], -t[1], t[2].ends_at or far_future))
+        bucket.sort(key=lambda t: (-t[0], -t[1], -t[2], t[3].ends_at or far_future))
 
-    room = max(0, cap - sum(
-        1 for e in catalog.lots.values() if e.watch and e.state in ("live", "ending")
-    ))
     # Round-robin across verticals: each takes its best remaining lot in turn until the
-    # room runs out. A vertical with few candidates simply drops out of the rotation and
-    # its unused share goes to the others, so this never wastes a slot to enforce a quota.
-    promoted = 0
+    # cap runs out. A vertical with few candidates drops out of the rotation and its
+    # unused share goes to the others, so this never wastes a slot to enforce a quota.
+    chosen: list[acat.AuctionEntry] = []
     cursors = dict.fromkeys(by_vertical, 0)
-    while promoted < room and cursors:
+    while len(chosen) < cap and cursors:
         for key in list(cursors):
-            if promoted >= room:
+            if len(chosen) >= cap:
                 break
             bucket, i = by_vertical[key], cursors[key]
             if i >= len(bucket):
                 del cursors[key]
                 continue
-            bucket[i][2].watch = True
+            chosen.append(bucket[i][3])
             cursors[key] = i + 1
-            promoted += 1
+
+    keep = {id(e) for e in chosen}
+    promoted = dropped = 0
+    for bucket in by_vertical.values():
+        for _paid, _act, _score, entry in bucket:
+            if id(entry) in keep:
+                if not entry.watch:
+                    promoted += 1
+                entry.watch = True
+            else:
+                if entry.watch:
+                    dropped += 1
+                entry.watch = False
+    if dropped:
+        log.info("watchlist_dropped", count=dropped)
     return promoted
 
 

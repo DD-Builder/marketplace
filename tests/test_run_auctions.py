@@ -725,3 +725,66 @@ def test_an_appraised_lot_the_board_calls_bid_survives_a_keyword_it_cannot_satis
     run_auctions._refresh_watchlist(cat, "furniture", cap=150, decide_days=2.0, now=now)
 
     assert entry.watch
+
+
+def test_a_saturated_watchlist_still_admits_a_newly_eligible_category():
+    """Sharing only the *free* room is not sharing. The list saturates at the cap, room
+    goes to zero, and whichever vertical qualified first keeps the whole board forever —
+    observed live as jewelry holding 109 of 150 slots while 89 qualifying art lots, 28 of
+    them inside the decision window, had nowhere to go."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    for i in range(10):  # incumbents, already holding every slot
+        cat.lots[f"j-{i}"] = AuctionEntry(
+            id=f"j-{i}", title="14K Gold Diamond Ring", description="14k yellow gold",
+            vertical="jewelry", state="live", watch=True,
+            first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+        )
+    for i in range(10):  # newly eligible, none watched
+        cat.lots[f"a-{i}"] = AuctionEntry(
+            id=f"a-{i}", title="Bernard Lennon Oil Portrait Painting", description="",
+            vertical="art", state="live",
+            first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+        )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=10, decide_days=2.0, now=now)
+
+    watched = [e for e in cat.lots.values() if e.watch]
+    by_v = collections.Counter(e.vertical for e in watched)
+    assert len(watched) == 10
+    assert by_v["art"] == 5 and by_v["jewelry"] == 5, by_v
+
+
+def test_losing_a_slot_never_discards_the_appraisal_that_was_paid_for():
+    """The one-valuation-per-lot invariant has to survive the allocation churn: a lot
+    dropped for a slot and later re-promoted must come back already valued, or the
+    rotation would quietly re-buy appraisals every run."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    loser = AuctionEntry(
+        id="loser", title="14K Gold Diamond Ring", description="14k yellow gold",
+        vertical="jewelry", state="live", watch=True, current_bid_cents=89000,
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=20),
+    )
+    loser.appraisal = _appraisal(asis=90000)
+    cat.lots["loser"] = loser
+    # A stronger, sooner-closing rival for the single slot.
+    cat.lots["winner"] = AuctionEntry(
+        id="winner", title="Tiffany & Co. Sterling Diamond 14K Gold Ring",
+        description="sterling 14k platinum diamond", vertical="jewelry", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
+    )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=1, decide_days=2.0, now=now)
+    assert not loser.watch, "the fixture must actually evict the appraised lot"
+
+    # Room opens up again; the lot returns already valued.
+    run_auctions._refresh_watchlist(cat, "furniture", cap=10, decide_days=2.0, now=now)
+
+    assert loser.watch
+    assert loser.appraisal is not None
+    assert loser.appraisal.est_asis_value_cents == 90000
