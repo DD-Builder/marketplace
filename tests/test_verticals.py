@@ -79,3 +79,43 @@ def test_collectibles_recognizes_watch_and_silver_makers():
 def test_every_vertical_is_reachable_by_key():
     for key, vertical in (("jewelry", JEWELRY), ("collectibles", COLLECTIBLES)):
         assert get_vertical(key) is vertical
+
+
+def test_the_art_vertical_recognises_how_auction_houses_title_paintings():
+    """Measured against 154 live EBTH art lots, the original keyword list scored 139 of
+    them at zero — it named techniques ("serigraph", "oil on canvas") but not the plain
+    nouns real lot titles use, so not one art lot could clear the watchlist gate and the
+    board carried no art at all despite art being explicitly asked for."""
+    from dealfinder.core.schemas import RawListing
+    from dealfinder.prescreen import prescreen
+    from dealfinder.verticals import ART
+
+    titles = [
+        "Bernard Lennon Oil Portrait of Young Girl, Mid-20th Century",
+        "Richard Stalter Farm Landscape Oil Painting, 20th Century",
+        "Susan Grisell Plein Air Oil Painting of Grazing Horses",
+        "Bernard Lennon Abstract Oil Painting",
+    ]
+    for title in titles:
+        listing = RawListing(
+            external_id="a", fb_listing_id="a", source="ebth", url="",
+            title=title, description="",
+        )
+        result = prescreen(listing, ART, require_photo=False)
+        assert result.score >= 2, f"{title!r} scored {result.score}: {result.reasons}"
+
+
+def test_the_art_vertical_still_rejects_mass_market_reproductions():
+    """The wider vocabulary must not open the door to the decor it was written to keep
+    out — the negative list short-circuits before any positive term is counted."""
+    from dealfinder.core.schemas import RawListing
+    from dealfinder.prescreen import prescreen
+    from dealfinder.verticals import ART
+
+    for title in ("Framed Canvas Print Reproduction of a Landscape Painting",
+                  "Hobby Lobby Wall Decor Abstract Painting Poster"):
+        listing = RawListing(
+            external_id="a", fb_listing_id="a", source="ebth", url="",
+            title=title, description="",
+        )
+        assert not prescreen(listing, ART, require_photo=False).keep, title

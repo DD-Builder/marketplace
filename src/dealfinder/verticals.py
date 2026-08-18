@@ -67,9 +67,18 @@ FURNITURE = Vertical(
 ART = Vertical(
     key="art",
     label="Art & prints",
+    # Measured against 154 live EBTH art lots, the original list scored 139 of them at
+    # zero: it named techniques ("serigraph", "oil on canvas") but not the words auction
+    # houses actually title paintings with. "Bernard Lennon Oil Portrait of Young Girl"
+    # matched nothing at all, so no art lot could ever clear the watchlist gate and the
+    # board carried none. These are the plain nouns that appear in real lot titles.
     positive=frozenset({
         "original", "oil on canvas", "signed", "listed artist", "lithograph", "etching",
         "serigraph", "watercolor", "mid century", "vintage", "framed", "limited edition",
+        "painting", "oil", "acrylic", "canvas", "portrait", "landscape", "abstract",
+        "still life", "plein air", "drawing", "pastel", "gouache", "charcoal",
+        "engraving", "woodblock", "woodcut", "sculpture", "bronze", "artist",
+        "impressionist", "seascape", "figural", "numbered",
     }),
     makers=frozenset(),  # artist-name matching is better handled by the appraiser than a keyword set
     negative=frozenset({
