@@ -94,18 +94,31 @@ _DISCOVERY_MAX_PAGES = 1
 #: per-vertical keyword queries, two site-wide sources are always run, using EBTH's own
 #: ``sort``/``days_left`` parameters (confirmed live: sort=sale_ends_at_asc is "Ending
 #: Soonest"; days_left genuinely narrows total_items — 1→1,242, 2→2,017, 3→3,200 site-
-#: wide when checked). Lots found this way are tagged with these sentinels and, in
-#: `_refresh_watchlist`, watched WITHOUT the keyword gate: the urgency (or EBTH's own
-#: curation) is itself the signal, exactly as asked — "even if we just review items
-#: closing in 2 days or less". A vertical is still auto-classified per lot afterward,
-#: for pricing/appraisal guidance only, never to reject it.
+#: wide when checked). Lots found this way carry no category, so a vertical is
+#: auto-classified per lot for pricing and appraisal guidance.
+#:
+#: These sources used to bypass the quality gate outright and outrank every real category
+#: match, on the theory that urgency is itself a signal. That was wrong, and the board
+#: showed exactly how wrong: the site-wide ending-soon feed is whatever EBTH happens to
+#: be closing next — mass-market Barbie lots, boxed Christmas ornaments, nutcrackers —
+#: and it filled the entire watchlist with them while 584 discovered jewelry lots got no
+#: slot at all. Urgency says *when* to look at a lot, never *whether* it is worth
+#: owning. They are ordinary discovery sources now and pass the same gate as everything
+#: else.
 _AUTO_ENDING_SOON = "_ending_soon"
 _AUTO_RECOMMENDED = "_recommended"
-#: Priority within the watchlist cap: ending-soon lots always win available room (sorted
-#: soonest-first among themselves after that) since that's the tracker's whole point;
-#: EBTH's own "recommended" pick competes like an ordinary single keyword hit rather
-#: than crowding out either urgency or a real category match.
-_AUTO_PRIORITY = {_AUTO_ENDING_SOON: 1000, _AUTO_RECOMMENDED: 1}
+_AUTO_SOURCES = frozenset({_AUTO_ENDING_SOON, _AUTO_RECOMMENDED})
+
+#: Minimum prescreen score to earn a watchlist slot. Two, not one, and the difference
+#: matters more here than anywhere else in the pipeline: "vintage" is the one positive
+#: term shared by *every* vertical, and this is an estate auction house, so essentially
+#: every lot on the site carries it. At a threshold of one, the quality gate was
+#: satisfied by literally everything and did nothing at all — measured on the live
+#: catalogue, 566 of 1,274 lots passed on "vintage" alone. Two forces a *discriminating*
+#: signal: either a maker hit (worth two on its own) or two distinct positive terms.
+#: The same measurement at two yields Tiffany & Co. sterling and Elsa Peretti rather
+#: than boxed ornaments.
+_MIN_SIGNAL = 2
 
 
 def _write_status(out_dir: Path, state: str, **counts) -> None:
@@ -191,20 +204,50 @@ def _search_targets(raw: str, *, default_vertical: str) -> list[tuple[str, str]]
 def _best_vertical(entry: acat.AuctionEntry) -> str:
     """Best-scoring vertical match across everything this pipeline knows how to price,
     for a lot discovered without a category (the site-wide ending-soon / recommended
-    sweeps). Classification only, for pricing and appraiser guidance — never used to
-    decide whether the lot gets watched. Lots found *through* a category already carry
-    that category's vertical and never reach this."""
+    sweeps). Returns "" unless one vertical wins outright on a discriminating signal.
+    Lots found *through* a category already carry that vertical and never reach this."""
     listing = entry.to_listing()
-    best_key, best_score = "furniture", -1
-    for v in all_verticals():
-        r = prescreen(listing, v, require_photo=False)
-        if r.score > best_score:
-            best_key, best_score = v.key, r.score
+    scored = sorted(
+        ((prescreen(listing, v, require_photo=False).score, v.key) for v in all_verticals()),
+        reverse=True,
+    )
+    best_score, best_key = scored[0]
+    runner_up = scored[1][0] if len(scored) > 1 else 0
+    # A score that every vertical ties on is not a classification — it means the lot
+    # matched only a universal term like "vintage". Demand a strict winner that also
+    # clears the quality bar, otherwise we have not actually identified anything.
+    if best_score < _MIN_SIGNAL or best_score == runner_up:
+        return ""
+    # "" rather than a least-bad guess. The old fallback was "furniture", which is how a
+    # lot of Barbie dolls came to be filed as furniture and then valued against furniture
+    # guidance — a wrong vertical yields a confidently wrong number, which is worse than
+    # no number. A lot nothing can classify is a lot we have no business pricing.
     return best_key
 
 
+def _still_promising(entry: acat.AuctionEntry, multiplier: float) -> bool:
+    """Is an already-appraised lot worth a watchlist slot regardless of its keywords?
+
+    Only if the *same* guidance the board displays says "bid". Anything looser lets the
+    page contradict itself: a first pass here used a cheap value-beats-bid proxy, and it
+    rescued lots the board was simultaneously labelling PASS with a negative margin,
+    because the proxy ignored the fees, logistics and margin cushion that produce the
+    stance. If the board won't recommend it, it isn't worth tracking.
+
+    The point of the exemption is the mistitled sleeper this pipeline exists to catch —
+    a genuinely good piece whose title satisfies no keyword rule. An appraisal is real
+    evidence about such a lot and should outrank a heuristic about its wording. A PASS
+    is equally real evidence, in the other direction.
+    """
+    if entry.appraisal is None:
+        return False
+    g = bidding.guide(entry, multiplier=multiplier)
+    return g is not None and g.stance == "bid"
+
+
 def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap: int,
-                       *, decide_days: float = 2.0, now: datetime | None = None) -> int:
+                       *, decide_days: float = 2.0, now: datetime | None = None,
+                       multiplier: float | None = None) -> int:
     """Promote quality lots to the watchlist, newest evidence first.
 
     The gate is a *positive* signal — maker or material keywords — not merely "has a
@@ -221,39 +264,91 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap:
 
     Each entry is screened against *its own* vertical (whichever category's search
     surfaced it), not one global choice — a jewelry lot judged by furniture's keyword
-    list (walnut, teak, maker names like Lane) would almost never pass. Entries found by
-    the site-wide ending-soon/recommended sources (see ``_AUTO_PRIORITY``) skip the
-    keyword gate altogether — the discovery signal itself is the reason to watch them —
-    and instead get a vertical auto-classified for pricing purposes only.
+    list (walnut, teak, maker names like Lane) would almost never pass. Lots from the
+    site-wide sweeps carry no category, so one is classified for them first; a lot that
+    matches no vertical at all is not watched, because there is no honest way to price it.
+
+    Slots are then shared out across verticals rather than handed to whoever scores
+    highest overall. Without that, furniture wins every slot on volume alone — its
+    keyword list is the oldest and richest, so its lots simply score higher than
+    jewelry's — and the board comes back all furniture no matter how much jewelry was
+    discovered.
     """
     now = now or datetime.now(timezone.utc)
     cutoff = now + timedelta(days=decide_days)
+    far_future = datetime.max.replace(tzinfo=timezone.utc)
+    if multiplier is None:
+        multiplier = bidding.endgame_multiplier(acat.calibration_pairs(catalog))
+
+    def signal(entry: acat.AuctionEntry) -> int:
+        v = get_vertical(entry.vertical or default_vertical)
+        r = prescreen(entry.to_listing(), v, require_photo=False)
+        return r.score if r.keep else -1
+
+    # Legacy entries predating category discovery carry no vertical, so they price and
+    # render under the default. Give them a real one now that we can classify.
+    for entry in catalog.lots.values():
+        if entry.watch and not entry.vertical and entry.state in ("live", "ending"):
+            entry.vertical = _best_vertical(entry) or default_vertical
+
+    # Evict lots the current gate would no longer admit. Without this the watchlist is
+    # write-once: the lots promoted under the old everything-passes gate keep their slots
+    # for as long as they run, so tightening the gate would change nothing you could see
+    # on the board for days. An appraisal saying "bid" is kept regardless — that is real
+    # evidence about the lot and it outranks a keyword heuristic about its title.
+    evicted = 0
+    for entry in catalog.lots.values():
+        if not entry.watch or entry.state not in ("live", "ending"):
+            continue
+        if _still_promising(entry, multiplier):
+            continue
+        if signal(entry) < _MIN_SIGNAL:
+            entry.watch = False
+            evicted += 1
+    if evicted:
+        log.info("watchlist_evicted", count=evicted)
 
     def actionable(entry: acat.AuctionEntry) -> int:
         """1 for lots a valuation could still act on, so they sort ahead of the rest."""
         return int(entry.ends_at is not None and entry.ends_at <= cutoff)
 
-    candidates = []
+    by_vertical: dict[str, list[tuple[int, int, acat.AuctionEntry]]] = {}
     for entry in catalog.lots.values():
         if entry.watch or entry.state not in ("live", "ending"):
             continue
-        if entry.vertical in _AUTO_PRIORITY:
-            priority = _AUTO_PRIORITY[entry.vertical]
+        if entry.vertical in _AUTO_SOURCES:
+            # No category came with it, so give it one — and drop it if none fits.
             entry.vertical = _best_vertical(entry)
-            candidates.append((actionable(entry), priority, entry))
-            continue
+            if not entry.vertical:
+                continue
         v = get_vertical(entry.vertical or default_vertical)
         result = prescreen(entry.to_listing(), v, require_photo=False)
-        if result.keep and result.score >= 1:
-            candidates.append((actionable(entry), result.score, entry))
+        if result.keep and result.score >= _MIN_SIGNAL:
+            by_vertical.setdefault(v.key, []).append((actionable(entry), result.score, entry))
+
+    for bucket in by_vertical.values():
+        bucket.sort(key=lambda t: (-t[0], -t[1], t[2].ends_at or far_future))
+
     room = max(0, cap - sum(
         1 for e in catalog.lots.values() if e.watch and e.state in ("live", "ending")
     ))
-    far_future = datetime.max.replace(tzinfo=timezone.utc)
-    candidates.sort(key=lambda t: (-t[0], -t[1], t[2].ends_at or far_future))
-    for _live, _score, entry in candidates[:room]:
-        entry.watch = True
-    return min(len(candidates), room)
+    # Round-robin across verticals: each takes its best remaining lot in turn until the
+    # room runs out. A vertical with few candidates simply drops out of the rotation and
+    # its unused share goes to the others, so this never wastes a slot to enforce a quota.
+    promoted = 0
+    cursors = dict.fromkeys(by_vertical, 0)
+    while promoted < room and cursors:
+        for key in list(cursors):
+            if promoted >= room:
+                break
+            bucket, i = by_vertical[key], cursors[key]
+            if i >= len(bucket):
+                del cursors[key]
+                continue
+            bucket[i][2].watch = True
+            cursors[key] = i + 1
+            promoted += 1
+    return promoted
 
 
 def _make_client() -> EbthClient:

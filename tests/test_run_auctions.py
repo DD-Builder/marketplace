@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import collections
 import json
 import urllib.parse
 from datetime import datetime, timedelta, timezone
@@ -345,11 +346,14 @@ def test_watchlist_falls_back_to_the_default_vertical_for_untagged_legacy_entrie
     assert cat.lots["f-1"].watch
 
 
-def test_ending_soon_lots_are_watched_with_no_keyword_signal_at_all():
-    """The user's own framing: 'even if we just review items closing in 2 days or
-    less' — a lot with zero furniture/art/jewelry/etc. keywords must still be watched
-    when it was discovered by the ending-soon source, because the urgency itself is
-    the reason to look, not a guessed word matching its description."""
+def test_an_ending_soon_lot_with_no_quality_signal_is_not_watched():
+    """This asserted the opposite until the board proved it wrong. The site-wide
+    ending-soon feed bypassed the quality gate on the theory that urgency is itself a
+    reason to look — and it filled the entire watchlist with mass-market Barbie lots and
+    boxed Christmas ornaments while 584 discovered jewelry lots got no slot at all.
+
+    Urgency tells you *when* a lot must be decided, never *whether* it is worth owning.
+    A lot with no signal in any vertical has no honest valuation, so it is not watched."""
     from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
 
     now = datetime.now(timezone.utc)
@@ -359,40 +363,102 @@ def test_ending_soon_lots_are_watched_with_no_keyword_signal_at_all():
         vertical=run_auctions._AUTO_ENDING_SOON, state="ending",
         first_seen=now, last_seen=now, ends_at=now + timedelta(hours=5),
     )
-    # Confirms the premise: this listing has no positive signal in any vertical.
-    from dealfinder.prescreen import prescreen
-    from dealfinder.verticals import FURNITURE
-    assert not prescreen(cat.lots["x-1"].to_listing(), FURNITURE, require_photo=False).keep
 
     promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=10)
-    assert promoted == 1
-    assert cat.lots["x-1"].watch
-    # Reclassified for pricing/appraisal purposes, not left as the raw sentinel.
-    assert cat.lots["x-1"].vertical != run_auctions._AUTO_ENDING_SOON
+
+    assert promoted == 0
+    assert not cat.lots["x-1"].watch
 
 
-def test_ending_soon_lots_win_the_cap_over_ordinary_keyword_matches():
-    """Urgency always gets first claim on watchlist room — that's the entire point of
-    an auction tracker: the endgame is the only window where bidding pays."""
+def test_an_ending_soon_lot_with_a_real_signal_is_watched_and_classified():
+    """The feed still earns its keep — it surfaces good lots filed in categories we
+    don't trawl. It just has to clear the same bar as everything else."""
     from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
 
     now = datetime.now(timezone.utc)
     cat = AuctionCatalog()
-    for i in range(5):
-        cat.lots[f"k-{i}"] = AuctionEntry(
-            id=f"k-{i}", title="Danish Teak Sideboard", description="solid teak",
-            vertical="furniture", state="live",
-            first_seen=now, last_seen=now, ends_at=now + timedelta(days=5),
-        )
-    cat.lots["urgent"] = AuctionEntry(
-        id="urgent", title="Random Lot", description="no signal here",
+    cat.lots["x-1"] = AuctionEntry(
+        id="x-1", title="Danish Teak Sideboard", description="solid teak, rosewood trim",
+        vertical=run_auctions._AUTO_ENDING_SOON, state="ending",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=5),
+    )
+
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=10)
+
+    assert promoted == 1
+    assert cat.lots["x-1"].watch
+    # Classified for pricing, not left as the raw sentinel.
+    assert cat.lots["x-1"].vertical == "furniture"
+
+
+def test_an_unclassifiable_lot_is_never_given_a_least_bad_vertical():
+    """_best_vertical used to fall back to "furniture" when nothing scored, which is how
+    a lot of Barbie dolls came to be filed as furniture and valued against furniture
+    guidance. A wrong vertical produces a confidently wrong number."""
+    from dealfinder.auctions.catalog import AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    entry = AuctionEntry(
+        id="b-1", title='Mattel #5 Ponytail in "Easter Parade" with Other Barbies',
+        description="Lot of 5 vintage Mattel Ponytail Barbie dolls with assorted outfits",
         vertical=run_auctions._AUTO_ENDING_SOON, state="ending",
         first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
     )
-    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=1)
-    assert promoted == 1
-    assert cat.lots["urgent"].watch
-    assert not any(cat.lots[f"k-{i}"].watch for i in range(5))
+    assert run_auctions._best_vertical(entry) == ""
+
+
+def test_one_vertical_cannot_take_every_watchlist_slot():
+    """Observed live: 51 of 51 watched lots were furniture while 584 jewelry, 154 art and
+    111 collectibles lots sat discovered and unwatched. Furniture's keyword list is the
+    oldest and richest, so its lots simply outscore jewelry's — ranking by raw score
+    across all verticals hands it the whole board on volume alone."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    for i in range(10):
+        cat.lots[f"f-{i}"] = AuctionEntry(
+            id=f"f-{i}", title="Danish Teak Walnut Sideboard by Lane",
+            description="solid teak rosewood mahogany", vertical="furniture", state="live",
+            first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+        )
+    for i in range(10):
+        cat.lots[f"j-{i}"] = AuctionEntry(
+            id=f"j-{i}", title="14K Gold Diamond Ring",
+            description="14k yellow gold", vertical="jewelry", state="live",
+            first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+        )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=10, decide_days=2.0, now=now)
+
+    watched = [e for e in cat.lots.values() if e.watch]
+    assert len(watched) == 10
+    by_v = collections.Counter(e.vertical for e in watched)
+    assert by_v["jewelry"] == 5 and by_v["furniture"] == 5, by_v
+
+
+def test_an_unused_share_is_not_wasted_on_an_empty_vertical():
+    """Fair share is a rotation, not a quota: a vertical with nothing to offer drops out
+    and its slots go to the others rather than sitting empty."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    for i in range(6):
+        cat.lots[f"f-{i}"] = AuctionEntry(
+            id=f"f-{i}", title="Danish Teak Walnut Sideboard by Lane",
+            description="solid teak rosewood", vertical="furniture", state="live",
+            first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+        )
+    cat.lots["j-0"] = AuctionEntry(
+        id="j-0", title="14K Gold Diamond Ring", description="14k yellow gold",
+        vertical="jewelry", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+    )
+
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=7, decide_days=2.0, now=now)
+
+    assert promoted == 7, "the lone jewelry lot must not reserve slots furniture could use"
 
 
 def test_recommended_lots_compete_normally_rather_than_dominating():
@@ -553,7 +619,7 @@ def test_a_watchlist_slot_goes_to_a_lot_the_window_can_act_on():
     )
     # Weaker signal, but closes tonight — the only one a valuation can still act on.
     cat.lots["near"] = AuctionEntry(
-        id="near", title="Teak Side Table", description="",
+        id="near", title="Teak and Walnut Side Table", description="",
         vertical="furniture", state="live",
         first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
     )
@@ -581,3 +647,81 @@ def test_lots_outside_the_window_still_get_watched_when_there_is_room():
     run_auctions._refresh_watchlist(cat, "furniture", cap=10, decide_days=2.0, now=now)
 
     assert cat.lots["far"].watch
+
+
+def _appraisal(asis=60000, conf=0.8):
+    return AppraisalResult(
+        identified_item="walnut credenza", maker_guess="Lane",
+        est_asis_value_cents=asis, est_restored_resale_value_cents=asis,
+        est_restoration_cost_cents=0, est_restoration_effort_hours=0.0,
+        confidence=conf, deal_score=60.0,
+    )
+
+
+def test_tightening_the_gate_evicts_lots_it_would_no_longer_admit():
+    """The watchlist was write-once, so lots promoted under the old everything-passes
+    gate kept their slots for as long as they ran — tightening the gate would have
+    changed nothing visible on the board for days."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["junk"] = AuctionEntry(
+        id="junk", title='Mattel #5 Ponytail in "Easter Parade" with Other Barbies',
+        description="Lot of 5 vintage Mattel Ponytail Barbie dolls",
+        vertical="furniture", state="ending", watch=True,
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
+    )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=150, decide_days=2.0, now=now)
+
+    assert not cat.lots["junk"].watch
+
+
+def test_an_appraised_lot_the_board_calls_pass_is_not_rescued_from_eviction(monkeypatch):
+    """A first pass used a cheap value-beats-bid proxy to protect appraised lots, and it
+    kept lots the board was simultaneously labelling PASS — the proxy ignored the fees,
+    logistics and margin cushion that actually produce the stance."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    entry = AuctionEntry(
+        id="junk", title="Miscellaneous Household Lot", description="assorted",
+        vertical="furniture", state="ending", watch=True, current_bid_cents=19500,
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
+    )
+    entry.appraisal = _appraisal(asis=30000)
+    cat.lots["junk"] = entry
+
+    monkeypatch.setattr(
+        run_auctions.bidding, "guide",
+        lambda e, **kw: type("G", (), {"stance": "outpriced"})(),
+    )
+    run_auctions._refresh_watchlist(cat, "furniture", cap=150, decide_days=2.0, now=now)
+
+    assert not entry.watch
+
+
+def test_an_appraised_lot_the_board_calls_bid_survives_a_keyword_it_cannot_satisfy(monkeypatch):
+    """The mistitled sleeper this pipeline exists to catch: an appraisal is real evidence
+    about a lot and outranks a heuristic about its wording."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    entry = AuctionEntry(
+        id="sleeper", title="Miscellaneous Household Lot", description="assorted",
+        vertical="furniture", state="ending", watch=True, current_bid_cents=5000,
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
+    )
+    entry.appraisal = _appraisal(asis=90000)
+    cat.lots["sleeper"] = entry
+
+    monkeypatch.setattr(
+        run_auctions.bidding, "guide",
+        lambda e, **kw: type("G", (), {"stance": "bid"})(),
+    )
+    run_auctions._refresh_watchlist(cat, "furniture", cap=150, decide_days=2.0, now=now)
+
+    assert entry.watch
