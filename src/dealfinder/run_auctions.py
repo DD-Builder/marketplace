@@ -29,9 +29,15 @@ Environment, mirroring run_board:
                               being about to close is itself the reason to look
     EBTH_PREMIUM_PCT          buyer's premium assumption (default 0.15)
     EBTH_SHIPPING_CENTS       per-lot freight assumption (default 0 = local pickup)
-    MAX_AUCTION_APPRAISALS    AI-call cap per run (default 6)
+    APPRAISE_MODEL            model for the valuation call (default claude-sonnet-5)
+    MAX_AUCTION_APPRAISALS    AI-call cap per run (default 20). Not a budget so much as
+                              a blast radius: the real ceiling is the watchlist, since a
+                              lot is valued once and only inside the decision window, so
+                              this caps how fast a backlog is worked off, not how much
+                              gets valued in total.
     EBTH_SNAPSHOT_CAP         item-page fetches per run (default 20)
-    EBTH_MAX_WATCH            watchlist size cap (default 40)
+    EBTH_MAX_WATCH            watchlist size cap (default 150) — the actual limit on how
+                              many lots ever get valued
 
 State lives in ``docs/auctions/catalog.json``; the page in ``docs/auctions/index.html``.
 ``--probe`` skips the pipeline and instead publishes a structure report of what
@@ -246,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default="docs/auctions")
     ap.add_argument("--catalog", default="docs/auctions/catalog.json")
     ap.add_argument("--max-appraisals", type=int,
-                    default=_int_env("MAX_AUCTION_APPRAISALS") or 6)
+                    default=_int_env("MAX_AUCTION_APPRAISALS") or 20)
     ap.add_argument("--vertical", default=_env("VERTICAL", "furniture"))
     ap.add_argument("--probe", action="store_true",
                     help="fetch the configured pages and publish a structure report "
@@ -315,7 +321,7 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
     scan_failed = bool(targets) and searches_failed == len(targets)
 
     # 2. Watchlist refresh from what the searches surfaced.
-    promoted = _refresh_watchlist(catalog, args.vertical, _int_env("EBTH_MAX_WATCH") or 40)
+    promoted = _refresh_watchlist(catalog, args.vertical, _int_env("EBTH_MAX_WATCH") or 150)
     if promoted:
         log.info("watchlist_promoted", count=promoted)
 

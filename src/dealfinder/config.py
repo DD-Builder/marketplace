@@ -28,7 +28,10 @@ class Settings(BaseSettings):
     )
 
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
-    appraise_model: str = Field(default="claude-opus-5", alias="APPRAISE_MODEL")
+    # Same default as the subscription path (dealfinder.appraiser.DEFAULT_APPRAISE_MODEL)
+    # and the same variable pins both, so switching models doesn't depend on knowing
+    # which provider happens to be wired up.
+    appraise_model: str = Field(default="claude-sonnet-5", alias="APPRAISE_MODEL")
     negotiation_model: str = Field(default="claude-sonnet-5", alias="NEGOTIATION_MODEL")
 
 

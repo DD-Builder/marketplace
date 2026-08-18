@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dealfinder import appraiser
 from dealfinder.appraiser import available_providers, get_appraiser
 from dealfinder.core.schemas import AppraisalResult, RawListing, RawPhoto
 from dealfinder.engine import run_valuation
@@ -142,3 +143,25 @@ def test_the_board_headline_is_the_market_price_not_your_cost_basis():
     assert bare.priority == logged.priority          # ranking is market-driven too
     assert logged.resale.yours.cash_outlay_cents == 10000
     assert logged.resale.yours.costs.labor_hours == 6.0
+
+
+# --- Which model the valuation call runs on -----------------------------------------
+
+
+def test_the_valuation_model_defaults_to_sonnet(monkeypatch):
+    monkeypatch.delenv("APPRAISE_MODEL", raising=False)
+    assert appraiser._appraise_model() == appraiser.DEFAULT_APPRAISE_MODEL == "claude-sonnet-5"
+
+
+def test_appraise_model_pins_the_model_when_set(monkeypatch):
+    monkeypatch.setenv("APPRAISE_MODEL", "claude-opus-5")
+    assert appraiser._appraise_model() == "claude-opus-5"
+
+
+def test_an_unset_actions_variable_does_not_read_as_a_deliberate_choice(monkeypatch):
+    # GitHub substitutes "" for a repository variable that was never defined. Treating
+    # that as "use the CLI default" would silently unpin the model for anyone who simply
+    # hasn't set the variable — which is everyone, by default.
+    for blank in ("", "   "):
+        monkeypatch.setenv("APPRAISE_MODEL", blank)
+        assert appraiser._appraise_model() == "claude-sonnet-5"

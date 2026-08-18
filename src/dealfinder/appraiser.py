@@ -286,13 +286,30 @@ class _UnimplementedProvider:
         )
 
 
+#: The model the valuation call runs on when nothing pins it. Sonnet is the right
+#: default here rather than the CLI's own: valuation is the one metered step in the
+#: pipeline and it runs on a schedule, so the model has to be one you're happy burning
+#: subscription capacity on hourly. Override per-repo with the APPRAISE_MODEL variable
+#: (``claude-opus-5`` when you want the most careful read on a hard category, or an
+#: empty string to fall back to whatever the CLI is configured for).
+DEFAULT_APPRAISE_MODEL = "claude-sonnet-5"
+
+
+def _appraise_model() -> str:
+    """The model to pin the valuation call to. Explicit empty means 'CLI default'."""
+    raw = os.getenv("APPRAISE_MODEL")
+    if raw is None:
+        return DEFAULT_APPRAISE_MODEL
+    raw = raw.strip()
+    # An unset repository variable arrives as "" in Actions, which must not be read as a
+    # deliberate "use the CLI default" — that's the same empty-string trap _env() exists
+    # for on the run_board side.
+    return raw or DEFAULT_APPRAISE_MODEL
+
+
 _BUILDERS = {
     "claude-api": lambda: ClaudeApiAppraiser(),
-    # Empty model = the CLI's own default. APPRAISE_MODEL pins it when you want the
-    # vision-critical valuation call on a specific model.
-    "claude-code": lambda: ClaudeCodeAppraiser(
-        model=(os.getenv("APPRAISE_MODEL") or "").strip()
-    ),
+    "claude-code": lambda: ClaudeCodeAppraiser(model=_appraise_model()),
     "openai": lambda: _UnimplementedProvider("openai"),
     "gemini": lambda: _UnimplementedProvider("gemini"),
     "grok": lambda: _UnimplementedProvider("grok"),
