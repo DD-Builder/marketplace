@@ -47,10 +47,16 @@ class Harness:
         monkeypatch.setattr(run_auctions, "_make_client",
                             lambda: EbthClient(fetch=fetch, delay=0))
 
+        # Every AI valuation this pipeline would pay for, recorded by lot id. Valuation
+        # is the only metered step in a run, so tests can assert what it cost.
+        self.appraise_calls: list[str] = []
+        outer = self
+
         class Stub:
             name = "stub"
 
             def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+                outer.appraise_calls.append(listing.fb_listing_id)
                 # $900 as-is: worth the round trip to Cincinnati even as a bulky lot.
                 # (The as-is figure is what the bid math prices off now — nothing here
                 # is restored — so it has to clear the pickup cost on its own.)
@@ -420,3 +426,61 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
     entry = cat.lots["j-1"]
     assert entry.vertical == "jewelry"
     assert entry.watch, "a jewelry lot must be watched under its own vertical's rules"
+
+
+# --- cost control: one valuation per lot, ever -------------------------------------------
+# Valuation is the only metered step in the whole pipeline. Everything else — bid
+# refreshes, projections, max-bid arithmetic, the rendered page — is pure computation on
+# a stored appraisal. An hourly job that re-valued its watchlist would cost ~24x what
+# this one does and tell you nothing new, since what an object *is* doesn't change when
+# somebody raises the bid on it.
+
+def test_a_lot_is_valued_once_and_never_again(tmp_path, monkeypatch):
+    h = Harness(tmp_path, monkeypatch, [_lot()])
+    assert h.run() == 0
+    assert h.appraise_calls == ["1-walnut-credenza"], "first run pays for the valuation"
+
+    for _ in range(3):
+        assert h.run() == 0
+    assert h.appraise_calls == ["1-walnut-credenza"], \
+        "later runs must reuse the stored appraisal, not re-buy it"
+
+
+def test_a_rising_bid_updates_the_advice_without_a_single_ai_call(tmp_path, monkeypatch):
+    """The property the whole hourly cadence rests on: bids move constantly, valuations
+    never do, so tracking the endgame has to be free."""
+    h = Harness(tmp_path, monkeypatch, [_lot(bid=25)])
+    assert h.run() == 0
+    first = h.catalog.lots["1-walnut-credenza"]
+    assert first.current_bid_cents == 2500
+    calls_after_valuation = len(h.appraise_calls)
+
+    # The bidding climbs across the next three hourly runs.
+    for bid in (150, 400, 700):
+        h.items["1-walnut-credenza"]["current_bid"] = bid
+        assert h.run() == 0
+
+    entry = h.catalog.lots["1-walnut-credenza"]
+    assert entry.current_bid_cents == 70000, "the bid tracked all the way up"
+    assert [p.bid_cents for p in entry.bid_history] == [2500, 15000, 40000, 70000]
+    assert len(h.appraise_calls) == calls_after_valuation, \
+        "not one extra valuation was bought while the price moved"
+
+    # And the advice genuinely moved with the price: what was worth bidding on at $25
+    # is priced out at $700 against a $900 as-is value.
+    assert h.status["actionable"] == 0
+
+
+def test_the_appraiser_is_never_even_constructed_when_nothing_needs_valuing(
+    tmp_path, monkeypatch
+):
+    """Not just 'no calls' — no provider, so a run with a full watchlist can't fail on a
+    missing credential or spend a token by accident."""
+    h = Harness(tmp_path, monkeypatch, [_lot()])
+    assert h.run() == 0                     # values the lot
+
+    def explode(provider):
+        raise AssertionError("built an appraiser with nothing left to appraise")
+
+    monkeypatch.setattr(run_auctions, "get_appraiser", explode)
+    assert h.run() == 0
