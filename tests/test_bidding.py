@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
+from dealfinder.auctions import bidding
 from dealfinder.auctions.bidding import (
     DEFAULT_ENDGAME_MULTIPLIER,
     BidGuidance,
@@ -266,3 +267,54 @@ def test_calibration_flows_from_observed_endings_into_guidance():
     assert pairs == [(1000, 3000)]
     m = endgame_multiplier(pairs)
     assert m > DEFAULT_ENDGAME_MULTIPLIER * 0.9   # 3.0 observation pulls the 2.0 prior up
+
+
+# --- the market gets a vote ---------------------------------------------------------
+# An appraisal is one opinion. A contested auction minutes from closing is the market
+# pricing this exact object, and when the two disagree the estimate is the likelier one
+# to be wrong. These pin the guard that stops a bad estimate from spending money.
+
+
+def test_an_undiscovered_lot_keeps_its_full_appraised_value():
+    """The whole point is finding what the room has missed, so a lot with almost no
+    bidding must not be dragged down toward its own opening price."""
+    entry = _entry(bid=1000, ends_in_h=40.0, appraisal=_appraisal(asis=60000), bid_count=1)
+
+    assert bidding.price_discovery(entry, now=NOW) < 0.1
+    anchored = bidding.market_anchored_value_cents(entry, multiplier=2.0, now=NOW)
+    assert anchored > 55000, "a quiet lot's appraisal must survive intact"
+
+
+def test_a_contested_lot_near_close_is_priced_by_the_room():
+    """Twenty-six bidders with minutes left have decided. An estimate at five times the
+    live price is not a bargain signal, it is a wrong estimate."""
+    entry = _entry(bid=25000, ends_in_h=0.5, appraisal=_appraisal(asis=120000), bid_count=26)
+
+    assert bidding.price_discovery(entry, now=NOW) > 0.8
+    anchored = bidding.market_anchored_value_cents(entry, multiplier=1.3, now=NOW)
+    assert anchored < 60000, f"still ${anchored / 100:,.0f} against a $250 live price"
+
+
+def test_the_appraisal_is_never_abolished_entirely():
+    """A weighting, not a surrender: chasing whatever the room does would make the
+    valuation engine pointless in the other direction."""
+    entry = _entry(bid=1000, ends_in_h=0.1, appraisal=_appraisal(asis=100000), bid_count=99)
+
+    anchored = bidding.market_anchored_value_cents(entry, multiplier=1.0, now=NOW)
+    assert anchored > 1000 * 1.15, "some weight must remain on the appraisal"
+
+
+def test_the_nino_pippa_case_no_longer_recommends_overbidding():
+    """The lot that exposed all of this: valued at $1,200 with a $690 maximum bid while
+    26 bidders had it at $250 with 23 minutes left. The artist's realised results run
+    $111-$401, so $690 was roughly twice the top of his market."""
+    entry = _entry(bid=25000, ends_in_h=0.4, appraisal=_appraisal(asis=120000, conf=0.45),
+                   bid_count=26, vertical="art")
+
+    g = bidding.guide(entry, multiplier=1.3, now=NOW)
+
+    assert g is not None
+    assert g.max_bid_cents < 40000, \
+        f"max bid ${g.max_bid_cents / 100:,.0f} is still above this artist's market"
+    assert any("room is actually paying" in n for n in g.notes), \
+        "the markdown must be stated, not applied silently"

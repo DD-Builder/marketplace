@@ -300,6 +300,60 @@ def ending_soon(catalog: AuctionCatalog) -> list[AuctionEntry]:
     return sorted(out, key=lambda e: e.ends_at or datetime.max.replace(tzinfo=timezone.utc))
 
 
+def same_maker_lots(
+    catalog: AuctionCatalog, entry: AuctionEntry, *, limit: int = 6
+) -> list[AuctionEntry]:
+    """Other lots by the same named maker, realised closes first.
+
+    This is the comparable the pipeline already owned and never looked at. The house
+    sells the same artists repeatedly, so its own realised prices for a name are the
+    most direct evidence there is about what the next one will fetch — far better than a
+    model's recollection of the wider market. Two Nino Pippa oils sat in one catalogue
+    valued at $1,200 and $450 while each was the other's best comparable.
+
+    Matching is on a distinctive leading token pair from the title (a personal or brand
+    name), which is deliberately conservative: a false comparable is worse than none.
+    """
+    key = _maker_key(entry)
+    if not key:
+        return []
+    others = [
+        e for e in catalog.lots.values()
+        if e.id != entry.id and _maker_key(e) == key
+    ]
+    # Realised prices first, then live lots by recency of sighting — a close beats a bid.
+    others.sort(key=lambda e: (e.final_price_cents is None, -(e.bid_count or 0)))
+    return others[:limit]
+
+
+_MAKER_STOPWORDS = frozenset({
+    "a", "an", "the", "vintage", "antique", "mid", "modern", "century", "pair", "set",
+    "lot", "group", "large", "small", "sterling", "silver", "gold", "14k", "18k",
+    "diamond", "oil", "art", "hand", "two", "three", "four", "five", "assorted",
+})
+
+
+def _maker_key(entry: AuctionEntry) -> str:
+    """The leading proper-noun pair of a title, lowercased, or "" if there isn't one.
+
+    Auction houses lead with the name when there is one — "Nino Pippa Oil Painting…",
+    "Tiffany & Co. Sterling…" — so the first two capitalised words that are not generic
+    descriptors identify the maker often enough to be useful, and return nothing rather
+    than a guess when they don't.
+    """
+    words = [w.strip('.,"\'') for w in (entry.title or "").split()]
+    picked: list[str] = []
+    for w in words[:4]:
+        if not w or not w[0].isupper():
+            break
+        if w.lower() in _MAKER_STOPWORDS:
+            break
+        picked.append(w.lower())
+        if len(picked) == 2:
+            break
+    return " ".join(picked) if len(picked) == 2 else ""
+
+
 def comparable_closes(
     catalog: AuctionCatalog, entry: AuctionEntry, *, limit: int = 60
 ) -> list[tuple[datetime, int]]:

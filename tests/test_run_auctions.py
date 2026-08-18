@@ -57,7 +57,7 @@ class Harness:
         class Stub:
             name = "stub"
 
-            def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+            def appraise(self, listing, vertical, *, image_paths=None, comps=None, venue=""):
                 outer.appraise_calls.append(listing.fb_listing_id)
                 # $900 as-is: worth the round trip to Cincinnati even as a bulky lot.
                 # (The as-is figure is what the bid math prices off now — nothing here
@@ -215,6 +215,7 @@ def test_discovery_does_not_repeat_one_query_under_many_category_ids():
     assert len(urls) == len(set(urls)), "a duplicate request costs a fetch to learn nothing"
     assert not any("category_id=" in u for u in urls), \
         "category_id does not filter; emitting it only manufactures fake distinct queries"
+    assert any("category_slug=" in u for u in urls), "the parameter that does work is used"
     # The parameters that *do* work still drive discovery.
     for key in ("ending_soon", "highest_bid", "most_bids"):
         assert any(f"sort={SORTS[key]}" in u for u in urls), key
@@ -229,25 +230,21 @@ def test_discovery_is_narrowed_to_the_decision_window():
     assert timed and all("days_left=2" in u for u in timed)
 
 
-def test_discovery_pages_deep_enough_to_be_worth_calling_coverage():
-    """One page is 96 lots against a window holding ~1,986 — 5% of what was decidable.
-    Depth is what the budget freed by dropping the duplicate queries buys."""
-    assert run_auctions._DISCOVERY_MAX_PAGES >= 5
+def test_discovery_looks_past_the_first_page():
+    """One page is 96 lots, and page one of a category is not that category. Discovery
+    saw exactly 5% of the two-day window until the redundant queries were dropped."""
+    assert run_auctions._DISCOVERY_MAX_PAGES >= 2
 
 
-def test_a_working_category_parameter_restores_per_category_discovery():
-    """The category tree and its vertical mapping are kept for the moment the real
-    parameter is identified — a category-sourced vertical comes from EBTH's own filing
-    rather than from our classifier, which is strictly better evidence."""
-    import os
-
+def test_discovery_uses_the_category_parameter_that_was_measured_to_work():
+    """category_slug narrows /browse (6,133 -> 2,271 for Jewelry and Watches);
+    category_id, which the site's own filter block names as its query parameter, leaves
+    the count untouched. The vertical then comes from EBTH's filing rather than from our
+    classifier guessing at a title."""
     from dealfinder.auctions.categories import CATEGORIES
 
-    os.environ["EBTH_CATEGORY_PARAM"] = "category_slug"
-    try:
-        targets = run_auctions._search_targets("", default_vertical="furniture")
-    finally:
-        del os.environ["EBTH_CATEGORY_PARAM"]
+    targets = run_auctions._search_targets("", default_vertical="furniture")
+    assert not any("category_id=" in u for _v, u in targets), "the inert parameter is gone"
 
     jw = next(c for c in CATEGORIES if c.label == "Jewelry and Watches")
     mine = [(v, u) for v, u in targets if f"category_slug={jw.slug}" in u]
@@ -298,8 +295,8 @@ def test_explicit_urls_still_override_category_discovery():
 def test_time_critical_days_is_configurable(monkeypatch):
     monkeypatch.setenv("EBTH_TIME_CRITICAL_DAYS", "5")
     targets = run_auctions._search_targets("", default_vertical="furniture")
-    by_vertical = dict(targets)
-    assert "days_left=5" in by_vertical[run_auctions._AUTO_ENDING_SOON]
+    timed = [u for _v, u in targets if "sort=recommended" not in u]
+    assert timed and all("days_left=5" in u for u in timed)
 
 
 def test_an_explicit_override_keeps_the_clock_sweep_but_drops_the_taste_one():
@@ -514,10 +511,9 @@ def test_best_vertical_classifies_by_content_not_discovery_source():
 
 
 def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, monkeypatch):
-    """Full pipeline, dry-run (no AI spend). Discovery no longer names a category — with
-    category_id inert there is nothing to name it with — so a jewelry lot arrives from
-    the site-wide sweep untagged and has to be classified on its own text, then watched
-    under jewelry's rules rather than lost to a furniture keyword gate."""
+    """Full pipeline, dry-run (no AI spend): every priceable EBTH category is trawled
+    through the parameter measured to work, and a lot from Jewelry and Watches is tagged
+    and watched under jewelry's own rules rather than lost to a furniture keyword gate."""
     from dealfinder.sources.ebth import AuctionItem
 
     monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-test")
@@ -527,7 +523,7 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
 
     def fake_search(self, url, **kw):
         seen_queries.append(url)
-        if f"sort={SORTS['ending_soon']}" not in url:
+        if "category_slug=jewelry-and-watches" not in url:
             return []
         return [AuctionItem(
             item_id="j-1", title="Sterling Silver Diamond Ring",
@@ -547,10 +543,12 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
         "--dry-run",
     ])
     assert rc == 0
-    # One query per working sort, plus the recommended sweep — and no duplicates, since
-    # category_id never distinguished them in the first place.
+    from dealfinder.auctions.categories import CATEGORIES
+    on = [c for c in CATEGORIES if c.default_on]
+    # Every priceable category under each working sort, plus the recommended sweep — and
+    # no duplicates, which is what category_id used to manufacture.
     assert len(seen_queries) == len(set(seen_queries))
-    assert len(seen_queries) == 4
+    assert len(seen_queries) == len(on) * 3 + 1
 
     cat = load_auction_catalog(tmp_path / "site" / "catalog.json")
     entry = cat.lots["j-1"]

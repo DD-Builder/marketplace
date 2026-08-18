@@ -131,6 +131,56 @@ def resale_value_cents(appraisal: AppraisalResult) -> int:
     return asis or max(0, appraisal.est_restored_resale_value_cents)
 
 
+def price_discovery(entry: AuctionEntry, *, now: datetime | None = None) -> float:
+    """How much this lot's own auction has already revealed its price, 0..1.
+
+    Bidder depth is the signal and lateness is the weight. One bid at $10 with two days
+    to run reveals nothing — that is the undiscovered lot worth hunting. Twenty-six bids
+    with minutes left is a competitive market that has finished deciding, and an
+    appraisal that disagrees with it is far more likely to be wrong than the room is.
+    """
+    bids = entry.bid_count or 0
+    left = entry.hours_left(now)
+    if bids <= 0 or left is None:
+        return 0.0
+    depth = min(1.0, bids / 12.0)
+    lateness = 1.0 if left <= 1 else 0.7 if left <= 6 else 0.4 if left <= ENDGAME_HOURS else 0.1
+    return depth * lateness
+
+
+#: Ceiling on how far the live market can override the appraisal. Kept below 1.0 so a
+#: well-evidenced valuation always retains some weight — the point is to stop a
+#: hallucinated number from spending money, not to abolish the estimate and simply
+#: chase whatever the room is doing.
+_MAX_MARKET_WEIGHT = 0.85
+
+
+def market_anchored_value_cents(
+    entry: AuctionEntry, *, multiplier: float, now: datetime | None = None
+) -> int:
+    """The as-is value, pulled toward what this lot is actually clearing at.
+
+    These lots are bought at auction to be resold, and for anything that trades at
+    auction the resale value *is* what such lots hammer for. So the auction in front of
+    us is not merely a price to beat — it is the single most relevant comparable that
+    exists, for this exact object, right now.
+
+    This is the backstop for a bad appraisal. A Nino Pippa oil was valued at $1,200 and
+    given a $690 maximum bid while 26 bidders had taken it to $250 with 23 minutes left;
+    the artist's realised results run $111-$401. The prompt that produced that number has
+    been rewritten, but a valuation engine that can only be as good as its last estimate
+    is one bad estimate away from losing real money. Here the room gets a vote.
+    """
+    value = resale_value_cents(entry.appraisal) if entry.appraisal else 0
+    projected = projected_final_cents(entry, multiplier=multiplier, now=now)
+    if value <= 0 or projected is None or projected <= 0:
+        return value
+    weight = min(_MAX_MARKET_WEIGHT, price_discovery(entry, now=now))
+    if weight <= 0:
+        return value
+    return round(value * (1.0 - weight) + projected * weight)
+
+
 def max_bid_cents(
     appraisal: AppraisalResult,
     *,
@@ -215,14 +265,21 @@ def guide(
     if shipping_cents is None:
         shipping_cents = logistics.cost_cents
 
+    # The ceiling is computed from the market-anchored value, not the raw appraisal: for
+    # a lot bought and resold at auction, what the room is paying for this exact object
+    # is the most relevant comparable there is, and it is the only guard that holds when
+    # an estimate is simply wrong.
+    anchored = market_anchored_value_cents(entry, multiplier=multiplier, now=now)
+    priced = entry.appraisal.model_copy(update={"est_asis_value_cents": anchored})
     ceiling = max_bid_cents(
-        entry.appraisal, hourly_rate_cents=hourly_rate_cents,
+        priced, hourly_rate_cents=hourly_rate_cents,
         premium_pct=premium_pct, shipping_cents=shipping_cents, margin_pct=margin_pct,
     )
     # What winning at the ceiling actually costs: hammer + the house's cut + getting it
     # home. No restoration line — these are bought to resell as they arrive.
     all_in = round(ceiling * (1 + premium_pct)) + shipping_cents
-    value = resale_value_cents(entry.appraisal)
+    value = anchored
+    appraised = resale_value_cents(entry.appraisal)
     projected = projected_final_cents(entry, multiplier=multiplier, now=now)
     velocity = bid_velocity_cents_per_hour(entry, now=now)
     current = entry.current_bid_cents
@@ -233,6 +290,12 @@ def guide(
     if left is not None and left > ENDGAME_HOURS:
         notes.append(
             "Never bid early — it only feeds the price. Hold until the final hours."
+        )
+    if anchored < appraised * 0.9:
+        notes.append(
+            f"Marked down from the ${appraised / 100:,.0f} appraisal toward what the "
+            f"room is actually paying — {entry.bid_count or 0} bidders on this lot are "
+            "better evidence than an estimate."
         )
     if calibration_n < 3:
         notes.append(

@@ -86,11 +86,13 @@ _EBTH_BASE = "https://www.ebth.com"
 #: page 1 is the most relevant 48 lots by the house's own reckoning. With ~44 targets a
 #: run, following three pages each would mean 130+ browser navigations an hour to reach
 #: lots that are, by construction, the ones the sort ranked lowest.
-#: Pages to walk per discovery query. One page is 96 lots; the two-day window holds
-#: ~1,986, so a single page saw 5% of what was decidable. This is affordable only because
-#: the redundant per-category queries are gone — the old run spent 44 navigations to see
-#: one page, this spends a comparable budget to see most of the window.
-_DISCOVERY_MAX_PAGES = 8
+#: Pages to walk per discovery query. One page is 96 lots. With per-category discovery
+#: working again the queries are genuinely distinct, so depth multiplies against the
+#: category count rather than replacing it. Two pages across ~14 categories on three
+#: sorts is ~86 navigations at roughly 4s each — near six minutes, which is what the
+#: hourly job's 30-minute budget can spend on discovery and still leave room for
+#: valuations. EBTH_SORTS trims the sorts if that proves tight.
+_DISCOVERY_MAX_PAGES = 2
 
 #: A keyword search can only ever find lots that happen to contain a guessed word — it
 #: has no way to notice a jewelry lot that doesn't say "sterling" or a rug that doesn't
@@ -262,11 +264,15 @@ def _search_targets(raw: str, *, default_vertical: str) -> list[tuple[str, str]]
              if s.strip() in SORTS]
     targets: list[tuple[str, str]] = []
 
-    param = _env("EBTH_CATEGORY_PARAM", "").strip()
+    # Measured, not assumed: category_slug narrows /browse (6,133 -> 2,271 for Jewelry
+    # and Watches) while category_id — the name the site's own Categories filter block
+    # publishes as its query parameter — leaves the count untouched. See
+    # docs/auctions/category-probe.json.
+    param = _env("EBTH_CATEGORY_PARAM", "category_slug").strip()
     if param:
-        # A working category parameter has been identified — go back to asking per
-        # category, which is strictly better than a site-wide sweep because the vertical
-        # comes from EBTH's own filing rather than from our classifier.
+        # Per-category discovery is strictly better than a site-wide sweep: the vertical
+        # then comes from EBTH's own filing rather than from our classifier guessing at
+        # the title. Set EBTH_CATEGORY_PARAM="" to fall back to the site-wide sweeps.
         for cat in resolve_categories(_env("EBTH_CATEGORIES", "")):
             value = str(cat.id) if param.endswith("_id") else cat.slug
             for sort_key in sorts:
@@ -309,6 +315,61 @@ def _best_vertical(entry: acat.AuctionEntry) -> str:
     # guidance — a wrong vertical yields a confidently wrong number, which is worse than
     # no number. A lot nothing can classify is a lot we have no business pricing.
     return best_key
+
+
+def _venue_block(catalog: acat.AuctionCatalog, entry: acat.AuctionEntry,
+                 now: datetime) -> str:
+    """What the market is already saying about this exact lot, for the appraiser.
+
+    The listing handed to the appraiser carries no price at all — deliberately, so a $12
+    opening bid could not anchor the estimate. That was right for an opening bid and
+    badly wrong at the endgame: twenty bids at $250 with minutes left is not noise, it is
+    this object's clearing price, and withholding it left the model to invent a figure
+    from nothing. It invented $1,200 for a painting whose artist realises $111-$401.
+
+    Also included: the house's own results for the same maker. Those are the most direct
+    comparable that exists for "what will the next one fetch here", and the catalogue has
+    been recording them all along without ever showing them to the appraiser.
+    """
+    lines = [
+        "This lot is selling AT AUCTION on Everything But The House (an estate auction "
+        "house), and you are estimating what it will FETCH AT AUCTION — a realised "
+        "hammer price, not a gallery or retail ask.",
+    ]
+    left = entry.hours_left(now)
+    if left is not None:
+        when = f"{left * 60:.0f} minutes" if left < 1 else f"{left:.0f} hours"
+        lines.append(f"Closes in: {when}")
+    bid = entry.current_bid_cents or 0
+    if bid:
+        lines.append(
+            f"Bidding so far: ${bid / 100:,.0f} across {entry.bid_count or 0} bids."
+        )
+        if (entry.bid_count or 0) >= 8 and left is not None and left <= 24:
+            lines.append(
+                "That is competitive bidding close to the end, so it is strong evidence "
+                "of this lot's market price. If your estimate is far above it, say "
+                "explicitly in `reasoning` why the bidders are wrong."
+            )
+
+    comps = acat.same_maker_lots(catalog, entry)
+    if comps:
+        lines.append("")
+        lines.append("This house's own results for the same maker:")
+        for c in comps:
+            if c.final_price_cents:
+                lines.append(f"- SOLD ${c.final_price_cents / 100:,.0f} — {c.title[:90]}")
+            else:
+                lines.append(
+                    f"- bidding at ${(c.current_bid_cents or 0) / 100:,.0f} "
+                    f"({c.bid_count or 0} bids) — {c.title[:90]}"
+                )
+        lines.append(
+            "Treat these as the primary comparable. A realised price here outranks any "
+            "recollection of the wider market, and two lots by one maker should not "
+            "receive wildly different estimates without a stated reason."
+        )
+    return "\n".join(lines)
 
 
 def _still_promising(entry: acat.AuctionEntry, multiplier: float) -> bool:
@@ -596,7 +657,10 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
             paths = photos.get(entry.id, [])
             entry_vertical = get_vertical(entry.vertical) if entry.vertical else default_vertical
             try:
-                appraisal = provider.appraise(listing, entry_vertical, image_paths=paths or None)
+                appraisal = provider.appraise(
+                    listing, entry_vertical, image_paths=paths or None,
+                    venue=_venue_block(catalog, entry, now),
+                )
             except Exception as exc:  # noqa: BLE001
                 failures.append(str(exc))
                 log.warning("auction_appraisal_failed", lot=entry.id, error=str(exc)[:200])

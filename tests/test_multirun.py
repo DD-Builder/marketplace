@@ -75,7 +75,7 @@ class CountingProvider:
     def __init__(self):
         self.appraised: list[str] = []
 
-    def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+    def appraise(self, listing, vertical, *, image_paths=None, comps=None, venue=""):
         self.appraised.append(listing.fb_listing_id)
         ask = listing.asking_price_cents or 0
         return AppraisalResult(

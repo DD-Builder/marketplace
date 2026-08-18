@@ -69,7 +69,7 @@ def test_the_engine_keeps_the_failures_instead_of_only_logging_them():
     class Broken:
         name = "broken"
 
-        def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+        def appraise(self, listing, vertical, *, image_paths=None, comps=None, venue=""):
             raise RuntimeError("You've hit your session limit")
 
     # Raw records, as the pipeline feeds them: prescreen refuses a listing with no photo,
@@ -96,7 +96,7 @@ def test_a_run_that_values_nothing_publishes_why(monkeypatch):
     class OutOfQuota:
         name = "broken"
 
-        def appraise(self, listing, vertical, *, image_paths=None, comps=None):
+        def appraise(self, listing, vertical, *, image_paths=None, comps=None, venue=""):
             raise RuntimeError("claude CLI failed: You've hit your session limit "
                                "· resets 4:10pm (UTC)")
 

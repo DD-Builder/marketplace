@@ -88,6 +88,11 @@ class ValuationProvider(Protocol):
         *,
         image_paths: list[Path] | None = None,
         comps: list | None = None,
+        #: Where and how the piece is selling, when that is itself price evidence. An
+        #: auction near close with many bids is the strongest comparable available for
+        #: the object in front of you, and withholding it was letting the model invent a
+        #: number in a vacuum.
+        venue: str = "",
     ) -> AppraisalResult:
         ...
 
@@ -97,7 +102,8 @@ class ClaudeApiAppraiser:
 
     name = "claude-api"
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None,
+                 comps=None, venue=""):
         from dealfinder.valuation import appraise as appraise_mod
 
         image_urls = None if image_paths else [p.remote_url for p in listing.photos]
@@ -122,6 +128,39 @@ _CLI_SCHEMA_HINT = (
 )
 
 
+#: The valuation discipline, kept in one place because it is the part that decides
+#: whether a number is worth acting on. It replaced a body that opened "advising a
+#: restoration reseller" and then asked about "solid wood vs veneer vs particleboard" —
+#: text sent verbatim when valuing a painting. Asked to value a Nino Pippa oil that way,
+#: the model reasoned from "working regional landscape artists of this caliber" and
+#: returned $1,200; the artist's actual realised results run $111-$401, and the same run
+#: valued a second Pippa at $450. A category judgement is not a comparable.
+_VALUATION_RULES = (
+    "How to value this:\n"
+    "1. NAME THE MARKET, NOT THE CALIBRE. If a maker, artist, brand or workshop is "
+    "identifiable, base the estimate on what THAT NAME's work actually realises at "
+    "auction. Do not reason from 'pieces of this quality' or 'artists of this calibre' — "
+    "that produces a plausible number attached to nothing. If you cannot recall specific "
+    "realised results for this name, say so in `reasoning` and set confidence <= 0.4.\n"
+    "2. REALISED, NOT ASKED. Gallery, 1stDibs, Etsy, Chairish and artist-direct prices "
+    "are asks by hopeful sellers, and many never sell. Auction hammer prices and eBay "
+    "SOLD listings are transactions. Value on transactions. Where the two disagree by "
+    "several times — common for living decorative artists — the realised price is the "
+    "market and the ask is marketing.\n"
+    "3. VALUE IT AS IT ARRIVES. `est_asis_value_cents` is the figure that decides "
+    "whether to buy, and it means: sold in its current condition, no restoration, no "
+    "waiting for the right buyer. Fill in the restored fields too, but do not let a "
+    "restoration premium leak into the as-is number.\n"
+    "4. GENUINE VS STYLED-AFTER. If the piece is in the manner of a maker rather than "
+    "by them, or could be a reproduction of an original, value it as the look-alike and "
+    "lower confidence. State which you assumed.\n"
+    "5. BE WILLING TO RETURN A SMALL NUMBER. Most lots at an estate auction are worth "
+    "tens or low hundreds of dollars. An estimate that makes an ordinary lot look like a "
+    "find is the expensive kind of wrong: it is what causes real money to be overbid. "
+    "When torn between two figures, return the lower one."
+)
+
+
 class ClaudeCodeAppraiser:
     """Subscription path: drive the Claude Code CLI so calls bill to your Max plan, not the API.
 
@@ -142,7 +181,8 @@ class ClaudeCodeAppraiser:
         self.model = model
         self.timeout = timeout
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None,
+                 comps=None, venue=""):
         if not shutil.which(self.cli):
             raise RuntimeError(
                 f"'{self.cli}' CLI not found. The subscription appraiser needs Claude Code "
@@ -169,18 +209,14 @@ class ClaudeCodeAppraiser:
             )
 
         prompt = (
-            "You are an expert appraiser advising a restoration reseller. "
+            "You are an expert appraiser advising a reseller. "
             f"{vertical.appraiser_guidance}\n\n"
             f"{img_block}\n\n"
-            f"Asking price: {price}\n"
+            f"{venue or f'Asking price: {price}'}\n"
             f"Title: {listing.title[:300]}\n"
             f"Description: {listing.description[:2000]}"
             f"{comps_prompt_block(comps or [])}\n\n"
-            "Judge construction (solid wood vs veneer vs particleboard), joinery, maker marks, "
-            "era, condition, and what restoration it truly needs. Value the RESTORED piece at "
-            "realistic regional resale (local marketplace / eBay sold), NOT aspirational dealer "
-            "listings like 1stDibs — treat those as heavily-discounted ceilings. If the piece is "
-            "styled-after rather than genuine, value it as a look-alike and lower confidence.\n\n"
+            f"{_VALUATION_RULES}\n\n"
             "Return ONLY a JSON object, no prose, matching this shape (money in US cents):\n"
             f"{_CLI_SCHEMA_HINT}"
         )
@@ -279,7 +315,8 @@ class _UnimplementedProvider:
     def __init__(self, name: str) -> None:
         self.name = name
 
-    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None, comps=None):
+    def appraise(self, listing, vertical=DEFAULT_VERTICAL, *, image_paths=None,
+                 comps=None, venue=""):
         raise NotImplementedError(
             f"The '{self.name}' appraiser is a declared seam, not yet implemented. "
             "It plugs in as one ValuationProvider class with no funnel changes."
