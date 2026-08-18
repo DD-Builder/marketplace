@@ -67,8 +67,10 @@ jobs:
         # every stored appraisal (dry runs never record stub valuations).
         run: |
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "rebuild_only=true" >> "$GITHUB_OUTPUT"
             echo "dry_run=true" >> "$GITHUB_OUTPUT"
           else
+            echo "rebuild_only=false" >> "$GITHUB_OUTPUT"
             echo "dry_run=${{ inputs.dry_run || false }}" >> "$GITHUB_OUTPUT"
           fi
 
@@ -118,10 +120,14 @@ jobs:
           # same reasoning as negotiate.yml: nothing user-typed touches the shell.
           RECOVER: ${{ inputs.recover }}
           DRY_RUN: ${{ steps.mode.outputs.dry_run }}
+          REBUILD_ONLY: ${{ steps.mode.outputs.rebuild_only }}
         run: |
           ARGS=""
           [ "$RECOVER" = "true" ] && ARGS="$ARGS --recover"
           [ "$DRY_RUN" = "true" ] && ARGS="$ARGS --dry-run"
+          # A marker push only asks for the pages back; --rebuild-only re-renders from
+          # the committed catalogue and needs no APIFY_TOKEN, no AI, and no network.
+          [ "$REBUILD_ONLY" = "true" ] && ARGS="$ARGS --rebuild-only"
           python -m dealfinder.run_board \
             --out docs \
             --catalog docs/catalog.json \

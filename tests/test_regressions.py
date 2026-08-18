@@ -172,3 +172,52 @@ def test_a_quota_blocked_scrape_still_rebuilds_the_board(tmp_path, monkeypatch):
     after = json.loads(catalog_path.read_text())
     assert after["listings"]["l1"]["misses"] == 1
     assert after["listings"]["l1"]["state"] == "live"
+
+
+def test_rebuild_only_regenerates_the_page_without_any_credentials(tmp_path, monkeypatch):
+    """Re-rendering the site from what we already know must not require a scrape, an
+    appraiser, or a network — it is how a page is restored after a layout change, and
+    how docs/board.html came back after the landing page took over index.html.
+
+    Regression: a marker-triggered rebuild exited 2 on a missing APIFY_TOKEN and wrote
+    nothing at all, leaving the Marketplace tab a 404.
+    """
+    import json as _json
+    from datetime import datetime, timezone
+
+    from dealfinder import run_board
+    from dealfinder.catalog import Catalog, CatalogEntry, save_catalog
+    from dealfinder.core.schemas import AppraisalResult
+
+    now = datetime.now(timezone.utc)
+    cat = Catalog()
+    cat.listings["p-1"] = CatalogEntry(
+        id="p-1", title="Danish Teak Sideboard", state="live",
+        asking_price_cents=12000, first_seen=now, last_seen=now,
+        appraisal=AppraisalResult(
+            identified_item="teak sideboard", est_asis_value_cents=30000,
+            est_restored_resale_value_cents=95000,
+            est_restoration_cost_cents=6000, est_restoration_effort_hours=4.0,
+            confidence=0.8, deal_score=65.0,
+        ),
+    )
+    save_catalog(cat, tmp_path / "catalog.json")
+
+    monkeypatch.delenv("APIFY_TOKEN", raising=False)
+    monkeypatch.delenv("CLAUDE_CODE_OAUTH_TOKEN", raising=False)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")   # the credential gate is live here
+
+    rc = run_board.main([
+        "--out", str(tmp_path), "--catalog", str(tmp_path / "catalog.json"),
+        "--pieces", str(tmp_path / "pieces.json"), "--rebuild-only",
+    ])
+    assert rc == 0, "a rebuild must not fail for want of credentials it doesn't use"
+    page = (tmp_path / "board.html").read_text()
+    assert "Danish Teak Sideboard" in page
+
+    # And it must not have invented catalogue state: no scrape happened, so nothing may
+    # be marked gone and no stub appraisal may be recorded over the real one.
+    after = _json.loads((tmp_path / "catalog.json").read_text())
+    entry = after["listings"]["p-1"]
+    assert entry["state"] == "live"
+    assert entry["appraisal"]["identified_item"] == "teak sideboard"

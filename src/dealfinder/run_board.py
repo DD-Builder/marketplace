@@ -329,10 +329,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--recover-limit", type=int, default=20,
                     help="how many recent runs to pull back with --recover")
     ap.add_argument("--dry-run", action="store_true", help="skip AI; render pre-screen only")
+    ap.add_argument("--rebuild-only", action="store_true",
+                    help="re-render the site from the committed catalogue and stop: no "
+                         "scrape, no AI, no credentials needed. This is how you "
+                         "regenerate the pages after a template change, or restore a "
+                         "page that isn't on disk yet, without spending anything")
     ap.add_argument("--no-photos", action="store_true",
                     help="value from text alone (for networks that can't reach the photo "
                          "CDN); such valuations are marked blind and redone later")
     args = ap.parse_args(argv)
+    if args.rebuild_only:
+        # Rendering from what we already know can't need an appraiser either.
+        args.dry_run = True
 
     out_dir = Path(args.out)
     catalog_path = Path(args.catalog)
@@ -361,7 +369,12 @@ def main(argv: list[str] | None = None) -> int:
     # 1. Get listings — from Apify, or a local export for testing.
     coverage: dict[str, catalog_mod.SearchCoverage] = {}
     scan_failed = False
-    if args.from_json:
+    if args.rebuild_only:
+        # No source at all: every card on the board comes from the catalogue anyway, so
+        # re-rendering needs nothing but the file already committed next to the site.
+        listings = []
+        log.info("rebuild_only", note="re-rendering from the catalogue; no scrape, no AI")
+    elif args.from_json:
         records = json.loads(Path(args.from_json).read_text(encoding="utf-8"))
         listings = records_to_listings(records)
     elif args.recover:
@@ -436,12 +449,14 @@ def main(argv: list[str] | None = None) -> int:
     # 2. Fold the scan into the catalogue *before* planning, so price history, sold/gone
     #    state and first-seen dates are recorded even for listings we never pay to value.
     #    `seen` was snapshotted above, so the diff still sees pre-scan prices.
-    if scan_failed:
+    if scan_failed or args.rebuild_only:
         # A scan that never reached Marketplace is not evidence that anything is missing.
         # observe() counts a miss against every live entry it doesn't see, so running it on
-        # a quota-blocked day would retire listings we simply never looked for.
+        # a quota-blocked day would retire listings we simply never looked for. A
+        # rebuild-only run never looked at all, so the same reasoning applies twice over.
         obs = catalog_mod.ObserveReport()
-        log.info("observe_skipped", reason="no search reached Marketplace")
+        log.info("observe_skipped",
+                 reason="rebuild only" if args.rebuild_only else "no search reached Marketplace")
     else:
         # Recovered datasets and local exports carry no absence evidence: they mention
         # the listings they mention and imply nothing about the rest of the market.
