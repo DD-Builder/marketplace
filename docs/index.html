@@ -1,2298 +1,356 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="The Bench">
-<meta name="referrer" content="no-referrer">
-<!-- Everything is inline by design (the page must render with zero network), so the CSP
-     allows inline style/script and nothing external beyond the GitHub API and same-origin
-     fetches for photos/status. Scraped listing text is injected into this page; if an
-     escaping gap ever appears, this is the fence that keeps it from phoning out. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'">
-<meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme:light)">
-<meta name="theme-color" content="#211a13" media="(prefers-color-scheme:dark)">
-<title>The Bench — deal board</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>The Find — best of every source</title>
 <style>
-/* The Bench — mid-century showroom.
-   Cream paper, walnut ink, burnt-orange primary, mustard stickers, teal for money-good.
-   System serif display stack only — the page ships with zero external requests.
-   Every text/background pairing is checked >= 4.5:1 in both themes (see tests). */
-
 :root{
   --paper:#f4efe4; --card:#fbf7ec; --ink:#2b2118; --soft:#6b5c49; --line:#e0d5c2;
-  --accent:#a8431a; --accent-bright:#c4501f; --accent-soft:#f4ddd0;
-  --teal:#2f6d62; --teal-soft:#dcebe6;
-  --good:#2f6d62; --warn:#8a5a10; --warn-bg:#f3e6c8;
-  --crit:#9a3524; --crit-bg:#f4ded6;
-  --star:#d9a320; --star-ink:#3a2c07;
-  --tag:#fdfaf1; --tag-ink:#2b2118;
+  --accent:#a8431a; --teal:#2f6d62; --good:#2f6d62; --warn:#8a5a10; --warn-bg:#f3e6c8;
+  --crit:#9a3524;
   --shadow:0 1px 0 #fff9, 0 2px 12px #6b5c4922;
   --display:"Iowan Old Style","Palatino Nova",Palatino,"Book Antiqua",Georgia,serif;
   --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --paper:#211a13; --card:#2c241b; --ink:#f2e8d8; --soft:#b3a48d; --line:#4a3e2f;
-    --accent:#e8804c; --accent-bright:#e8804c; --accent-soft:#472a1b;
-    --teal:#6fbfae; --teal-soft:#1d3b34;
-    --good:#6fbfae; --warn:#e0b45e; --warn-bg:#3d3016;
-    --crit:#e08a72; --crit-bg:#42241b;
-    --star:#e3b23c; --star-ink:#2a2005;
-    --tag:#382e21; --tag-ink:#f2e8d8;
-    --shadow:0 1px 0 #ffffff0a, 0 3px 16px #00000059;
-  }
-}
-
+@media (prefers-color-scheme:dark){:root{
+  --paper:#211a13; --card:#2c241b; --ink:#f2e8d8; --soft:#b3a48d; --line:#4a3e2f;
+  --accent:#e8804c; --teal:#6fbfae; --good:#6fbfae; --warn:#e0b45e; --warn-bg:#3d3016;
+  --crit:#e08a72;
+  --shadow:0 1px 0 #ffffff0a, 0 3px 16px #00000059;}}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-  -webkit-font-smoothing:antialiased;line-height:1.45;
-  /* Home-screen (standalone) mode renders from y=0 — keep out of the clock's way. */
-  padding-top:env(safe-area-inset-top);
-  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
-}
-.num,.v,.was,.meter b,.tag-price,.tag-margin{font-variant-numeric:tabular-nums;font-family:var(--mono)}
-
-/* ---- header ------------------------------------------------------------------------ */
-header.top{padding:28px 20px 10px;max-width:1200px;margin:0 auto}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  line-height:1.45;-webkit-font-smoothing:antialiased}
+nav.tabs{display:flex;gap:2px;background:var(--card);border-bottom:1px solid var(--line);
+  padding:0 20px;overflow-x:auto;position:sticky;top:0;z-index:5}
+nav.tabs a{padding:14px 18px;color:var(--soft);text-decoration:none;font-size:14px;
+  font-weight:600;white-space:nowrap;border-bottom:2px solid transparent}
+nav.tabs a.on{color:var(--accent);border-bottom-color:var(--accent)}
+nav.tabs a:hover{color:var(--ink)}
+header.top,main,footer{max-width:1200px;margin:0 auto;padding:0 20px}
+header.top{padding-top:24px}
 .brandrow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-h1{font-family:var(--display);font-size:34px;margin:0;font-weight:600;letter-spacing:.01em}
+h1{font-family:var(--display);font-size:38px;margin:0;font-weight:600}
 .tag{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);
   border:1.5px solid var(--teal);border-radius:999px;padding:4px 12px}
 .sub{color:var(--soft);font-size:13px}
+.note{max-width:72ch;line-height:1.6}
 .notice{font-size:14px;background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);
-  border-radius:10px;padding:10px 14px;margin:12px 0 0;line-height:1.5}
-.notice.bad{background:var(--crit-bg);color:var(--crit);border-color:var(--crit)}
+  border-radius:10px;padding:10px 14px;margin:12px 0 0}
 .summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:10px 16px;box-shadow:var(--shadow);min-width:96px}
-.stat .n{font-family:var(--display);font-size:24px;font-weight:600}
+  padding:10px 16px;box-shadow:var(--shadow);min-width:96px;cursor:pointer;
+  font:inherit;color:inherit;text-align:left}
+.stat:hover{border-color:var(--accent)}
+.stat[aria-pressed="true"]{border-color:var(--accent);background:var(--warn-bg)}
+.stat .n{font-family:var(--display);font-size:26px;font-weight:600}
 .stat .l{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.09em}
-.stat.killer .n{color:var(--accent)} .stat.fake .n{color:var(--crit)}
-
-/* ---- action bar / controls ----------------------------------------------------------- */
-.actionbar{max-width:1200px;margin:6px auto 0;padding:0 20px;display:flex;gap:10px;
-  align-items:center;flex-wrap:wrap}
-.actionbar button{font:inherit;font-size:14px;min-height:44px;padding:10px 18px;
-  border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);
-  cursor:pointer}
-.actionbar button.primary{background:var(--accent);border-color:var(--accent);color:#fff;
-  font-weight:650}
-.actionbar button[aria-busy="true"],.tool button[aria-busy="true"]{opacity:.55;pointer-events:none}
-.conn{font-size:12.5px;color:var(--soft);max-width:100%;overflow-wrap:anywhere}
-.conn.ok{color:var(--good)} .conn.bad{color:var(--crit)}
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px auto 0;
-  max-width:1200px;padding:0 20px}
-.filters{display:flex;gap:8px;flex-wrap:wrap}
-.controls button.filter{font:inherit;font-size:14px;min-height:44px;padding:10px 16px;
-  border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);
-  cursor:pointer}
-.controls button.filter[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);
-  color:#fff;font-weight:600}
-@media (prefers-color-scheme:dark){
-  .controls button.filter[aria-pressed="true"]{color:#10201c}
-  .actionbar button.primary{color:#231207}
-}
-.sort{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.08em}
-.sort select{font:inherit;font-size:14px;min-height:44px;padding:8px 12px;border-radius:10px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink)}
-#search{font:inherit;font-size:14px;min-height:44px;padding:8px 14px;border-radius:999px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);flex:1 1 160px;min-width:140px}
-.legend{max-width:1200px;margin:12px auto 0;padding:0 20px;display:flex;gap:6px;
-  flex-wrap:wrap;align-items:center}
-.legend-note{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
-
-/* ---- tier sections ------------------------------------------------------------------- */
-/* Three bands rather than one ranking: percentage-based scoring always flatters the
-   cheapest thing on the board, so estate pieces need their own shelf to sit on. */
-.tier{margin:26px 0 0}
-.tierhead{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:baseline;
-  gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:8px}
-.tierhead h2{font-family:var(--display);font-size:26px;margin:0;font-weight:600}
-.tiernote{font-size:13px;color:var(--soft);flex:1 1 auto}
-.tiercount{font-family:var(--mono);font-size:13px;color:var(--soft);
-  border:1px solid var(--line);border-radius:999px;padding:2px 10px}
-.tier[data-tier="estate"] .tierhead{border-bottom-color:var(--accent)}
-.tier[data-tier="estate"] .tierhead h2{color:var(--accent)}
-.tier.empty{display:none}
-
-/* ---- the grid and cards -------------------------------------------------------------- */
-.grid{max-width:1200px;margin:18px auto 40px;padding:0 20px;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;align-items:start}
-.card{position:relative;background:var(--card);border:1px solid var(--line);
-  border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
-.card.killer{box-shadow:0 0 0 2px var(--star),var(--shadow)}
-.card.flagged{border-left:5px solid var(--crit)}
-
-.hero{position:relative;background:var(--teal-soft)}
-img.thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--teal-soft)}
-.thumb.ph{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
-  padding:16px;text-align:center;overflow:hidden;
-  background:repeating-linear-gradient(115deg,#0000 0 9px,#00000007 9px 10px),
-  linear-gradient(160deg,var(--teal-soft),var(--card))}
-/* A real appraisal names the piece in a full sentence, so this has to clip hard —
-   unclipped it spilled out of the thumbnail and across the whole card. */
-.thumb.ph span{font-family:var(--display);font-size:17px;color:var(--teal);line-height:1.3;
-  overflow:hidden;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:4;
-  -webkit-box-orient:vertical}
-.rank{position:absolute;top:10px;left:10px;z-index:2;background:#000a;color:#fff;
-  font-size:12px;padding:3px 9px;border-radius:999px}
-.gallery-hint{position:absolute;bottom:10px;left:10px;z-index:2;background:#000a;color:#fff;
-  font-size:12px;padding:3px 9px;border-radius:999px;border:0;cursor:pointer}
-
-/* The swing tag: ask price big, margin beneath, string-hole punched in the corner. */
-.swingtag{position:absolute;right:12px;bottom:-16px;z-index:3;background:var(--tag);
-  color:var(--tag-ink);border:1px solid var(--line);border-radius:10px 14px 14px 14px;
-  padding:9px 14px 8px 24px;transform:rotate(-3deg);box-shadow:0 3px 10px #0003;min-width:96px}
-.swingtag::before{content:"";position:absolute;left:8px;top:9px;width:9px;height:9px;
-  border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 2px var(--soft)}
-.tag-price{font-family:var(--display);font-size:22px;font-weight:600;display:block;line-height:1.05}
-.tag-was{font-size:11.5px;color:var(--soft);text-decoration:line-through;display:block}
-.tag-margin{font-size:12.5px;display:block;color:var(--good);font-weight:600}
-.swingtag.neg{background:var(--crit-bg);border-color:var(--crit)}
-.swingtag.neg .tag-margin{color:var(--crit)}
-
-/* The killer star: a mustard sticker, slightly askew, like the showroom dot on a sold tag. */
-.starsticker{position:absolute;top:10px;right:10px;z-index:4;background:var(--star);
-  color:var(--star-ink);font-size:12px;font-weight:750;letter-spacing:.05em;
-  text-transform:uppercase;padding:7px 11px;border-radius:999px;transform:rotate(5deg);
-  box-shadow:0 2px 7px #0004}
-
-.body{padding:24px 16px 16px;min-width:0}
-.head h3{font-family:var(--display);font-size:19px;margin:0 0 2px;line-height:1.3;
-  font-weight:600;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical}
-.loc{font-size:13px;color:var(--soft)}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.chip{font-size:12px;padding:3px 10px 3px 8px;border-radius:999px;border:1px solid var(--line);
-  display:inline-flex;align-items:center;gap:5px;background:var(--paper);color:var(--ink)}
-.chip.good{color:var(--good);border-color:var(--good)}
-.chip.warn{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
-.chip.info{color:var(--teal)}
-.authwarn{font-size:13px;color:var(--crit);background:var(--crit-bg);border-radius:10px;
-  padding:8px 11px;margin:8px 0 2px;line-height:1.45}
-.figs{display:flex;gap:16px;margin:10px 0 4px;border-top:1px solid var(--line);
-  padding-top:12px;flex-wrap:wrap}
-.fig{display:flex;flex-direction:column}
-.fig .k{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
-.fig .v{font-size:16px;font-weight:600}
-.fig.net .v{color:var(--good)}
-.fig.net.neg .v{color:var(--crit)}
-.fig .v.warn{color:var(--warn)} .fig .v.bad{color:var(--crit)}
-.was{font-size:12px;color:var(--soft);text-decoration:line-through;font-weight:400}
-.resale{font-size:13px;color:var(--soft);margin:2px 0 8px;display:flex;align-items:baseline;
-  gap:7px;flex-wrap:wrap}
-.resale b{color:var(--ink);font-size:14.5px}
-.resale .posture{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--teal);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
-.resale.bad b{color:var(--crit)}
-.resale .posture.bad{color:var(--crit);border-color:var(--crit);background:var(--crit-bg)}
-.resale .posture.thin{color:var(--warn);border-color:var(--warn);background:var(--warn-bg)}
-.reason{font-size:12.5px;color:var(--soft);margin:-4px 0 8px;line-height:1.45}
-.resale .span{font-size:12px;color:var(--soft)}
-
-/* Disclosures: 44px touch targets, real affordance. */
-details.yours,details.why,details.tool{margin:0 0 2px}
-details.yours summary,details.why summary,details.tool summary{
-  font-size:13px;color:var(--accent);cursor:pointer;list-style:none;min-height:44px;
-  display:flex;align-items:center;gap:6px;border-top:1px dashed var(--line)}
-details summary::-webkit-details-marker{display:none}
-details.yours summary::before,details.why summary::before,details.tool summary::before{
-  content:"▸";color:var(--accent)}
-details[open].yours summary::before,details[open].why summary::before,
-details[open].tool summary::before{content:"▾"}
-.yngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:6px 14px;
-  margin:2px 0 10px;padding:10px 12px;background:var(--paper);border:1px solid var(--line);
-  border-radius:10px}
-.yn{display:flex;flex-direction:column;gap:1px}
-.yn .k{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.yn .v{font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
-.basis{font-size:12px;color:var(--soft);margin:6px 0 8px;font-style:italic}
-.why p{font-size:13px;color:var(--soft);margin:2px 0 10px;line-height:1.5}
-.clamped{font-size:12.5px;color:var(--warn);margin:0 0 10px;padding-left:18px;line-height:1.5}
-
-.tool form{display:flex;flex-wrap:wrap;gap:8px 12px;margin:2px 0 10px;padding:11px 12px;
-  background:var(--paper);border:1px solid var(--line);border-radius:10px}
-.tool label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.06em;flex:1 1 90px}
-.tool label.wide{flex:1 1 100%;text-transform:none;letter-spacing:0;font-size:12px}
-.tool input,.tool textarea{font:inherit;font-size:16px;padding:9px 10px;border-radius:8px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;
-  box-sizing:border-box}
-.tool input[type=range]{padding:0;accent-color:var(--accent);min-height:44px}
-.tool button{font:inherit;font-size:14px;min-height:44px;padding:9px 16px;border-radius:999px;
-  border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);
-  font-weight:600;cursor:pointer;flex:0 0 auto;align-self:flex-end}
-.postval{font-size:12px;color:var(--accent);text-transform:none;letter-spacing:0}
-.status{flex:1 1 100%;font-size:13px;color:var(--soft);margin:2px 0 0;min-height:1em;line-height:1.45}
-.status.ok{color:var(--good)} .status.bad{color:var(--crit)}
-.drafts{flex:1 1 100%;display:flex;flex-direction:column;gap:9px}
-.draft{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.dtext{font-size:14px;line-height:1.55;margin:0;white-space:pre-wrap}
-.draft .copy{font:inherit;font-size:13px;min-height:44px;padding:8px 14px;margin-top:6px;
-  border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
-
-.meters{display:flex;flex-direction:column;gap:6px;margin:10px 0 4px}
-.meter{display:grid;grid-template-columns:58px 1fr 30px;align-items:center;gap:9px}
-.meter label{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.meter .bar{height:7px;background:var(--paper);border-radius:999px;overflow:hidden;
-  border:1px solid var(--line)}
-.meter .bar i{display:block;height:100%;background:var(--accent-bright);border-radius:999px}
-.meter .bar.sub i{background:var(--soft);opacity:.65}
-.meter b{font-size:13px;text-align:right}
-.view{display:inline-flex;align-items:center;min-height:44px;font-size:15px;
-  color:var(--accent);text-decoration:none;font-weight:650}
-
-/* ---- dialogs ------------------------------------------------------------------------- */
-dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);
-  max-width:min(460px,92vw);padding:20px 22px;box-shadow:var(--shadow)}
-dialog::backdrop{background:#000a}
-dialog h2{font-family:var(--display);font-size:19px;margin:0 0 8px}
-dialog p{font-size:13px;color:var(--soft);line-height:1.55;margin:0 0 10px}
-dialog code{font-size:12.5px;color:var(--teal)}
-dialog label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--soft);
-  text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
-dialog input{font:inherit;font-size:16px;padding:9px 11px;border-radius:8px;
-  border:1px solid var(--line);background:var(--paper);color:var(--ink)}
-dialog menu{display:flex;gap:8px;padding:0;margin:12px 0 0;flex-wrap:wrap}
-dialog menu button{font:inherit;font-size:14px;min-height:44px;padding:8px 16px;
-  border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
-  cursor:pointer}
-dialog menu button:first-child{background:var(--accent);border-color:var(--accent);
-  color:#fff;font-weight:600}
-@media (prefers-color-scheme:dark){dialog menu button:first-child{color:#231207}}
-
-#lightbox{max-width:min(960px,96vw);padding:10px;background:#131009;border-color:#3a3226}
-#lightbox img{max-width:100%;max-height:78vh;display:block;border-radius:8px;margin:0 auto}
-#lb-close{position:absolute;top:8px;right:8px;font:inherit;font-size:16px;min-width:44px;
-  min-height:44px;border-radius:999px;border:0;background:#0008;color:#fff;cursor:pointer}
-.lb-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}
-.lb-nav button{font:inherit;font-size:22px;min-width:44px;min-height:44px;border-radius:999px;
-  border:0;background:#ffffff1c;color:#fff;cursor:pointer}
-#lb-count{color:#cfc6b4;font-size:13px}
-
-/* ---- empty state / footer ------------------------------------------------------------- */
-.empty{max-width:520px;margin:60px auto;padding:0 20px;text-align:center}
-.empty-head{font-family:var(--display);font-size:24px;margin:0 0 6px}
-.empty-sub{font-size:14px;color:var(--soft);line-height:1.55}
-.foot{max-width:1200px;margin:0 auto 52px;padding:0 20px calc(14px + env(safe-area-inset-bottom));
-  color:var(--soft);font-size:13px;line-height:1.6}
-.engineroom summary{cursor:pointer;color:var(--soft);min-height:44px;display:flex;align-items:center}
-.engineroom p{font-family:var(--mono);font-size:11.5px}
-.hide{display:none!important}
-
-@media (max-width:390px){
-  h1{font-size:28px}
-  .grid{grid-template-columns:1fr}
-}
-
+.stat.killer .n{color:var(--accent)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
+.chip{font:inherit;font-size:13.5px;min-height:40px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+#q{font:inherit;font-size:14px;min-height:40px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);min-width:220px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;
+  margin-top:26px}
+.pick{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  text-decoration:none;color:inherit;transition:transform .12s ease,border-color .12s ease}
+.pick:hover{transform:translateY(-2px);border-color:var(--accent)}
+.media{position:relative;aspect-ratio:4/3;background:var(--line)}
+.media img{width:100%;height:100%;object-fit:cover;display:block}
+.nophoto{display:flex;align-items:center;justify-content:center;height:100%;
+  color:var(--soft);font-size:13px}
+.src{position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;padding:4px 10px;border-radius:999px;
+  background:var(--card);color:var(--soft);border:1px solid var(--line)}
+.src.auction{background:var(--teal);color:#fff;border-color:var(--teal)}
+.src.marketplace{background:var(--accent);color:#fff;border-color:var(--accent)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px}
+h3{font-size:15.5px;margin:0;font-weight:650;line-height:1.35}
+.clockrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:18px}
+.clock{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent)}
+.badge{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--soft);
+  border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+.row{display:flex;justify-content:space-between;font-size:13.5px;gap:12px}
+.row span:first-child{color:var(--soft)}
+.v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.good{color:var(--good);font-weight:650}
+.why{font-size:12.5px;color:var(--soft);margin:8px 0 0;line-height:1.5}
+.empty{color:var(--soft);font-size:14px;margin-top:24px}
+footer{padding:44px 20px;color:var(--soft);font-size:14px}
+footer a{color:var(--teal);text-decoration:none;font-weight:600}
 </style>
-</head>
-<body>
+</head><body>
+<nav class="tabs">
+  <a class="on" href="index.html">Home</a>
+  <a href="board.html">The Bench · Marketplace</a>
+  <a href="auctions/index.html">The Gavel · Auctions</a>
+</nav>
 <header class="top">
   <div class="brandrow">
-    <h1>The Bench</h1>
-    <span class="tag">Lexington · 40 mi</span>
-    <span class="sub" id="updated" data-ts="2026-08-18T13:38:19.984662+00:00">updated Aug 18, 2026 · 13:38 UTC</span>
+    <h1>The Find</h1>
+    <span class="tag">best of every source</span>
+    <span class="sub">updated Aug 18, 2026 · 19:28 UTC</span>
   </div>
-  <p class="notice" id="notice" hidden></p>
+  
   <div class="summary">
-    <div class="stat"><div class="n num">24</div><div class="l">On the floor</div></div>
-    <div class="stat killer"><div class="n num">0</div><div class="l">★ Killers</div></div>
-    <div class="stat"><div class="n num">7</div><div class="l">▼ Price drops</div></div>
-    <div class="stat fake"><div class="n num">0</div><div class="l">⚠ Look-alikes</div></div>
-    <div class="stat"><div class="n num">24</div><div class="l">In radius</div></div>
+    <button class="stat" data-source="all">
+      <div class="n">12</div><div class="l">surfaced</div></button>
+    <button class="stat" data-source="marketplace">
+      <div class="n">12</div>
+      <div class="l">marketplace</div></button>
+    <button class="stat killer" data-source="auction">
+      <div class="n">0</div>
+      <div class="l">auctions</div></button>
   </div>
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search everything…" aria-label="Search">
+    <button id="reset" class="chip">Reset</button>
+  </div>
+  <p class="sub note">Ranked by what a thing is worth against what it costs right now.
+  Marketplace pieces are valued restored (that's the work you'd put in); auction lots are
+  valued <b>as they arrive</b>, already net of the buyer's premium and getting them home.
+  Tracking 56 live listings and 40 live lots.</p>
 </header>
-<div class="actionbar">
-  <button id="scrape-now" class="primary">Scrape now</button>
-  <button id="open-settings">Connection</button>
-  <span id="conn" class="conn">not connected</span>
-</div>
-<dialog id="settings">
-  <form method="dialog" class="settings">
-    <h2>Connect this page to your repo</h2>
-    <p>The board is a static page, so the buttons talk to GitHub directly. Paste a
-      <b>fine-grained personal access token</b> scoped to <code id="repo-name"></code>
-      with <b>Actions: read &amp; write</b> and <b>Contents: read &amp; write</b>.</p>
-    <label>Token <input id="token" type="password" autocomplete="off"
-      placeholder="github_pat_…"></label>
-    <p class="basis">Straight talk about what this token can do: Contents write access
-      means it can push code — including workflow changes that read this repo's secrets —
-      so scope it to this one repository and nothing else. It's stored in this browser's
-      localStorage, which is shared with every other GitHub Pages site under your
-      username. Treat it as disposable: rotate it if anything ever feels off.</p>
-    <menu>
-      <button id="save-token" value="save">Save</button>
-      <button id="forget-token" value="forget" formnovalidate>Forget</button>
-      <button value="cancel" formnovalidate>Close</button>
-    </menu>
-    <p id="settings-status" class="status" role="status"></p>
-  </form>
-</dialog>
-<div class="controls">
-  <div class="filters" role="group" aria-label="Filters">
-    <button class="filter" data-filter="radius" aria-pressed="false">In radius</button>
-    <button class="filter" data-filter="clean" aria-pressed="false">No look-alikes</button>
-    <button class="filter" data-filter="star" aria-pressed="false">★ Killers</button>
-  </div>
-  <label class="sort">Sort
-    <select id="sort">
-      <option value="priority" selected>Best first</option>
-      <option value="margin">Biggest margin</option>
-      <option value="ask">Cheapest</option>
-      <option value="fresh">Freshest</option>
-    </select>
-  </label>
-  <input id="search" type="search" placeholder="Search titles…" aria-label="Search titles">
-</div>
-<div class="legend">
-  <span class="chip good"><span class="ico">★</span>Killer deal</span>
-  <span class="chip warn"><span class="ico">⚠</span>Look-alike</span>
-  <span class="chip good"><span class="ico">▼</span>Price drop</span>
-  <span class="chip info"><span class="ico">◉</span>Hot</span>
-  <span class="chip info"><span class="ico">≈</span>Sells fast</span>
-  <span class="chip warn"><span class="ico">∼</span>Slow mover</span>
-  <span class="chip info"><span class="ico">?</span>Maker unconfirmed</span>
-  <span class="chip warn"><span class="ico">⤢</span>Out of radius</span>
-  <span class="chip warn"><span class="ico">◷</span>Unconfirmed lately</span>
-  <span class="legend-note">what the flags mean</span>
-</div>
-<main id="board">
-<section class="tier" data-tier="estate">
-  <div class="tierhead"><h2>Estate pieces</h2><span class="tiernote">The ones worth clearing a weekend for</span><span class="tiercount">8</span></div>
-  <div class="grid" id="grid-estate">
-
-    <article class="card" data-id="2428993480844970" data-title="MCM Broyhill Brasilia 9 Drawer Dresser" data-priority="10.9" data-margin="25000" data-ask="175000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2428993480844970.jpg&quot;, &quot;photos/2428993480844970_1.jpg&quot;, &quot;photos/2428993480844970_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">1</div>
-        <img class="thumb" src="photos/2428993480844970.jpg" alt="Broyhill Brasilia line triple dresser, 9-drawer, with sculpted arched center doors" data-ph="Broyhill Brasilia Line Triple Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$1,750</span><span class="tag-margin">$250 margin</span></div>
-      </div>
+<main>
+  <div class="grid">
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="wood dresser unidentified &quot;antique&quot; wood dresser with attached/companion mirror, rural ky marketplace listing — asking $1, worth about $200 restored ($180 of work). marketplace">
+      <div class="media"><img src="photos/1329984805955947.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
       <div class="body">
-        <div class="head">
-          <h3>MCM Broyhill Brasilia 9 Drawer Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$1,750</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$2,200</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$250</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$2,420</b><span class="span">$2,200–$2,420</span><span class="posture">known · premium</span></div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,950</span></div><div class="yn"><span class="k">With your time</span><span class="v">$2,025 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$470</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$188/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$2,329</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:10.9%"></i></div><b>11</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a highly recognizable Broyhill Brasilia 9-drawer triple dresser — the sculpted arched center doors, brass-accented &#x27;eyebrow&#x27; pulls, and sculpted sled-leg base are the line&#x27;s signature design elements, and genuine Brasilia case pieces use solid walnut sculpted fronts/legs with dovetailed drawer boxes over veneered plywood carcasses (not particleboard), which supports a mid-to-upper value estimate. However, no maker&#x27;s label is visible in these photos, so identification is based on style match alone, capping confidence below &#x27;certain.&#x27; The piece already appears refinished or very well…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="2428993480844970">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="1750"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="2428993480844970">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/2428993480844970/" target="_blank" rel="noopener">View listing →</a>
+        <h3>Wood dresser</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $1</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$200</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $19</span></div>
+        <p class="why">Unidentified &quot;antique&quot; wood dresser with attached/companion mirror, rural KY marketplace listing — asking $1, worth about $200 restored ($180 of work).</p>
       </div>
-    </article>
-
-    <article class="card" data-id="1439187397973749" data-title="Vintage Stereo Console / Bar. Very Rare Find. Made in Germany (1967). Value $4,000**." data-priority="7.4" data-margin="-160000" data-ask="225000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
-      <div class="hero">
-        <div class="rank">2</div>
-        <div class="thumb ph"><span>Mid-Century German Stereo/Radio Console…</span></div><div class="swingtag neg"><span class="tag-price">$2,250</span><span class="tag-was">$2,500</span><span class="tag-margin">−$1,600 margin</span></div>
-      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="free furniture unidentified furniture piece (item type not specified in listing) — asking $1, worth about $80 restored ($50 of work). marketplace">
+      <div class="media"><img src="photos/1004805828845064.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
       <div class="body">
-        <div class="head">
-          <h3>Vintage Stereo Console / Bar. Very Rare Find. Made in Germany (1967). Value $4,000**.</h3>
-          <div class="loc">Nicholasville, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$2,250</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,300</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$1,600</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2900 in it and it&#x27;s only worth about $1300 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,900</span></div><div class="yn"><span class="k">With your time</span><span class="v">$3,440 · 18h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$1,470</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$82/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,956</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:7.4%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:65.0%"></i></div><b>65</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This matches a well-known and once mass-produced category — the German &#x27;Musiktruhe&#x27;/stereo-bar console of the 1960s, combining a radio-phono chassis (here Blaupunkt Arkansas) in a veneered cabinet with a bar/display compartment behind sliding glass. These were produced in large numbers by multiple German electronics makers (Blaupunkt, Grundig, SABA, Telefunken, Nordmende) and are not inherently rare; construction is typically veneer over plywood/composite panel with glued/stapled case joinery rather than fine dovetailed solid-wood cabinetry, though tapered brass-capped legs are a genuine…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1439187397973749">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="2250"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1439187397973749">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1439187397973749/" target="_blank" rel="noopener">View listing →</a>
+        <h3>Free furniture</h3>
+        <div class="clockrow"><span class="badge">price drop</span></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $1</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$80</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $29</span></div>
+        <p class="why">Unidentified furniture piece (item type not specified in listing) — asking $1, worth about $80 restored ($50 of work).</p>
       </div>
-    </article>
-
-    <article class="card" data-id="1048403807574819" data-title="Kent Coffee Mid Century Modern Dresser (12 Drawers)" data-priority="6.9" data-margin="-35000" data-ask="140000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1048403807574819.jpg&quot;, &quot;photos/1048403807574819_1.jpg&quot;, &quot;photos/1048403807574819_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">3</div>
-        <img class="thumb" src="photos/1048403807574819.jpg" alt="Kent-Coffey &quot;Tempo&quot; line triple dresser, 12 drawers, mid-century modern case good, refinished two-tone (sage green case " data-ph="Kent-Coffey &quot;Tempo&quot; Line Triple Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$1,400</span><span class="tag-margin">−$350 margin</span></div>
-      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser - vintage green and white painted armoire vintage mediterranean/spanish-revival style painted armoire (wardrobe/dresser combo) — two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls — asking $20, worth about $300 restored ($100 of work). marketplace">
+      <div class="media"><img src="photos/1539598741047412.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
       <div class="body">
-        <div class="head">
-          <h3>Kent Coffee Mid Century Modern Dresser (12 Drawers)</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$1,400</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,100</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$350</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1450 in it and it&#x27;s only worth about $1100 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,450</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,510 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$240</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$120/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,736</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>Maker mark clearly confirms genuine Kent-Coffey Tempo, a legitimate and collectible MCM line, which supports authenticity. However the piece has already been repainted in a trendy two-tone sage/walnut scheme with non-original hardware — this is a completed flip, not a restoration opportunity, so there is no upside from the reseller doing the work themselves (only minor touch-up/glide servicing remains, ~2 hrs). Painted MCM case goods with swapped hardware sell for meaningfully less than original-finish walnut examples to serious MCM collectors, and 1stDibs-style asks ($2000+) for this line…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1048403807574819">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="1400"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1048403807574819">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1048403807574819/" target="_blank" rel="noopener">View listing →</a>
+        <h3>DRESSER - Vintage Green and White Painted Armoire</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $20</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$300</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $180</span></div>
+        <p class="why">Vintage Mediterranean/Spanish-Revival style painted armoire (wardrobe/dresser combo) — two arched upper cabinet doors concealing two interior drawers and open storage, plus two wide base drawers with metal pulls — asking $20, worth about $300 restored ($100 of work).</p>
       </div>
-    </article>
-
-    <article class="card" data-id="1509361367043353" data-title="MCM bedroom set 
-Gonzo Vintage" data-priority="6.9" data-margin="-95000" data-ask="245000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
-      <div class="hero">
-        <div class="rank">4</div>
-        <div class="thumb ph"><span>United Furniture Corp. &quot;Discovery&quot; Line…</span></div><div class="swingtag neg"><span class="tag-price">$2,450</span><span class="tag-margin">−$950 margin</span></div>
-      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="amour small oak-finish cabinet/jewelry armoire sold under the &#x27;amour&#x27; product name, missing a door hinge — asking $5, worth about $55 restored ($25 of work). marketplace">
+      <div class="media"><img src="photos/1111420097939591.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
       <div class="body">
-        <div class="head">
-          <h3>MCM bedroom set 
+        <h3>Amour</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $5</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$55</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $25</span></div>
+        <p class="why">Small oak-finish cabinet/jewelry armoire sold under the &#x27;Amour&#x27; product name, missing a door hinge — asking $5, worth about $55 restored ($25 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid oak dining table with 6 chairs 6-seat traditional oak dining set (rectangular table + 6 carved-back spindle chairs) — asking $50, worth about $350 restored ($180 of work). marketplace">
+      <div class="media"><img src="photos/1396410792335616.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Solid Oak Dining Table with 6 Chairs</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $50</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$350</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $120</span></div>
+        <p class="why">6-seat traditional oak dining set (rectangular table + 6 carved-back spindle chairs) — asking $50, worth about $350 restored ($180 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="heavy, wood dresser tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and stacked-case chippendale-style form — asking $80, worth about $320 restored ($120 of work). marketplace">
+      <div class="media"><img src="photos/2829481977419908.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Heavy, wood dresser</h3>
+        <div class="clockrow"><span class="badge">price drop</span></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $80</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$320</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $120</span></div>
+        <p class="why">Tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and stacked-case Chippendale-style form — asking $80, worth about $320 restored ($120 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="solid hardwood 6-drawer chest / tall dresser traditional/colonial-style 6-drawer tall chest (highboy dresser) — asking $100, worth about $325 restored ($60 of work). marketplace">
+      <div class="media"><img src="photos/1540358351121947.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Solid Hardwood 6-Drawer Chest / Tall Dresser</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $100</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$325</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $165</span></div>
+        <p class="why">Traditional/Colonial-style 6-drawer tall chest (highboy dresser) — asking $100, worth about $325 restored ($60 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="white mid-century modern 2-drawer nightstand white-painted 2-drawer nightstand, mcm-style tapered legs — asking $15, worth about $45 restored ($12 of work). marketplace">
+      <div class="media"><img src="photos/1549815250125258.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>White Mid-Century Modern 2-Drawer Nightstand</h3>
+        <div class="clockrow"><span class="badge">price drop</span></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $15</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$45</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $18</span></div>
+        <p class="why">White-painted 2-drawer nightstand, MCM-style tapered legs — asking $15, worth about $45 restored ($12 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="furniture set: dresser, media console, and bookshelf mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/walnut-accent asymmetrical bookshelf — almost certainly mass-market flat-pack pieces sold together as one lot — asking $50, worth about $150 restored ($25 of work). marketplace">
+      <div class="media"><img src="photos/1697195071582592.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Furniture Set: Dresser, Media Console, and Bookshelf</h3>
+        <div class="clockrow"><span class="badge">price drop</span></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $50</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$150</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $75</span></div>
+        <p class="why">Mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/walnut-accent asymmetrical bookshelf — almost certainly mass-market flat-pack pieces sold together as one lot — asking $50, worth about $150 restored ($25 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="vanity old depression-era double-pedestal vanity/dressing table with trifold mirror and knee-hole stool well (art deco &#x27;waterfall&#x27; style) — asking $100, worth about $275 restored ($150 of work). marketplace">
+      <div class="media"><img src="photos/1745001666717512.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Vanity Old</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $100</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$275</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $25</span></div>
+        <p class="why">Depression-era double-pedestal vanity/dressing table with trifold mirror and knee-hole stool well (Art Deco &#x27;waterfall&#x27; style) — asking $100, worth about $275 restored ($150 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="dresser painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish — asking $36, worth about $95 restored ($25 of work). marketplace">
+      <div class="media"><img src="photos/1298036099183850.jpg" alt="" loading="lazy"><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>Dresser</h3>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $36</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$95</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $34</span></div>
+        <p class="why">Painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish — asking $36, worth about $95 restored ($25 of work).</p>
+      </div>
+    </a>
+    <a class="pick" href="board.html" data-source="marketplace" data-hay="mcm china cabinets
+gonzo vintage mcm-style china cabinet (display/storage cabinet with shelves), sold by vintage furniture dealer — asking $123, worth about $320 restored ($180 of work). marketplace">
+      <div class="media"><div class="nophoto">no photo</div><span class="src marketplace">
+        Marketplace</span></div>
+      <div class="body">
+        <h3>MCM China Cabinets
 Gonzo Vintage</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$2,450</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,650</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$950</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2600 in it and it&#x27;s only worth about $1650 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,600</span></div><div class="yn"><span class="k">With your time</span><span class="v">$2,720 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$785</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$196/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,128</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>United Furniture&#x27;s &#x27;Discovery&#x27; line is genuine period MCM but a mid-tier maker, not a blue-chip name — sculpted/recessed pulls and tapered legs are a common era motif rather than a rare design signal, so no premium beyond generic MCM demand is warranted. Dealer is asking $2,450 for the set at a boutique downtown shop, which reflects retail/showroom pricing rather than realistic secondary-market resale; comparable United/mid-tier MCM highboy dressers and nightstand pairs typically clear $150-450 per piece on regional marketplace/eBay-sold comps, putting a fair resold total closer to…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1509361367043353">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="2450"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1509361367043353">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1509361367043353/" target="_blank" rel="noopener">View listing →</a>
+        <div class="clockrow"></div>
+        <div class="row"><span>Costs now</span><span class="v">
+          $123</span></div>
+        <div class="row"><span>Worth</span><span class="v">
+          <b>$320</b></span></div>
+        <div class="row"><span>Margin</span><span class="v good">
+          $17</span></div>
+        <p class="why">MCM-style china cabinet (display/storage cabinet with shelves), sold by vintage furniture dealer — asking $123, worth about $320 restored ($180 of work).</p>
       </div>
-    </article>
-
-    <article class="card" data-id="1681755769543636" data-title="Mastercraft Widdicomb Style Cocktail Table" data-priority="6.9" data-margin="-2000" data-ask="90000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1681755769543636.jpg&quot;, &quot;photos/1681755769543636_1.jpg&quot;, &quot;photos/1681755769543636_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">5</div>
-        <img class="thumb" src="photos/1681755769543636.jpg" alt="Brass-and-glass &#x27;waterfall&#x27; cocktail table, Hollywood Regency/Mid-Century Modern style, attributed to Mastercraft (in th" data-ph="Brass-And-Glass &#x27;Waterfall&#x27; Cocktail Table" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$20 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mastercraft Widdicomb Style Cocktail Table</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,100</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$20</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1120 in it and it&#x27;s only worth about $1100 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,120</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,240 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$90</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$22/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,426</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>The form (tubular brass waterfall frame, beveled glass inset) is a well-known and desirable 1970s Hollywood Regency silhouette that Mastercraft, Pace Collection, and DIA all produced, and pieces with confirmed maker marks in this style regularly sell in the $900-1,800 range restored on 1stDibs/Chairish, with more realistic local-marketplace/eBay-sold comps landing closer to $800-1,200 for genuine, well-preserved examples. However, none of the three supplied photos show a label, engraved mark, or stamp anywhere on the frame or glass, so the &#x27;Mastercraft&#x27; attribution in the listing cannot be…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1681755769543636">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="900"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1681755769543636">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1681755769543636/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="2081206726106412" data-title="Mid Century Modern American of Martinsville Expanding Round Walnut Dining Table w/ Leaf" data-priority="6.9" data-margin="-9900" data-ask="94900" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2081206726106412.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">6</div>
-        <img class="thumb" src="photos/2081206726106412.jpg" alt="Mid-century modern round/oval expanding dining table with one leaf, walnut top with inlaid metal (brass/pewter) star acc" data-ph="Mid-Century Modern Round/Oval Expanding…" loading="lazy"><div class="swingtag neg"><span class="tag-price">$949</span><span class="tag-margin">−$99 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid Century Modern American of Martinsville Expanding Round Walnut Dining Table w/ Leaf</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$949</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$950</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$99</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1049 in it and it&#x27;s only worth about $950 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,049</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,124 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$4</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$2/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,293</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a recognizable, collectible MCM form (round walnut expanding table with star inlays, American of Martinsville/Gershun-style) that typically moves well regionally, but realistic sold comps on eBay/Chairish/local marketplace for a 42&quot; table + 12&quot; leaf run roughly $700-1,100 depending on finish quality and confirmed maker mark — 1stDibs-style listings in the $1,800-2,500 range are aspirational outliers and should be discounted heavily. Since the piece is already described and shown as reconditioned, remaining restoration is likely light (oil/wax refresh, leaf alignment, felt glide…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="2081206726106412">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="949"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="2081206726106412">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/2081206726106412/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1060103160033052" data-title="Mid Century Dining Room Ivory Wingback Upholstered set of 6" data-priority="6.4" data-margin="-27000" data-ask="90000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
-      <div class="hero">
-        <div class="rank">7</div>
-        <div class="thumb ph"><span>Martha Stewart &#x27;Winfield&#x27; Upholstered…</span></div><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$270 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid Century Dining Room Ivory Wingback Upholstered set of 6</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$720</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$270</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $990 in it and it&#x27;s only worth about $720 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$990</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,035 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$198</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$132/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,190</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.4%"></i></div><b>6</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a modern, mass-produced upholstered dining set styled to evoke mid-century/farmhouse design, not an antique or designer original — &#x27;solid wood&#x27; applies only to the legs, while the frame is plywood, and there&#x27;s no joinery or maker-mark evidence to authenticate age or craftsmanship. &#x27;Restoration&#x27; realistically means light cleaning/spot-treatment at most (no structural repair, refinishing, or reupholstery implied by a near-new set), so upside from work is minimal. Comparable used mass-market upholstered dining chair sets typically resell locally around 30-40% of original retail even in…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1060103160033052">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="900"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1060103160033052">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1060103160033052/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="3385862774953721" data-title="Dark Green Mid Century Modern Lowboy Dresser" data-priority="5.4" data-margin="-27500" data-ask="90000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/3385862774953721.jpg&quot;, &quot;photos/3385862774953721_1.jpg&quot;, &quot;photos/3385862774953721_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">8</div>
-        <img class="thumb" src="photos/3385862774953721.jpg" alt="9-drawer triple-dresser lowboy, Spanish/Mediterranean Revival style (mislabeled by seller as &#x27;Mid Century Modern&#x27;)" data-ph="9-Drawer Triple-Dresser Lowboy" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$275 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Dark Green Mid Century Modern Lowboy Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$700</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$275</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $975 in it and it&#x27;s only worth about $700 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$975</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,020 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$205</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$137/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,173</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:5.4%"></i></div><b>5</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>The piece is a solidly built but mass-market Spanish/Mediterranean Revival lowboy, not genuine mid-century modern — the title&#x27;s MCM label is a common reseller mislabel that inflates perceived desirability. Without drawer-interior or back-panel photos, dovetail joinery and any maker&#x27;s stamp can&#x27;t be verified, and a full repaint conceals the original wood/veneer condition and grain, which lowers appraisal confidence and typically reduces value versus an original-finish example for vintage buyers. Because the case is already repainted with what looks like a competent finish, remaining…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="3385862774953721">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="900"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="3385862774953721">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/3385862774953721/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-  </div>
-</section>
-<section class="tier" data-tier="mid">
-  <div class="tierhead"><h2>Mid-tier</h2><span class="tiernote">Solid pieces, real money, manageable work</span><span class="tiercount">8</span></div>
-  <div class="grid" id="grid-mid">
-
-    <article class="card" data-id="1062091556490692" data-title="Eames Wire Base Low Tables MCM - Set of 2" data-priority="9.4" data-margin="18000" data-ask="45000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1062091556490692.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">9</div>
-        <img class="thumb" src="photos/1062091556490692.jpg" alt="Eames Wire Base Low Table (LTR/LTW style), set of two" data-ph="Eames Wire Base Low Table" loading="lazy"><div class="swingtag"><span class="tag-price">$450</span><span class="tag-margin">$180 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Eames Wire Base Low Tables MCM - Set of 2</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$450</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$650</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$180</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$715</b><span class="span">$650–$715</span><span class="posture">market</span></div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$470</span></div><div class="yn"><span class="k">With your time</span><span class="v">$500 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$245</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$245/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$575</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:9.4%"></i></div><b>9</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>Visually these match the genuine Eames Wire Base Low Table design exactly: white laminate top, plywood edge lamination, and the distinctive chrome cross-braced wire base — a design still produced by Herman Miller/Vitra, which also means quality reproductions exist. Condition is already excellent, so restoration need is essentially nil (light cleaning/polish only, ~1 hr, minimal cost). Genuine vintage pairs in this condition typically sell $250-450 each ($500-900/pair) on eBay sold listings and local marketplaces; if this is a more recent authorized reissue, secondhand value trends toward the…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1062091556490692">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="450"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1062091556490692">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1062091556490692/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1651097590358502" data-title="Pair of Vintage Mid-Century Solid Walnut Armchairs | B.L. Marble Furniture, Bedford, OH " data-priority="8.2" data-margin="5500" data-ask="47500" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1651097590358502.jpg&quot;, &quot;photos/1651097590358502_1.jpg&quot;, &quot;photos/1651097590358502_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">10</div>
-        <img class="thumb" src="photos/1651097590358502.jpg" alt="Pair of mid-century &#x27;executive posture&#x27; armchairs, B.L. Marble Furniture (Executive Series 2000), Bedford, OH" data-ph="Pair Of Mid-Century &#x27;Executive Posture&#x27;…" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$475</span><span class="tag-margin">$55 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Pair of Vintage Mid-Century Solid Walnut Armchairs | B.L. Marble Furniture, Bedford, OH </h3>
-          <div class="loc">Midway, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$475</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$680</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$55</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$748</b><span class="span">$680–$748</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $55 cash, but 6h at $30/hr is $180 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$625</span></div><div class="yn"><span class="k">With your time</span><span class="v">$805 · 6h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$123</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$20/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$926</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:8.2%"></i></div><b>8</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a documented, maker-marked pair (original metal tags + handwritten finish cards cited) from B.L. Marble&#x27;s Executive Series 2000, a known-quality mid-century producer of banker&#x27;s/executive seating — the period trade ad photo corroborates authenticity. Construction is genuine solid walnut with molded plywood shell seats/backs and brass-capped feet, a durable and desirable combination; joinery appears sound with no structural distress visible. As-is, matched documented pairs like this typically sell in the $350-500 range on regional marketplaces, so the $475 asking price is near fair…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1651097590358502">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="475"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1651097590358502">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1651097590358502/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="2829481977419908" data-title="Heavy, wood dresser" data-priority="7.6" data-margin="12000" data-ask="8000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2829481977419908.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">11</div>
-        <img class="thumb" src="photos/2829481977419908.jpg" alt="Tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and" data-ph="Tall Chest-On-Chest Dresser" loading="lazy"><div class="swingtag"><span class="tag-price">$80</span><span class="tag-was">$150</span><span class="tag-margin">$120 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Heavy, wood dresser</h3>
-          <div class="loc">Versailles, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$80</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$320</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$120</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$352</b><span class="span">$320–$464</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $120 cash, but 10h at $30/hr is $300 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$200</span></div><div class="yn"><span class="k">With your time</span><span class="v">$500 · 10h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$152</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$15/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$575</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:7.6%"></i></div><b>8</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>Only one exterior photo was provided (no drawer-interior, joinery, back-panel, or maker&#x27;s-mark shots), which caps confidence — solid-wood construction and joinery quality are inferred from grain continuity, weight (per seller), and lack of visible veneer chipping/particleboard edges, not confirmed directly. The form is a generic Colonial Revival stacked chest-on-chest with batwing brass hardware, a very common mid-to-late 20th century American furniture style (Pennsylvania House/Link-Taylor/Stanley-type production), not a documented period antique, so value should be anchored to realistic…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="2829481977419908">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="80"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="2829481977419908">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/2829481977419908/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1540358351121947" data-title="Solid Hardwood 6-Drawer Chest / Tall Dresser" data-priority="7.4" data-margin="16500" data-ask="10000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1540358351121947.jpg&quot;, &quot;photos/1540358351121947_1.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">12</div>
-        <img class="thumb" src="photos/1540358351121947.jpg" alt="Traditional/Colonial-style 6-drawer tall chest (highboy dresser)" data-ph="Traditional/Colonial-Style 6-Drawer Tall…" loading="lazy"><button type="button" class="gallery-hint">2 photos</button><div class="swingtag"><span class="tag-price">$100</span><span class="tag-margin">$165 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Solid Hardwood 6-Drawer Chest / Tall Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$325</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$165</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$358</b><span class="span">$325–$358</span><span class="posture">market</span></div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$160</span></div><div class="yn"><span class="k">With your time</span><span class="v">$280 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$198</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$49/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$322</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:7.4%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>At $100 for a genuinely solid-wood, dovetailed 6-drawer chest this is priced to move regardless of exact age — particleboard/veneer chests of this size routinely ask more. The dovetail photo is the strongest evidence: irregular hand/early-machine-cut pins and real wear/dust argue against a cheap modern knockoff and support a mid-20th-century solid hardwood case good, honest but not rare or &#x27;brown furniture&#x27; desirable in the current market. Realistic restoration is light-duty: disassemble and re-glue the loosened drawer joint(s), clean out the interior, tighten case joinery, strip/refresh a…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1540358351121947">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="100"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1540358351121947">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1540358351121947/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="4475296949391172" data-title="French Provençal Dresser/ Furniture" data-priority="6.9" data-margin="-3000" data-ask="60000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/4475296949391172.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">13</div>
-        <img class="thumb" src="photos/4475296949391172.jpg" alt="French Provincial-style 9-drawer triple dresser, Bassett Furniture" data-ph="French Provincial-Style 9-Drawer Triple…" loading="lazy"><div class="swingtag neg"><span class="tag-price">$600</span><span class="tag-margin">−$30 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>French Provençal Dresser/ Furniture</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$600</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$600</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$30</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $630 in it and it&#x27;s only worth about $600 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$630</span></div><div class="yn"><span class="k">With your time</span><span class="v">$660 · 1h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$30</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$30/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$759</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a very common, mass-produced Bassett French Provincial case good from the 1960s-70s — not a genuine antique, and not particularly rare, but solidly made and desirable in the current two-tone/farmhouse resale niche. It has already been refinished, so there is little restoration work left to add value (light wax/polish, maybe drawer glide lube and hardware tightening). Because the seller has already captured most of the value-add through refinishing, a reseller buying at the $600 asking price has thin margin — realistic regional resale (FB Marketplace/local vintage sellers) for a piece…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="4475296949391172">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="600"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="4475296949391172">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/4475296949391172/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="790721437464808" data-title="MCM 6 Drawer Dresser" data-priority="6.9" data-margin="-1800" data-ask="57800" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/790721437464808.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">14</div>
-        <img class="thumb" src="photos/790721437464808.jpg" alt="Mid-Century Modern 6-drawer dresser (matching nightstand shown, sold separately) by Basic-Witz" data-ph="Mid-Century Modern 6-Drawer Dresser" loading="lazy"><div class="swingtag neg"><span class="tag-price">$578</span><span class="tag-margin">−$18 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>MCM 6 Drawer Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$578</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$620</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$18</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $638 in it and it&#x27;s only worth about $620 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$638</span></div><div class="yn"><span class="k">With your time</span><span class="v">$698 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$44</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$22/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$803</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>Basic-Witz was a solid mid-market American case-goods maker (comparable to Bassett/Broyhill Premier tier) — not a sought-after MCM name like Lane, Drexel, or Dixie, so it won&#x27;t command designer-piece premiums regardless of condition. The piece as photographed already looks retail-ready (clean veneer, intact original hardware, square drawers), meaning there&#x27;s little restoration upside to capture — mostly a wax/polish pass, not refinishing or joinery repair. Regional resale (Lexington KY vintage market, eBay/marketplace sold comps for mid-tier MCM 6-drawer dressers) realistically lands…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="790721437464808">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="578"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="790721437464808">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/790721437464808/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1704213040699058" data-title="Mid century vintage knoll Bertoia chrome kitchen table set w/ glass top and 4 chairs" data-priority="6.5" data-margin="-34000" data-ask="60000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1704213040699058.jpg&quot;, &quot;photos/1704213040699058_1.jpg&quot;, &quot;photos/1704213040699058_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">15</div>
-        <img class="thumb" src="photos/1704213040699058.jpg" alt="Chrome wire-frame kitchen/patio chair set (4) with matching stacked-coil chrome pedestal table base (glass top not pictu" data-ph="Chrome Wire-Frame Kitchen/Patio Chair Set" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$600</span><span class="tag-was">$900</span><span class="tag-margin">−$340 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid century vintage knoll Bertoia chrome kitchen table set w/ glass top and 4 chairs</h3>
-          <div class="loc">Richmond, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$600</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$350</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$340</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $690 in it and it&#x27;s only worth about $350 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$690</span></div><div class="yn"><span class="k">With your time</span><span class="v">$840 · 5h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$305</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$61/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$966</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.5%"></i></div><b>6</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>The listing claims genuine Knoll Bertoia, but the chairs&#x27; basket-shaped wire shell does not match Harry Bertoia&#x27;s iconic continuous diamond-mesh Side/Bertoia chair silhouette, and no maker tags or stamps are visible in any photo. Genuine Knoll Bertoia was also never produced with this stacked-ring/coil pedestal table base, which is a novelty design unrelated to Knoll&#x27;s wire-grid Bertoia table bases. This is almost certainly a generic vintage chrome wire dinette/patio set styled loosely after Bertoia, not an authentic Knoll piece — confidence in attribution is low. As metal furniture there is…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1704213040699058">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="600"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1704213040699058">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1704213040699058/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="2228502754613114" data-title="Mid-Century Modern Sofa" data-priority="6.1" data-margin="9500" data-ask="30000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2228502754613114.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">16</div>
-        <img class="thumb" src="photos/2228502754613114.jpg" alt="Tufted low-profile sofa in Florence Knoll/tuxedo-arm style, upholstered, chrome sled/tapered legs" data-ph="Tufted Low-Profile Sofa In Florence…" loading="lazy"><div class="swingtag"><span class="tag-price">$300</span><span class="tag-margin">$95 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid-Century Modern Sofa</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$300</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$400</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$95</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$440</b><span class="span">$400–$440</span><span class="posture">market</span></div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$305</span></div><div class="yn"><span class="k">With your time</span><span class="v">$320 · 0h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$135</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$270/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$368</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.1%"></i></div><b>6</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>No maker marks, no dovetail/M&amp;T casegood joinery to evaluate since this is fully upholstered seating — the only &#x27;joinery&#x27; signal is frame construction, which is hidden. The tufted-back, track-arm, tapered-chrome-leg silhouette is a very common Florence Knoll-style reproduction sold by numerous modern retailers (Article, Rove Concepts, Poly &amp; Bark, and generic import lines), not an identifiable period Knoll/Baughman/Probber original — genuine examples would typically show fixed (non-removable, non-zippered) period-correct upholstery, aged foam, oxidized or pitted chrome, and often a…</p><p class="basis">Restoration estimate adjusted against published refinishing costs:</p><ul class="clamped"><li>materials raised from $0 to $5</li></ul></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="2228502754613114">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="300"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="2228502754613114">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/2228502754613114/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-  </div>
-</section>
-<section class="tier" data-tier="quick">
-  <div class="tierhead"><h2>Quick flips</h2><span class="tiernote">Small margins, small effort — take them or leave them</span><span class="tiercount">8</span></div>
-  <div class="grid" id="grid-quick">
-
-    <article class="card" data-id="1352396026802534" data-title="Mid-Century Modern Tripod Floor Lamp" data-priority="8.4" data-margin="-4000" data-ask="10000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1352396026802534.jpg&quot;, &quot;photos/1352396026802534_1.jpg&quot;, &quot;photos/1352396026802534_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">17</div>
-        <img class="thumb" src="photos/1352396026802534.jpg" alt="Threshold (Target private label) tripod floor lamp with drum shade" data-ph="Threshold" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$100</span><span class="tag-was">$125</span><span class="tag-margin">−$40 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid-Century Modern Tripod Floor Lamp</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip info"><span class="ico">≈</span>Sells fast</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$65</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$40</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $105 in it and it&#x27;s only worth about $65 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$105</span></div><div class="yn"><span class="k">With your time</span><span class="v">$120 · 0h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$34</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$67/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$138</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:8.4%"></i></div><b>8</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:80.0%"></i></div><b>80</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a current/recent Target (Threshold) tripod floor lamp — a mid-century-styled mass-market reproduction, not a genuine vintage or handmade piece, so there&#x27;s no maker&#x27;s mark, dovetail, or mortise-and-tenon joinery to evaluate; construction is turned solid-wood legs with brass-plated cast hardware, which is decent for the price point but not fine furniture. It&#x27;s in essentially sale-ready condition already, so &#x27;restoration&#x27; is really just a wipe-down (~15 min, no material cost). These lamps retail new around $90-140 and commonly resell used on Facebook Marketplace/OfferUp/eBay in the…</p><p class="basis">Restoration estimate adjusted against published refinishing costs:</p><ul class="clamped"><li>effort raised from 0.25h to the 0.5h minimum</li><li>materials raised from $0 to $5</li></ul></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1352396026802534">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="100"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1352396026802534">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1352396026802534/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1697195071582592" data-title="Furniture Set: Dresser, Media Console, and Bookshelf" data-priority="6.8" data-margin="7500" data-ask="5000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1697195071582592.jpg&quot;, &quot;photos/1697195071582592_1.jpg&quot;, &quot;photos/1697195071582592_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">18</div>
-        <img class="thumb" src="photos/1697195071582592.jpg" alt="Mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/w" data-ph="Mixed Furniture Lot" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$50</span><span class="tag-was">$300</span><span class="tag-margin">$75 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Furniture Set: Dresser, Media Console, and Bookshelf</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$50</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$150</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$75</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$165</b><span class="span">$150–$165</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $75 cash, but 4h at $30/hr is $105 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$75</span></div><div class="yn"><span class="k">With your time</span><span class="v">$180 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$90</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$26/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$207</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.8%"></i></div><b>7</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks cited, and no joinery details (dovetails/M&amp;T) mentioned despite the listing being detailed about hardware — the cable-management hole on the console is a strong tell for post-1990s mass production, and a $50 asking price for three disparate case pieces sold as one lot is classic clearance/moving-sale pricing for particleboard-and-veneer furniture, not solid-wood antiques. This is very likely &#x27;traditional/asymmetrical style&#x27; veneer furniture rather than genuine hardwood construction, so treat any refinishing plans skeptically — veneer doesn&#x27;t tolerate heavy…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1697195071582592">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="50"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1697195071582592">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1697195071582592/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1549815250125258" data-title="White Mid-Century Modern 2-Drawer Nightstand" data-priority="6.1" data-margin="1800" data-ask="1500" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1549815250125258.jpg&quot;, &quot;photos/1549815250125258_1.jpg&quot;, &quot;photos/1549815250125258_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">19</div>
-        <img class="thumb" src="photos/1549815250125258.jpg" alt="White-painted 2-drawer nightstand, MCM-style tapered legs" data-ph="White-Painted 2-Drawer Nightstand" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$15</span><span class="tag-was">$30</span><span class="tag-margin">$18 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>White Mid-Century Modern 2-Drawer Nightstand</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$15</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$45</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$18</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$50</b><span class="span">$45–$50</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $18 cash, but 2h at $30/hr is $45 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$27</span></div><div class="yn"><span class="k">With your time</span><span class="v">$72 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$22</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$15/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$83</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.1%"></i></div><b>6</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>No photos or maker marks to verify construction, so this reads as a generic white-painted flat-pack nightstand cosmetically styled with MCM tapered legs rather than a genuine vintage solid-wood piece with dovetail joinery. At this price point and generic description, particleboard/MDF case construction with applied solid-wood legs is far more probable than true MCM craftsmanship. Realistic restoration is light: clean, tighten hardware/joints, maybe touch up paint or swap knobs — not a full refinish. Restored resale should be valued at realistic local marketplace pricing for a nice-looking but…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1549815250125258">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="15"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1549815250125258">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1549815250125258/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="2147821552434160" data-title="French Provincial Wood End Table with Blue Top" data-priority="6.0" data-margin="500" data-ask="8500" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/2147821552434160.jpg&quot;, &quot;photos/2147821552434160_1.jpg&quot;, &quot;photos/2147821552434160_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">20</div>
-        <img class="thumb" src="photos/2147821552434160.jpg" alt="French Provincial-style wood end table with painted top, single drawer, and cabriole legs" data-ph="French Provincial-Style Wood End Table…" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$85</span><span class="tag-was">$105</span><span class="tag-margin">$5 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>French Provincial Wood End Table with Blue Top</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip good"><span class="ico">▼</span>Price drop</span><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$85</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$130</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$5</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$143</b><span class="span">$130–$143</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $5 cash, but 3h at $30/hr is $90 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$125</span></div><div class="yn"><span class="k">With your time</span><span class="v">$215 · 3h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$18</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$6/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$247</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.0%"></i></div><b>6</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>Cabriole legs and a scalloped apron strongly suggest at least a solid-wood frame (particleboard doesn&#x27;t carve into cabriole shapes economically), which is a positive construction signal even without photos. However, the drawer front, apron panels, and painted top could still be veneer over ply — a common cost-saving move in this genre — and joinery (dovetail vs. stapled drawer box) can&#x27;t be assessed from text. Absence of any maker mark strongly implies this is generic 1960s-80s French Provincial reproduction furniture, extremely common in the US secondary market, not a collectible or designer…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="2147821552434160">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="85"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="2147821552434160">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/2147821552434160/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1550814156528940" data-title="Mid-Century Modern Pink Marble Magazine Rack" data-priority="4.8" data-margin="1000" data-ask="2000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
-      <div class="hero">
-        <div class="rank">21</div>
-        <div class="thumb ph"><span>Mid-Century Modern Style Magazine Rack…</span></div><div class="swingtag"><span class="tag-price">$20</span><span class="tag-margin">$10 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Mid-Century Modern Pink Marble Magazine Rack</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">◉</span>Hot</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$20</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$45</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$10</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$50</b><span class="span">$45–$50</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $10 cash, but 2h at $30/hr is $45 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$35</span></div><div class="yn"><span class="k">With your time</span><span class="v">$80 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$14</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$10/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$92</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.8%"></i></div><b>5</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This reads as a low-cost decorative accent piece rather than a fine-furniture find: minimal joinery (welded/riveted metal frame, screwed-on wood handle and feet), no stated maker marks, and &#x27;marble-patterned&#x27; phrasing implies faux material (laminate/hardboard) rather than genuine marble slabs. Without photos I can&#x27;t confirm true vintage manufacture vs. a modern MCM-styled reproduction, so I&#x27;m treating it as a look-alike/unverified piece and capping confidence at 0.3. Realistic restoration is light — rust treatment/repaint on the metal, cleaning and oiling the wood handle/feet, maybe minor…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1550814156528940">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="20"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1550814156528940">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1550814156528940/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1337568671342152" data-title="Dresser" data-priority="4.6" data-margin="6500" data-ask="8000" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1337568671342152.jpg&quot;, &quot;photos/1337568671342152_1.jpg&quot;, &quot;photos/1337568671342152_2.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">22</div>
-        <img class="thumb" src="photos/1337568671342152.jpg" alt="Generic mid-size chest of drawers/dresser, seller-described as solid wood" data-ph="Generic Mid-Size Chest Of Drawers/Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$80</span><span class="tag-margin">$65 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip info"><span class="ico">?</span>Maker unconfirmed</span><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        <p class="authwarn">⚠ Seller hedges the attribution (could be) — maker unconfirmed.</p>
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$80</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$175</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$65</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$192</b><span class="span">$175–$192</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $65 cash, but 4h at $30/hr is $120 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$110</span></div><div class="yn"><span class="k">With your time</span><span class="v">$230 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$82</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$21/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$264</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.6%"></i></div><b>5</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>No photos, no maker marks, no era or joinery detail given — the &#x27;solid wood&#x27; and &#x27;good condition&#x27; claims are entirely unverified, so confidence is capped low. Description suggests a generic, undistinguished dresser rather than a notable antique, so value should be anchored to typical local-marketplace prices for plain solid-wood dressers ($150-200 restored), not aspirational dealer pricing. The listed defect (hair-dye stain) is a simple cosmetic fix: sand/strip the affected area and refinish or repaint, plus a light overall cleaning/wax — a few hours of labor and cheap materials, no veneer…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1337568671342152">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="80"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1337568671342152">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1337568671342152/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1298036099183850" data-title="Dresser" data-priority="4.4" data-margin="3400" data-ask="3600" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1298036099183850.jpg&quot;, &quot;photos/1298036099183850_1.jpg&quot;]'>
-      <div class="hero">
-        <div class="rank">23</div>
-        <img class="thumb" src="photos/1298036099183850.jpg" alt="Painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish" data-ph="Painted Five-Drawer Wood Dresser/Chest…" loading="lazy"><button type="button" class="gallery-hint">2 photos</button><div class="swingtag"><span class="tag-price">$36</span><span class="tag-margin">$34 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>Dresser</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$36</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$95</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$34</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale">Sell target <b>$104</b><span class="span">$95–$104</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $34 cash, but 2h at $30/hr is $75 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$61</span></div><div class="yn"><span class="k">With your time</span><span class="v">$136 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$44</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$17/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$156</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.4%"></i></div><b>4</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:50.0%"></i></div><b>50</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:25.0%"></i></div><b>25</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This reads as a thrift-tier chest of drawers (30W x 18D x 46H fits a standard 5-drawer chest, not a wide triple dresser) that someone hand-painted with a hobbyist racing-stripe motif — fun novelty appeal for a kid&#x27;s/man-cave room but no evidence of period, maker, or fine joinery. &#x27;Solid wood&#x27; is the seller&#x27;s unverified claim; at this price point and generic description, some particleboard/veneer secondary construction is plausible. No dovetails, no maker marks, no era detail given, so this is valued as a generic painted case good, not a genuine antique or designer piece. Realistic restoration…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1298036099183850">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="36"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1298036099183850">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1298036099183850/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-
-    <article class="card" data-id="1242601887872389" data-title="MCM Store 
-Gonzo Vibtage" data-priority="4.2" data-margin="-2300" data-ask="12300" data-fresh="23.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
-      <div class="hero">
-        <div class="rank">24</div>
-        <div class="thumb ph"><span>Unidentifiable</span></div><div class="swingtag neg"><span class="tag-price">$123</span><span class="tag-margin">−$23 margin</span></div>
-      </div>
-      <div class="body">
-        <div class="head">
-          <h3>MCM Store 
-Gonzo Vibtage</h3>
-          <div class="loc">Lexington, KY</div>
-        </div>
-        <div class="chips"><span class="chip warn"><span class="ico">◷</span>Unconfirmed 23d</span></div>
-        
-        <div class="figs">
-          <div class="fig"><span class="k">Ask</span><span class="v">$123</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$150</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$23</span></div>
-          <div class="fig"><span class="k">Last confirmed</span><span class="v bad">23 days ago</span></div>
-        </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $173 in it and it&#x27;s only worth about $150 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$173</span></div><div class="yn"><span class="k">With your time</span><span class="v">$293 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$8</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$2/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$337</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
-        <div class="meters">
-          <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.2%"></i></div><b>4</b></div>
-          <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
-          <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
-        </div>
-        <details class="why"><summary>Why this valuation</summary><p>This listing text is a general storefront advertisement for a Lexington, KY vintage/MCM shop, not a description of an actual furniture item for sale. It contains no item identification, dimensions, wood species, joinery, maker marks, or condition notes — only a generic mention that the shop carries &#x27;mid century modern case goods&#x27; among many other categories (rugs, jewelry, decor, etc). Without any item-specific text or photos, construction (solid wood vs veneer vs particleboard), joinery, and authenticity cannot be evaluated at all. The asking price of $123 is used as a placeholder anchor for…</p></details>
-
-        <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1242601887872389">
-            <label>Paid <input name="paid" inputmode="decimal"
-              placeholder="123"></label>
-            <label>Materials <input name="materials" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Hours <input name="hours" inputmode="decimal"
-              placeholder="0"></label>
-            <label>Sold for <input name="sold" inputmode="decimal"
-              placeholder="—"></label>
-            <button type="submit">Save to my books</button>
-            <p class="status" role="status"></p>
-          </form>
-        </details>
-        <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1242601887872389">
-            <label class="wide">Posture
-              <input name="posture" type="range" min="0" max="100" step="5" value="40">
-              <span class="postval">measured</span>
-            </label>
-            <label class="wide">Their messages so far
-              <textarea name="conversation" rows="3"
-                placeholder="Paste the thread — leave empty for an opener"></textarea></label>
-            <label class="wide">Leverage / flaws
-              <textarea name="notes" rows="2"
-                placeholder="Water ring on the top, one drawer runner broken…"></textarea></label>
-            <button type="submit">Draft replies</button>
-            <p class="status" role="status"></p>
-            <div class="drafts"></div>
-            <p class="basis">Drafts only — nothing is ever sent for you.</p>
-          </form>
-        </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1242601887872389/" target="_blank" rel="noopener">View listing →</a>
-      </div>
-    </article>
-  </div>
-</section>
+    </a></div>
+  <p class="empty" id="noresults" hidden>Nothing matches that search.</p>
 </main>
-<div class="empty" id="empty" hidden>
-  <p class="empty-head">Nothing on the floor yet.</p>
-  <p class="empty-sub" id="empty-sub">The next scheduled scrape runs each morning — or tap
-    “Scrape now” above.</p>
-</div>
-<dialog id="lightbox">
-  <button id="lb-close" aria-label="Close">✕</button>
-  <img id="lb-img" src="" alt="">
-  <div class="lb-nav">
-    <button id="lb-prev" aria-label="Previous photo">‹</button>
-    <span id="lb-count"></span>
-    <button id="lb-next" aria-label="Next photo">›</button>
-  </div>
-</dialog>
-<footer class="foot">
-  <p><a href="auctions/index.html">The Gavel — EBTH auction watch →</a></p>
-  <p>Valued 12 this run, no stars today — patience pays.</p>
-  <details class="engineroom"><summary>Engine room</summary><p>0 scraped -&gt; 0 after dedup -&gt; 0 new + 0 price-drops (0 already-seen, skipped) -&gt; 12 appraised (0 strong + 0 wildcards + 12 backfilled; 0 junked, 0 over cap)</p></details>
-  <p>Valued by claude-code. Photos and prices as scraped; verify before buying.</p>
+<footer>
+  <a href="board.html">The Bench →</a> &nbsp;·&nbsp;
+  <a href="auctions/index.html">The Gavel →</a>
 </footer>
 <script>
-'use strict';
-/* The board's client side. Two halves:
-   1. Presentation: filters/sort/search over data-* attributes, relative timestamps,
-      status banner, photo fallbacks, the lightbox.
-   2. The write side: direct GitHub API calls with a token pasted once. No server.
-   Every failure path ends in a visible sentence — this is an iPad, tooltips don't exist. */
-
-const CFG = {"repo": "DD-Builder/marketplace", "branch": "main", "boardWorkflow": "deal-board.yml", "negotiateWorkflow": "negotiate.yml", "piecesPath": "docs/pieces.json", "draftsDir": ".drafts"};
-const $ = s => document.querySelector(s);
-const board = document.getElementById('board');
-// Cards live in one grid per tier. Filtering and sorting act on all of them, but a card
-// is only ever re-appended to its own band — sorting must never move an estate piece
-// into the quick-flips shelf.
-const cards = [...board.querySelectorAll('article.card')];
-const tierSections = [...board.querySelectorAll('section.tier')];
-
-/* ---- status banner + relative time ---------------------------------------------------- */
-(function () {
-  const upd = $('#updated');
-  if (upd && upd.dataset.ts) {
-    const then = Date.parse(upd.dataset.ts);
-    if (!isNaN(then)) {
-      const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
-      const label = mins < 2 ? 'updated just now'
-        : mins < 90 ? 'updated ' + mins + ' min ago'
-        : mins < 36 * 60 ? 'updated ' + Math.round(mins / 60) + ' h ago'
-        : 'updated ' + Math.round(mins / 1440) + ' days ago';
-      upd.textContent = label;
-      upd.title = new Date(then).toLocaleString();
-    }
-  }
-  if (cards.length === 0) $('#empty').hidden = false;
-
-  // status.json is written by every run, including the ones that fail — so the page can
-  // say WHY it looks the way it does instead of silently going stale.
-  fetch('status.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(s => {
-    if (!s || s.state === 'ok') return;
-    const n = $('#notice');
-    const msgs = {
-      scan_blocked: 'The last scrape couldn’t reach Marketplace (usually the Apify '
-        + 'monthly limit). The board below is re-ranked from the catalogue — fresh '
-        + 'listings will appear once scraping resumes.',
-      appraisals_failed: 'The last run scraped fine but every AI valuation failed. '
-        + 'New finds are waiting unvalued.',
-      catalog_corrupt: 'The catalogue file is damaged and the run stopped to protect your '
-        + 'stored appraisals. See the Actions log.'
-    };
-    // The run's own error text, when it recorded one. This is the difference between
-    // "go regenerate your token" (a guess, and on 2026-08-06 the wrong one) and the
-    // actual "You've hit your session limit · resets 4:10pm (UTC)". textContent, never
-    // innerHTML — the string comes from a third-party CLI, not from us.
-    n.textContent = (msgs[s.state] || ('Last run reported: ' + s.state))
-      + (s.reason ? ' Reason: ' + s.reason : '');
-    n.className = 'notice' + (s.state === 'catalog_corrupt' ? ' bad' : '');
-    n.hidden = false;
-    if (cards.length === 0 && s.state === 'scan_blocked')
-      $('#empty-sub').textContent = 'Scraping is paused until the Apify month resets.';
-  }).catch(() => {});
-})();
-
-/* ---- photo fallback -------------------------------------------------------------------- */
-// A missing/expired image swaps to the text placeholder instead of an empty box.
-document.addEventListener('error', ev => {
-  const img = ev.target;
-  if (!(img instanceof HTMLImageElement) || !img.classList.contains('thumb')) return;
-  const ph = document.createElement('div');
-  ph.className = 'thumb ph';
-  const span = document.createElement('span');
-  span.textContent = img.dataset.ph || img.alt || 'no photo';
-  ph.appendChild(span);
-  img.replaceWith(ph);
-}, true);
-
-/* ---- filters (combinable), sort, search ------------------------------------------------ */
-const state = { radius: false, clean: false, star: false, q: '', sort: 'priority' };
-
-function applyView() {
-  let visible = 0;
-  cards.forEach(c => {
-    const d = c.dataset;
-    let show = true;
-    if (state.radius && d.oor === '1') show = false;
-    if (state.clean && d.flag === '1') show = false;
-    if (state.star && d.killer !== '1') show = false;
-    if (state.q && !(d.title || '').toLowerCase().includes(state.q)) show = false;
-    c.classList.toggle('hide', !show);
-    if (show) visible++;
+function tick(){
+  document.querySelectorAll('.clock[data-ends]').forEach(function(el){
+    var end = Date.parse(el.dataset.ends);
+    if (isNaN(end)) return;
+    var ms = end - Date.now();
+    if (ms <= 0) { el.textContent = 'ended'; return; }
+    var h = ms / 36e5;
+    el.textContent = h < 1 ? Math.floor(ms/6e4) + ' min left'
+                   : h < 48 ? Math.round(h) + 'h left'
+                   : Math.round(h/24) + ' days left';
+    if (h < 2) el.style.color = 'var(--crit)';
   });
-  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh' }[state.sort];
-  const dir = state.sort === 'ask' || state.sort === 'fresh' ? 1 : -1;
-  tierSections.forEach(section => {
-    const grid = section.querySelector('.grid');
-    const own = cards.filter(c => c.dataset.tier === section.dataset.tier);
-    [...own]
-      .sort((a, b) => dir * (parseFloat(a.dataset[key] || 0) - parseFloat(b.dataset[key] || 0)))
-      .forEach(c => grid.appendChild(c));
-    // A band with nothing left after filtering hides its heading too, rather than
-    // leaving a title over empty space.
-    section.classList.toggle('empty', own.every(c => c.classList.contains('hide')));
+}
+tick(); setInterval(tick, 30000);
+
+var state = {source: 'all', q: ''};
+function apply(){
+  var shown = 0;
+  document.querySelectorAll('.pick').forEach(function(card){
+    var okSrc = state.source === 'all' || card.dataset.source === state.source;
+    var okText = !state.q || (card.dataset.hay || '').indexOf(state.q) !== -1;
+    var show = okSrc && okText;
+    card.hidden = !show;
+    if (show) shown++;
   });
-  $('#empty').hidden = visible > 0 || cards.length === 0;
-  if (visible === 0 && cards.length > 0)
-    $('#empty-sub').textContent = 'Nothing matches these filters.';
+  var none = document.getElementById('noresults');
+  if (none) none.hidden = shown !== 0;
+  document.querySelectorAll('.stat[data-source]').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.source === state.source));
+  });
 }
-document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
-  const k = btn.dataset.filter;
-  state[k] = !state[k];
-  btn.setAttribute('aria-pressed', String(state[k]));
-  applyView();
-}));
-$('#sort').addEventListener('change', ev => { state.sort = ev.target.value; applyView(); });
-$('#search').addEventListener('input', ev => {
-  state.q = ev.target.value.trim().toLowerCase(); applyView();
-});
-
-/* ---- lightbox --------------------------------------------------------------------------- */
-const lb = { photos: [], i: 0 };
-function lbShow() {
-  $('#lb-img').src = lb.photos[lb.i];
-  $('#lb-count').textContent = (lb.i + 1) + ' / ' + lb.photos.length;
-  $('#lb-prev').disabled = lb.i === 0;
-  $('#lb-next').disabled = lb.i === lb.photos.length - 1;
-}
-function openLightbox(photos, alt) {
-  lb.photos = photos; lb.i = 0;
-  $('#lb-img').alt = alt || '';
-  lbShow();
-  const dlg = $('#lightbox');
-  if (typeof dlg.showModal === 'function') dlg.showModal();
-  else dlg.setAttribute('open', '');            // Safari < 15.4: non-modal but usable
-}
-document.addEventListener('click', ev => {
-  const hero = ev.target.closest('.hero');
-  if (!hero || ev.target.closest('.swingtag')) return;
-  const card = hero.closest('article');
-  let photos = [];
-  try { photos = JSON.parse(card.dataset.photos || '[]'); } catch (e) { photos = []; }
-  if (photos.length) openLightbox(photos, card.dataset.title);
-});
-$('#lb-close').addEventListener('click', () => $('#lightbox').close
-  ? $('#lightbox').close() : $('#lightbox').removeAttribute('open'));
-$('#lb-prev').addEventListener('click', () => { if (lb.i > 0) { lb.i--; lbShow(); } });
-$('#lb-next').addEventListener('click', () => { if (lb.i < lb.photos.length - 1) { lb.i++; lbShow(); } });
-
-/* ---- the write side --------------------------------------------------------------------- */
-const S = {
-  get token() { return localStorage.getItem('bench_token') || ''; },
-  set token(v) { v ? localStorage.setItem('bench_token', v) : localStorage.removeItem('bench_token'); }
-};
-const b64 = str => {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  for (let i = 0; i < bytes.length; i += 0x8000)
-    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-  return btoa(bin);
-};
-const unb64 = s => new TextDecoder().decode(
-  Uint8Array.from(atob(s.replace(/\s/g, '')), c => c.charCodeAt(0)));
-
-function explain(status, body) {
-  const msg = (body && body.message) || '';
-  if (status === 401) return 'GitHub rejected the token. Paste a fresh one under Connection.';
-  if (status === 403) return 'Token lacks permission. It needs Actions: read & write and '
-    + 'Contents: read & write on this repo.';
-  if (status === 404) return 'Not found — usually the token isn’t scoped to ' + CFG.repo
-    + ', or the workflow file is missing on ' + CFG.branch + '.';
-  if (status === 409 || status === 422) return 'GitHub refused the write (' + (msg || status)
-    + '). Reload the page and try once more — someone else may have written first.';
-  return 'GitHub returned ' + status + (msg ? ': ' + msg : '') + '.';
-}
-
-async function api(path, opts = {}) {
-  if (!CFG.repo) throw new Error('This board was built without a repo, so the buttons '
-    + 'have nothing to talk to. Re-run the pipeline from Actions.');
-  if (!S.token) throw new Error('No token yet — tap Connection and paste one.');
-  const res = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
-    headers: Object.assign({
-      'Accept': 'application/vnd.github+json',
-      'Authorization': 'Bearer ' + S.token,
-      'X-GitHub-Api-Version': '2022-11-28'
-    }, opts.headers || {})
-  }));
-  if (!res.ok) {
-    let body = null;
-    try { body = await res.json(); } catch (e) { /* no body */ }
-    const err = new Error(explain(res.status, body));
-    err.status = res.status;
-    throw err;
-  }
-  return res.status === 204 ? null : res.json();
-}
-
-const say = (el, msg, kind) => { if (el) { el.textContent = msg; el.className = 'status ' + (kind || ''); } };
-
-async function checkConnection() {
-  const el = $('#conn');
-  if (!CFG.repo) { el.textContent = 'read-only board'; el.className = 'conn'; return; }
-  if (!S.token) { el.textContent = 'not connected'; el.className = 'conn'; return; }
-  try {
-    await api('/repos/' + CFG.repo);
-    el.textContent = 'connected'; el.className = 'conn ok';
-  } catch (err) {
-    // The full sentence, visible. A title= tooltip does not exist on a touch screen.
-    el.textContent = err.message; el.className = 'conn bad';
-  }
-}
-
-/* ---- scrape now ------------------------------------------------------------------------- */
-$('#scrape-now').addEventListener('click', async ev => {
-  const btn = ev.currentTarget;
-  const el = $('#conn');
-  if (btn.getAttribute('aria-busy') === 'true') return;
-  // This spends real Apify credit; a double-tap must not double-bill.
-  if (!window.confirm('Run a scrape now? This spends Apify credit.')) return;
-  btn.setAttribute('aria-busy', 'true');
-  el.textContent = 'starting…'; el.className = 'conn';
-  try {
-    await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.boardWorkflow + '/dispatches', {
-      method: 'POST',
-      body: JSON.stringify({ ref: CFG.branch, inputs: {} })
-    });
-    el.textContent = 'scrape started — this page updates itself when the run commits '
-      + '(check back in ~10 minutes)';
-    el.className = 'conn ok';
-  } catch (err) { el.textContent = err.message; el.className = 'conn bad'; }
-  finally { setTimeout(() => btn.removeAttribute('aria-busy'), 8000); }
-});
-
-/* ---- connection dialog ------------------------------------------------------------------ */
-$('#repo-name').textContent = CFG.repo || '(not configured)';
-$('#open-settings').addEventListener('click', () => {
-  $('#token').value = S.token;
-  const dlg = $('#settings');
-  if (typeof dlg.showModal === 'function') dlg.showModal();
-  else dlg.setAttribute('open', '');
-});
-$('#save-token').addEventListener('click', () => {
-  S.token = $('#token').value.trim();
-  say($('#settings-status'), S.token ? 'Saved.' : 'Token cleared.', 'ok');
-  setTimeout(checkConnection, 0);
-});
-$('#forget-token').addEventListener('click', () => {
-  S.token = '';
-  say($('#settings-status'), 'Token forgotten.', 'ok');
-  setTimeout(checkConnection, 0);
-});
-
-/* ---- log a piece ------------------------------------------------------------------------- */
-// "1,200" must be $1,200 — parseFloat quietly read it as $1. "$120" must work too.
-// Returns null for empty, NaN for unreadable (caller shows an error instead of dropping it).
-const cents = v => {
-  const s = String(v == null ? '' : v).trim().replace(/[$,\s]/g, '');
-  if (!s) return null;
-  if (!/^\d+(\.\d{1,2})?$/.test(s)) return NaN;
-  return Math.round(parseFloat(s) * 100);
-};
-
-async function readJson(path) {
-  try {
-    const r = await api('/repos/' + CFG.repo + '/contents/' + path + '?ref=' + CFG.branch
-      + '&nocache=' + Date.now());
-    return { data: JSON.parse(unb64(r.content)), sha: r.sha };
-  } catch (err) {
-    if (err.status === 404) return { data: null, sha: null };
-    throw err;
-  }
-}
-
-document.querySelectorAll('.logform').forEach(form => {
-  form.addEventListener('submit', async ev => {
-    ev.preventDefault();
-    const btn = form.querySelector('button[type=submit]');
-    if (btn.getAttribute('aria-busy') === 'true') return;
-    const st = form.querySelector('.status');
-    const id = form.dataset.id;
-    const card = form.closest('article');
-    const fd = new FormData(form);
-    const paid = cents(fd.get('paid')), materials = cents(fd.get('materials'));
-    const hoursRaw = String(fd.get('hours') || '').trim();
-    const hours = hoursRaw ? parseFloat(hoursRaw) : NaN;
-    const sold = cents(fd.get('sold'));
-    for (const [label, v] of [['Paid', paid], ['Materials', materials], ['Sold for', sold]]) {
-      if (Number.isNaN(v)) {
-        say(st, label + ' isn’t a number I can read — digits only, like 120 or 1200.50.', 'bad');
-        return;
-      }
-    }
-    if (paid === null && materials === null && isNaN(hours) && sold === null) {
-      say(st, 'Nothing to save — fill in at least one field.', 'bad'); return;
-    }
-    btn.setAttribute('aria-busy', 'true');
-    say(st, 'saving…');
-    try {
-      const cur = await readJson(CFG.piecesPath);
-      const ledger = cur.data || { version: 1, pieces: {} };
-      const prev = ledger.pieces[id] || { listing_id: id };
-      const entry = Object.assign({}, prev, {
-        listing_id: id,
-        title: prev.title || (card ? card.dataset.title || '' : '')
-      });
-      if (paid !== null) entry.acquired_price_cents = paid;
-      if (materials !== null) entry.materials_cents = materials;
-      if (!isNaN(hours)) entry.labor_hours = hours;
-      if (sold !== null) {
-        entry.sold_price_cents = sold;
-        entry.sold_at = entry.sold_at || new Date().toISOString();
-      }
-      ledger.pieces[id] = entry;
-      const body = { message: 'Log piece ' + id, branch: CFG.branch,
-                     content: b64(JSON.stringify(ledger, null, 1)) };
-      if (cur.sha) body.sha = cur.sha;
-      await api('/repos/' + CFG.repo + '/contents/' + CFG.piecesPath,
-                { method: 'PUT', body: JSON.stringify(body) });
-      say(st, 'Saved. Your numbers update on the next run.', 'ok');
-    } catch (err) { say(st, err.message, 'bad'); }
-    finally { btn.removeAttribute('aria-busy'); }
+document.querySelectorAll('.stat[data-source]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var v = btn.dataset.source;
+    state.source = (state.source === v) ? 'all' : v;
+    apply();
   });
 });
-
-/* ---- negotiation -------------------------------------------------------------------------- */
-const POSTURES = [[25, 'aggressive'], [50, 'measured'], [75, 'keen'], [100, 'eager']];
-document.querySelectorAll('.negoform').forEach(form => {
-  const slider = form.querySelector('input[name=posture]');
-  const label = form.querySelector('.postval');
-  const show = () => { label.textContent = (POSTURES.find(p => slider.value <= p[0]) || POSTURES[3])[1]; };
-  slider.addEventListener('input', show); show();
-
-  form.addEventListener('submit', async ev => {
-    ev.preventDefault();
-    const btn = form.querySelector('button[type=submit]');
-    if (btn.getAttribute('aria-busy') === 'true') return;   // double-tap = double dispatch
-    const st = form.querySelector('.status');
-    const out = form.querySelector('.drafts');
-    const id = form.dataset.id;
-    const fd = new FormData(form);
-    out.innerHTML = '';
-    btn.setAttribute('aria-busy', 'true');
-    say(st, 'asking… this runs on GitHub and takes a minute or two.');
-    try {
-      const before = await readJson(CFG.draftsDir + '/' + id + '.json');
-      const stamp = (before.data && before.data.generated_at) || null;
-      await api('/repos/' + CFG.repo + '/actions/workflows/' + CFG.negotiateWorkflow + '/dispatches', {
-        method: 'POST',
-        body: JSON.stringify({ ref: CFG.branch, inputs: {
-          listing_id: id, posture: String(fd.get('posture')),
-          conversation: String(fd.get('conversation') || ''),
-          notes: String(fd.get('notes') || '')
-        } })
-      });
-      // Poll the committed file rather than the run, so a failure that still writes a
-      // reason surfaces as that reason instead of a red X you have to go hunting for.
-      // Compare stamps null-safely: every payload (errors included) now carries
-      // generated_at, and `undefined !== undefined` was false — a repeated error
-      // previously hung this loop for its full five minutes.
-      for (let i = 0; i < 60; i++) {
-        await new Promise(r => setTimeout(r, 5000));
-        const now = await readJson(CFG.draftsDir + '/' + id + '.json');
-        const nowStamp = (now.data && now.data.generated_at) || null;
-        if (now.data && nowStamp !== stamp) { renderDrafts(out, st, now.data); return; }
-        say(st, 'still working… ' + ((i + 1) * 5) + 's');
-      }
-      say(st, 'Gave up waiting after five minutes. Check the Actions tab — the run may '
-        + 'still be going, and the drafts will appear here when it finishes.', 'bad');
-    } catch (err) { say(st, err.message, 'bad'); }
-    finally { btn.removeAttribute('aria-busy'); }
-  });
+var q = document.getElementById('q');
+if (q) q.addEventListener('input', function(){
+  state.q = q.value.trim().toLowerCase(); apply();
 });
-
-function renderDrafts(out, st, data) {
-  if (data.status !== 'ok') {
-    say(st, data.error || 'Drafting failed and gave no reason.', 'bad'); return;
-  }
-  if (!Array.isArray(data.drafts)) {
-    say(st, 'The draft file came back in a shape this page doesn’t recognise.', 'bad');
-    return;
-  }
-  say(st, data.posture_label + (data.walkaway_price_cents
-    ? ' · walk away above $' + Math.round(data.walkaway_price_cents / 100)
-    : ' · no walk-away — the numbers say this piece isn’t worth buying'), 'ok');
-  out.innerHTML = data.drafts.map(d => {
-    const over = (d.over_walkaway_cents || []).length
-      ? '<p class="reason">⚠ mentions $'
-        + d.over_walkaway_cents.map(c => Math.round(c / 100)).join(', $')
-        + ' — above your walk-away. Check before sending.</p>' : '';
-    const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    return '<div class="draft"><p class="dtext">' + esc(d.text) + '</p>'
-      + '<p class="basis">' + esc(d.rationale) + '</p>' + over
-      + '<button type="button" class="copy">Copy</button></div>';
-  }).join('');
-  out.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', () => {
-    const text = btn.parentElement.querySelector('.dtext').textContent;
-    navigator.clipboard.writeText(text)
-      .then(() => { btn.textContent = 'Copied'; })
-      .catch(() => { btn.textContent = 'Copy failed — select the text instead'; });
-  }));
-}
-
-applyView();      // establish sort/empty state on load, not only after a click
-checkConnection();
-
+var reset = document.getElementById('reset');
+if (reset) reset.addEventListener('click', function(){
+  state = {source:'all', q:''}; if (q) q.value = ''; apply();
+});
+apply();
 </script>
-</body>
-</html>
+</body></html>
