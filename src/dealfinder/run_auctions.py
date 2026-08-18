@@ -52,7 +52,7 @@ import json
 import sys
 import urllib.error
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from dealfinder.auctions import bidding
@@ -203,13 +203,21 @@ def _best_vertical(entry: acat.AuctionEntry) -> str:
     return best_key
 
 
-def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap: int) -> int:
+def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap: int,
+                       *, decide_days: float = 2.0, now: datetime | None = None) -> int:
     """Promote quality lots to the watchlist, newest evidence first.
 
     The gate is a *positive* signal — maker or material keywords — not merely "has a
     photo and a price" like the Marketplace pre-screen keeps: every auction lot has
-    both, so the lenient rule would watch the entire site. The cap spends remaining
-    slots on the soonest-ending survivors, where tracking can still change a decision.
+    both, so the lenient rule would watch the entire site.
+
+    Remaining slots go to lots inside the decision window *first*, then by keyword score,
+    then soonest-ending. Window-before-score is deliberate and was wrong the other way
+    round: valuation only ever happens inside the window, so a strong-scoring lot that
+    closes next week holds a slot it cannot use while a weaker one closing tonight — the
+    only kind a valuation can still change a decision about — is left off. Observed live,
+    that ordering left 31 of 51 watched lots parked outside the window and starved the
+    appraisal queue of the lots that were actually actionable.
 
     Each entry is screened against *its own* vertical (whichever category's search
     surfaced it), not one global choice — a jewelry lot judged by furniture's keyword
@@ -218,6 +226,13 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap:
     keyword gate altogether — the discovery signal itself is the reason to watch them —
     and instead get a vertical auto-classified for pricing purposes only.
     """
+    now = now or datetime.now(timezone.utc)
+    cutoff = now + timedelta(days=decide_days)
+
+    def actionable(entry: acat.AuctionEntry) -> int:
+        """1 for lots a valuation could still act on, so they sort ahead of the rest."""
+        return int(entry.ends_at is not None and entry.ends_at <= cutoff)
+
     candidates = []
     for entry in catalog.lots.values():
         if entry.watch or entry.state not in ("live", "ending"):
@@ -225,18 +240,18 @@ def _refresh_watchlist(catalog: acat.AuctionCatalog, default_vertical: str, cap:
         if entry.vertical in _AUTO_PRIORITY:
             priority = _AUTO_PRIORITY[entry.vertical]
             entry.vertical = _best_vertical(entry)
-            candidates.append((priority, entry))
+            candidates.append((actionable(entry), priority, entry))
             continue
         v = get_vertical(entry.vertical or default_vertical)
         result = prescreen(entry.to_listing(), v, require_photo=False)
         if result.keep and result.score >= 1:
-            candidates.append((result.score, entry))
+            candidates.append((actionable(entry), result.score, entry))
     room = max(0, cap - sum(
         1 for e in catalog.lots.values() if e.watch and e.state in ("live", "ending")
     ))
     far_future = datetime.max.replace(tzinfo=timezone.utc)
-    candidates.sort(key=lambda t: (-t[0], t[1].ends_at or far_future))
-    for _score, entry in candidates[:room]:
+    candidates.sort(key=lambda t: (-t[0], -t[1], t[2].ends_at or far_future))
+    for _live, _score, entry in candidates[:room]:
         entry.watch = True
     return min(len(candidates), room)
 
@@ -320,8 +335,14 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
         catalog.last_discovery_at = now
     scan_failed = bool(targets) and searches_failed == len(targets)
 
-    # 2. Watchlist refresh from what the searches surfaced.
-    promoted = _refresh_watchlist(catalog, args.vertical, _int_env("EBTH_MAX_WATCH") or 150)
+    # 2. Watchlist refresh from what the searches surfaced. The decision window is read
+    #    here rather than at the appraisal step because promotion has to know it too —
+    #    a watchlist slot is only worth spending on a lot the window can act on.
+    decide_days = float(_env("EBTH_DECIDE_WITHIN_DAYS", "2"))
+    promoted = _refresh_watchlist(
+        catalog, args.vertical, _int_env("EBTH_MAX_WATCH") or 150,
+        decide_days=decide_days, now=now,
+    )
     if promoted:
         log.info("watchlist_promoted", count=promoted)
 
@@ -359,7 +380,6 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
     #    expensive step in the run.
     appraised = 0
     failures: list[str] = []
-    decide_days = float(_env("EBTH_DECIDE_WITHIN_DAYS", "2"))
     todo = acat.unappraised_watch(
         catalog, within_days=decide_days, now=now
     )[: args.max_appraisals]

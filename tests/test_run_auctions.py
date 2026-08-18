@@ -534,3 +534,50 @@ def test_the_appraiser_is_never_even_constructed_when_nothing_needs_valuing(
 
     monkeypatch.setattr(run_auctions, "get_appraiser", explode)
     assert h.run() == 0
+
+
+def test_a_watchlist_slot_goes_to_a_lot_the_window_can_act_on():
+    """Observed live: 31 of 51 watched lots were parked outside the decision window,
+    holding slots the appraisal queue could never draw from. A lot closing next week
+    scores no better *for the purpose of spending a slot* than one closing tonight — it
+    scores worse, because valuation only ever happens inside the window."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    # Strong keyword signal, but closes in nine days — nothing can be decided about it.
+    cat.lots["far"] = AuctionEntry(
+        id="far", title="Danish Teak Walnut Credenza by Lane", description="rosewood",
+        vertical="furniture", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(days=9),
+    )
+    # Weaker signal, but closes tonight — the only one a valuation can still act on.
+    cat.lots["near"] = AuctionEntry(
+        id="near", title="Teak Side Table", description="",
+        vertical="furniture", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=6),
+    )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=1, decide_days=2.0, now=now)
+
+    assert cat.lots["near"].watch, "the actionable lot must take the only slot"
+    assert not cat.lots["far"].watch, "a lot outside the window must not hold a slot"
+
+
+def test_lots_outside_the_window_still_get_watched_when_there_is_room():
+    """Window-first is a tie-break for scarce slots, not an exclusion: with room to
+    spare, a strong lot closing later is still worth tracking so its bid history is
+    already built up by the time it enters the window."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["far"] = AuctionEntry(
+        id="far", title="Danish Teak Walnut Credenza by Lane", description="rosewood",
+        vertical="furniture", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(days=9),
+    )
+
+    run_auctions._refresh_watchlist(cat, "furniture", cap=10, decide_days=2.0, now=now)
+
+    assert cat.lots["far"].watch
