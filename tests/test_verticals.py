@@ -4,7 +4,14 @@ from __future__ import annotations
 
 from dealfinder.core.schemas import RawListing, RawPhoto
 from dealfinder.prescreen import prescreen
-from dealfinder.verticals import ART, ELECTRONICS, FURNITURE, get_vertical
+from dealfinder.verticals import (
+    ART,
+    COLLECTIBLES,
+    ELECTRONICS,
+    FURNITURE,
+    JEWELRY,
+    get_vertical,
+)
 
 
 def _l(title="", desc="", price=5000):
@@ -40,3 +47,35 @@ def test_vertical_price_window_is_respected():
     r = prescreen(_l(title="pioneer amplifier", price=200), ELECTRONICS)
     assert any("price implausibly low" in reason for reason in r.reasons)
     assert r.keep is False   # noted-but-kept let $1 junk through to paid appraisal
+
+
+def test_jewelry_rejects_costume_but_keeps_marked_precious_metal():
+    assert not prescreen(
+        _l(title="Costume jewelry rhinestone brooch, gold tone"), JEWELRY
+    ).keep
+    good = prescreen(_l(title="14k gold diamond ring", desc="sterling silver band"), JEWELRY)
+    assert good.keep and good.score >= 1
+
+
+def test_jewelry_recognizes_named_makers():
+    r = prescreen(_l(title="Vintage Tiffany sterling silver bracelet"), JEWELRY)
+    assert r.keep and any("maker:tiffany" in reason for reason in r.reasons)
+
+
+def test_collectibles_rejects_silverplate_but_keeps_sterling():
+    assert not prescreen(
+        _l(title="Silverplate flatware set, reproduction"), COLLECTIBLES
+    ).keep
+    good = prescreen(_l(title="Sterling silver tea set", desc="hallmarked, antique"),
+                     COLLECTIBLES)
+    assert good.keep and good.score >= 1
+
+
+def test_collectibles_recognizes_watch_and_silver_makers():
+    r = prescreen(_l(title="Vintage Rolex automatic movement watch"), COLLECTIBLES)
+    assert r.keep and any("maker:rolex" in reason for reason in r.reasons)
+
+
+def test_every_vertical_is_reachable_by_key():
+    for key, vertical in (("jewelry", JEWELRY), ("collectibles", COLLECTIBLES)):
+        assert get_vertical(key) is vertical

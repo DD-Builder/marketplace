@@ -105,7 +105,65 @@ ELECTRONICS = Vertical(
 )
 
 
-_REGISTRY: dict[str, Vertical] = {v.key: v for v in (FURNITURE, ART, ELECTRONICS)}
+JEWELRY = Vertical(
+    key="jewelry",
+    label="Fine & estate jewelry",
+    positive=frozenset({
+        "sterling", "sterling silver", "14k", "18k", "24k", "gold", "platinum",
+        "diamond", "gemstone", "ruby", "sapphire", "emerald", "pearl", "vintage",
+        "antique", "art deco", "victorian", "edwardian", "estate", "hallmark",
+        "hallmarked", "signed",
+    }),
+    makers=frozenset({
+        "tiffany", "cartier", "bulgari", "van cleef", "harry winston", "david yurman",
+        "chanel", "buccellati", "mikimoto",
+    }),
+    negative=frozenset({
+        "costume jewelry", "costume", "gold plated", "silver plated", "gold tone",
+        "silver tone", "faux", "cz", "cubic zirconia", "rhinestone", "fashion jewelry",
+    }),
+    min_price_cents=1000,
+    max_price_cents=1_000_000,
+    appraiser_guidance=(
+        "This is a piece of jewelry. Judge metal purity from hallmarks/stamps (sterling, "
+        "14k/18k/platinum), whether stones read as natural or simulant, maker marks, and "
+        "era. Costume/fashion jewelry — plated, unmarked, cubic zirconia — is low value "
+        "regardless of how it photographs."
+    ),
+)
+
+COLLECTIBLES = Vertical(
+    key="collectibles",
+    label="Silver, coins, watches & fine collectibles",
+    positive=frozenset({
+        "sterling silver", "sterling", "coin silver", "hallmark", "hallmarked",
+        "hand-knotted", "hand knotted", "wool", "silk", "porcelain", "hand painted",
+        "antique", "vintage", "asian", "chinese", "japanese", "swiss made",
+        "automatic movement", "chronograph", "estate", "signed", "numbered",
+    }),
+    makers=frozenset({
+        "rolex", "omega", "patek philippe", "cartier", "tiffany", "gorham",
+        "reed & barton", "reed and barton", "international silver", "wallace", "towle",
+        "georg jensen", "christofle",
+    }),
+    negative=frozenset({
+        "silverplate", "silver plate", "plated flatware", "reproduction", "replica",
+        "costume", "made in china unmarked", "quartz fashion watch",
+    }),
+    min_price_cents=1000,
+    max_price_cents=2_000_000,
+    appraiser_guidance=(
+        "This is a collectible — silver, a coin, a watch, a rug, or Asian/decorative art. "
+        "Judge material purity (sterling hallmarks vs. plate), maker marks, movement type "
+        "and originality for watches, knot density/dye/wear for rugs, and condition. "
+        "Reproductions and silverplate are low value regardless of apparent age."
+    ),
+)
+
+
+_REGISTRY: dict[str, Vertical] = {
+    v.key: v for v in (FURNITURE, ART, ELECTRONICS, JEWELRY, COLLECTIBLES)
+}
 
 DEFAULT_VERTICAL = FURNITURE
 

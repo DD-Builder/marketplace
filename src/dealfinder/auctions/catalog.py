@@ -68,6 +68,14 @@ class AuctionEntry(BaseModel):
     #: live -> ending (inside ENDGAME_HOURS) -> ended. ``gone`` = vanished unresolved.
     state: Literal["live", "ending", "ended", "gone"] = "live"
 
+    #: Which :mod:`dealfinder.verticals` category surfaced this lot — EBTH sells far more
+    #: than furniture (jewelry, silver, coins, watches, rugs...), and a lot found by a
+    #: jewelry search must be pre-screened and appraised against jewelry's own rules, not
+    #: whatever vertical the run happens to default to. Empty = pre-dates this field;
+    #: ``get_vertical("")`` falls back to furniture, matching the original single-vertical
+    #: behaviour so old catalogue entries don't break.
+    vertical: str = ""
+
     bid_history: list[BidPoint] = Field(default_factory=list)
     current_bid_cents: int | None = None
     bid_count: int | None = None

@@ -80,7 +80,6 @@ jobs:
           EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
           EBTH_PREMIUM_PCT: ${{ vars.EBTH_PREMIUM_PCT }}
           EBTH_SHIPPING_CENTS: ${{ vars.EBTH_SHIPPING_CENTS }}
-          EBTH_DISCOVERY_HOURS: ${{ vars.EBTH_DISCOVERY_HOURS }}
           EBTH_SNAPSHOT_CAP: ${{ vars.EBTH_SNAPSHOT_CAP }}
           EBTH_MAX_WATCH: ${{ vars.EBTH_MAX_WATCH }}
           MAX_AUCTION_APPRAISALS: ${{ vars.MAX_AUCTION_APPRAISALS }}

@@ -76,11 +76,18 @@ public repo the repository itself is still readable.
 `docs/auctions/index.html`, a second board for [Everything But The House](https://www.ebth.com)
 lots, where the problem inverts: nobody names a price, the price *finds itself* — bids sit
 low for days, then most of the money arrives in the closing hours. So the tracker runs
-**hourly** (`auctions.yml`), asymmetrically: bid snapshots every run, discovery of new lots
-every ~6h, one appraisal per lot ever.
+**hourly** (`auctions.yml`), asymmetrically: every run both discovers new lots and
+refreshes bids on everything still in results (EBTH's search response carries both), item
+pages are a best-effort fallback for endgame lots that scrolled off page one, and each lot
+gets one appraisal ever.
 
-For each quality lot (the same vertical keyword gate as the Marketplace side, but requiring
-a positive signal) it holds the full bid history and answers three questions:
+EBTH sells far more than furniture, so discovery spans every vertical this pipeline knows
+how to price — furniture, art, vintage electronics, jewelry, and silver/coins/watches/rugs
+(`verticals.py`) — not one furniture-flavored query. Each lot is tagged with whichever
+vertical's search found it and is screened *and appraised* against that vertical's own
+rules (requiring a positive signal, same discipline as the Marketplace side) — a sterling
+silver ring judged by furniture's keyword list would never have a chance. It holds the
+full bid history and answers three questions:
 
 - **Your max bid** — worked backwards from the appraisal: restored value, minus restoration,
   your hours, your margin, freight, and the buyer's premium riding the hammer. Decided

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -186,3 +187,117 @@ def test_missing_token_in_ci_fails_before_any_spend(tmp_path, monkeypatch):
     monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "")
     assert h.run() == 3
     assert h.fetches == [], "credential failure must precede any fetch"
+
+
+# --- multi-vertical discovery -----------------------------------------------------------
+# EBTH sells far more than furniture — jewelry, silver, coins, watches, rugs, fine art —
+# and an earlier version of this pipeline only ever searched two furniture queries, then
+# screened every discovered lot (regardless of category) through furniture's own keyword
+# gate. A jewelry lot has no "walnut" or "Lane" in it, so it silently never made the
+# watchlist. These tests pin the fix: discovery spans every known vertical, and each lot
+# is screened/appraised under the vertical whose query actually found it.
+
+def test_search_targets_default_to_every_known_vertical_not_just_furniture():
+    targets = run_auctions._search_targets("", default_vertical="furniture")
+    assert targets == [
+        (vkey, f"https://www.ebth.com/browse?q={urllib.parse.quote(q)}")
+        for vkey, q in run_auctions._DEFAULT_QUERIES
+    ]
+    verticals_covered = {v for v, _ in targets}
+    assert verticals_covered == {"furniture", "art", "electronics", "jewelry", "collectibles"}
+
+
+def test_search_targets_honors_an_explicit_override_under_one_vertical():
+    """The documented, backward-compatible shape: user-supplied URLs are plain URLs,
+    all screened under whatever --vertical/VERTICAL says."""
+    targets = run_auctions._search_targets(
+        "https://www.ebth.com/browse?q=teak\nhttps://www.ebth.com/browse?q=oak",
+        default_vertical="furniture",
+    )
+    assert targets == [
+        ("furniture", "https://www.ebth.com/browse?q=teak"),
+        ("furniture", "https://www.ebth.com/browse?q=oak"),
+    ]
+
+
+def test_watchlist_screens_each_lot_under_its_own_discovered_vertical():
+    """The core regression, isolated from the pipeline: a jewelry lot must be screened
+    by jewelry's rules, and would be silently dropped forever under furniture's."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+    from dealfinder.verticals import FURNITURE, JEWELRY
+    from dealfinder.prescreen import prescreen
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["j-1"] = AuctionEntry(
+        id="j-1", title="Sterling Silver Diamond Ring",
+        description="14k gold band, sterling silver diamond setting",
+        vertical="jewelry", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=10),
+    )
+    # Proves the regression directly: this listing fails furniture's gate (no signal,
+    # no photo) and passes jewelry's (positive keywords: sterling, diamond, 14k, gold).
+    assert not prescreen(cat.lots["j-1"].to_listing(), FURNITURE, require_photo=False).keep
+    assert prescreen(cat.lots["j-1"].to_listing(), JEWELRY, require_photo=False).keep
+
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=10)
+    assert promoted == 1
+    assert cat.lots["j-1"].watch
+
+
+def test_watchlist_falls_back_to_the_default_vertical_for_untagged_legacy_entries():
+    """Entries from before `vertical` existed have vertical="" and must not crash or
+    silently vanish from screening — they fall back to the run's default."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["f-1"] = AuctionEntry(
+        id="f-1", title="Danish Teak Sideboard", description="solid teak, mid century",
+        vertical="", state="live", first_seen=now, last_seen=now,
+        ends_at=now + timedelta(hours=10),
+    )
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=10)
+    assert promoted == 1
+    assert cat.lots["f-1"].watch
+
+
+def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, monkeypatch):
+    """Full pipeline, dry-run (no AI spend): every default vertical's query actually
+    fires, and a jewelry-flavored result gets tagged and watched — not silently lost."""
+    from dealfinder.sources.ebth import AuctionItem
+
+    monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "sk-ant-oat-test")
+    monkeypatch.delenv("EBTH_SEARCH_URLS", raising=False)
+    seen_queries: list[str] = []
+
+    def fake_search(self, url, **kw):
+        q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query).get("q", [""])[0]
+        seen_queries.append(q)
+        if "silver" in q or "diamond" in q:
+            return [AuctionItem(
+                item_id="j-1", title="Sterling Silver Diamond Ring",
+                description="14k gold band, sterling silver diamond setting",
+                current_bid_cents=5000, bid_count=2,
+                ends_at=datetime.now(timezone.utc) + timedelta(hours=10),
+                url="https://www.ebth.com/items/j-1",
+            )]
+        return []
+
+    monkeypatch.setattr(EbthClient, "search", fake_search)
+    monkeypatch.setattr(run_auctions, "_make_client",
+                        lambda: EbthClient(fetch=lambda u: "<html></html>", delay=0))
+
+    rc = run_auctions.main([
+        "--out", str(tmp_path / "site"),
+        "--catalog", str(tmp_path / "site" / "catalog.json"),
+        "--dry-run",
+    ])
+    assert rc == 0
+    assert len(seen_queries) == len(run_auctions._DEFAULT_QUERIES), \
+        "every default vertical's query must actually run, not just furniture's"
+
+    cat = load_auction_catalog(tmp_path / "site" / "catalog.json")
+    entry = cat.lots["j-1"]
+    assert entry.vertical == "jewelry"
+    assert entry.watch, "a jewelry lot must be watched under its own vertical's rules"
