@@ -81,6 +81,7 @@ jobs:
           APPRAISE_MODEL: ${{ vars.APPRAISE_MODEL }}
           EBTH_FETCH: ${{ vars.EBTH_FETCH || 'browser' }}
           EBTH_SEARCH_URLS: ${{ vars.EBTH_SEARCH_URLS }}
+          EBTH_TIME_CRITICAL_DAYS: ${{ vars.EBTH_TIME_CRITICAL_DAYS }}
           EBTH_PREMIUM_PCT: ${{ vars.EBTH_PREMIUM_PCT }}
           EBTH_SHIPPING_CENTS: ${{ vars.EBTH_SHIPPING_CENTS }}
           EBTH_SNAPSHOT_CAP: ${{ vars.EBTH_SNAPSHOT_CAP }}

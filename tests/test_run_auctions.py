@@ -199,25 +199,53 @@ def test_missing_token_in_ci_fails_before_any_spend(tmp_path, monkeypatch):
 
 def test_search_targets_default_to_every_known_vertical_not_just_furniture():
     targets = run_auctions._search_targets("", default_vertical="furniture")
-    assert targets == [
+    keyword_targets = targets[:len(run_auctions._DEFAULT_QUERIES)]
+    assert keyword_targets == [
         (vkey, f"https://www.ebth.com/browse?q={urllib.parse.quote(q)}")
         for vkey, q in run_auctions._DEFAULT_QUERIES
     ]
-    verticals_covered = {v for v, _ in targets}
+    verticals_covered = {v for v, _ in keyword_targets}
     assert verticals_covered == {"furniture", "art", "electronics", "jewelry", "collectibles"}
+
+
+def test_search_targets_always_include_ending_soon_and_recommended():
+    """A keyword search can only ever find a lot that happens to contain a guessed
+    word. These two site-wide sources are the fix — confirmed live: sort=sale_ends_at_
+    asc is EBTH's real 'Ending Soonest' preset, and days_left genuinely narrows the
+    result set (1242/2017/3200 items at days_left=1/2/3, site-wide)."""
+    targets = run_auctions._search_targets("", default_vertical="furniture")
+    by_vertical = dict(targets)
+    assert by_vertical[run_auctions._AUTO_ENDING_SOON] == (
+        "https://www.ebth.com/browse?sort=sale_ends_at_asc&days_left=2"
+    )
+    assert by_vertical[run_auctions._AUTO_RECOMMENDED] == (
+        "https://www.ebth.com/browse?sort=recommended"
+    )
+
+
+def test_time_critical_days_is_configurable(monkeypatch):
+    monkeypatch.setenv("EBTH_TIME_CRITICAL_DAYS", "5")
+    targets = run_auctions._search_targets("", default_vertical="furniture")
+    by_vertical = dict(targets)
+    assert "days_left=5" in by_vertical[run_auctions._AUTO_ENDING_SOON]
 
 
 def test_search_targets_honors_an_explicit_override_under_one_vertical():
     """The documented, backward-compatible shape: user-supplied URLs are plain URLs,
-    all screened under whatever --vertical/VERTICAL says."""
+    all screened under whatever --vertical/VERTICAL says. The two site-wide sources
+    are appended even here — they exist to catch what keyword search structurally
+    can't, regardless of which keywords the user chose."""
     targets = run_auctions._search_targets(
         "https://www.ebth.com/browse?q=teak\nhttps://www.ebth.com/browse?q=oak",
         default_vertical="furniture",
     )
-    assert targets == [
+    assert targets[:2] == [
         ("furniture", "https://www.ebth.com/browse?q=teak"),
         ("furniture", "https://www.ebth.com/browse?q=oak"),
     ]
+    assert {v for v, _ in targets[2:]} == {
+        run_auctions._AUTO_ENDING_SOON, run_auctions._AUTO_RECOMMENDED,
+    }
 
 
 def test_watchlist_screens_each_lot_under_its_own_discovered_vertical():
@@ -262,6 +290,93 @@ def test_watchlist_falls_back_to_the_default_vertical_for_untagged_legacy_entrie
     assert cat.lots["f-1"].watch
 
 
+def test_ending_soon_lots_are_watched_with_no_keyword_signal_at_all():
+    """The user's own framing: 'even if we just review items closing in 2 days or
+    less' — a lot with zero furniture/art/jewelry/etc. keywords must still be watched
+    when it was discovered by the ending-soon source, because the urgency itself is
+    the reason to look, not a guessed word matching its description."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["x-1"] = AuctionEntry(
+        id="x-1", title="Miscellaneous Household Lot", description="assorted items",
+        vertical=run_auctions._AUTO_ENDING_SOON, state="ending",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=5),
+    )
+    # Confirms the premise: this listing has no positive signal in any vertical.
+    from dealfinder.prescreen import prescreen
+    from dealfinder.verticals import FURNITURE
+    assert not prescreen(cat.lots["x-1"].to_listing(), FURNITURE, require_photo=False).keep
+
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=10)
+    assert promoted == 1
+    assert cat.lots["x-1"].watch
+    # Reclassified for pricing/appraisal purposes, not left as the raw sentinel.
+    assert cat.lots["x-1"].vertical != run_auctions._AUTO_ENDING_SOON
+
+
+def test_ending_soon_lots_win_the_cap_over_ordinary_keyword_matches():
+    """Urgency always gets first claim on watchlist room — that's the entire point of
+    an auction tracker: the endgame is the only window where bidding pays."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    for i in range(5):
+        cat.lots[f"k-{i}"] = AuctionEntry(
+            id=f"k-{i}", title="Danish Teak Sideboard", description="solid teak",
+            vertical="furniture", state="live",
+            first_seen=now, last_seen=now, ends_at=now + timedelta(days=5),
+        )
+    cat.lots["urgent"] = AuctionEntry(
+        id="urgent", title="Random Lot", description="no signal here",
+        vertical=run_auctions._AUTO_ENDING_SOON, state="ending",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(hours=1),
+    )
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=1)
+    assert promoted == 1
+    assert cat.lots["urgent"].watch
+    assert not any(cat.lots[f"k-{i}"].watch for i in range(5))
+
+
+def test_recommended_lots_compete_normally_rather_than_dominating():
+    """Unlike ending-soon, 'recommended' isn't time-critical — it shouldn't crowd out
+    a real keyword match, just get a fair shot at remaining room."""
+    from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    cat = AuctionCatalog()
+    cat.lots["strong-match"] = AuctionEntry(
+        id="strong-match", title="Sterling Silver Tiffany Bracelet",
+        description="hallmarked, 14k gold clasp", vertical="jewelry", state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(days=3),
+    )
+    cat.lots["reco"] = AuctionEntry(
+        id="reco", title="Recommended Pick", description="no keywords here",
+        vertical=run_auctions._AUTO_RECOMMENDED, state="live",
+        first_seen=now, last_seen=now, ends_at=now + timedelta(days=3),
+    )
+    promoted = run_auctions._refresh_watchlist(cat, "furniture", cap=1)
+    assert promoted == 1
+    # The strong keyword match (jewelry: sterling, hallmarked, 14k, gold, Tiffany maker)
+    # outscores the flat recommended-priority of 1, so it wins the single slot.
+    assert cat.lots["strong-match"].watch
+    assert not cat.lots["reco"].watch
+
+
+def test_best_vertical_classifies_by_content_not_discovery_source():
+    from dealfinder.auctions.catalog import AuctionEntry
+
+    now = datetime.now(timezone.utc)
+    entry = AuctionEntry(
+        id="j-2", title="14k Gold Diamond Engagement Ring", description="sterling",
+        vertical=run_auctions._AUTO_ENDING_SOON, state="live",
+        first_seen=now, last_seen=now,
+    )
+    assert run_auctions._best_vertical(entry) == "jewelry"
+
+
 def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, monkeypatch):
     """Full pipeline, dry-run (no AI spend): every default vertical's query actually
     fires, and a jewelry-flavored result gets tagged and watched — not silently lost."""
@@ -294,8 +409,9 @@ def test_a_default_run_discovers_and_watches_a_jewelry_lot_end_to_end(tmp_path, 
         "--dry-run",
     ])
     assert rc == 0
-    assert len(seen_queries) == len(run_auctions._DEFAULT_QUERIES), \
-        "every default vertical's query must actually run, not just furniture's"
+    # +2: the always-on ending-soon/recommended site-wide sources, alongside every
+    # per-vertical keyword query — not just furniture's.
+    assert len(seen_queries) == len(run_auctions._DEFAULT_QUERIES) + 2
 
     cat = load_auction_catalog(tmp_path / "site" / "catalog.json")
     entry = cat.lots["j-1"]

@@ -86,8 +86,20 @@ how to price — furniture, art, vintage electronics, jewelry, and silver/coins/
 (`verticals.py`) — not one furniture-flavored query. Each lot is tagged with whichever
 vertical's search found it and is screened *and appraised* against that vertical's own
 rules (requiring a positive signal, same discipline as the Marketplace side) — a sterling
-silver ring judged by furniture's keyword list would never have a chance. It holds the
-full bid history and answers three questions:
+silver ring judged by furniture's keyword list would never have a chance.
+
+But a keyword search can only ever find a lot that happens to contain a guessed word —
+it has no way to notice a jewelry lot that doesn't say "sterling" or tell you what's
+about to close. So two site-wide sources run every hour on top of the keyword queries,
+using EBTH's own `sort`/`days_left` parameters (confirmed against the live API):
+**everything closing within `EBTH_TIME_CRITICAL_DAYS`** (default 2) and **EBTH's own
+"recommended" ordering**. Lots found this way skip the keyword gate entirely — being
+about to close, or being something EBTH's own algorithm surfaces, *is* the signal — and
+always win the watchlist's limited slots ahead of an ordinary keyword match, since the
+endgame is the only window where bidding actually pays. A vertical is still
+auto-classified per lot afterward, for pricing/appraisal guidance only.
+
+It holds the full bid history and answers three questions:
 
 - **Your max bid** — worked backwards from the appraisal: restored value, minus restoration,
   your hours, your margin, freight, and the buyer's premium riding the hammer. Decided
