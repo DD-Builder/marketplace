@@ -299,9 +299,22 @@ nav.tabs a{padding:14px 18px;color:var(--soft);text-decoration:none;font-size:14
 nav.tabs a.on{color:var(--accent);border-bottom-color:var(--accent)}
 nav.tabs a:hover{color:var(--ink)}
 
+/* ---- pull to refresh ---- */
+#ptr{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:center;gap:8px;height:0;overflow:hidden;z-index:60;
+  background:var(--card);color:var(--soft);font-size:13px;font-weight:600;
+  border-bottom:1px solid var(--line);transition:height .18s ease}
+#ptr.armed{color:var(--accent)}
+#ptr .spin{width:14px;height:14px;border:2px solid var(--line);
+  border-top-color:var(--accent);border-radius:50%}
+#ptr.busy .spin{animation:ptrspin .7s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#ptr{transition:none}#ptr.busy .spin{animation:none}}
+
 </style>
 </head>
 <body>
+<div id="ptr"><span class="spin"></span><span class="txt"></span></div>
 <nav class="tabs">
   <a href="index.html">Home</a>
   <a class="on" href="board.html">The Bench · Marketplace</a>
@@ -311,7 +324,7 @@ nav.tabs a:hover{color:var(--ink)}
   <div class="brandrow">
     <h1>The Bench</h1>
     <span class="tag">Lexington · 40 mi</span>
-    <span class="sub" id="updated" data-ts="2026-08-18T19:42:14.262032+00:00">updated Aug 18, 2026 · 19:42 UTC</span>
+    <span class="sub" id="updated" data-ts="2026-08-19T13:40:15.151771+00:00">updated Aug 19, 2026 · 13:40 UTC</span>
   </div>
   <p class="notice" id="notice" hidden></p>
   <div class="summary">
@@ -359,6 +372,9 @@ nav.tabs a:hover{color:var(--ink)}
       <option value="priority" selected>Best first</option>
       <option value="margin">Biggest margin</option>
       <option value="ask">Cheapest</option>
+      <option value="resale">Highest resale value</option>
+      <option value="roi">Best return on cost</option>
+      <option value="work">Least work</option>
       <option value="fresh">Freshest</option>
     </select>
   </label>
@@ -381,7 +397,7 @@ nav.tabs a:hover{color:var(--ink)}
   <div class="tierhead"><h2>Estate pieces</h2><span class="tiernote">The ones worth clearing a weekend for</span><span class="tiercount">8</span></div>
   <div class="grid" id="grid-estate">
 
-    <article class="card" data-id="2428993480844970" data-title="MCM Broyhill Brasilia 9 Drawer Dresser" data-priority="10.9" data-margin="25000" data-ask="175000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2428993480844970.jpg&quot;, &quot;photos/2428993480844970_1.jpg&quot;, &quot;photos/2428993480844970_2.jpg&quot;]'>
+    <article class="card" data-id="2428993480844970" data-title="MCM Broyhill Brasilia 9 Drawer Dresser" data-priority="10.9" data-margin="25000" data-resale="220000" data-work="2.5" data-roi="12.8" data-ask="175000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2428993480844970.jpg&quot;, &quot;photos/2428993480844970_1.jpg&quot;, &quot;photos/2428993480844970_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">1</div>
         <img class="thumb" src="photos/2428993480844970.jpg" alt="Broyhill Brasilia line triple dresser, 9-drawer, with sculpted arched center doors" data-ph="Broyhill Brasilia Line Triple Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$1,750</span><span class="tag-margin">$250 margin</span></div>
@@ -396,6 +412,7 @@ nav.tabs a:hover{color:var(--ink)}
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$1,750</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$2,200</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$200 · 2.5h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$250</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -443,10 +460,10 @@ nav.tabs a:hover{color:var(--ink)}
       </div>
     </article>
 
-    <article class="card" data-id="1439187397973749" data-title="Vintage Stereo Console / Bar. Very Rare Find. Made in Germany (1967). Value $4,000**." data-priority="7.4" data-margin="-160000" data-ask="225000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
+    <article class="card" data-id="1439187397973749" data-title="Vintage Stereo Console / Bar. Very Rare Find. Made in Germany (1967). Value $4,000**." data-priority="7.4" data-margin="-175000" data-resale="90000" data-work="12.0" data-roi="-66.0" data-ask="225000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
       <div class="hero">
         <div class="rank">2</div>
-        <div class="thumb ph"><span>Mid-Century German Stereo/Radio Console…</span></div><div class="swingtag neg"><span class="tag-price">$2,250</span><span class="tag-was">$2,500</span><span class="tag-margin">−$1,600 margin</span></div>
+        <div class="thumb ph"><span>Mid-Century German Stereo/Radio Console</span></div><div class="swingtag neg"><span class="tag-price">$2,250</span><span class="tag-was">$2,500</span><span class="tag-margin">−$1,750 margin</span></div>
       </div>
       <div class="body">
         <div class="head">
@@ -457,17 +474,18 @@ nav.tabs a:hover{color:var(--ink)}
         
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$2,250</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,300</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$1,600</span></div>
+          <div class="fig"><span class="k">Est. resale</span><span class="v">$900</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$400 · 12.0h</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$1,750</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2900 in it and it&#x27;s only worth about $1300 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,900</span></div><div class="yn"><span class="k">With your time</span><span class="v">$3,440 · 18h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$1,470</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$82/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,956</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2650 in it and it&#x27;s only worth about $900 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,650</span></div><div class="yn"><span class="k">With your time</span><span class="v">$3,010 · 12h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$1,660</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$138/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,462</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:7.4%"></i></div><b>7</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:65.0%"></i></div><b>65</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:90.0%"></i></div><b>90</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>This matches a well-known and once mass-produced category — the German &#x27;Musiktruhe&#x27;/stereo-bar console of the 1960s, combining a radio-phono chassis (here Blaupunkt Arkansas) in a veneered cabinet with a bar/display compartment behind sliding glass. These were produced in large numbers by multiple German electronics makers (Blaupunkt, Grundig, SABA, Telefunken, Nordmende) and are not inherently rare; construction is typically veneer over plywood/composite panel with glued/stapled case joinery rather than fine dovetailed solid-wood cabinetry, though tapered brass-capped legs are a genuine…</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is a mass-produced German hi-fi console, not fine furniture — no dovetails or mortise-and-tenon would be expected since these were factory-built radio/turntable cabinets with veneered case construction and solid-wood legs as decorative trim. The listing names no furniture maker, only the electronics brand (Blaupunkt) and a radio model (Arkansas); I have no recalled specific realized auction/eBay results for &#x27;Blaupunkt Arkansas console&#x27; to cite as comps, so I&#x27;m not fabricating any — this pushes confidence down per the instructions. From general category knowledge, this class of console…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1439187397973749">
@@ -505,7 +523,7 @@ nav.tabs a:hover{color:var(--ink)}
       </div>
     </article>
 
-    <article class="card" data-id="1048403807574819" data-title="Kent Coffee Mid Century Modern Dresser (12 Drawers)" data-priority="6.9" data-margin="-35000" data-ask="140000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1048403807574819.jpg&quot;, &quot;photos/1048403807574819_1.jpg&quot;, &quot;photos/1048403807574819_2.jpg&quot;]'>
+    <article class="card" data-id="1048403807574819" data-title="Kent Coffee Mid Century Modern Dresser (12 Drawers)" data-priority="6.9" data-margin="-35000" data-resale="110000" data-work="2.0" data-roi="-24.1" data-ask="140000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1048403807574819.jpg&quot;, &quot;photos/1048403807574819_1.jpg&quot;, &quot;photos/1048403807574819_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">3</div>
         <img class="thumb" src="photos/1048403807574819.jpg" alt="Kent-Coffey &quot;Tempo&quot; line triple dresser, 12 drawers, mid-century modern case good, refinished two-tone (sage green case " data-ph="Kent-Coffey &quot;Tempo&quot; Line Triple Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$1,400</span><span class="tag-margin">−$350 margin</span></div>
@@ -520,6 +538,7 @@ nav.tabs a:hover{color:var(--ink)}
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$1,400</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$1,100</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$50 · 2.0h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$350</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -568,10 +587,10 @@ nav.tabs a:hover{color:var(--ink)}
     </article>
 
     <article class="card" data-id="1509361367043353" data-title="MCM bedroom set 
-Gonzo Vintage" data-priority="6.9" data-margin="-95000" data-ask="245000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
+Gonzo Vintage" data-priority="6.9" data-margin="-130000" data-resale="140000" data-work="5.0" data-roi="-48.1" data-ask="245000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
       <div class="hero">
         <div class="rank">4</div>
-        <div class="thumb ph"><span>United Furniture Corp. &quot;Discovery&quot; Line…</span></div><div class="swingtag neg"><span class="tag-price">$2,450</span><span class="tag-margin">−$950 margin</span></div>
+        <div class="thumb ph"><span>Mid-Century Modern Bedroom Set</span></div><div class="swingtag neg"><span class="tag-price">$2,450</span><span class="tag-margin">−$1,300 margin</span></div>
       </div>
       <div class="body">
         <div class="head">
@@ -583,17 +602,18 @@ Gonzo Vintage</h3>
         
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$2,450</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,650</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$950</span></div>
+          <div class="fig"><span class="k">Est. resale</span><span class="v">$1,400</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$250 · 5.0h</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$1,300</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2600 in it and it&#x27;s only worth about $1650 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,600</span></div><div class="yn"><span class="k">With your time</span><span class="v">$2,720 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$785</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$196/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,128</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $2700 in it and it&#x27;s only worth about $1400 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$2,700</span></div><div class="yn"><span class="k">With your time</span><span class="v">$2,850 · 5h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$1,160</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$232/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$3,278</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.9%"></i></div><b>7</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>United Furniture&#x27;s &#x27;Discovery&#x27; line is genuine period MCM but a mid-tier maker, not a blue-chip name — sculpted/recessed pulls and tapered legs are a common era motif rather than a rare design signal, so no premium beyond generic MCM demand is warranted. Dealer is asking $2,450 for the set at a boutique downtown shop, which reflects retail/showroom pricing rather than realistic secondary-market resale; comparable United/mid-tier MCM highboy dressers and nightstand pairs typically clear $150-450 per piece on regional marketplace/eBay-sold comps, putting a fair resold total closer to…</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>United Furniture Corp is a legitimate mid-century manufacturer but not a name that commands strong auction premiums the way Lane, Drexel, Dunbar, Kent Coffey, or Broyhill Premier&#x27;s Sculptra/Brasilia lines do — I have no recalled realised auction or eBay-sold results for the &#x27;Discovery&#x27; line specifically, so I&#x27;m not reasoning from &#x27;pieces of this quality&#x27; but flagging that this maker&#x27;s market isn&#x27;t one I can cite transactions for; confidence is capped low as instructed both for that reason and because no photos exist to verify veneer condition, drawer joinery (dovetails vs. stapled), or the…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1509361367043353">
@@ -631,7 +651,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1681755769543636" data-title="Mastercraft Widdicomb Style Cocktail Table" data-priority="6.9" data-margin="-2000" data-ask="90000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1681755769543636.jpg&quot;, &quot;photos/1681755769543636_1.jpg&quot;, &quot;photos/1681755769543636_2.jpg&quot;]'>
+    <article class="card" data-id="1681755769543636" data-title="Mastercraft Widdicomb Style Cocktail Table" data-priority="6.9" data-margin="-2000" data-resale="110000" data-work="4.0" data-roi="-1.8" data-ask="90000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/1681755769543636.jpg&quot;, &quot;photos/1681755769543636_1.jpg&quot;, &quot;photos/1681755769543636_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">5</div>
         <img class="thumb" src="photos/1681755769543636.jpg" alt="Brass-and-glass &#x27;waterfall&#x27; cocktail table, Hollywood Regency/Mid-Century Modern style, attributed to Mastercraft (in th" data-ph="Brass-And-Glass &#x27;Waterfall&#x27; Cocktail Table" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$20 margin</span></div>
@@ -646,6 +666,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$1,100</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$220 · 4.0h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$20</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -693,7 +714,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="2081206726106412" data-title="Mid Century Modern American of Martinsville Expanding Round Walnut Dining Table w/ Leaf" data-priority="6.9" data-margin="-9900" data-ask="94900" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2081206726106412.jpg&quot;]'>
+    <article class="card" data-id="2081206726106412" data-title="Mid Century Modern American of Martinsville Expanding Round Walnut Dining Table w/ Leaf" data-priority="6.9" data-margin="-9900" data-resale="95000" data-work="2.5" data-roi="-9.4" data-ask="94900" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/2081206726106412.jpg&quot;]'>
       <div class="hero">
         <div class="rank">6</div>
         <img class="thumb" src="photos/2081206726106412.jpg" alt="Mid-century modern round/oval expanding dining table with one leaf, walnut top with inlaid metal (brass/pewter) star acc" data-ph="Mid-Century Modern Round/Oval Expanding…" loading="lazy"><div class="swingtag neg"><span class="tag-price">$949</span><span class="tag-margin">−$99 margin</span></div>
@@ -708,6 +729,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$949</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$950</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$100 · 2.5h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$99</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -755,10 +777,10 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1060103160033052" data-title="Mid Century Dining Room Ivory Wingback Upholstered set of 6" data-priority="6.4" data-margin="-27000" data-ask="90000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
+    <article class="card" data-id="1060103160033052" data-title="Mid Century Dining Room Ivory Wingback Upholstered set of 6" data-priority="6.4" data-margin="-38000" data-resale="70000" data-work="2.5" data-roi="-35.2" data-ask="90000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[]'>
       <div class="hero">
         <div class="rank">7</div>
-        <div class="thumb ph"><span>Martha Stewart &#x27;Winfield&#x27; Upholstered…</span></div><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$270 margin</span></div>
+        <div class="thumb ph"><span>Martha Stewart Collection &#x27;Winfield&#x27;…</span></div><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$380 margin</span></div>
       </div>
       <div class="body">
         <div class="head">
@@ -769,17 +791,18 @@ Gonzo Vintage</h3>
         <p class="authwarn">⚠ Generic &#x27;style&#x27; wording; treat as an unbranded piece, not a named design.</p>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$720</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$270</span></div>
+          <div class="fig"><span class="k">Est. resale</span><span class="v">$700</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$180 · 2.5h</span></div>
+          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$380</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $990 in it and it&#x27;s only worth about $720 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$990</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,035 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$198</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$132/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,190</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $1080 in it and it&#x27;s only worth about $700 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$1,080</span></div><div class="yn"><span class="k">With your time</span><span class="v">$1,155 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$310</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$124/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$1,328</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:6.4%"></i></div><b>6</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:75.0%"></i></div><b>75</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>This is a modern, mass-produced upholstered dining set styled to evoke mid-century/farmhouse design, not an antique or designer original — &#x27;solid wood&#x27; applies only to the legs, while the frame is plywood, and there&#x27;s no joinery or maker-mark evidence to authenticate age or craftsmanship. &#x27;Restoration&#x27; realistically means light cleaning/spot-treatment at most (no structural repair, refinishing, or reupholstery implied by a near-new set), so upside from work is minimal. Comparable used mass-market upholstered dining chair sets typically resell locally around 30-40% of original retail even in…</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is not an antique or maker-attributed piece — it is a current-production Martha Stewart Collection &#x27;Winfield&#x27; chair, confirmed via retailer listings (Macy&#x27;s, Walmart, Wayfair, Michaels, JCPenney, Bed Bath &amp; Beyond) that sell these in sets of 2 for roughly $330–$1050 depending on retailer/sale, i.e. a 6-chair set&#x27;s new retail plausibly spans ~$900–$1800, so the seller&#x27;s stated $1900 retail is not unreasonable but sits at the high end. The seller&#x27;s own &#x27;Mid Century&#x27; title is misleading marketing language, not a genuine attribution — the product itself is a farmhouse-style reproduction with…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1060103160033052">
@@ -817,7 +840,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="3385862774953721" data-title="Dark Green Mid Century Modern Lowboy Dresser" data-priority="5.4" data-margin="-27500" data-ask="90000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/3385862774953721.jpg&quot;, &quot;photos/3385862774953721_1.jpg&quot;, &quot;photos/3385862774953721_2.jpg&quot;]'>
+    <article class="card" data-id="3385862774953721" data-title="Dark Green Mid Century Modern Lowboy Dresser" data-priority="5.4" data-margin="-27500" data-resale="70000" data-work="1.5" data-roi="-28.2" data-ask="90000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="estate" data-photos='[&quot;photos/3385862774953721.jpg&quot;, &quot;photos/3385862774953721_1.jpg&quot;, &quot;photos/3385862774953721_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">8</div>
         <img class="thumb" src="photos/3385862774953721.jpg" alt="9-drawer triple-dresser lowboy, Spanish/Mediterranean Revival style (mislabeled by seller as &#x27;Mid Century Modern&#x27;)" data-ph="9-Drawer Triple-Dresser Lowboy" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$900</span><span class="tag-margin">−$275 margin</span></div>
@@ -832,6 +855,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$900</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$700</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$75 · 1.5h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$275</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -884,7 +908,7 @@ Gonzo Vintage</h3>
   <div class="tierhead"><h2>Mid-tier</h2><span class="tiernote">Solid pieces, real money, manageable work</span><span class="tiercount">8</span></div>
   <div class="grid" id="grid-mid">
 
-    <article class="card" data-id="1062091556490692" data-title="Eames Wire Base Low Tables MCM - Set of 2" data-priority="9.4" data-margin="18000" data-ask="45000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1062091556490692.jpg&quot;]'>
+    <article class="card" data-id="1062091556490692" data-title="Eames Wire Base Low Tables MCM - Set of 2" data-priority="9.4" data-margin="18000" data-resale="65000" data-work="1.0" data-roi="38.3" data-ask="45000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1062091556490692.jpg&quot;]'>
       <div class="hero">
         <div class="rank">9</div>
         <img class="thumb" src="photos/1062091556490692.jpg" alt="Eames Wire Base Low Table (LTR/LTW style), set of two" data-ph="Eames Wire Base Low Table" loading="lazy"><div class="swingtag"><span class="tag-price">$450</span><span class="tag-margin">$180 margin</span></div>
@@ -899,6 +923,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$450</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$650</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$20 · 1.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$180</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -946,7 +971,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1651097590358502" data-title="Pair of Vintage Mid-Century Solid Walnut Armchairs | B.L. Marble Furniture, Bedford, OH " data-priority="8.2" data-margin="5500" data-ask="47500" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1651097590358502.jpg&quot;, &quot;photos/1651097590358502_1.jpg&quot;, &quot;photos/1651097590358502_2.jpg&quot;]'>
+    <article class="card" data-id="1651097590358502" data-title="Pair of Vintage Mid-Century Solid Walnut Armchairs | B.L. Marble Furniture, Bedford, OH " data-priority="8.2" data-margin="5500" data-resale="68000" data-work="6.0" data-roi="8.8" data-ask="47500" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1651097590358502.jpg&quot;, &quot;photos/1651097590358502_1.jpg&quot;, &quot;photos/1651097590358502_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">10</div>
         <img class="thumb" src="photos/1651097590358502.jpg" alt="Pair of mid-century &#x27;executive posture&#x27; armchairs, B.L. Marble Furniture (Executive Series 2000), Bedford, OH" data-ph="Pair Of Mid-Century &#x27;Executive Posture&#x27;…" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$475</span><span class="tag-margin">$55 margin</span></div>
@@ -961,6 +986,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$475</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$680</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$150 · 6.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$55</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1008,7 +1034,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="2829481977419908" data-title="Heavy, wood dresser" data-priority="7.6" data-margin="12000" data-ask="8000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2829481977419908.jpg&quot;]'>
+    <article class="card" data-id="2829481977419908" data-title="Heavy, wood dresser" data-priority="7.6" data-margin="12000" data-resale="32000" data-work="10.0" data-roi="60.0" data-ask="8000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2829481977419908.jpg&quot;]'>
       <div class="hero">
         <div class="rank">11</div>
         <img class="thumb" src="photos/2829481977419908.jpg" alt="Tall chest-on-chest dresser (highboy/tallboy), 9 drawers in 3-over-2-over-2-over-2 configuration with molded cornice and" data-ph="Tall Chest-On-Chest Dresser" loading="lazy"><div class="swingtag"><span class="tag-price">$80</span><span class="tag-was">$150</span><span class="tag-margin">$120 margin</span></div>
@@ -1023,6 +1049,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$80</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$320</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$120 · 10.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$120</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1070,7 +1097,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1540358351121947" data-title="Solid Hardwood 6-Drawer Chest / Tall Dresser" data-priority="7.4" data-margin="16500" data-ask="10000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1540358351121947.jpg&quot;, &quot;photos/1540358351121947_1.jpg&quot;]'>
+    <article class="card" data-id="1540358351121947" data-title="Solid Hardwood 6-Drawer Chest / Tall Dresser" data-priority="7.4" data-margin="16500" data-resale="32500" data-work="4.0" data-roi="103.1" data-ask="10000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1540358351121947.jpg&quot;, &quot;photos/1540358351121947_1.jpg&quot;]'>
       <div class="hero">
         <div class="rank">12</div>
         <img class="thumb" src="photos/1540358351121947.jpg" alt="Traditional/Colonial-style 6-drawer tall chest (highboy dresser)" data-ph="Traditional/Colonial-Style 6-Drawer Tall…" loading="lazy"><button type="button" class="gallery-hint">2 photos</button><div class="swingtag"><span class="tag-price">$100</span><span class="tag-margin">$165 margin</span></div>
@@ -1085,6 +1112,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$325</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$60 · 4.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$165</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1132,7 +1160,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="4475296949391172" data-title="French Provençal Dresser/ Furniture" data-priority="6.9" data-margin="-3000" data-ask="60000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/4475296949391172.jpg&quot;]'>
+    <article class="card" data-id="4475296949391172" data-title="French Provençal Dresser/ Furniture" data-priority="6.9" data-margin="-3000" data-resale="60000" data-work="1.0" data-roi="-4.8" data-ask="60000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/4475296949391172.jpg&quot;]'>
       <div class="hero">
         <div class="rank">13</div>
         <img class="thumb" src="photos/4475296949391172.jpg" alt="French Provincial-style 9-drawer triple dresser, Bassett Furniture" data-ph="French Provincial-Style 9-Drawer Triple…" loading="lazy"><div class="swingtag neg"><span class="tag-price">$600</span><span class="tag-margin">−$30 margin</span></div>
@@ -1147,6 +1175,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$600</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$600</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$30 · 1.0h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$30</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1194,7 +1223,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="790721437464808" data-title="MCM 6 Drawer Dresser" data-priority="6.9" data-margin="-1800" data-ask="57800" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/790721437464808.jpg&quot;]'>
+    <article class="card" data-id="790721437464808" data-title="MCM 6 Drawer Dresser" data-priority="6.9" data-margin="-1800" data-resale="62000" data-work="2.0" data-roi="-2.8" data-ask="57800" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/790721437464808.jpg&quot;]'>
       <div class="hero">
         <div class="rank">14</div>
         <img class="thumb" src="photos/790721437464808.jpg" alt="Mid-Century Modern 6-drawer dresser (matching nightstand shown, sold separately) by Basic-Witz" data-ph="Mid-Century Modern 6-Drawer Dresser" loading="lazy"><div class="swingtag neg"><span class="tag-price">$578</span><span class="tag-margin">−$18 margin</span></div>
@@ -1209,6 +1238,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$578</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$620</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$60 · 2.0h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$18</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1256,7 +1286,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1704213040699058" data-title="Mid century vintage knoll Bertoia chrome kitchen table set w/ glass top and 4 chairs" data-priority="6.5" data-margin="-34000" data-ask="60000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1704213040699058.jpg&quot;, &quot;photos/1704213040699058_1.jpg&quot;, &quot;photos/1704213040699058_2.jpg&quot;]'>
+    <article class="card" data-id="1704213040699058" data-title="Mid century vintage knoll Bertoia chrome kitchen table set w/ glass top and 4 chairs" data-priority="6.5" data-margin="-34000" data-resale="35000" data-work="5.0" data-roi="-49.3" data-ask="60000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/1704213040699058.jpg&quot;, &quot;photos/1704213040699058_1.jpg&quot;, &quot;photos/1704213040699058_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">15</div>
         <img class="thumb" src="photos/1704213040699058.jpg" alt="Chrome wire-frame kitchen/patio chair set (4) with matching stacked-coil chrome pedestal table base (glass top not pictu" data-ph="Chrome Wire-Frame Kitchen/Patio Chair Set" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$600</span><span class="tag-was">$900</span><span class="tag-margin">−$340 margin</span></div>
@@ -1271,6 +1301,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$600</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$350</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$90 · 5.0h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$340</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1318,7 +1349,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="2228502754613114" data-title="Mid-Century Modern Sofa" data-priority="6.1" data-margin="9500" data-ask="30000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2228502754613114.jpg&quot;]'>
+    <article class="card" data-id="2228502754613114" data-title="Mid-Century Modern Sofa" data-priority="6.1" data-margin="9500" data-resale="40000" data-work="0.5" data-roi="31.1" data-ask="30000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="mid" data-photos='[&quot;photos/2228502754613114.jpg&quot;]'>
       <div class="hero">
         <div class="rank">16</div>
         <img class="thumb" src="photos/2228502754613114.jpg" alt="Tufted low-profile sofa in Florence Knoll/tuxedo-arm style, upholstered, chrome sled/tapered legs" data-ph="Tufted Low-Profile Sofa In Florence…" loading="lazy"><div class="swingtag"><span class="tag-price">$300</span><span class="tag-margin">$95 margin</span></div>
@@ -1333,6 +1364,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$300</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$400</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$5 · 0.5h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$95</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1385,7 +1417,7 @@ Gonzo Vintage</h3>
   <div class="tierhead"><h2>Quick flips</h2><span class="tiernote">Small margins, small effort — take them or leave them</span><span class="tiercount">8</span></div>
   <div class="grid" id="grid-quick">
 
-    <article class="card" data-id="1352396026802534" data-title="Mid-Century Modern Tripod Floor Lamp" data-priority="8.4" data-margin="-4000" data-ask="10000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1352396026802534.jpg&quot;, &quot;photos/1352396026802534_1.jpg&quot;, &quot;photos/1352396026802534_2.jpg&quot;]'>
+    <article class="card" data-id="1352396026802534" data-title="Mid-Century Modern Tripod Floor Lamp" data-priority="8.4" data-margin="-4000" data-resale="6500" data-work="0.5" data-roi="-38.1" data-ask="10000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1352396026802534.jpg&quot;, &quot;photos/1352396026802534_1.jpg&quot;, &quot;photos/1352396026802534_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">17</div>
         <img class="thumb" src="photos/1352396026802534.jpg" alt="Threshold (Target private label) tripod floor lamp with drum shade" data-ph="Threshold" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag neg"><span class="tag-price">$100</span><span class="tag-was">$125</span><span class="tag-margin">−$40 margin</span></div>
@@ -1400,6 +1432,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$100</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$65</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$5 · 0.5h</span></div>
           <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$40</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1447,7 +1480,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1697195071582592" data-title="Furniture Set: Dresser, Media Console, and Bookshelf" data-priority="6.8" data-margin="7500" data-ask="5000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1697195071582592.jpg&quot;, &quot;photos/1697195071582592_1.jpg&quot;, &quot;photos/1697195071582592_2.jpg&quot;]'>
+    <article class="card" data-id="1697195071582592" data-title="Furniture Set: Dresser, Media Console, and Bookshelf" data-priority="6.8" data-margin="7500" data-resale="15000" data-work="3.5" data-roi="100.0" data-ask="5000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1697195071582592.jpg&quot;, &quot;photos/1697195071582592_1.jpg&quot;, &quot;photos/1697195071582592_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">18</div>
         <img class="thumb" src="photos/1697195071582592.jpg" alt="Mixed furniture lot: 5-drawer light-wood dresser, dark-wood 2-drawer media console with open shelving, and black-frame/w" data-ph="Mixed Furniture Lot" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$50</span><span class="tag-was">$300</span><span class="tag-margin">$75 margin</span></div>
@@ -1462,6 +1495,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$50</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$150</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$25 · 3.5h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$75</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1509,7 +1543,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1549815250125258" data-title="White Mid-Century Modern 2-Drawer Nightstand" data-priority="6.1" data-margin="1800" data-ask="1500" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1549815250125258.jpg&quot;, &quot;photos/1549815250125258_1.jpg&quot;, &quot;photos/1549815250125258_2.jpg&quot;]'>
+    <article class="card" data-id="1549815250125258" data-title="White Mid-Century Modern 2-Drawer Nightstand" data-priority="6.1" data-margin="1800" data-resale="4500" data-work="1.5" data-roi="66.7" data-ask="1500" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1549815250125258.jpg&quot;, &quot;photos/1549815250125258_1.jpg&quot;, &quot;photos/1549815250125258_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">19</div>
         <img class="thumb" src="photos/1549815250125258.jpg" alt="White-painted 2-drawer nightstand, MCM-style tapered legs" data-ph="White-Painted 2-Drawer Nightstand" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$15</span><span class="tag-was">$30</span><span class="tag-margin">$18 margin</span></div>
@@ -1524,6 +1558,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$15</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$45</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$12 · 1.5h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$18</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1571,7 +1606,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="2147821552434160" data-title="French Provincial Wood End Table with Blue Top" data-priority="6.0" data-margin="500" data-ask="8500" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/2147821552434160.jpg&quot;, &quot;photos/2147821552434160_1.jpg&quot;, &quot;photos/2147821552434160_2.jpg&quot;]'>
+    <article class="card" data-id="2147821552434160" data-title="French Provincial Wood End Table with Blue Top" data-priority="6.0" data-margin="500" data-resale="13000" data-work="3.0" data-roi="4.0" data-ask="8500" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/2147821552434160.jpg&quot;, &quot;photos/2147821552434160_1.jpg&quot;, &quot;photos/2147821552434160_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">20</div>
         <img class="thumb" src="photos/2147821552434160.jpg" alt="French Provincial-style wood end table with painted top, single drawer, and cabriole legs" data-ph="French Provincial-Style Wood End Table…" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$85</span><span class="tag-was">$105</span><span class="tag-margin">$5 margin</span></div>
@@ -1586,6 +1621,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$85</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$130</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$40 · 3.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$5</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1633,10 +1669,10 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1550814156528940" data-title="Mid-Century Modern Pink Marble Magazine Rack" data-priority="4.8" data-margin="1000" data-ask="2000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
+    <article class="card" data-id="1550814156528940" data-title="Mid-Century Modern Pink Marble Magazine Rack" data-priority="4.8" data-margin="1300" data-resale="4500" data-work="1.5" data-roi="40.6" data-ask="2000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
       <div class="hero">
         <div class="rank">21</div>
-        <div class="thumb ph"><span>Mid-Century Modern Style Magazine Rack…</span></div><div class="swingtag"><span class="tag-price">$20</span><span class="tag-margin">$10 margin</span></div>
+        <div class="thumb ph"><span>Mid-Century Style Magazine Rack With…</span></div><div class="swingtag"><span class="tag-price">$20</span><span class="tag-margin">$13 margin</span></div>
       </div>
       <div class="body">
         <div class="head">
@@ -1648,16 +1684,17 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$20</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$45</span></div>
-          <div class="fig net"><span class="k">Est. margin</span><span class="v">$10</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$12 · 1.5h</span></div>
+          <div class="fig net"><span class="k">Est. margin</span><span class="v">$13</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
-        <div class="resale">Sell target <b>$50</b><span class="span">$45–$50</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $10 cash, but 2h at $30/hr is $45 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$35</span></div><div class="yn"><span class="k">With your time</span><span class="v">$80 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$14</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$10/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$92</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale">Sell target <b>$50</b><span class="span">$45–$50</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $13 cash, but 2h at $30/hr is $45 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$32</span></div><div class="yn"><span class="k">With your time</span><span class="v">$77 · 2h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$18</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$12/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$89</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.8%"></i></div><b>5</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:60.0%"></i></div><b>60</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>This reads as a low-cost decorative accent piece rather than a fine-furniture find: minimal joinery (welded/riveted metal frame, screwed-on wood handle and feet), no stated maker marks, and &#x27;marble-patterned&#x27; phrasing implies faux material (laminate/hardboard) rather than genuine marble slabs. Without photos I can&#x27;t confirm true vintage manufacture vs. a modern MCM-styled reproduction, so I&#x27;m treating it as a look-alike/unverified piece and capping confidence at 0.3. Realistic restoration is light — rust treatment/repaint on the metal, cleaning and oiling the wood handle/feet, maybe minor…</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>This is a decorative metal-frame magazine rack, not a joined wood furniture piece — there&#x27;s no dovetail or mortise-and-tenon construction to assess; the only wood elements are a turned handle and ball feet, which are typically dowel-fitted rather than traditionally joined. No maker or brand is identifiable from the listing, so per the naming-the-market rule I&#x27;m not attaching this to any named maker&#x27;s auction record — I have no specific realized comps to cite and won&#x27;t invent any. Absent photos, &#x27;pink marble-patterned&#x27; most likely describes a decorative laminate or painted finish rather than…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
           <form class="logform" data-id="1550814156528940">
@@ -1695,7 +1732,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1337568671342152" data-title="Dresser" data-priority="4.6" data-margin="6500" data-ask="8000" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1337568671342152.jpg&quot;, &quot;photos/1337568671342152_1.jpg&quot;, &quot;photos/1337568671342152_2.jpg&quot;]'>
+    <article class="card" data-id="1337568671342152" data-title="Dresser" data-priority="4.6" data-margin="6500" data-resale="17500" data-work="4.0" data-roi="59.1" data-ask="8000" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1337568671342152.jpg&quot;, &quot;photos/1337568671342152_1.jpg&quot;, &quot;photos/1337568671342152_2.jpg&quot;]'>
       <div class="hero">
         <div class="rank">22</div>
         <img class="thumb" src="photos/1337568671342152.jpg" alt="Generic mid-size chest of drawers/dresser, seller-described as solid wood" data-ph="Generic Mid-Size Chest Of Drawers/Dresser" loading="lazy"><button type="button" class="gallery-hint">3 photos</button><div class="swingtag"><span class="tag-price">$80</span><span class="tag-margin">$65 margin</span></div>
@@ -1710,6 +1747,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$80</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$175</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$30 · 4.0h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$65</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1757,7 +1795,7 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1298036099183850" data-title="Dresser" data-priority="4.4" data-margin="3400" data-ask="3600" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1298036099183850.jpg&quot;, &quot;photos/1298036099183850_1.jpg&quot;]'>
+    <article class="card" data-id="1298036099183850" data-title="Dresser" data-priority="4.4" data-margin="3400" data-resale="9500" data-work="2.5" data-roi="55.7" data-ask="3600" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[&quot;photos/1298036099183850.jpg&quot;, &quot;photos/1298036099183850_1.jpg&quot;]'>
       <div class="hero">
         <div class="rank">23</div>
         <img class="thumb" src="photos/1298036099183850.jpg" alt="Painted five-drawer wood dresser/chest with custom navy and red-and-white racing-stripe finish" data-ph="Painted Five-Drawer Wood Dresser/Chest…" loading="lazy"><button type="button" class="gallery-hint">2 photos</button><div class="swingtag"><span class="tag-price">$36</span><span class="tag-margin">$34 margin</span></div>
@@ -1772,6 +1810,7 @@ Gonzo Vintage</h3>
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$36</span></div>
           <div class="fig"><span class="k">Est. resale</span><span class="v">$95</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$25 · 2.5h</span></div>
           <div class="fig net"><span class="k">Est. margin</span><span class="v">$34</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
@@ -1819,36 +1858,37 @@ Gonzo Vintage</h3>
       </div>
     </article>
 
-    <article class="card" data-id="1242601887872389" data-title="MCM Store 
-Gonzo Vibtage" data-priority="4.2" data-margin="-2300" data-ask="12300" data-fresh="24.01" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
+    <article class="card" data-id="1046498121061960" data-title="MCM China Cabinets
+Gonzo Vintage" data-priority="4.2" data-margin="700" data-resale="18000" data-work="3.0" data-roi="4.0" data-ask="12300" data-fresh="24.75" data-killer="0" data-flag="0" data-oor="0" data-tier="quick" data-photos='[]'>
       <div class="hero">
         <div class="rank">24</div>
-        <div class="thumb ph"><span>Unidentifiable</span></div><div class="swingtag neg"><span class="tag-price">$123</span><span class="tag-margin">−$23 margin</span></div>
+        <div class="thumb ph"><span>Unbranded/Attributed Mid-Century Modern</span></div><div class="swingtag"><span class="tag-price">$123</span><span class="tag-margin">$7 margin</span></div>
       </div>
       <div class="body">
         <div class="head">
-          <h3>MCM Store 
-Gonzo Vibtage</h3>
+          <h3>MCM China Cabinets
+Gonzo Vintage</h3>
           <div class="loc">Lexington, KY</div>
         </div>
         <div class="chips"><span class="chip warn"><span class="ico">◷</span>Unconfirmed 24d</span></div>
         
         <div class="figs">
           <div class="fig"><span class="k">Ask</span><span class="v">$123</span></div>
-          <div class="fig"><span class="k">Est. resale</span><span class="v">$150</span></div>
-          <div class="fig net neg"><span class="k">Est. margin</span><span class="v">−$23</span></div>
+          <div class="fig"><span class="k">Est. resale</span><span class="v">$180</span></div>
+          <div class="fig"><span class="k">Work</span><span class="v">$50 · 3.0h</span></div>
+          <div class="fig net"><span class="k">Est. margin</span><span class="v">$7</span></div>
           <div class="fig"><span class="k">Last confirmed</span><span class="v bad">24 days ago</span></div>
         </div>
-        <div class="resale bad"><b>Don't buy at this price</b><span class="posture bad">loses money</span></div><div class="reason">Loses money: you&#x27;d have $173 in it and it&#x27;s only worth about $150 restored.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$173</span></div><div class="yn"><span class="k">With your time</span><span class="v">$293 · 4h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">−$8</span></div><div class="yn"><span class="k">Your rate</span><span class="v">−$2/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$337</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
+        <div class="resale">Sell target <b>$198</b><span class="span">$180–$198</span><span class="posture thin">thin for the hours</span></div><div class="reason">Makes $7 cash, but 3h at $30/hr is $90 of your time. Fine if you enjoy the work; poor pay if you don&#x27;t.</div><details class="yours"><summary>Your numbers</summary><div class="yngrid"><div class="yn"><span class="k">Cost basis</span><span class="v">$173</span></div><div class="yn"><span class="k">With your time</span><span class="v">$263 · 3h</span></div><div class="yn"><span class="k">Profit at target</span><span class="v">$25</span></div><div class="yn"><span class="k">Your rate</span><span class="v">$8/hr</span></div><div class="yn"><span class="k">Walk away below</span><span class="v">$302</span></div></div><p class="basis">estimated: bought at ask, restored per estimate</p></details>
         <div class="meters">
           <div class="meter"><label>Priority</label><div class="bar"><i style="width:4.2%"></i></div><b>4</b></div>
           <div class="meter"><label>Sells</label><div class="bar sub"><i style="width:40.0%"></i></div><b>40</b></div>
           <div class="meter"><label>Heat</label><div class="bar sub"><i style="width:45.0%"></i></div><b>45</b></div>
         </div>
-        <details class="why"><summary>Why this valuation</summary><p>This listing text is a general storefront advertisement for a Lexington, KY vintage/MCM shop, not a description of an actual furniture item for sale. It contains no item identification, dimensions, wood species, joinery, maker marks, or condition notes — only a generic mention that the shop carries &#x27;mid century modern case goods&#x27; among many other categories (rugs, jewelry, decor, etc). Without any item-specific text or photos, construction (solid wood vs veneer vs particleboard), joinery, and authenticity cannot be evaluated at all. The asking price of $123 is used as a placeholder anchor for…</p></details>
+        <details class="why"><summary>Why this valuation</summary><p>No maker, designer, or manufacturer is named - the listing is generic dealer marketing copy (&#x27;MCM china cabinets... modern design and has shelves&#x27;) with zero construction, dimension, wood-species, or condition detail, and no photos. Per the valuation rules, an unidentified maker means I cannot anchor to realized auction/eBay comps for a specific name - doing so would be fabrication. Generic unbranded MCM china cabinets in typical estate/thrift condition commonly realize modest sums at auction and on eBay (often $75-250 depending on size, wood, and condition), which is why the as-is estimate…</p></details>
 
         <details class="tool log"><summary>Log this piece</summary>
-          <form class="logform" data-id="1242601887872389">
+          <form class="logform" data-id="1046498121061960">
             <label>Paid <input name="paid" inputmode="decimal"
               placeholder="123"></label>
             <label>Materials <input name="materials" inputmode="decimal"
@@ -1862,7 +1902,7 @@ Gonzo Vibtage</h3>
           </form>
         </details>
         <details class="tool nego"><summary>Draft a message to the seller</summary>
-          <form class="negoform" data-id="1242601887872389">
+          <form class="negoform" data-id="1046498121061960">
             <label class="wide">Posture
               <input name="posture" type="range" min="0" max="100" step="5" value="40">
               <span class="postval">measured</span>
@@ -1879,7 +1919,7 @@ Gonzo Vibtage</h3>
             <p class="basis">Drafts only — nothing is ever sent for you.</p>
           </form>
         </details>
-        <a class="view" href="https://www.facebook.com/marketplace/item/1242601887872389/" target="_blank" rel="noopener">View listing →</a>
+        <a class="view" href="https://www.facebook.com/marketplace/item/1046498121061960/" target="_blank" rel="noopener">View listing →</a>
       </div>
     </article>
   </div>
@@ -1903,7 +1943,7 @@ Gonzo Vibtage</h3>
   <p><a href="auctions/index.html">The Gavel — EBTH auction watch →</a></p>
   <p>Valued 12 this run, no stars today — patience pays.</p>
   <details class="engineroom"><summary>Engine room</summary><p>0 scraped -&gt; 0 after dedup -&gt; 0 new + 0 price-drops (0 already-seen, skipped) -&gt; 12 appraised (0 strong + 0 wildcards + 12 backfilled; 0 junked, 0 over cap)</p></details>
-  <p>Valued by dry-run. Photos and prices as scraped; verify before buying.</p>
+  <p>Valued by claude-code. Photos and prices as scraped; verify before buying.</p>
 </footer>
 <script>
 'use strict';
@@ -1994,8 +2034,11 @@ function applyView() {
     c.classList.toggle('hide', !show);
     if (show) visible++;
   });
-  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh' }[state.sort];
-  const dir = state.sort === 'ask' || state.sort === 'fresh' ? 1 : -1;
+  const key = { priority: 'priority', margin: 'margin', ask: 'ask', fresh: 'fresh',
+                resale: 'resale', roi: 'roi', work: 'work' }[state.sort];
+  // Ascending for the ones where "less is better": price, staleness, hours of work.
+  const dir = (state.sort === 'ask' || state.sort === 'fresh' || state.sort === 'work')
+    ? 1 : -1;
   tierSections.forEach(section => {
     const grid = section.querySelector('.grid');
     const own = cards.filter(c => c.dataset.tier === section.dataset.tier);
@@ -2305,6 +2348,56 @@ function renderDrafts(out, st, data) {
 
 applyView();      // establish sort/empty state on load, not only after a click
 checkConnection();
+
+
+// Pull-to-refresh. The page is a published artifact, so refreshing means re-fetching it.
+(function(){
+  var el = document.getElementById('ptr');
+  if (!el) return;
+  var txt = el.querySelector('.txt');
+  var startY = 0, pulling = false, dist = 0;
+  var THRESHOLD = 70, MAX = 110;
+
+  function atTop(){
+    return (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+  }
+  function set(h, armed){
+    el.style.height = h + 'px';
+    el.classList.toggle('armed', !!armed);
+    if (txt) txt.textContent = h < 8 ? '' : (armed ? 'Release to refresh' : 'Pull to refresh');
+  }
+
+  document.addEventListener('touchstart', function(e){
+    // Only arm at the very top, and never mid-gesture with several fingers down.
+    if (!atTop() || e.touches.length !== 1) { pulling = false; return; }
+    startY = e.touches[0].clientY;
+    pulling = true;
+    dist = 0;
+  }, {passive: true});
+
+  document.addEventListener('touchmove', function(e){
+    if (!pulling) return;
+    var dy = e.touches[0].clientY - startY;
+    if (dy <= 0) { set(0, false); dist = 0; return; }
+    if (!atTop()) { pulling = false; set(0, false); return; }
+    // Resistance: the pull slows as it lengthens, so it feels anchored rather than loose.
+    dist = Math.min(MAX, dy * 0.5);
+    set(dist, dist >= THRESHOLD);
+  }, {passive: true});
+
+  document.addEventListener('touchend', function(){
+    if (!pulling) return;
+    pulling = false;
+    if (dist >= THRESHOLD) {
+      el.classList.add('busy');
+      if (txt) txt.textContent = 'Refreshing…';
+      set(46, true);
+      location.reload();
+    } else {
+      set(0, false);
+    }
+  });
+})();
 
 </script>
 </body>
