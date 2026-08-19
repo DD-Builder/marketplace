@@ -56,6 +56,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from dealfinder.auctions import bidding
+from dealfinder.valuation import artcomps
 from dealfinder.auctions.categories import SORTS, resolve as resolve_categories
 from dealfinder.auctions import catalog as acat
 from dealfinder.auctions.board import AuctionBoardMeta, write_auction_page
@@ -315,6 +316,45 @@ def _best_vertical(entry: acat.AuctionEntry) -> str:
     # guidance — a wrong vertical yields a confidently wrong number, which is worse than
     # no number. A lot nothing can classify is a lot we have no business pricing.
     return best_key
+
+
+def _reprice_from_comps(appraisal, entry: acat.AuctionEntry, now: datetime):
+    """Replace the model's asserted value with a weighted median over the sales it found.
+
+    This is the inversion the whole valuation rework turns on. The model is good at
+    locating comparable sales and bad at holding a market in its head, so it reports
+    records and the arithmetic happens here, where it can be inspected and where a wrong
+    answer leaves a trail. A $1,200 assertion was unfalsifiable until someone looked the
+    artist up; a $1,200 median over five listed sales would have been obviously wrong at
+    a glance.
+
+    Returns the appraisal unchanged when the evidence is too thin to beat it — a lone
+    comp is not a valuation, and the market anchor downstream is a better fallback than
+    a confident number built on one record.
+    """
+    records = getattr(appraisal, "comps", None) or []
+    if not records:
+        return appraisal, None
+    target = artcomps.SoldComp(
+        price_cents=0,
+        medium=" ".join(appraisal.materials or []) or appraisal.identified_item,
+        width_in=0.0, height_in=0.0,
+    )
+    comps = [
+        artcomps.SoldComp(
+            price_cents=r.price_cents, title=r.title, medium=r.medium,
+            width_in=r.width_in, height_in=r.height_in, year_sold=r.year_sold,
+            venue=r.venue, url=r.url, is_sold=r.is_sold,
+        )
+        for r in records
+    ]
+    band = artcomps.estimate(comps, target=target, this_year=now.year)
+    if band is None:
+        log.info("comps_too_thin", lot=entry.id, records=len(records))
+        return appraisal, None
+    log.info("comps_repriced", lot=entry.id, asserted=appraisal.est_asis_value_cents,
+             median=band.mid_cents, n_sold=band.n_sold, weight=band.total_weight)
+    return appraisal.model_copy(update={"est_asis_value_cents": band.mid_cents}), band
 
 
 def _venue_block(catalog: acat.AuctionCatalog, entry: acat.AuctionEntry,
@@ -661,6 +701,7 @@ def _run(args, out_dir: Path, targets: list[tuple[str, str]], client: EbthClient
                     listing, entry_vertical, image_paths=paths or None,
                     venue=_venue_block(catalog, entry, now),
                 )
+                appraisal, _band = _reprice_from_comps(appraisal, entry, now)
             except Exception as exc:  # noqa: BLE001
                 failures.append(str(exc))
                 log.warning("auction_appraisal_failed", lot=entry.id, error=str(exc)[:200])

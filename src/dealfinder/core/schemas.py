@@ -44,6 +44,23 @@ class RawListing(BaseModel):
     observed_at: datetime | None = None
 
 
+class CompRecord(BaseModel):
+    """One comparable sale the appraiser located. Deliberately raw evidence, not a view."""
+
+    price_cents: int
+    title: str = ""
+    medium: str = ""
+    width_in: float = 0.0
+    height_in: float = 0.0
+    year_sold: int = 0
+    venue: str = ""
+    url: str = ""
+    #: False for an asking price. The distinction is the whole point: for a living
+    #: decorative artist the ask and the hammer differ several-fold, and the ask is the
+    #: one that loses money.
+    is_sold: bool = True
+
+
 class AppraisalResult(BaseModel):
     """Tier-2 Opus vision appraisal output (structured via messages.parse)."""
 
@@ -65,6 +82,12 @@ class AppraisalResult(BaseModel):
     #: the most expensive possible way to be strict.
     deal_score: float = Field(default=0.0, ge=0.0, le=100.0)
     reasoning: str = ""
+    #: Realised sales the appraiser found, as records rather than as a conclusion. The
+    #: arithmetic over these is done in :mod:`dealfinder.valuation.artcomps`, in code that
+    #: can be inspected, precisely because a model's point estimate cannot be audited —
+    #: the $1,200 Nino Pippa valuation was unfalsifiable until someone went and looked up
+    #: the artist. Empty is normal and honest for an unlisted maker.
+    comps: list[CompRecord] = Field(default_factory=list)
 
 
 class NegotiationDraft(BaseModel):

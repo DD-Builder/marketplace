@@ -124,7 +124,9 @@ _CLI_SCHEMA_HINT = (
     '"materials": [str], "condition_assessment": str, "est_asis_value_cents": int, '
     '"est_restored_resale_value_cents": int, "est_restoration_cost_cents": int, '
     '"est_restoration_effort_hours": float, "confidence": 0..1, "deal_score": 0..100, '
-    '"reasoning": str}'
+    '"reasoning": str, '
+    '"comps": [{"price_cents": int, "title": str, "medium": str, "width_in": float, '
+    '"height_in": float, "year_sold": int, "venue": str, "url": str, "is_sold": bool}]}'
 )
 
 
@@ -154,7 +156,13 @@ _VALUATION_RULES = (
     "4. GENUINE VS STYLED-AFTER. If the piece is in the manner of a maker rather than "
     "by them, or could be a reproduction of an original, value it as the look-alike and "
     "lower confidence. State which you assumed.\n"
-    "5. BE WILLING TO RETURN A SMALL NUMBER. Most lots at an estate auction are worth "
+    "5. SHOW THE SALES, NOT JUST THE VERDICT. Search for realised results for this "
+    "maker and return them in `comps` — one record per sale, with price, medium, size "
+    "and year. Mark `is_sold` false for anything that is an asking price. These records "
+    "are weighted and combined in code, so a comp you report is auditable in a way a "
+    "number you assert is not; an empty list is the honest answer for an unlisted maker, "
+    "and much better than an invented one. NEVER fabricate a sale.\n"
+    "6. BE WILLING TO RETURN A SMALL NUMBER. Most lots at an estate auction are worth "
     "tens or low hundreds of dollars. An estimate that makes an ordinary lot look like a "
     "find is the expensive kind of wrong: it is what causes real money to be overbid. "
     "When torn between two figures, return the lower one."
@@ -222,8 +230,14 @@ class ClaudeCodeAppraiser:
         )
 
         cmd = [self.cli, "-p", prompt, "--output-format", "json"]
+        # WebSearch is what separates a valuation from a recollection. Asked to value a
+        # Nino Pippa oil with Read alone, the model could only reason from "artists of
+        # this calibre" and returned $1,200; the same question put to a model that could
+        # look the artist up came back with $150-500 and cited the actual results. The
+        # tool list stays tight — read the photos, look up the market, nothing else.
+        tools = ["Read", "WebSearch", "WebFetch"] if paths else ["WebSearch", "WebFetch"]
+        cmd += ["--allowedTools", ",".join(tools)]
         if paths:
-            cmd += ["--allowedTools", "Read"]
             for d in {str(p.parent.resolve()) for p in paths}:
                 cmd += ["--add-dir", d]
         if self.model:
