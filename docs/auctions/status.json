@@ -1,6 +1,6 @@
 {
  "state": "appraisals_failed",
- "generated_at": "2026-08-20T01:11:21.769482+00:00",
+ "generated_at": "2026-08-20T02:12:04.692335+00:00",
  "failed": 20,
  "reason": "[Errno 8] Exec format error: 'claude'"
 }
