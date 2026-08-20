@@ -1,6 +1,9 @@
 {
- "state": "appraisals_failed",
- "generated_at": "2026-08-20T02:12:04.692335+00:00",
- "failed": 20,
- "reason": "[Errno 8] Exec format error: 'claude'"
+ "state": "ok",
+ "generated_at": "2026-08-20T03:19:54.606308+00:00",
+ "lots": 3573,
+ "watched": 150,
+ "ending_soon": 92,
+ "appraised": 20,
+ "actionable": 5
 }
