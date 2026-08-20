@@ -1,6 +1,6 @@
 {
  "state": "appraisals_failed",
- "generated_at": "2026-08-20T04:59:31.606694+00:00",
+ "generated_at": "2026-08-20T05:57:00.134797+00:00",
  "failed": 20,
  "reason": "claude CLI failed: You've hit your session limit \u00b7 resets 6:10am (UTC)"
 }
