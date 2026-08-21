@@ -753,25 +753,24 @@
   "1027772329694129": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Seller claims 'near perfect condition, original color' but this is unverified with no photos provided. No maker mark or brand named, which is itself informative \u2014 desirable mid-century maple lines (e.g., Heywood-Wakefield, Conant Ball) are almost always marketed by name; the absence suggests either an unbranded/mass-market maple suite or the seller simply didn't check. Rural pickup-only location (Lancaster, KY) will suppress the realistic buyer pool and achievable price regardless of true condition.",
-    "confidence": 0.2,
-    "deal_score": 32.0,
-    "est_asis_value_cents": 35000,
-    "est_restoration_cost_cents": 8000,
-    "est_restoration_effort_hours": 6.0,
-    "est_restored_resale_value_cents": 55000,
-    "identified_item": "Mid-century maple bedroom furniture set (likely dresser, chest, bed frame, and/or nightstands), unbranded/no maker mark stated",
+    "condition_assessment": "Unverifiable from text alone \u2014 no photos provided. Seller claims 'original color' and 'near perfect condition,' but this is an unqualified seller assertion with no image or maker confirmation. Cannot confirm joinery (dovetails vs. stapled/glued), solid-wood vs. veneer construction, or presence of veneer lifting, water rings, drawer sag, or hardware completeness that are typical issues on 70-80 year old case furniture.",
+    "confidence": 0.3,
+    "deal_score": 22.0,
+    "est_asis_value_cents": 25000,
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 45000,
+    "identified_item": "Unbranded mid-century maple bedroom set (likely dresser, chest, bed, and/or nightstands), seller-dated 1940s-1950s",
     "maker_guess": null,
     "materials": [
-     "solid maple (probable, based on era and description)",
-     "possible maple veneer on drawer fronts/panels",
-     "unknown hardware composition"
+     "solid maple (claimed, unverified)",
+     "possible maple veneer over secondary wood on case panels/tops"
     ],
-    "reasoning": "No maker or brand is identified in the listing, so this cannot be valued against any named workshop's realized results \u2014 it must be valued as generic, unbranded mid-century maple bedroom furniture. That category is common at estate sales and on FB Marketplace/Craigslist, where complete sets (dresser, mirror, chest, bed, nightstand) of unbranded maple typically transact in roughly $250-500 realized when local pickup is required, with well-known branded lines (Heywood-Wakefield, Conant Ball, Willett) commanding significantly more due to name recognition and stronger provenance \u2014 none of which applies here. 'Near perfect condition' and 'original color' are unverified seller claims with zero photos, so I am not crediting them at face value; solid maple construction from this era is plausible and would need little more than cleaning/waxing if true, but I can't confirm it isn't veneer-faced casework or that it's actually undamaged. The $650 ask sits above where I'd expect this to realistically transact as-is, especially given the rural KY pickup-only constraint that limits the buyer pool. I found no specific auction or sold-listing comps to cite for this unbranded set, so I'm not fabricating any \u2014 the estimate is a generic-category judgment only, and confidence is capped low per the no-photo/no-maker instruction.",
-    "style_era": "Mid-century American, c. 1940s-1950s, transitional colonial/cottage maple style typical of that period"
+    "reasoning": "No maker or brand is named (not Heywood-Wakefield, Cushman, Conant Ball, etc.), so this must be valued as generic unbranded mid-century maple bedroom furniture, not against any named maker's realized auction results \u2014 I have no specific comps for this piece and am not fabricating any. Unbranded maple bedroom sets from this era are common in the secondary market; solid maple examples are decent quality but full matching bedroom sets (especially with a bed, which often doesn't fit modern queen/king mattresses without rail conversion) are notoriously hard to sell as a unit \u2014 buyers today generally want single statement pieces (a dresser or chest), not entire matched suites. 'Must pick up in Lancaster, KY' further narrows the buyer pool to local/regional only, which suppresses realizable price versus listing price. Absent photos, I can't verify dovetail joinery or confirm solid-wood construction, which caps confidence well below what a maker-marked, photographed piece would warrant. As-is, this realistically sells in the low hundreds locally (Facebook Marketplace/estate-sale range for unbranded maple suites), not near the $650 ask. Restoration would likely be light (cleaning, waxing, minor touch-up) if the 'near perfect' claim holds, but restored resale still struggles to clear $450-500 as a full set given weak demand for complete bedroom suites. The $650 ask appears optimistic relative to realistic as-is resale, making this a marginal buy for a reseller unless acquired well under asking.",
+    "style_era": "Mid-century American Colonial/Maple Modern, c. 1940s-1950s"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 65000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -917,25 +916,25 @@
   "1029637473146311": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Cannot assess \u2014 no photos provided and listing text gives no condition detail beyond 'cute.' No mention of fabric wear, frame stability, cushion support, odor, or structural issues, all of which are common problems on 50-60 year old sofas. Must be assumed unverified/likely worn until inspected in person.",
+    "condition_assessment": "Cannot be assessed \u2014 no photos provided. Listing gives only dimensions and a one-word subjective description ('cute'). Upholstery condition, frame soundness, stains, odors, sagging, and any structural repairs needed are all unknown, which is the single biggest risk factor for an upholstered piece.",
     "confidence": 0.2,
-    "deal_score": 25.0,
+    "deal_score": 28.0,
     "est_asis_value_cents": 20000,
-    "est_restoration_cost_cents": 130000,
-    "est_restoration_effort_hours": 18.0,
-    "est_restored_resale_value_cents": 55000,
-    "identified_item": "Unbranded two-piece low-slung Mid-Century Modern style sofa (no maker mark cited)",
+    "est_restoration_cost_cents": 200000,
+    "est_restoration_effort_hours": 20.0,
+    "est_restored_resale_value_cents": 90000,
+    "identified_item": "Unbranded 2-piece mid-century modern low-slung sofa/sectional, 104\" overall length",
     "maker_guess": null,
     "materials": [
-     "unknown \u2014 likely wood or plywood frame under upholstery",
-     "unknown upholstery fabric",
-     "foam or foam-over-spring cushions (typical for the era/style, unconfirmed)"
+     "upholstery fabric (type unknown)",
+     "wood frame (species/construction unverified)",
+     "foam/cushion fill (condition unknown)"
     ],
-    "reasoning": "No maker, designer, or manufacturer is identified in the listing, and no photos are available to verify construction (solid wood vs. veneer/particleboard frame), joinery, or upholstery condition \u2014 per instructions this caps confidence well under 0.35. Without a name to anchor to, I am valuing this as a generic unbranded MCM-style sofa rather than reasoning from 'pieces of this quality,' since no comparable realised sales for a specific maker can be cited. Large low-slung MCM sofas ('gondola'/'low-rider' style) can be desirable if the design and frame are good, but unbranded examples in unknown condition typically transact modestly at auction/resale \u2014 often in the $150-400 range as-is \u2014 because buyers heavily discount for unseen fabric wear and unverified frame integrity. Reupholstering a 104\" two-piece sofa is expensive (yardage plus labor commonly $1,000-1,800+) and only pays off if the underlying frame turns out to be well-built hardwood with tight joinery; that can't be confirmed here. As-is, flipping near or slightly below the $250 ask is plausible but not a clear win, and restoration economics look unfavorable unless in-person inspection reveals a genuinely well-built frame. No sold comps are reported because no maker/model could be identified to search against \u2014 fabricating comps would be worse than leaving this empty.",
-    "style_era": "Mid-Century Modern design language \u2014 could be an authentic 1960s-70s piece or a later reproduction/homage; era not verifiable from text alone"
+    "reasoning": "No maker, designer, or brand is identified \u2014 this is a generic 'MCM style' listing, not attributed work, so I'm valuing it purely as an unbranded decorative sofa rather than reasoning from any named maker's realized prices (per the no-fabrication rule, I have no specific comps to cite for an unattributed item, so comps is empty rather than invented). With zero photos, none of the usual appraisal signals \u2014 frame wood species, joinery, upholstery condition, fading, odors, structural integrity \u2014 can be verified, so confidence is capped low regardless of how the piece might look in hand. The $250 ask is already in line with what unverified, unbranded MCM sofas typically transact for as-is (roughly $150\u2013300 depending on true condition), so as-is value is set near but slightly below asking to account for condition risk. If the frame is sound and the silhouette is genuinely good MCM design, a professional reupholster could lift resale into the $700\u20131100 range for a piece this size, but reupholstering a 104\" two-piece sofa realistically runs $1,500\u20132,500+ in fabric and labor \u2014 that cost likely exceeds or erodes most of the restoration upside unless the piece can be sold as-is to a buyer who will reupholster themselves. Given the size of the potential loss if restoration is needed and the total absence of verifiable condition/maker information, this is a marginal, high-uncertainty flip rather than a clear buy.",
+    "style_era": "Mid-century modern (or MCM-style reproduction) \u2014 no date or maker marks given"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 25000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -1253,24 +1252,23 @@
   "1046498121061960": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Unknown/unverifiable \u2014 no photos provided, no condition notes given in listing beyond generic marketing copy. Must assume unverified age, joinery, and finish condition until inspected in person.",
+    "condition_assessment": "Cannot be assessed \u2014 no condition notes, wear description, or photos provided. Listing is generic shop boilerplate (hours, address, category description) with essentially zero item-specific detail.",
     "confidence": 0.2,
     "deal_score": 35.0,
     "est_asis_value_cents": 9000,
     "est_restoration_cost_cents": 15000,
-    "est_restoration_effort_hours": 8.0,
+    "est_restoration_effort_hours": 6.0,
     "est_restored_resale_value_cents": 22000,
-    "identified_item": "Mid-century modern style china cabinet / display cabinet, generic dealer listing with no maker attribution",
+    "identified_item": "Unbranded 'MCM'-style china/display cabinet, sold by a vintage/resale shop with no maker, wood species, dimensions, or photos given",
     "maker_guess": null,
     "materials": [
-     "Unknown \u2014 described only as 'modern design' with shelves; construction (solid wood vs. veneer vs. particleboard) cannot be determined from text",
-     "Possibly glass (china cabinet display doors)"
+     "Unknown \u2014 not specified in listing; could be solid wood, wood veneer over plywood/particleboard, or a mix"
     ],
-    "reasoning": "No maker, brand, or workshop is identified in the listing ('MCM China Cabinets' is a generic style label, not a name), so per the valuation rules I cannot anchor to realised results for a specific maker \u2014 comps are left empty rather than invented, and confidence is capped low (<=0.4 for unattributed maker, further reduced for lack of photos to verify construction/joinery/veneer vs. solid wood). Generic unbranded MCM-style china cabinets in unknown condition typically realise $75-200 as-is at auction/estate-sale channels, and $200-350 after refinishing and hardware/glass repair if genuinely solid wood with decent joinery \u2014 but this could equally be a particleboard/veneer piece worth much less, or a later reproduction rather than a period piece. The $123 asking price sits within plausible as-is range for a generic example, so this is not an obvious steal; treat as a marginal buy pending in-person inspection of joinery, veneer condition, and any maker marks/labels on drawer interiors or cabinet back.",
-    "style_era": "Mid-century modern (or MCM-styled reproduction), likely 1950s-1970s if genuine, but could be a later reproduction \u2014 cannot be confirmed from text alone"
+    "reasoning": "No maker or brand is named ('MCM China Cabinets' is a category label, not a maker), so per the valuation rules this must be priced as an unattributed look-alike with no comp basis \u2014 I'm not inventing a name to price against. The description contains zero item-specific facts: no wood species, no joinery detail, no dimensions, no condition notes, no maker mark mention, and no photos, so construction quality (solid wood vs. veneer/particleboard) cannot be judged either way. Generic unbranded MCM-styled china cabinets from resale shops are a common category, ranging from genuine solid-wood pieces worth $200-400 restored down to laminate/particleboard reproductions worth well under $100. Given the $123 ask is itself unverified as a realistic market price and there's no way to confirm quality, I'm valuing conservatively as-is, below the ask, with a restoration upside only if it turns out to be solid wood. Confidence is capped low per instructions since no photos exist to verify construction, and further reduced because there isn't even a maker to anchor value to. Recommend requesting photos and dimensions before bidding/buying.",
+    "style_era": "Marketed as Mid-Century Modern; could genuinely be 1950s-60s or a later reproduction styled to look MCM \u2014 cannot distinguish from text alone"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 12300,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -1591,73 +1589,29 @@
   },
   "1060103160033052": {
    "appraisal": {
-    "comps": [
-     {
-      "height_in": 38.0,
-      "is_sold": false,
-      "medium": "New retail, upholstered dining chair",
-      "price_cents": 59900,
-      "title": "Martha Stewart Winfield Upholstered Dining Chair, Set of 2 (new, retail)",
-      "url": "https://www.bedbathandbeyond.com/Home-Garden/Martha-Stewart-Winfield-Light-Blue-Dining-Chair-Set-of-2/31224065/product.html",
-      "venue": "Bed Bath & Beyond",
-      "width_in": 23.0,
-      "year_sold": 2026
-     },
-     {
-      "height_in": 38.0,
-      "is_sold": false,
-      "medium": "New retail, upholstered dining chair",
-      "price_cents": 33033,
-      "title": "Martha Stewart Winfield Dining Chair, Set of 2 (new, sale price)",
-      "url": "https://www.bedbathandbeyond.com/c/dining-furniture/dining-chairs?t=24422&brand=martha+stewart",
-      "venue": "Bed Bath & Beyond",
-      "width_in": 23.0,
-      "year_sold": 2026
-     },
-     {
-      "height_in": 38.0,
-      "is_sold": false,
-      "medium": "New retail, upholstered dining chair",
-      "price_cents": 105749,
-      "title": "Martha Stewart Winfield Upholstered High Back Accent Dining Chair, Set of 2, Ivory (new, retail)",
-      "url": "https://www.michaels.com/product/martha-stewart-winfield-upholstered-high-back-accent-dining-chair-ivory-218711701058879494",
-      "venue": "Michaels",
-      "width_in": 23.0,
-      "year_sold": 2026
-     },
-     {
-      "height_in": 38.0,
-      "is_sold": false,
-      "medium": "New-in-box, secondhand marketplace listing",
-      "price_cents": 113400,
-      "title": "Martha Stewart Winfield Dining Chair, Set of 6, new-in-box (37% off est. retail, resale ask)",
-      "url": "https://www.aptdeco.com/product/martha-stewart-dining-chairs",
-      "venue": "AptDeco",
-      "width_in": 23.0,
-      "year_sold": 2026
-     }
-    ],
-    "condition_assessment": "No photos to verify. Seller claims 'practically brand new,' used only for staging rather than daily dining use, which if true would mean minimal wear \u2014 but chenille upholstery shows soiling, pet/pile crushing, and fading readily and none of that can be confirmed from text. No mention of stains, pet exposure, or smoke, but absence of disclosure is not evidence of absence. This is soft-goods furniture (plywood frame, foam, fabric) \u2014 there is no case-furniture joinery (no dovetails/M&T) to inspect, and 'restoration' here means cleaning/inspection, not woodworking repair.",
-    "confidence": 0.3,
-    "deal_score": 24.0,
-    "est_asis_value_cents": 55000,
-    "est_restoration_cost_cents": 15000,
-    "est_restoration_effort_hours": 2.5,
-    "est_restored_resale_value_cents": 85000,
-    "identified_item": "Set of 6 Martha Stewart Collection \"Winfield\" upholstered dining chairs, farmhouse style",
-    "maker_guess": "Martha Stewart Collection, Winfield line (licensed mass-market brand, manufactured by a contract furniture maker, not a named studio/workshop)",
+    "comps": [],
+    "condition_assessment": "Described as 'practically brand new,' used only for staging (light, short-term use, likely no meals/pets/kids wear). No photos to verify fabric soiling, frame integrity, or leg finish wear; distressed-finish legs make minor scuffing hard to detect even visually. Assume light cosmetic wear only, but unverified.",
+    "confidence": 0.25,
+    "deal_score": 28.0,
+    "est_asis_value_cents": 45000,
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 65000,
+    "identified_item": "Set of 6 'Martha Stewart Winfield' upholstered armless dining chairs (farmhouse-style), used for home staging",
+    "maker_guess": "Martha Stewart-licensed furniture line (contract-manufactured for a big-box/online retailer, e.g. Wayfair/Academy-tier; not a studio maker or historic manufacturer)",
     "materials": [
-     "solid wood legs (dimensional softwood/rubberwood with a cosmetic 'distressed'/reclaimed-look finish, not aged patina)",
-     "plywood chair frame",
-     "elastic webbing seat support",
-     "high-density foam padding",
-     "chenille upholstery fabric"
+     "Plywood frame (not solid hardwood carcass)",
+     "Solid wood legs with distressed painted/stained finish",
+     "Elastic webbing seat support",
+     "High-density foam padding",
+     "Chenille upholstery fabric",
+     "Piping/welt trim detail"
     ],
-    "reasoning": "This is not an antique or handmade piece \u2014 it's an identifiable, currently-manufactured mass-market product (Martha Stewart Winfield), so the right comp set is retail/resale pricing for that exact line, not 'quality of a MCM chair.' New retail for this chair runs roughly $330-$600/pair at various retailers (sale to regular price), with some listings as high as ~$1,057/pair \u2014 consistent with the seller's claimed $1,900 retail for a 6-piece set at the upper end, though that figure is itself a marketing/MSRP number, not a transaction. I could not find any realized (sold) prices for used sets of this chair on eBay, Facebook Marketplace, or resale sites \u2014 only current retailer asks and one brand-new-in-box resale ask (~$1,134 for a set of 6 at 37% off estimated retail on AptDeco). That absence matters: there's no evidence secondhand buyers pay anywhere near retail for used upholstered dining sets of this caliber. Used upholstered dining chair sets typically move at a steep discount to retail (roughly 30-40%) because fabric condition is the main value driver and buyers are wary of stains/odor/wear they can't inspect remotely, and chenille specifically shows wear. Given the asking price is $900 for a used set with unverifiable condition claims, and my as-is estimate (~$550) sits meaningfully below that ask, this is a marginal buy at best \u2014 the reseller would need the 'practically new' claim to be fully accurate and would still be paying close to what a cleaned, well-photographed relist could realistically fetch (~$800-900), leaving thin margin after any cleaning cost and marketplace fees. No maker's marks, dovetails, or mortise-and-tenon joinery are relevant here since this is a plywood-framed upholstered chair, not case furniture \u2014 restoration is limited to professional upholstery cleaning, not structural work. Confidence capped low both because no photos exist to verify condition and because no genuine sold comps for the used piece could be found, only asks.",
-    "style_era": "Contemporary mass-market production (current line, sold via Macy's/Wayfair/BBB/Walmart/Michaels/JCPenney); the listing's \"Mid Century\" title is a mismatch with the description's own \"farmhouse-inspired\" language and is not an accurate style claim \u2014 likely added for search visibility, not because the chair is period MCM"
+    "reasoning": "This is not an antique or collectible piece \u2014 it's a licensed mass-market brand (Martha Stewart) with plywood-frame, webbing-and-foam upholstered construction, explicitly stated in the listing itself. There is no meaningful joinery (no dovetails/mortise-and-tenon relevant to an upholstered chair frame), no maker mark of resale significance beyond a recognizable but mid-tier retail brand name, and the 'mid century' title is marketing language, not an accurate style descriptor. Per rule 1, I have no recollection of specific realized auction/resold comps for 'Martha Stewart Winfield' chairs specifically, so comps are left empty rather than invented (rule 5) \u2014 this alone caps confidence well below 0.4. Valuation instead rests on generic secondhand-furniture-market reasoning: mass-market upholstered dining sets typically resell used for 25-40% of original retail, even in excellent condition, because buyers discount for fabric-condition risk, bulk/moving difficulty, and lack of brand cachet at resale (versus original retail sales where marketing and financing support full price). Against the stated $1900 retail, a realistic as-is resale for a full 6-chair set lands roughly $400-550, well under the $900 ask. Restoration needs are minimal (cleaning/spot-treatment only; the plywood/foam construction is not economical to reupholster or rebuild for this price tier), so there is little value-add restoration can provide. Because the $900 ask is close to or above the realistic resold value even after minor cleanup, this is a marginal-to-poor flip candidate; a reseller would likely need to negotiate down substantially (target $400-500) to have workable margin. Given the framework's bias toward the lower, more defensible figure, I'm scoring the deal accordingly low.",
+    "style_era": "Contemporary mass-market 'farmhouse'/modern-traditional decor, current production (not mid-century, despite listing title)"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 90000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -1988,24 +1942,23 @@
   "1136587782123091": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Used, generally good condition per seller; one leg missing a leveling screw causing a slight wobble, more noticeable on hardwood floors. No structural damage reported, no mention of joinery, veneer condition, drawer function, or finish wear. No maker mark or brand cited.",
+    "condition_assessment": "Described as good used condition; one leg missing a leveling screw causing a slight wobble, more noticeable on hard flooring. No mention of finish damage, water rings, veneer lifting, drawer function, or structural cracks. No maker's mark, label, or joinery details (dovetails, mortise-and-tenon) mentioned, so construction quality cannot be confirmed from text alone.",
     "confidence": 0.25,
-    "deal_score": 45.0,
-    "est_asis_value_cents": 3500,
-    "est_restoration_cost_cents": 500,
+    "deal_score": 55.0,
+    "est_asis_value_cents": 4000,
+    "est_restoration_cost_cents": 800,
     "est_restoration_effort_hours": 0.5,
-    "est_restored_resale_value_cents": 8000,
-    "identified_item": "Unbranded mid-century modern style nightstand, cherry wood construction claimed by seller",
+    "est_restored_resale_value_cents": 7500,
+    "identified_item": "Unbranded mid-century modern style nightstand, single-drawer/cabinet form implied, angled tapered legs",
     "maker_guess": null,
     "materials": [
-     "cherry wood (seller-claimed, unverified)",
-     "possibly solid wood legs, case material unconfirmed"
+     "cherry wood (claimed, unverified \u2014 could be solid cherry, cherry veneer over secondary wood, or cherry-stained hardwood)"
     ],
-    "reasoning": "No maker or manufacturer is identified, so there is no specific auction/eBay comp set to anchor this to (per instruction 5, returning an empty comps list is the honest answer here rather than inventing sales). Without photos, I cannot verify whether this is solid cherry with real joinery or a veneer/particleboard piece merely styled as 'mid-century modern' \u2014 a very common misrepresentation in casual listings. Unbranded MCM-style nightstands in this condition typically transact in the $40-90 range on secondhand marketplaces regardless of claimed wood species, since buyers heavily discount for unverifiable construction and no attribution. The described flaw (missing leveling screw/glide) is a trivial, cheap fix (~$5 hardware, under 30 minutes), so restoration cost is minimal. I'm valuing as-is slightly below the $45 ask to reflect the wobble and lack of verification, and restored value modestly above ask reflecting a functional, presentable unbranded MCM piece \u2014 not a designer find. Confidence is capped low both per instructions (no photos) and because there's no name to check against realized results; genuine vs. reproduction status is assumed unknown/unverified.",
-    "style_era": "Mid-century modern (or modern reproduction in MCM style), design cues suggest 1950s-60s or later homage"
+    "reasoning": "No maker or manufacturer is identified \u2014 this reads as a generic MCM-style nightstand, not a named-maker piece (e.g. Lane, Drexel, Heywood-Wakefield, Broyhill), so there is no specific auction market to anchor to; I'm valuing it as an unbranded look-alike, not a documented design. Without photos I cannot verify solid wood vs. veneer, joinery, or true condition, so confidence is capped low per instructions. The described flaw (missing leveling screw/glide) is trivial and cheap to fix \u2014 a replacement glide or felt/furniture pad runs a few dollars and minutes of labor, not a real restoration project. Unbranded solid-wood MCM nightstands in decent cosmetic condition typically move in the $50-100 range on local marketplaces once cleaned up and correctly staged/photographed; without a maker name attached, buyers won't pay premium MCM-collector prices. As-is, at the $45 ask, this is a thin-margin flip: fine if picked up for free/very cheap or bundled with other pieces, but not a standout find. I did not fabricate comps since I have no verified realized sales data for this specific unidentified piece \u2014 an empty comps list is the honest reflection of that.",
+    "style_era": "Mid-century modern (either period, c. 1955-1970, or a later reproduction in that style)"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 4500,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -2140,23 +2093,21 @@
   "1242601887872389": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Cannot be assessed \u2014 no condition information given and no photos provided. Listing is boilerplate shop advertisement, not an item description.",
-    "confidence": 0.1,
-    "deal_score": 15.0,
+    "condition_assessment": "Cannot be assessed \u2014 no item, no condition notes, no photos provided",
+    "confidence": 0.05,
+    "deal_score": 5.0,
     "est_asis_value_cents": 4000,
-    "est_restoration_cost_cents": 3000,
-    "est_restoration_effort_hours": 3.0,
-    "est_restored_resale_value_cents": 8000,
-    "identified_item": "Unidentified furniture piece \u2014 the listing text is entirely promotional copy for the seller's Lexington, KY storefront ('MCM Store Gonzo Vibtage') and never actually describes the item for sale: no wood species, joinery, maker, dimensions, or even object type (dresser? credenza? chair?) is given",
+    "est_restoration_cost_cents": 0,
+    "est_restoration_effort_hours": 0.0,
+    "est_restored_resale_value_cents": 4000,
+    "identified_item": "Unidentified \u2014 listing text is a generic store promotional post (MCM Store, Lexington KY) with no specific item described, no dimensions, no materials, and no photos; it only lists categories the shop generally carries (rugs, dressers, credenzas, sideboards, shelving, accent tables, lounge chairs, dining)",
     "maker_guess": null,
-    "materials": [
-     "Unknown \u2014 no material description provided"
-    ],
-    "reasoning": "This listing fails to describe the actual item being sold \u2014 the body text is generic promotional copy for the seller's downtown Lexington shop (location, cross streets, categories they carry) rather than a description of construction, materials, joinery, maker marks, or condition of any specific piece. There is no identifiable maker or name to research comps against, so per the valuation rules I'm returning an empty comps list rather than fabricating sales data. With no photos and no textual detail on the object itself (not even confirmed object type), I cannot judge solid wood vs. veneer vs. particleboard, joinery quality, or era beyond the unverified 'MCM' shop branding. Absent any real information, I'm treating this as a generic, unverified secondhand furniture lot: the $123 ask is a plausible but unsubstantiated price for an average thrift/consignment piece, so I'm valuing it conservatively as-is (near typical low-end secondhand furniture) rather than assuming any designer or mid-century collectible premium. Confidence is capped well below the 0.35 ceiling given the near-total absence of item-specific information \u2014 this is closer to unappraisable than merely unverified. Recommend the reseller request photos and actual item details (dimensions, wood, drawer joinery, any labels/stamps) before bidding.",
-    "style_era": "Claimed 'mid century modern' by shop branding only \u2014 unverifiable from text"
+    "materials": [],
+    "reasoning": "This listing does not describe an actual furniture piece \u2014 the title/description is generic shop marketing copy inviting visitors to a downtown Lexington storefront, listing broad categories of goods carried (rugs, dressers, bedroom suites, credenzas, sideboards, shelving, accent tables, lounge chairs, dining options) rather than any single item for sale. There is no maker mark, no material, no joinery detail, no dimension, and no photo to evaluate. Per the valuation rules, I cannot name a market for an unnamed/unidentified item, so no comps can be honestly reported (an empty list here reflects reality, not a search failure). The $123 asking price cannot be validated against any specific object. I've placed a nominal, deliberately conservative placeholder value reflecting total uncertainty rather than any real appraisal \u2014 this should be treated as 'insufficient information to appraise' rather than a genuine valuation. Recommend requesting an actual item description and photos before any buy decision.",
+    "style_era": "Unknown \u2014 'MCM' (mid-century modern) is claimed as a shop category, not tied to this specific piece"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 12300,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -4054,27 +4005,27 @@
   "1439187397973749": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Cannot verify from text alone \u2014 no photos, and listing does not explicitly state the electronics have been tested/serviced or that the turntable is currently functional. Units of this age and type almost always need capacitor/electronics servicing, belt/idler replacement, and cabinet veneer touch-up regardless of claimed condition. No mention of maker's mark, joinery, or wood species beyond generic 'dark wood finish,' consistent with a factory veneer cabinet rather than fine solid-wood furniture.",
-    "confidence": 0.25,
-    "deal_score": 10.0,
-    "est_asis_value_cents": 40000,
-    "est_restoration_cost_cents": 40000,
-    "est_restoration_effort_hours": 18.0,
-    "est_restored_resale_value_cents": 85000,
-    "identified_item": "German mid-century 'Musiktruhe'-style stereo console/bar cabinet with Blaupunkt Arkansas radio/turntable chassis, sliding glass display door, tapered brass-capped legs",
-    "maker_guess": "Blaupunkt (electronics only \u2014 cabinet maker/furniture manufacturer not identified; these consoles were typically built by separate German cabinet shops and fitted with Blaupunkt chassis)",
+    "condition_assessment": "Unknown from text alone \u2014 no photos, no statement of whether the radio/turntable actually power on or play, no mention of veneer chips, water rings, cracked glass, or speaker cone condition. Listing emphasizes cosmetics (\"beautiful,\" \"amazing\") and inflates value with an asterisked, unsourced $4,000 figure and a separately priced $1,500 speaker add-on \u2014 both are seller marketing, not appraised or realized values.",
+    "confidence": 0.2,
+    "deal_score": 15.0,
+    "est_asis_value_cents": 45000,
+    "est_restoration_cost_cents": 45000,
+    "est_restoration_effort_hours": 12.0,
+    "est_restored_resale_value_cents": 90000,
+    "identified_item": "Mid-century German stereo/bar console with integrated Blaupunkt \"Arkansas\" radio-phonograph, sliding glass display door, tapered legs with brass caps",
+    "maker_guess": "Blaupunkt (electronics only) housed in an unbranded German cabinet-maker's case; no furniture maker/designer name given",
     "materials": [
-     "Wood veneer over composite/particleboard case (standard for mass-produced German console units of this era)",
-     "Solid wood likely only for legs/trim",
-     "Glass sliding door",
-     "Brass-plated metal leg caps and hardware",
-     "Blaupunkt tube/early-solid-state radio-phono chassis"
+     "wood veneer over particleboard or plywood case (typical of this mass-market category)",
+     "solid wood tapered legs (likely)",
+     "brass leg caps",
+     "glass sliding door",
+     "tube or early transistor radio/phono chassis"
     ],
-    "reasoning": "These German radio-phono console cabinets (often called 'Musiktruhe' or 'Schrankschrank') combining a Blaupunkt/Grundig/Telefunken/SABA chassis with a wood cabinet were mass-produced through the 1960s-70s and are not genuinely rare \u2014 'very rare find' in the title is unsubstantiated marketing language, as is the bare, asterisked 'Value $4,000**' claim with no sourcing. Construction is almost certainly veneer over particleboard/composite case rather than solid wood with fine joinery (no dovetails, mortise-and-tenon, or maker's cabinetry mark mentioned); Blaupunkt made the electronics, not necessarily the furniture. Absent photos and any statement that the radio/turntable have been tested and work, I have to assume the electronics need servicing (recapping, belt, stylus, possible tube/transistor issues), which is typical for units this age. I do not have reliable memory of specific realized (sold) auction or eBay prices for 'Blaupunkt Arkansas' console units specifically, so I am not fabricating comps \u2014 I'm instead relying on the general realized-price band for comparable German mid-century stereo/bar console cabinets in unverified condition, which tends to run roughly $200-$700 as-is and $600-$1,200 once cosmetically refinished and electronically serviced, mostly bought as decor/bar furniture rather than for functioning hi-fi use. The claimed $1,500 add-on value for 'rare side speakers' is very likely inflated. At an asking price of $2,250, this listing appears priced at 3-5x realistic resale value even after restoration, making it a poor acquisition at ask. Confidence is capped low both per instructions (no photos) and because I cannot verify the maker/rarity claims or produce trustworthy comps for this specific model.",
-    "style_era": "Mid-century modern, West Germany, c. 1960s (consistent with claimed 1967)"
+    "reasoning": "Blaupunkt is a well-known German electronics brand, but 'Arkansas' names a radio/phonograph chassis, not a furniture maker \u2014 the cabinet itself is unattributed, mass-produced German stereo/bar console furniture, a very common category on the secondhand market (Saba, Nordmende, Loewe, and unbranded German cabinetmakers produced near-identical pieces by the thousands). These regularly change hands for a few hundred dollars as-is and $600-1200 restored/converted into bars with working lights and Bluetooth-retrofitted audio, with true outliers (rare cabinet designs, working original hi-fi in excellent cosmetic condition, documented designer) reaching higher. I have no specific recalled realized auction/eBay-sold comps for 'Blaupunkt Arkansas console' to cite, so comps below are omitted rather than fabricated \u2014 per the instructions, an empty comp list is the honest answer here. The listing's '$4,000**' figure has an asterisk/disclaimer and no sourcing, which is a hallmark of inflated asking-price marketing rather than an appraisal; the $1,500 'add-on' speaker valuation is similarly unverifiable and inconsistent with typical prices for period-correct German speaker cabinets. Given no photos to confirm veneer vs. solid wood, joinery, electronics function, or actual condition, I'm capping confidence at 0.2 (below the 0.35 ceiling) because the maker/value chain here is doubly unverifiable \u2014 no furniture maker name AND no visual confirmation. At $2,250 asking against a realistic as-is value in the $300-700 range for an unverified, likely non-functioning example, this is a poor deal unless the buyer can inspect in person and confirm working electronics and excellent veneer condition.",
+    "style_era": "Mid-century modern, West Germany, c. 1960s (Blaupunkt Arkansas models date roughly 1958-1963; exact chassis/decade needs verification from photos)"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 225000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -4485,24 +4436,25 @@
   "1509361367043353": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Seller claims the highboy dresser is \"newly restored\"; no photos to verify finish quality, veneer condition, drawer function, or joinery. United Furniture Corp was a mid-tier mass producer \u2014 expect factory construction typical of the era (case sides in walnut veneer over plywood or particleboard, solid wood drawer fronts/legs, stapled or dowel-joined drawer boxes rather than hand-cut dovetails). No maker plate/label details given beyond brand name, and condition of hardware, veneer chips, and structural soundness cannot be confirmed from text alone.",
-    "confidence": 0.28,
-    "deal_score": 18.0,
+    "condition_assessment": "Described by seller as 'newly restored' (dresser explicitly, nightstands implied); no photos to confirm veneer condition, drawer function, joinery integrity, or finish quality. Text alone cannot verify construction claims.",
+    "confidence": 0.3,
+    "deal_score": 22.0,
     "est_asis_value_cents": 90000,
-    "est_restoration_cost_cents": 25000,
-    "est_restoration_effort_hours": 8.0,
-    "est_restored_resale_value_cents": 145000,
-    "identified_item": "MCM bedroom set (dresser/highboy + nightstands), \"Discovery\" line by United Furniture Corporation",
-    "maker_guess": "United Furniture Corporation (mass-market North Carolina manufacturer, not a premium/designer MCM name)",
+    "est_restoration_cost_cents": 5000,
+    "est_restoration_effort_hours": 1.0,
+    "est_restored_resale_value_cents": 130000,
+    "identified_item": "Three-piece MCM bedroom set (tall highboy dresser + pair of nightstands), \"Discovery\" line by United Furniture Corp.",
+    "maker_guess": "United Furniture Corporation (mass-market manufacturer, not a premium MCM label like Lane, Drexel, Dixon, or Kroehler)",
     "materials": [
-     "walnut (likely veneer over composite/particleboard case sides, possibly solid wood frame/legs)",
-     "sculpted/recessed wood pulls"
+     "walnut veneer over composite/plywood case panels",
+     "solid walnut (legs, sculpted/recessed pulls, and frame members)",
+     "likely particleboard or plywood secondary structure typical of the era's mass production"
     ],
-    "reasoning": "United Furniture Corporation is a recognizable mid-century mass manufacturer but not a collectible-tier name like Lane/Brasilia, Drexel Declaration, Kagan, or Nakashima \u2014 I have no recall of specific realized auction or eBay-sold results for the 'Discovery' line specifically, so I'm not fabricating comps and am capping confidence accordingly. Mass-market MCM dresser+nightstand sets in this bracket typically realize $600-$1,200 as-is and $1,200-$1,800 fully restored through curated vintage dealers, well below the seller's $2,450 combined ask ($1,450 dresser + $1,250 for what appears to be the nightstand pair, actually totaling more than $2,450, suggesting a bundled discount). Absent photo verification of the 'newly restored' claim, joinery, and veneer condition, I'm valuing conservatively and assuming standard mass-production construction (veneer case panels, not the solid-wood/dovetailed construction of premium studio pieces). The asking price appears aggressive relative to likely realized resale for this maker tier, making this a marginal buy unless it can be acquired well under ask.",
-    "style_era": "Mid-Century Modern, c. 1960s"
+    "reasoning": "United Furniture Corp was a mid-tier mass manufacturer producing MCM lines to compete with better-documented names like Lane, Drexel, Dixon, and Broyhill Premier \u2014 those labels command real auction/eBay-sold premiums; I have no recollection of specific realized sale results for the 'Discovery' line specifically, so per instruction I'm not inventing comps and am capping confidence at 0.3. This is a recognizable MCM aesthetic (tapered legs, sculpted pulls) that sells, but as an unlisted/lesser maker it trades in the range of generic quality walnut-veneer MCM case goods rather than premium designer lines. Realized prices (eBay sold, live estate auctions, Facebook Marketplace) for comparable un-branded or lesser-branded three-piece MCM walnut bedroom sets typically land $600\u2013$1,400 depending on region and condition, well below boutique asking prices. The listing's own math is inconsistent \u2014 dresser at $1,450 plus nightstands at $1,250 sums to $2,700, not the stated $2,450 asking price \u2014 suggesting either a bundle discount or an error; either way the ask is a retail boutique price, not a transaction comp. Since the piece is already claimed 'newly restored,' the as-is and restored values are close; I've assumed only minor touch-up (hardware tightening, finish spot-repair) might be needed given no photos to verify the restoration claim. At $2,450 against a realistic realized-value range of roughly $900\u2013$1,300, this is not a strong flip unless the reseller has a retail showroom (like the seller itself) able to actually realize boutique asking prices \u2014 as a wholesale/auction-comp-based buy it is overpriced.",
+    "style_era": "Mid-Century Modern, 1960s"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 245000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -5207,26 +5159,25 @@
   "1550814156528940": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Unknown from text; no condition details given beyond the description. Common issues for this type: rust or paint chips on the metal frame, chips/delamination on the laminate panels, loose or cracked wood feet, and a loose or missing handle. No maker mark or brand mentioned, and no dimensions given.",
+    "condition_assessment": "Unknown from text alone \u2014 no condition detail given beyond implied 'vintage' status. Typical issues for this type of piece: rust or paint wear on the metal frame, chipped or delaminating laminate corners on the panels, loose or wobbly leg joints, and a worn or cracked wooden handle. No maker's mark or brand mentioned, so this reads as an unattributed decorative accessory piece rather than a collectible design object.",
     "confidence": 0.25,
-    "deal_score": 35.0,
+    "deal_score": 40.0,
     "est_asis_value_cents": 1500,
-    "est_restoration_cost_cents": 1000,
-    "est_restoration_effort_hours": 1.0,
+    "est_restoration_cost_cents": 1500,
+    "est_restoration_effort_hours": 1.5,
     "est_restored_resale_value_cents": 4000,
-    "identified_item": "Mid-century modern magazine rack with black metal frame, faux marble (likely laminate/melamine or painted metal, not real stone) side panels, wood handle and wood ball feet",
+    "identified_item": "Mid-century modern magazine rack with black metal frame, faux-marble (laminate/melamine) pink side panels, wooden handle and wooden ball feet",
     "maker_guess": null,
     "materials": [
-     "Black-painted or powder-coated metal frame",
-     "Marble-pattern side panels (almost certainly laminate/formica or printed masonite, not solid marble)",
-     "Turned wood handle",
-     "Wood ball feet"
+     "Painted/black-finished metal (likely steel rod or tube)",
+     "Laminate or melamine panels with pink marble pattern (not genuine marble)",
+     "Solid wood handle and ball feet"
     ],
-    "reasoning": "No maker or brand is identified, and the 'pink marble' panels are almost certainly a faux-marble laminate or painted decorative surface rather than real stone or a notable design attribution \u2014 this is a generic decorative accent piece, not a collectible by a named designer. I have no specific realised auction/eBay-sold data for this exact item to cite, so comps are omitted rather than invented; confidence is capped low per instructions since neither construction nor condition can be verified from text alone. Generic mid-century metal-frame magazine racks with laminate or marbleized panels typically sell in the $25-60 range on eBay/Etsy when in clean condition, with unrestored/as-is examples often moving at $10-25 given how common and low-margin this category is. At a $20 ask, there is little room for profit after any real restoration effort (rust removal, panel repair, refinishing feet) \u2014 this is a low-risk, low-reward flip at best, worth buying only if condition is already good and a quick resale is likely.",
-    "style_era": "Mid-century modern, likely 1960s-1970s (though this exact style of metal-frame magazine rack with laminate panels was also reproduced later, so era is not certain from description alone)"
+    "reasoning": "No maker or brand is identified, so there is no specific name whose auction record I can point to \u2014 I'm valuing this as a generic unattributed mid-century decorative magazine rack, which is the honest default per the no-maker rule. 'Pink marble-patterned' almost certainly means laminate/melamine printed to resemble marble, not real stone, which is standard for this era's mass-market metal-and-laminate occasional pieces (rather than a joinery-driven wood object \u2014 there are no dovetails or mortise-and-tenon here since the frame is metal). Items like this routinely sell on eBay and at estate sales in the $15-40 range as-is, with clean, unblemished examples (especially with a stronger pink hue that reads well in photos) reaching $40-60. Without photos I cannot verify frame rust, panel delamination, or joint looseness, so I'm not assuming heavy damage but also not assuming pristine condition \u2014 value is set conservatively. At a $20 ask, this is a marginal flip: modest upside if condition is genuinely good and it photographs well, but not a piece with name recognition or scarcity to justify paying up. I have no specific realised comps for this exact item to cite, so comps is left empty rather than inventing sales.",
+    "style_era": "Mid-century modern, likely 1960s-1970s"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 2000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -6938,23 +6889,23 @@
   "1723344768790855": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Cannot be assessed from text alone \u2014 no photos, no mention of finish condition, hardware completeness, drawer function, veneer lifting, water rings, or structural issues. Description is generic marketing copy (\"brown furniture,\" \"well-made unit\") typical of low-effort resale listings, which itself is a mild red flag for unverified claims",
-    "confidence": 0.2,
-    "deal_score": 32.0,
+    "condition_assessment": "Cannot be assessed from text alone \u2014 no mention of veneer lifting, drawer function, sliding door track wear, finish condition, or structural issues. Described only as functional (\"well-made unit that functions as...\"), which is seller marketing language, not a condition report.",
+    "confidence": 0.3,
+    "deal_score": 22.0,
     "est_asis_value_cents": 18000,
-    "est_restoration_cost_cents": 12000,
-    "est_restoration_effort_hours": 6.0,
-    "est_restored_resale_value_cents": 38000,
-    "identified_item": "Unbranded mid-century modern-style sideboard/credenza with center sliding-door compartment flanked by two drawer cabinets",
+    "est_restoration_cost_cents": 15000,
+    "est_restoration_effort_hours": 8.0,
+    "est_restored_resale_value_cents": 40000,
+    "identified_item": "Unmarked mid-century modern style sideboard/credenza with central sliding-door compartment and two flanking drawer cabinets",
     "maker_guess": null,
     "materials": [
-     "Unverified \u2014 seller claims \"solid wood\"; no species, joinery, or construction details given; commonly this configuration is wood veneer over particleboard/plywood case with solid wood trim/legs"
+     "Unverified \u2014 listing claims \"solid wood\" but gives no species (no teak/walnut/rosewood named), no mention of joinery (dovetails, mortise-and-tenon) or maker mark; \"brown furniture\" phrasing and lack of detail are typical of a thin/generic listing and are also consistent with veneered particleboard case construction common in mass-market MCM-style furniture"
     ],
-    "reasoning": "No maker, designer, or manufacturer is identified \u2014 this is a generic-category listing, not a named-maker piece, so there is no auction record to anchor a value to (per rule 1, confidence capped well below 0.4). No photos means construction (solid wood vs. veneer-over-particleboard), joinery, and condition are all unverifiable; the seller's 'solid wood' and 'authentic vintage' claims are unsupported marketing language, not evidence. Web search for realised (sold) prices on comparable unbranded MCM sliding-door credenzas returned only current asking listings (eBay actives $650+, 1stDibs dealer asks $1,800-2,400 for named/Danish-teak pieces) \u2014 none of these are valid comps for this unbranded piece since 1stDibs prices reflect vetted, attributed, high-quality teak/rosewood pieces by known makers, an entirely different tier. No genuine 'sold' transaction data for an unbranded equivalent could be found, so comps is left empty rather than fabricated, per rule 5. Falling back to general market judgment: decent-condition unbranded MCM credenzas of this configuration typically move in the $150-300 range as-is in private-party/estate-sale transactions (well below dealer asks), with clean, fully-restored examples reaching $350-450 if construction proves to be genuine solid wood with sound joinery. At $360 asking, the seller is pricing near the top of the realistic restored range for an unverified, unbranded piece \u2014 a mediocre buy unless it can be inspected in person first to confirm solid wood construction and condition. Restoration would likely be moderate: cleaning/waxing, hardware check, drawer glide service, and touch-up refinishing \u2014 bumped up from minimal in case veneer repair or refinishing the top is needed.",
-    "style_era": "Mid-century modern (or MCM-style reproduction), likely 1960s-70s if genuine, but could be a later revival/import piece"
+    "reasoning": "No maker, designer, or manufacturer is identified \u2014 there is no name to value against, so this must be priced as a generic/unattributed MCM-style case piece rather than reasoned from 'quality' language in the listing. I searched for realized (sold) comps for unmarked mid-century sliding-door credenzas and found none I can verify as actual transactions; results returned were current asking listings on 1stDibs, Etsy, AptDeco, and dealer sites, which are asks, not sales, so per instructions I'm reporting zero comps rather than fabricating sale records or treating asks as realized prices. Generic, unmarked MCM sideboards without visible joinery/wood-species detail typically move in the $150\u2013350 range at estate sales, on Facebook Marketplace, and in eBay local-pickup listings (shipping large casegoods is expensive and suppresses national eBay sold prices); well-documented, maker-attributed pieces (Dyrlund, Lane, Broyhill Brasilia, Drexel) sell for multiples of that, but nothing here supports that tier. The description's vagueness ('brown furniture,' no species, no joinery detail) is itself a mild red flag that this may be a later reproduction or veneer-over-particleboard piece rather than the solid-wood period piece claimed \u2014 construction cannot be verified without photos, so confidence is capped low. At the $360 ask, the piece is priced above my as-is estimate, and even a full refinish/hardware-service restoration only plausibly reaches $350\u2013450 resale, leaving little to no margin after purchase and restoration costs \u2014 this reads as an ordinary decorative-furniture lot, not a find.",
+    "style_era": "Mid-century modern (design language associated with 1950s\u20131970s, but no maker mark or wood species given, so this could be an unmarked period piece or a later reproduction/generic import in the same style)"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 36000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -11219,23 +11170,23 @@
   "912861147865609": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Seller states no major nicks or scratches, but both side doors do not open \u2014 only the middle door functions. This points to warped panels, swollen/delaminated veneer, misaligned or broken hinges, or case racking, any of which is common in this vintage. Listing is 'hutch top' only, meaning it is the upper display/bookcase section separated from a matching base \u2014 this alone caps resale value versus a complete two-piece hutch, since it requires a buyer wanting a stand-alone bookcase or one who can pair it with a compatible base.",
+    "condition_assessment": "Seller states no major nicks or scratches, but two of the three doors (both side doors) do not open \u2014 a functional defect suggesting warped doors, swollen frame, or failed/misaligned hinges and catches. This is a 'hutch top' only (the upper display/bookcase portion of a larger china cabinet), sold without a base, which limits usability and buyer pool. No maker's mark, label, or brand is mentioned, and no photos are available to verify joinery, solid-wood vs. veneer construction, or interior condition/shelving.",
     "confidence": 0.25,
-    "deal_score": 28.0,
+    "deal_score": 30.0,
     "est_asis_value_cents": 15000,
     "est_restoration_cost_cents": 10000,
-    "est_restoration_effort_hours": 4.0,
-    "est_restored_resale_value_cents": 27500,
-    "identified_item": "Unbranded mid-century modern hutch-top china cabinet/bookcase (upper section only, no base/buffet)",
+    "est_restoration_effort_hours": 2.0,
+    "est_restored_resale_value_cents": 25000,
+    "identified_item": "Unbranded mid-century modern 'hutch top' china cabinet/bookcase (upper cabinet section only, three-door glass/wood front)",
     "maker_guess": null,
     "materials": [
-     "Unverified from text/no photos \u2014 likely wood veneer over composite or secondary wood, typical of mass-produced MCM case goods; could be solid wood but cannot confirm"
+     "Unverified \u2014 likely wood veneer over composite or solid wood frame; cannot confirm from text alone"
     ],
-    "reasoning": "No maker, label, or joinery details are given, and there are no photos, so construction (solid wood vs. veneer vs. particleboard) and joinery quality cannot be verified \u2014 per instructions confidence is capped well below 0.35. This is an unbranded, generic MCM piece: without an identifiable name/workshop, I'm valuing it as generic mass-market MCM case furniture rather than reasoning from 'pieces of this quality,' which the instructions flag as unreliable. Web search for realised comps turned up only active asking listings (eBay/1stDibs), not confirmed sold transactions matching this exact configuration (hutch-top only, no base), so I'm not treating those as reliable value anchors \u2014 full two-piece MCM hutch/buffet sets from named makers ask $800-$3,500+, but this is an unbranded top-only section with a functional defect (two of three doors inoperable), which puts it in a much lower tier. Realistic resale for unbranded, non-fully-functional MCM case pieces on marketplaces like Facebook Marketplace/Craigslist/eBay is commonly $100-$250 as-is. The $450 ask looks like typical optimistic seller pricing untethered to comps for an incomplete, non-fully-functional, unattributed piece \u2014 as-is value is likely well under half the ask. Restoration (rehang/replace hinges, address door binding, minor touch-up) is probably modest \u2014 a few hours and modest hardware/labor cost \u2014 which would let it approach the $250-300 range a functional, cosmetically clean unbranded MCM bookcase/hutch top can realistically fetch. Deal score reflects that the ask is meaningfully above realistic as-is value, though the restoration path is cheap enough that it's not a bad flip if acquired well under asking.",
-    "style_era": "Mid-century modern, likely 1950s-1960s production"
+    "reasoning": "No maker, label, or distinguishing design detail is given, so this must be valued as generic unbranded MCM furniture rather than a named workshop or designer line \u2014 per the market-not-calibre rule, I'm not attaching a premium name to an anonymous piece. Being a 'hutch top' only (no base) further caps demand since most buyers want a complete cabinet or a piece usable freestanding. Two non-functioning doors is a real, stated defect (not cosmetic) that will need hinge/catch repair or door realignment \u2014 typically an easy DIY or handyman fix (1-3 hours, minor hardware cost), so restoration cost is modest. Generic unbranded MCM hutch tops/bookcases in this condition typically move in the $100-250 range on secondhand marketplaces (Facebook Marketplace/Craigslist comps, not verified auction data \u2014 I have no specific realised sales to cite for this unbranded item, so comps is left empty rather than fabricated). The $450 ask looks high relative to likely as-is resale, especially with the door defect and lack of a base/maker identity, so this is a mediocre deal at asking price and would need to be acquired well below ask to pencil out after minor repair. Confidence is capped low because construction (solid wood vs. veneer vs. particleboard), joinery, and true condition cannot be verified without photos.",
+    "style_era": "Mid-Century Modern, likely 1950s-1960s American case goods"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 45000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -11468,23 +11419,23 @@
   "964699363290731": {
    "appraisal": {
     "comps": [],
-    "condition_assessment": "Unknown \u2014 no photos provided and the listing description contains no condition detail at all (it only states a zip code/cross-street for pickup near a TJ Maxx on Taylorsville Road). Cannot assess patina, casting quality, wear, or damage from text alone.",
-    "confidence": 0.2,
-    "deal_score": 40.0,
-    "est_asis_value_cents": 3000,
-    "est_restoration_cost_cents": 1000,
-    "est_restoration_effort_hours": 1.0,
-    "est_restored_resale_value_cents": 5000,
-    "identified_item": "Pair of cast brass Korean zodiac (sibjiji) wall plaques, ~8in, anthropomorphic animal figures",
+    "condition_assessment": "Unknown from text alone \u2014 no condition detail given (patina, casting sharpness, mounting hardware, damage). Listing description contains no actual item description, only a zip code/location note, so nothing about wear, tarnish, or completeness can be verified",
+    "confidence": 0.25,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 3500,
+    "est_restoration_cost_cents": 1500,
+    "est_restoration_effort_hours": 1.5,
+    "est_restored_resale_value_cents": 6000,
+    "identified_item": "Pair of cast brass Korean zodiac wall plaques (2 of the 12-animal set), 8 inches, anthropomorphic animal design",
     "maker_guess": null,
     "materials": [
      "cast brass"
     ],
-    "reasoning": "No maker/workshop is identified, so I'm valuing this as generic decorative cast-brass Korean zodiac wall plaques rather than a named artist's work \u2014 per the market-not-calibre rule, that alone caps confidence low. This style of piece (single zodiac-animal figure, cast brass, ~8in) turns up regularly and inexpensively on eBay/Etsy as unmarked decorative ware; a full 12-piece zodiac set typically realizes well under $200, so a pair would realistically be a $20-50 item as-is. I have no specific realized auction/eBay-sold comps I can verify for this exact item, so comps is empty rather than invented \u2014 an honest gap, not a zero. The listing description itself is unusually unhelpful: instead of describing the item's condition, materials, or history, it only restates a pickup zip code near a TJ Maxx, which is a red flag that the seller (or a scraped/auto-generated listing) provides no verifiable detail to appraise against. Restoration needs would likely be limited to metal cleaning/polishing (low cost, ~1 hour), since cast brass figural plaques don't involve wood joinery, veneer, or upholstery. At a $60 ask against a likely $20-50 realistic resale, this is a marginal-to-mildly-negative deal, not a clear find \u2014 hence the moderate-low deal score and the deliberately conservative low-end estimate.",
-    "style_era": "Described as mid-century; Korean zodiac brass wall art of this type (often depicting the 12 zodiac generals with animal heads/human bodies) was produced continuously from the mid-20th century through recent decades as tourist and export decor, so an actual mid-century date cannot be confirmed from text alone"
+    "reasoning": "No maker or workshop is named, so this is valued as generic decorative cast brass rather than a documented maker's work \u2014 confidence capped low per policy, and further reduced because the seller's description supplies no usable item detail at all (it only restates a zip code, which reads like a copy-paste error and leaves condition, patina, and hallmark information completely unknown). Zodiac wall plaque sets are typically collected/displayed as complete 12-animal runs; having only 2 of the 12 animals significantly caps buyer pool and resale value compared to a full set, even if individual casting quality is decent. Cast brass in this genre is common tourist/import decor rather than fine art bronze, so realistic restoration is limited to cleaning/repolishing and re-lacquering, not structural repair \u2014 hence low estimated hours and cost. As-is value reflects 2 orphaned pieces sold as wall decor; restored value assumes light cleaning only, still constrained by set incompleteness. No specific realized auction/eBay sold comps for this exact item could be recalled with confidence, so comps are left empty rather than invented, per instructions.",
+    "style_era": "Sold as 'mid century' but likely a later-20th-century tourist/decor reproduction of traditional Korean zodiac (sibijisin) imagery; cast brass decorative plaques of this type were produced in quantity from the 1960s through the 1990s"
    },
    "appraisal_prompt_version": 1,
-   "appraised_at": "2026-08-20T13:42:04.312751Z",
+   "appraised_at": "2026-08-21T13:39:44.498302Z",
    "appraised_price_cents": 6000,
    "appraised_with_photos": false,
    "appraiser": "claude-code",
@@ -11893,6 +11844,6 @@
   "last_probe_at": null,
   "searches": {}
  },
- "updated_at": "2026-08-20T13:42:17.240320Z",
+ "updated_at": "2026-08-21T13:39:57.400521Z",
  "version": 1
 }
