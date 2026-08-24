@@ -330,6 +330,39 @@
    "url": "https://www.facebook.com/marketplace/item/1012725934967876/",
    "was_price_cents": null
   },
+  "1012787001848569": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1012787001848569",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1012787001848569",
+   "was_price_cents": null
+  },
   "1013309341166778": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -1175,7 +1208,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -1208,7 +1241,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -1263,7 +1296,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Jeffersonville, IN",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1039765672004816.jpg",
    "photo_urls": [
     "https://scontent-lga3-1.xx.fbcdn.net/v/t39.84726-6/780024401_1077432398137137_7610373216679284425_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=109&ccb=1-7&_nc_sid=92e707&_nc_ohc=NFFFv8a-LAAQ7kNvwEMGz10&_nc_oc=AdoAqz3V_Z_e_Lhec34QPl8VAW0x5svReYKpH6xZp5mu-XFq4h8pnWeHVl-LIwt8_wI&_nc_zt=14&_nc_ht=scontent-lga3-1.xx&_nc_gid=FIkF8zcXGB-WOZyCyZlZJg&_nc_ss=7c289&oh=00_AQGn4D9E6QYiQSQnUSmSlpOmwe9tiRshPQO12A_tzR7PiQ&oe=6A90BE70",
@@ -1374,6 +1407,72 @@
    "url": "https://www.facebook.com/marketplace/item/1043485054820806/",
    "was_price_cents": null
   },
+  "1044264288440793": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1044264288440793",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1044264288440793",
+   "was_price_cents": null
+  },
+  "1044487264963181": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1044487264963181",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1044487264963181",
+   "was_price_cents": null
+  },
   "1046498121061960": {
    "appraisal": {
     "comps": [],
@@ -1438,7 +1537,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -1624,6 +1723,146 @@
    "url": "https://www.facebook.com/marketplace/item/1050533147500358/",
    "was_price_cents": null
   },
+  "1051243110991374": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 10000,
+   "description": "",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1051243110991374",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Dupont, IN",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-lga3-3.xx.fbcdn.net/v/t39.84726-6/784321241_831792146610566_1852182179159366653_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=108&ccb=1-7&_nc_sid=92e707&_nc_ohc=f11QWTdqvbIQ7kNvwH9DIVr&_nc_oc=Adr4nhAett0D6lNva1NmIj13a-98dJNxcufPEzWQBeOiE5C5O1MVz8rJUn0LJeO3hYU&_nc_zt=14&_nc_ht=scontent-lga3-3.xx&_nc_gid=q2UKLNO8gCQ98gv-prB2oA&_nc_ss=72289&oh=00_AQGha2iWC-NeSLcan9PEnJoOX0EoIatTA5ynKRxuoMwhzw&oe=6A922535",
+    "https://scontent-lga3-2.xx.fbcdn.net/v/t45.5328-4/782572053_2500021173807674_2179393688985984828_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=CEzE_iyzz1wQ7kNvwFW9_hG&_nc_oc=AdpZ83Nn5Xi4mzBSUvHKTp23S_EYDYjX0p7uh5hfFmbf4IiPDfDFjlA705GErCNoE8M&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=q2UKLNO8gCQ98gv-prB2oA&_nc_ss=72289&oh=00_AQFGbLBF32QEQeMAUVa2Jww-xhFYT8Yydyz9leUOcogDhw&oe=6A920D0E",
+    "https://scontent-lga3-3.xx.fbcdn.net/v/t45.5328-4/782730742_1377291333893711_1707469634166208865_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=247b10&_nc_ohc=0E2ar19LQocQ7kNvwFB7bWO&_nc_oc=AdoRznAFUXrxvJTNpXslXgJ7W_i9Fnvg-y6iMZHU1NtP4sxWpbY-HEbcJotRzhzUHYQ&_nc_zt=23&_nc_ht=scontent-lga3-3.xx&_nc_gid=q2UKLNO8gCQ98gv-prB2oA&_nc_ss=72289&oh=00_AQFLvjaUv0h6FAZMdU7GrweLObQaiwpGKtIIqasd95yQAg&oe=6A920179"
+   ],
+   "posted_at": "2026-08-24T02:11:07Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 10000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Dresser",
+   "url": "https://www.facebook.com/marketplace/item/1051243110991374/",
+   "was_price_cents": null
+  },
+  "1051426281151582": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1051426281151582",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1051426281151582",
+   "was_price_cents": null
+  },
+  "1051983321139340": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 50000,
+   "description": "Bedroom Set Includes: Bed, Headboard, Footboard, Mattress, Dresser with Mirror, Dresser, 2 Night Stands2 Tables. Must pick up in Eminence, KY. Cash only, No Shipping",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1051983321139340",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Eminence, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-lga3-3.xx.fbcdn.net/v/t39.84726-6/784697234_1710958420166933_2800134400880528691_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=92e707&_nc_ohc=GZawL99kX_8Q7kNvwG7zMs5&_nc_oc=AdpP_LJQt3Wnx0ndwv4fQhO_Sq1eYkhWUQUOmXlblRbkKNhGSvREIOxyCoMLdXpCHEpSqEOUGvsIIJTrg_lfp4AQ&_nc_zt=14&_nc_ht=scontent-lga3-3.xx&_nc_gid=-dOwCwR6RR9g-oVYGpn4zA&_nc_ss=72289&oh=00_AQFSlF7zkpRTRUKMltdFipKFKnAln8WiUeVXS2IpnEBTZg&oe=6A922933",
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t45.5328-4/786353696_1288593066564681_1643210782474897925_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=247b10&_nc_ohc=hsBIYYjH1rMQ7kNvwGeVqdx&_nc_oc=AdoTHrUb4UuDX5GdqplxDQjfQBYF09etQ88eWtevRS0PSqRxsY42OoCWnCUK-s4G1rov1DkI80eT1PWuIqo0s8Hy&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=-dOwCwR6RR9g-oVYGpn4zA&_nc_ss=72289&oh=00_AQEsWL3Kcol-m3Jty1nwdWO3iedwYoYqQT7gVTUvodsOTw&oe=6A923201",
+    "https://scontent-lga3-2.xx.fbcdn.net/v/t45.5328-4/784862283_2117361795831514_2630145649804407966_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=247b10&_nc_ohc=k7eaeur9QZUQ7kNvwESJCbO&_nc_oc=AdpWvoxurll8bSWqu9ejc-WY9TIwRv9icCxG_ZMnI_DN2nask4D5S18_WxrjOxwCb2r3DB3HQ7SIAtnvzvp0Gc3f&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=-dOwCwR6RR9g-oVYGpn4zA&_nc_ss=72289&oh=00_AQESiUpdrDCAeJ2fScfhmumLgFIQgQhL8rnEcDY7FUOdGA&oe=6A9235C4"
+   ],
+   "posted_at": "2026-08-24T00:45:45Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 50000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Estate Sale: Bedroom Complete Set",
+   "url": "https://www.facebook.com/marketplace/item/1051983321139340/",
+   "was_price_cents": null
+  },
+  "1052326630881373": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1052326630881373",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1052326630881373",
+   "was_price_cents": null
+  },
   "1055040913780920": {
    "appraisal": {
     "comps": [],
@@ -1660,7 +1899,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Frankfort, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1055040913780920.jpg",
    "photo_urls": [
     "https://scontent-atl3-1.xx.fbcdn.net/v/t39.84726-6/784076086_1767718601031284_6195588614736991587_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=92e707&_nc_ohc=Gb9_l3JcDyUQ7kNvwF_Vy2b&_nc_oc=AdqeYE6Q6tr9EsK95eq_Ska8_Uj9Cay5Tcvyk1KrJbeVoJ4Dw6SLFwvS29ZwAxnou6lOvnZpPdE5t92czmAg7hl1&_nc_zt=14&_nc_ht=scontent-atl3-1.xx&_nc_gid=TwyD42tGizi6yHzle72dVw&_nc_ss=72289&oh=00_AQEQyTDoLDKXT8hC0EzvgcICOUvfoRzjMrCfAMMzrRGmlA&oe=6A90DA17",
@@ -1697,7 +1936,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -1743,6 +1982,39 @@
    "state": "gone",
    "title": "Vintage Mid Century Aluminum Glider",
    "url": "https://www.facebook.com/marketplace/item/1056946626791333/",
+   "was_price_cents": null
+  },
+  "1056987483900190": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1056987483900190",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1056987483900190",
    "was_price_cents": null
   },
   "1057805330258841": {
@@ -1791,7 +2063,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Cincinnati, OH",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-lga3-1.xx.fbcdn.net/v/t39.84726-6/784019695_28473337455686528_8520001175718423851_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=109&ccb=1-7&_nc_sid=92e707&_nc_ohc=iE1z58C7vR4Q7kNvwE1iA2R&_nc_oc=Adrd09l1dL1P8p38l9-eKc2cygXWv4Ktmb8_byobbxD45VxxSuRTdyBFeNQMmanUSUI&_nc_zt=14&_nc_ht=scontent-lga3-1.xx&_nc_gid=ENYNR21l_ij8uxAGNvn8JQ&_nc_ss=72289&oh=00_AQE0-Dx7DVNNJVSvh9q7v6RMN80wDGoRyFrd5Zn8Ejuq_A&oe=6A90D167"
@@ -1939,7 +2211,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -1972,7 +2244,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2099,6 +2371,39 @@
    "url": "https://www.facebook.com/marketplace/item/1063854932652892/",
    "was_price_cents": 5000
   },
+  "1064623999443094": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1064623999443094",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1064623999443094",
+   "was_price_cents": null
+  },
   "1065774639181776": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -2115,7 +2420,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2130,6 +2435,72 @@
    "state": "live",
    "title": "",
    "url": "https://www.facebook.com/marketplace/item/1065774639181776",
+   "was_price_cents": null
+  },
+  "1068142108925123": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1068142108925123",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1068142108925123",
+   "was_price_cents": null
+  },
+  "1073304998377834": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1073304998377834",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1073304998377834",
    "was_price_cents": null
   },
   "1075162648508670": {
@@ -2162,6 +2533,64 @@
    "state": "gone",
    "title": "Mid Century Modern Lloyd Heywood-Wakefield End Tables Set      nice    [hidden information]",
    "url": "https://www.facebook.com/marketplace/item/1075162648508670/",
+   "was_price_cents": null
+  },
+  "1075437848284748": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Appears clean and in good used condition in photos \u2014 no visible staining, sagging, tears, or major wear on the cover. No way to assess interior foam compression, odor, or hygiene from photos alone.",
+    "confidence": 0.5,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 12000,
+    "est_restoration_cost_cents": 0,
+    "est_restoration_effort_hours": 0.0,
+    "est_restored_resale_value_cents": 12000,
+    "identified_item": "Used Nectar queen-size memory foam mattress (consumer bed-in-a-box mattress, not an antique or collectible furniture piece)",
+    "maker_guess": "Nectar Sleep (brand-labeled foam mattress, no artisan maker)",
+    "materials": [
+     "Memory foam",
+     "polyurethane foam base",
+     "quilted polyester/rayon cover fabric"
+    ],
+    "reasoning": "This is not a furniture-restoration candidate \u2014 the appraisal framework for construction, joinery, and maker marks doesn't apply here. It's a used consumer memory foam mattress with no maker/artist premium; Nectar is a direct-to-consumer commodity brand, not a name that carries auction value. There is no 'restoration' market for used mattresses (foam cannot be meaningfully restored, and hygiene/liability concerns around used mattresses suppress resale demand regardless of cosmetic condition \u2014 many buyers avoid used mattresses outright). Realized resale prices for used queen memory foam mattresses in good condition on local marketplaces typically run $100-250 depending on age and buyer squeamishness, versus a $1000+ new retail price for Nectar queen mattresses. The $150 asking price is within the normal range for this category \u2014 not a steal, not a rip-off, just an ordinary depreciating household good. I have no specific sold-comp data for this exact item, so I'm not fabricating comps; confidence is capped accordingly. A reseller's main considerations should be resale friction (many buyers won't want a used mattress at any price) and verifying no odor/bedbug/stain issues in person, not a restoration opportunity.",
+    "style_era": "Contemporary, mass-produced (Nectar mattress company, active since ~2016)"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 15000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 15000,
+   "description": "Nectar Memory Foam Mattress in great condition. ",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1075437848284748_1.jpg",
+    "photos/1075437848284748_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1075437848284748",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Versailles, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1075437848284748.jpg",
+   "photo_urls": [
+    "https://scontent-ord5-2.xx.fbcdn.net/v/t39.84726-6/777298019_1583974800185998_8543901186589171128_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=103&ccb=1-7&_nc_sid=92e707&_nc_ohc=G80x3PyQ5GoQ7kNvwE6IYfK&_nc_oc=AdrZNt4pftAOPkjLPrfQsmXRkd_4Di30ZabfGmV9Xph0_Xtn-jjuo5n8IVKKLjJfL-g&_nc_zt=14&_nc_ht=scontent-ord5-2.xx&_nc_gid=eSawOGYE4ft-4Q5dQsMHzQ&_nc_ss=72289&oh=00_AQE4QbuArnaDENo-LOl9aouylMqiyIydPYRz6ARtmIzAtQ&oe=6A920048",
+    "https://scontent-ord5-2.xx.fbcdn.net/v/t45.5328-4/780915373_1601511221688718_7442294638086766142_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=247b10&_nc_ohc=Fw5sQyqG1LcQ7kNvwGzBscu&_nc_oc=Adq4EEzU-Z-f1oYGTGs1-kmeos7Lyz4y3Q_m4tnBEJ3b4M2cbmXMRebjyxO7CG5r4hc&_nc_zt=23&_nc_ht=scontent-ord5-2.xx&_nc_gid=eSawOGYE4ft-4Q5dQsMHzQ&_nc_ss=72289&oh=00_AQEYMGFTp-8zwWVSAVoULRhIdH8MxE4JEZIiqGZCHdunNA&oe=6A921458",
+    "https://scontent-ord5-2.xx.fbcdn.net/v/t45.5328-4/784222779_1099100862775244_3871372903496533114_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=247b10&_nc_ohc=8g1CDd9s4KsQ7kNvwHWQNPM&_nc_oc=Adqs27Rqcc87pbd-O5uC2ueG4y4yoxwEWz-D5DinUnr5XfkrXoaEIC0qkhbWD7cD6W0&_nc_zt=23&_nc_ht=scontent-ord5-2.xx&_nc_gid=eSawOGYE4ft-4Q5dQsMHzQ&_nc_ss=72289&oh=00_AQEZuZM2W4Ca3ds2-9Gxf-plooaRy4ONnfqvGe3WThHPPw&oe=6A9205F4"
+   ],
+   "posted_at": "2026-08-24T01:14:40Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 15000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Nectar Queen Size Memory Foam Mattress",
+   "url": "https://www.facebook.com/marketplace/item/1075437848284748/",
    "was_price_cents": null
   },
   "1076146581431150": {
@@ -2217,7 +2646,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2286,7 +2715,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2301,6 +2730,72 @@
    "state": "live",
    "title": "",
    "url": "https://www.facebook.com/marketplace/item/1076959008120085",
+   "was_price_cents": null
+  },
+  "1077724384721007": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1077724384721007",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1077724384721007",
+   "was_price_cents": null
+  },
+  "1077901434700947": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1077901434700947",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1077901434700947",
    "was_price_cents": null
   },
   "1082265057726974": {
@@ -2319,7 +2814,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2334,6 +2829,39 @@
    "state": "live",
    "title": "",
    "url": "https://www.facebook.com/marketplace/item/1082265057726974",
+   "was_price_cents": null
+  },
+  "1083279057383788": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1083279057383788",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1083279057383788",
    "was_price_cents": null
   },
   "1085205293851580": {
@@ -2352,7 +2880,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Coxs Creek, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-phl2-1.xx.fbcdn.net/v/t39.84726-6/783507979_2103378583624149_7742954419898592556_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=108&ccb=1-7&_nc_sid=92e707&_nc_ohc=_eFMzqywCjsQ7kNvwEJkuJT&_nc_oc=Adp1mDCDDQbIwWIOBGPTcwFe5G74AocOsb_xWo5bE0487ag4F_NXbXAcUsGnZxjLWhA&_nc_zt=14&_nc_ht=scontent-phl2-1.xx&_nc_gid=q3BbRBavjBnvSkrxDD9QcQ&_nc_ss=72289&oh=00_AQHj6QmfTAgyAQLNbq_IMvW6R6Wx0U2rVspBmx7yIoEz_g&oe=6A90C395",
@@ -2388,7 +2916,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Danville, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-phl2-1.xx.fbcdn.net/v/t39.84726-6/781588720_1064686122708533_364652714446538746_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=110&ccb=1-7&_nc_sid=92e707&_nc_ohc=ITbYR09honYQ7kNvwGqKoBM&_nc_oc=Adq0kWK3XX_xkyNz_0byU3BXiS9tb_CkYmAz243KqtSwWBo-2I7M3OMDcM6ork1lYxYAsU88eALjhC5b-lpxZWiQ&_nc_zt=14&_nc_ht=scontent-phl2-1.xx&_nc_gid=fRbNjTBSearju3lXmg_Eow&_nc_ss=7f289&oh=00_AQGjXjt6AgLMkUkEmzCeXVmckjl8xZ0TQnmFutmeS9-S3w&oe=6A90D036",
@@ -2630,7 +3158,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -2739,7 +3267,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -3120,6 +3648,42 @@
    "url": "https://www.facebook.com/marketplace/item/1320971486424962/",
    "was_price_cents": null
   },
+  "1323196576320665": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 70000,
+   "description": "Queen size bed with two nightstands and dresser with a mirror, only has minor scratches.",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1323196576320665",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Lancaster, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-bos5-1.xx.fbcdn.net/v/t39.84726-6/785927900_2149748422642180_5152368665319472338_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=0QPywPtjpXIQ7kNvwGq-e29&_nc_oc=AdpLSOfUOLPB2-OtttXkkNhlE7JN19hGv3Mo04GvQNQjjwiEQNNfk_a3oS3mV_H-EF5PD_L5Nx7yzUTxfnxp3akz&_nc_zt=14&_nc_ht=scontent-bos5-1.xx&_nc_gid=Ia_f-IijP_D8nYgDyzCz3A&_nc_ss=7c289&oh=00_AQH1A6Hs_zEmJbFv0cEIMuX2PzV3skm9FX7zMjfJcvyYqA&oe=6A9234CE",
+    "https://scontent-bos5-1.xx.fbcdn.net/v/t45.5328-4/784233041_2376172046621495_8155051103953910113_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=h0Y9ha-kSx4Q7kNvwHmvaZt&_nc_oc=AdopzOTl5Gq9XKh8ExgWp0PyqVkuf_zSTRq-6iJMUWM58kxkGEDHknWiOnoNjsSNMFrpWAiESpGgr8cv-fRKhHfn&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=Ia_f-IijP_D8nYgDyzCz3A&_nc_ss=7c289&oh=00_AQHAx9CsouUoavnbLDqRIwulBHFRiyzDDkU81yRANwGYAg&oe=6A921DEC"
+   ],
+   "posted_at": "2026-08-24T01:40:50Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 70000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Wooden Queen size bed",
+   "url": "https://www.facebook.com/marketplace/item/1323196576320665/",
+   "was_price_cents": null
+  },
   "1327312329571323": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -3400,7 +3964,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -4077,6 +4641,39 @@
    "url": "https://www.facebook.com/marketplace/item/1373841321333352/",
    "was_price_cents": null
   },
+  "1375885767382194": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1375885767382194",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1375885767382194",
+   "was_price_cents": null
+  },
   "1376874727702318": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -4166,7 +4763,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Lexington, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1377809963918178.jpg",
    "photo_urls": [
     "https://scontent-ord5-1.xx.fbcdn.net/v/t39.84726-6/782208521_1728970211503773_3840348626983785905_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=111&ccb=1-7&_nc_sid=92e707&_nc_ohc=DeNzejrJvIQQ7kNvwGEO2pa&_nc_oc=Adoz46wNxJYO9KEuP6XetebToH7lALerDjYoKg20iKwgrr1odBmpXD8NV8NWOp5B9DM&_nc_zt=14&_nc_ht=scontent-ord5-1.xx&_nc_gid=eqW-bmXh6zlleDSjILZ7jg&_nc_ss=7c289&oh=00_AQFIJLkd5bCoc8bwZniq5rss7XMROyGdYXw5eH5kaGsbsw&oe=6A90BF1A",
@@ -4315,6 +4912,72 @@
    "url": "https://www.facebook.com/marketplace/item/1386180410053760/",
    "was_price_cents": null
   },
+  "1388344740049657": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1388344740049657",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1388344740049657",
+   "was_price_cents": null
+  },
+  "1389794006621636": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1389794006621636",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1389794006621636",
+   "was_price_cents": null
+  },
   "1394972672683607": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -4345,6 +5008,39 @@
    "state": "gone",
    "title": "Dresser",
    "url": "https://www.facebook.com/marketplace/item/1394972672683607/",
+   "was_price_cents": null
+  },
+  "1396319079120326": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1396319079120326",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1396319079120326",
    "was_price_cents": null
   },
   "1396410792335616": {
@@ -4452,6 +5148,65 @@
    "url": "https://www.facebook.com/marketplace/item/1398932712131134/",
    "was_price_cents": 12500
   },
+  "1399641155633876": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Wood pieces (chest and dresser+mirror) appear cosmetically clean with no visible chips, water rings, or veneer lifting in the photos; drawers align and moldings are intact. Couches show a dated, worn plaid pattern typical of 90s/2000s furniture \u2014 no visible major damage but heavily styled/unfashionable. No maker's label or stamp visible in any photo. Everything is described as 'very heavy,' consistent with dense engineered-wood cores rather than lightweight solid construction.",
+    "confidence": 0.3,
+    "deal_score": 28.0,
+    "est_asis_value_cents": 45000,
+    "est_restoration_cost_cents": 7000,
+    "est_restoration_effort_hours": 5.0,
+    "est_restored_resale_value_cents": 70000,
+    "identified_item": "Lot of used furniture: matching plaid sofa + loveseat, tall 7-drawer cherry-finish serpentine chest of drawers, and matching 9-drawer dresser with mirror (plus unphotographed short dresser, secretary desk, 2 barstools, computer desk)",
+    "maker_guess": null,
+    "materials": [
+     "Cherry veneer over MDF/particleboard case construction",
+     "Solid wood likely used only for frame/legs/moldings",
+     "Cast 'antiqued bronze' reproduction hardware (not hand-forged)",
+     "Chenille/tapestry plaid upholstery over wood frame (couches)"
+    ],
+    "reasoning": "No maker or brand is identifiable from the photos, so I'm valuing this as generic mass-market furniture rather than reasoning from 'quality of this calibre' \u2014 confidence is capped low as instructed. Construction tells: the serpentine drawer fronts on the tall chest and dresser use applied bead moldings framing each drawer and bookmatched cathedral-grain veneer patterns \u2014 real solid-wood serpentine fronts don't need applied trim rings like this, and continuous grain would wrap the curve rather than mirror-match at a seam. Combined with the reported heavy weight (dense MDF/particleboard reads as 'heavy' just like solid wood, so that detail isn't reassuring) and cast reproduction hardware, this reads as veneered engineered-wood case goods typical of big-box 'cherry traditional' bedroom sets, not antique or solid-wood construction, and not by any recognizable studio maker. No dovetails or mortise-and-tenon joinery are visible or can be assumed from the photos. The couches are a matching plaid set in a dated pattern; used upholstered furniture has weak secondary-market demand (styling and hygiene concerns) regardless of frame condition. Realistically, this class of furniture \u2014 while it retailed for well over $1,000/piece new \u2014 struggles to clear $150-250 per case good and $50-150 for a used sofa set on local marketplaces today ('brown furniture' oversupply has suppressed resale values industry-wide for over a decade). The itemized asking prices in the listing ($100 chest, $100 dresser+mirror, $75 short dresser, $50 secretary desk, $20 barstools, $100 both couches, free computer desk = $445 total) are already close to realistic as-is resale value for the whole lot, leaving thin margin once self-hauling heavy pieces and any cleaning time is factored in. The standalone '$1234' asking price field appears to be an inflated aggregate that doesn't match the sum of the seller's own itemized prices and should not be used as the basis for an offer \u2014 buy at or below the itemized total, not the headline figure. Restoration needs are minor (clean/wax the wood, maybe minor drawer glide adjustment); it is not worth reupholstering the couches given resale ceiling. I have no verified realized auction/eBay-sold comps for this unbranded furniture, so I'm leaving comps empty rather than inventing sale records.",
+    "style_era": "Mass-market 'traditional'/Louis Philippe-revival bedroom case goods, likely manufactured 1990s\u20132010s; couches are a dated matching plaid upholstered set from a similar era"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 123400,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 123400,
+   "description": "Good quality furniture pieces. All located in Shelbyville, KY. Must be picked up by Tuesday, August 25th. \n\nVery heavy pieces. You will have to move and load yourselves. Willing to negotiate prices! \n\n\nCouches $100 for both \nCherry wood Chest of drawers $100 \nCherry wood dresser with mirror $100  \nCherry wood short dresser $75 \nAntique Secretary Desk $50 \nTwo barstools- $20 \nComputer desk- FREE \n\nCash or Venmo only \n\nMeasurements: \n\n1. Two Couches: 7 ft long and 34 inch tall \n\n2. Chest of drawers: 67.5 inch tall by 43 wide\n\n3. Dresser with mirror: 67 inches wide and 39 inches tall without mirr",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1399641155633876_1.jpg",
+    "photos/1399641155633876_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1399641155633876",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Shelbyville, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1399641155633876.jpg",
+   "photo_urls": [
+    "https://scontent-det1-1.xx.fbcdn.net/v/t39.84726-6/784432952_1803687147748308_7218511275956086821_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=92e707&_nc_ohc=GWPHaptc318Q7kNvwHcGOd4&_nc_oc=AdoIu85RAakf0ud8U5QDoxwIdz7O9wj8SBrDt0JNjVrrSb9PI8vQtAXVRMKOvZWUrJgS_aosEPB1ewinrWtXV24-&_nc_zt=14&_nc_ht=scontent-det1-1.xx&_nc_gid=MGD8z-o2NzU7hEyhhERLvA&_nc_ss=7c289&oh=00_AQGwHz_l7sGjg1pL4LtPU-5HVuMD2W17k3OLmN9b4GwJnw&oe=6A9218E6",
+    "https://scontent-det1-1.xx.fbcdn.net/v/t45.5328-4/785710535_1403216331747280_3709432438564915388_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=247b10&_nc_ohc=hiouwFMPr4AQ7kNvwHtSF4t&_nc_oc=AdorGR-AXKlpjwHXGOr7uW8-VAJSLR77ziB6kgS1Efs-7PmMsPvx0EyvAc-Ej3JFTrcMf9G3c52CcqtJDouAAkHm&_nc_zt=23&_nc_ht=scontent-det1-1.xx&_nc_gid=MGD8z-o2NzU7hEyhhERLvA&_nc_ss=7c289&oh=00_AQHXZMl1vd4Em057CxwfCsHwhUnn6eCeMq06qEJi1OhPHQ&oe=6A92057E",
+    "https://scontent-det1-1.xx.fbcdn.net/v/t45.5328-4/784597742_2182619875634242_3467504786457088037_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=108&ccb=1-7&_nc_sid=247b10&_nc_ohc=PNUTHUNBXcUQ7kNvwE6RtOY&_nc_oc=AdqNgyQ8MKsB7SRaopbknqfBiBjPOV7YvkSOBNZB7hAaZH1VN1IVP-lXSNvpONPzo4kySsjCJBKoSgcEDQ3Hxoe2&_nc_zt=23&_nc_ht=scontent-det1-1.xx&_nc_gid=MGD8z-o2NzU7hEyhhERLvA&_nc_ss=7c289&oh=00_AQHVtM_Y0egJ7GPBjZm5DnvLC5ZIhGgAHVTLpmrtFy0laA&oe=6A9229E7"
+   ],
+   "posted_at": "2026-08-24T01:32:36Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 123400
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Multiple pieces of furniture- read description for prices and measurements!",
+   "url": "https://www.facebook.com/marketplace/item/1399641155633876/",
+   "was_price_cents": null
+  },
   "1401014141849853": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -4558,7 +5313,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -4591,7 +5346,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -4798,6 +5553,41 @@
    "url": "https://www.facebook.com/marketplace/item/1432545758921271/",
    "was_price_cents": null
   },
+  "1435913988384210": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 3000,
+   "description": "This dresser is in great condition. You will need a truck to haul. Depending on pickup time we may be able to help load. Willing to trade for furniture you don't want anymore. As long as it's something I can use. ",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1435913988384210",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Richmond, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-iad3-1.xx.fbcdn.net/v/t39.84726-6/780860363_1613333873651663_3908344492807145944_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=110&ccb=1-7&_nc_sid=92e707&_nc_ohc=S6obhM4StHYQ7kNvwFG0Xut&_nc_oc=Adr4AhBNEys9m8e6RcoIDbRkecpeF5RVTSPhJZ5j824yiNB7aMBPJGjl9kaghxrDw4uU9Yct493NHtiDWFR5G6yz&_nc_zt=14&_nc_ht=scontent-iad3-1.xx&_nc_gid=rtzWY9c0myYxnM0CqfWM0A&_nc_ss=72289&oh=00_AQE0Y3hwEoQrYMZY2NXh7JkHbVjxOSlssE6FhsHa1u9A8g&oe=6A9216A0"
+   ],
+   "posted_at": "2026-08-24T01:07:23Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 3000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "4 drawer antique style dresser",
+   "url": "https://www.facebook.com/marketplace/item/1435913988384210/",
+   "was_price_cents": null
+  },
   "1439187397973749": {
    "appraisal": {
     "comps": [],
@@ -4866,7 +5656,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -5342,6 +6132,39 @@
    "url": "https://www.facebook.com/marketplace/item/1511892886813829/",
    "was_price_cents": null
   },
+  "1524606946134618": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1524606946134618",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1524606946134618",
+   "was_price_cents": null
+  },
   "1525518855728745": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -5699,6 +6522,66 @@
    "state": "gone",
    "title": "Solid Hardwood 6-Drawer Chest / Tall Dresser",
    "url": "https://www.facebook.com/marketplace/item/1540358351121947/",
+   "was_price_cents": null
+  },
+  "1543268054266146": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Listed as brand new, unopened, in original factory box for local pickup \u2014 not a restoration candidate. No dovetails or mortise-and-tenon joinery visible or expected; this is flat-pack/CNC mass production with glued-dowel or cam-lock drawer boxes typical of Wayfair-tier import furniture. All three photos are manufacturer stock/catalog renders (identical staged product, one lifestyle shot), not photos of the actual physical unit, so true box/packaging condition is unverified.",
+    "confidence": 0.3,
+    "deal_score": 35.0,
+    "est_asis_value_cents": 80000,
+    "est_restoration_cost_cents": 0,
+    "est_restoration_effort_hours": 0.0,
+    "est_restored_resale_value_cents": 85000,
+    "identified_item": "Birch Lane \"Caterina\" 9-Drawer Dresser, cerused/white-oak-finish, sold new-in-box (Wayfair house brand, listing mislabels 'Katerina/Caterina' spelling used across several dropship storefronts)",
+    "maker_guess": "Birch Lane (Wayfair private label); this exact SKU/description also appears verbatim under other reseller names (e.g. 'Katerina') at multiple online furniture outlets, confirming it is a widely distributed drop-ship import, not a studio or named workshop piece",
+    "materials": [
+     "Engineered wood/rubberwood solids core (typical for this Birch Lane construction tier)",
+     "Oak veneer over drawer fronts and case (marketed as 'White Oak' finish, not solid oak carcass)",
+     "CNC-shaped bow-front drawer faces",
+     "Cast metal ring pulls",
+     "Felt-lined jewelry tray inserts (removable)"
+    ],
+    "reasoning": "This is not an antique or artisan piece to restore \u2014 it's a current-production Wayfair/Birch Lane import dresser sold new-in-box. There is no maker of collectible standing here, so per the valuation rules I'm pricing it as a mass-market secondary-market good, not reasoning from 'quality tier.' Retail is stated at $2,098; new-in-box mass-market case goods of this type typically resell secondhand (FB Marketplace/local pickup, no warranty, buyer assumes freight risk on a 74\"-wide, likely 150+ lb boxed item) in the 35-50% of retail range, i.e. roughly $735-$1,050. The $900 ask sits mid-that-band, so there is little to no margin for a reseller after re-listing time, potential local delivery/freight damage risk, and platform fees \u2014 this is close to fair retail-secondary value rather than an underpriced find. I could not locate specific realized (sold) comps for this exact SKU on eBay/FB Marketplace, so comps are left empty rather than invented, and confidence is capped accordingly. Because the item is factory-new, there is no restoration cost or labor to model; the 'restored' value is just a modest uplift for good staging/photography of the actual unit rather than any repair work. Flag for the reseller: verify the box has actually been opened/inspected (stock photos don't confirm the real unit's condition), and treat this as a straight resale flip, not a refinishing project.",
+    "style_era": "Contemporary coastal-transitional mass-market design, current production (2020s) \u2014 not vintage or antique"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 90000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 90000,
+   "description": "Brand New in Box Caterina 9-Drawer Dresser, White Oak. Retails for $2,098.\n\nAbout This Product\n\nThe Caterina Dresser, a study in refined elegance, offers ample storage with nine spacious drawers. The top center drawer, lined with gray felt, provides a secure haven for delicate jewelry. Its white oak finish lends a timeless appeal to any bedroom.\n\nFeatures\n\nTwo removeable gray felt lined jewelry trays in top center drawer.\nAjustable levelers.\n\n&nbsp;\n\nDimensions: 36'' H X 74'' W X 21'' D\n\nPickup in Amelie by Appointment\nJMZ1013",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1543268054266146_1.jpg",
+    "photos/1543268054266146_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1543268054266146",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Amelia, OH",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1543268054266146.jpg",
+   "photo_urls": [
+    "https://scontent-dfw5-1.xx.fbcdn.net/v/t39.84726-6/784619404_1999373774081785_3251084204856486780_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=92e707&_nc_ohc=NzBGdwFrlbYQ7kNvwFhIMPb&_nc_oc=Adp-6oeUPgXVMmbQjM1dm9BNGlzoJ-xUOWMbOXphTKtyep77Zh3kCSuZ5NswVW2JOMQ&_nc_zt=14&_nc_ht=scontent-dfw5-1.xx&_nc_gid=85uZSqjUAlMcQXAEkt9pLA&_nc_ss=7c289&oh=00_AQFRyjYR94oUhxHl2IMNfmIyWA7V7hwU1qv9m-jZvOevpQ&oe=6A9216F0",
+    "https://scontent-dfw5-2.xx.fbcdn.net/v/t45.5328-4/782732266_1370866245166795_1988887425494019901_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=247b10&_nc_ohc=w77mlvTzsrkQ7kNvwFrMEcB&_nc_oc=Adr-y0Fl7mcTocAV2KPBMw0cskMRwMYA1Q-G60m4eHsJ4WdjumLFOY1ZmINfgmlC3Dk&_nc_zt=23&_nc_ht=scontent-dfw5-2.xx&_nc_gid=85uZSqjUAlMcQXAEkt9pLA&_nc_ss=7c289&oh=00_AQHULbpksGr6hfIbH1wBW_mZSXXcz31UAzLQC6hGSJ233Q&oe=6A9209FA",
+    "https://scontent-dfw6-1.xx.fbcdn.net/v/t45.5328-4/782877382_1057249123899218_8053139358008832598_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=RhB3uXU9esoQ7kNvwFJVxHQ&_nc_oc=AdoIMxTcVBrDgPA9ZLehzBbfZvuLPBNJaryjqdGKqu6lsKMbLhlo6H_UvwAD1m6GdTk&_nc_zt=23&_nc_ht=scontent-dfw6-1.xx&_nc_gid=85uZSqjUAlMcQXAEkt9pLA&_nc_ss=7c289&oh=00_AQECLK9urEDsM-COcktP_YydeRmLaOrbB3SXOqUxh4uZcg&oe=6A921674"
+   ],
+   "posted_at": "2026-08-24T01:02:18Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 90000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Brand New in Box 9-Drawer Dresser, White Oak (#213)",
+   "url": "https://www.facebook.com/marketplace/item/1543268054266146/",
    "was_price_cents": null
   },
   "1543700170558820": {
@@ -6065,6 +6948,39 @@
    "url": "https://www.facebook.com/marketplace/item/1551486483309795/",
    "was_price_cents": 15000
   },
+  "1558556142402327": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1558556142402327",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1558556142402327",
+   "was_price_cents": null
+  },
   "1558667959072212": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -6254,7 +7170,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -6492,6 +7408,72 @@
    "url": "https://www.facebook.com/marketplace/item/1583377196637618/",
    "was_price_cents": null
   },
+  "1585619406677281": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1585619406677281",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1585619406677281",
+   "was_price_cents": null
+  },
+  "1587119393086290": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1587119393086290",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1587119393086290",
+   "was_price_cents": null
+  },
   "1595430952006726": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -6674,7 +7656,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -6821,7 +7803,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Danville, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1622138239469029.jpg",
    "photo_urls": [
     "https://scontent-ord5-2.xx.fbcdn.net/v/t39.84726-6/781251269_1963802304332954_7561533863933989347_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=102&ccb=1-7&_nc_sid=92e707&_nc_ohc=cDY6BdlrY3EQ7kNvwFblBJ9&_nc_oc=AdpLq5hLMEr72Vf2wtH2SJK61RDnNkhHExWdaCUKdaiaba9eBX266xzuhrN16u3lNDQ&_nc_zt=14&_nc_ht=scontent-ord5-2.xx&_nc_gid=7Hot9UETtbQcYo_TFSw-rQ&_nc_ss=72289&oh=00_AQENgMVQUrkXpSzKzKE74CKTRfJK2dsQRL88TuNeO-S9Ww&oe=6A90D64E",
@@ -6874,6 +7856,61 @@
    "url": "https://www.facebook.com/marketplace/item/1630837798129737/",
    "was_price_cents": 30000
   },
+  "1633837398356850": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Seller states 'really good shape for its age' with 'a couple chipped places.' No photos to verify severity, finish condition, drawer function, structural integrity, or whether veneer (if present) is lifting. Dovetailed drawers are a positive quality signal but do not by themselves confirm solid-wood casework.",
+    "confidence": 0.3,
+    "deal_score": 58.0,
+    "est_asis_value_cents": 6500,
+    "est_restoration_cost_cents": 4000,
+    "est_restoration_effort_hours": 5.0,
+    "est_restored_resale_value_cents": 22000,
+    "identified_item": "Unbranded vintage 4-drawer wood dresser, dovetail-joined drawers",
+    "maker_guess": null,
+    "materials": [
+     "solid wood (implied by weight and dovetail joinery)",
+     "case/top material unverified \u2014 could be solid wood or veneered panels",
+     "original or replaced hardware unknown"
+    ],
+    "reasoning": "No maker mark, label, or brand is mentioned, so there is no specific name whose auction record can be checked \u2014 this is generic unbranded vintage furniture, valued as a category rather than by attribution (per guidance, confidence is capped accordingly). Dovetailed drawer joinery and 'heavy' construction suggest genuine solid-wood build quality above typical big-box furniture, which is a real positive signal even without photos. However, without images I cannot verify whether the case sides/top are solid wood or veneered plywood, assess finish condition, check for veneer lifting, water damage, drawer runner wear, or confirm the extent of the 'chipped places.' Unbranded dressers of this type do not transact at auction houses \u2014 the realistic market is local resale (Facebook Marketplace/Craigslist/estate sale), where clean, sturdy, dovetailed vintage dressers commonly sell in the $150-300 range once cleaned/refinished, versus $50-100 as-is with cosmetic flaws. I've priced as-is near the asking price given the disclosed chips and unknown condition, and restored value at a conservative point in the typical resale range for this category rather than assuming an above-average result. Restoration cost estimated for sanding, spot veneer/wood repair, refinishing, and hardware cleaning \u2014 a modest DIY-scale job, not major structural work, though this assumption cannot be verified without photos.",
+    "style_era": "Likely mid-20th-century American (c. 1940s-1960s) based on dovetailed drawer construction and 'heavy/sturdy' description; could also be an earlier or later reproduction \u2014 cannot confirm era without photos of hardware, drawer runners, or back-panel construction"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 7000,
+   "appraised_with_photos": false,
+   "appraiser": "claude-code",
+   "asking_price_cents": 7000,
+   "description": "Antique wooden dresser. Dove tailed drawers. Heavy. Sturdy. \nBeautiful dresser. Overall in really good shape for its age- couple chipped places see pics",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1633837398356850",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Morehead, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent.fcps4-1.fna.fbcdn.net/v/t39.84726-6/784352949_2459977227846650_3801106281490104742_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=108&ccb=1-7&_nc_sid=92e707&_nc_ohc=tckClDe-QLsQ7kNvwFsQneE&_nc_oc=AdpfcvHE6B-ptPisdspMR15l_WuviCZYnX6V3EoAmc6A1-strOH8XfEiTsfh9b2eBbTOXrGaXC2ZWyuz9t7LAByk&_nc_zt=14&_nc_ht=scontent.fcps4-1.fna&_nc_gid=ztIOoFrWo9chSGpfpA2ZJw&_nc_ss=7c289&oh=00_AQGSHro1bJGuA1TovvG9oQSL6r9x82eiVNQJy9sYy1AG0A&oe=6A921220",
+    "https://scontent.fcps3-1.fna.fbcdn.net/v/t45.5328-4/784078692_1648926473949269_1068195206517272443_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=100&ccb=1-7&_nc_sid=247b10&_nc_ohc=N2ZilcPS_VEQ7kNvwGCbbio&_nc_oc=AdoxVABAwaUWQ5J072oN_UViQ89u61oFPSSA5-AHK-xwRao0ZBmF5ldaD94x1Xc4LGI80Gvf4X6TpnyaflRhf8Qx&_nc_zt=23&_nc_ht=scontent.fcps3-1.fna&_nc_gid=ztIOoFrWo9chSGpfpA2ZJw&_nc_ss=7c289&oh=00_AQFtcxbbtd_oVSKhpXLlP4e38X4vpct1khKW8sTNVAQxQQ&oe=6A922ED4",
+    "https://scontent.fcps4-1.fna.fbcdn.net/v/t45.5328-4/784507573_4671784759774438_3810899569727139865_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=111&ccb=1-7&_nc_sid=247b10&_nc_ohc=vtSbhxrXRjoQ7kNvwG7IR2N&_nc_oc=Adqej8t32UhWL8jDji7sv1ZoGlhxWozpN9YNp4T6G0zXFR_qfgG4lAyAV-hrMVAWifIldXIFpNG4z4s3sSiEzvsY&_nc_zt=23&_nc_ht=scontent.fcps4-1.fna&_nc_gid=ztIOoFrWo9chSGpfpA2ZJw&_nc_ss=7c289&oh=00_AQH_pLKT8Pe_pqtrSOW8-4K49WQxgTki_Dn14LGIcILhFQ&oe=6A921C5F"
+   ],
+   "posted_at": "2026-08-24T02:58:08Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 7000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Vintage 4-Drawer Wood Dresser",
+   "url": "https://www.facebook.com/marketplace/item/1633837398356850/",
+   "was_price_cents": null
+  },
   "1636687951801415": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -6921,7 +7958,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -7114,6 +8151,65 @@
    "title": "Hutch",
    "url": "https://www.facebook.com/marketplace/item/1653412559295425/",
    "was_price_cents": 5000
+  },
+  "1654136749618665": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Both pieces have already been refinished in a matte charcoal/black paint; the finish looks even with no major chips, flaking, or veneer loss visible. Drawers appear to close and align reasonably well. No maker's mark, label, or dovetail/joinery detail is visible in any of the three photos, so drawer-box construction quality (dovetail vs. stapled/dowel) cannot be confirmed. Hardware style and drawer-front detailing differ substantially between the two pieces, suggesting they are not a factory-matched set despite being marketed as one \u2014 they've been coordinated by paint color only.",
+    "confidence": 0.3,
+    "deal_score": 50.0,
+    "est_asis_value_cents": 14000,
+    "est_restoration_cost_cents": 6000,
+    "est_restoration_effort_hours": 2.5,
+    "est_restored_resale_value_cents": 20000,
+    "identified_item": "Two-piece painted bedroom set: a low 'media chest' (2 open cubbies over 4 drawers, modern square gold pulls) and a tall 5-drawer chest with Mediterranean/French Provincial-style carved drawer fronts and ornate gold bail pulls",
+    "maker_guess": null,
+    "materials": [
+     "Solid wood drawer fronts and face frame (likely poplar/oak) on the tall chest, with machine-molded/machine-carved floral (fleur-de-lis) detailing typical of mid-century promotional furniture",
+     "Case sides/top construction not verifiable from available photos \u2014 could be solid wood or wood veneer over engineered substrate",
+     "Modern brass-tone rectangular pulls on media chest (likely replaced/non-original hardware)",
+     "Ornate cast brass-tone bail pulls on tall chest (period-appropriate style)"
+    ],
+    "reasoning": "No maker's mark or brand is visible in any photo, and nothing about the carving, hardware, or proportions points to an identifiable named maker or workshop \u2014 per the valuation rules, I'm not attaching this to a specific market and confidence is capped low. Visually this reads as ordinary mass-produced American 'Mediterranean/French Provincial' bedroom furniture (mid-century promotional grade, sold widely by many manufacturers with no premium collector market), not a designer or studio piece. The two items also don't appear to be an original matched set \u2014 the media chest's open cubbies and plain square pulls are a different design language from the tall chest's carved panels and ornate bail pulls \u2014 they've simply been painted to coordinate, which is worth flagging to a buyer even though it doesn't much affect resale value for this tier of furniture. Because the set is already refinished in a currently-popular matte charcoal, restoration needs are minor (hardware cleaning/matching, small touch-ups) rather than a full strip-and-refinish. At a $150 ask for both pieces, this is close to fair market for unbranded, already-painted vintage-style bedroom furniture in this condition \u2014 neither a steal nor overpriced. No auction or sold comps are reported because no identifiable maker or brand exists to search against; inventing generic 'similar quality' comps would violate the no-fabrication rule.",
+    "style_era": "Mass-market Mediterranean/French Provincial bedroom furniture, likely 1960s-1980s manufacture for the tall chest; the media chest's open-cubby cable/media storage layout and plainer pulls read as a later or different-line piece, not original to the tall chest"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 15000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 15000,
+   "description": "Refurbished wood dresser set has a dark charcoal finish. The media chest includes two open top compartments and four drawers with modern gold-tone rectangular pulls. The tall chest of drawers features five drawers with ornate vintage-style gold-tone handles and decorative carved detailing on the drawer fronts. Both pieces have a solid wood construction with a painted matte finish.",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1654136749618665_1.jpg",
+    "photos/1654136749618665_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1654136749618665",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Georgetown, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1654136749618665.jpg",
+   "photo_urls": [
+    "https://scontent-atl3-3.xx.fbcdn.net/v/t39.84726-6/786266313_2462668950920919_8658961336461743919_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=lA3oL-WjpJQQ7kNvwEsZzIc&_nc_oc=AdpOIwmXZt4JNIowqFa2OZ8RpXuNma1iL0FrgRGdyics2UAaHNk1t4w4ppZ_0KX_Yq-iHa58tnrabzWjvah6AO-0&_nc_zt=14&_nc_ht=scontent-atl3-3.xx&_nc_gid=hJ92E-4TNUdujPgm_fSRyQ&_nc_ss=72289&oh=00_AQGmWMr9W9hbvOjtl4iEtSSjQWT3arjRWgkT4T-aUid3Ew&oe=6A920347",
+    "https://scontent-atl3-2.xx.fbcdn.net/v/t45.5328-4/785645766_930252053455531_3346725500192014845_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=104&ccb=1-7&_nc_sid=247b10&_nc_ohc=e1J_J6XqRE8Q7kNvwFpISqB&_nc_oc=Adr0fOQwjh9m0mnFZcmIz9FXGyf0LyZL9QSpYcHoe4v6cHtEkd54e1GDNBko_PCyCkpzsbke8cGo4nuTwAPYl-y_&_nc_zt=23&_nc_ht=scontent-atl3-2.xx&_nc_gid=hJ92E-4TNUdujPgm_fSRyQ&_nc_ss=72289&oh=00_AQHhIu5yq0uFZmI3k9bWM67s4IGmz6SLCpnt7pQz7unkGg&oe=6A923460",
+    "https://scontent-atl3-1.xx.fbcdn.net/v/t45.5328-4/785601422_2247378522501644_4102591814932615913_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=247b10&_nc_ohc=ORHGCSaAgwIQ7kNvwFY4BJ7&_nc_oc=AdoSXbaBamy63AJu-tybY_tGRUEklMw7nbFSaZQHCdJlb0kJedcu5MHfc8sKlmwcqKqrAkfPNwY0wdjKupguEvB9&_nc_zt=23&_nc_ht=scontent-atl3-1.xx&_nc_gid=hJ92E-4TNUdujPgm_fSRyQ&_nc_ss=72289&oh=00_AQEDBsYe0YT-Ty3ep9un-zMBBJc695ufPHSccUECTXrlEA&oe=6A9226BE"
+   ],
+   "posted_at": "2026-08-24T10:39:34Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 15000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Matching Black Dresser and Media Chest Set",
+   "url": "https://www.facebook.com/marketplace/item/1654136749618665/",
+   "was_price_cents": null
   },
   "1656337893168532": {
    "appraisal": null,
@@ -7607,7 +8703,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "North Vernon, IN",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent.fcps4-2.fna.fbcdn.net/v/t39.84726-6/784252208_1070038845988250_3261956517061474770_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=92e707&_nc_ohc=lmABgV5yz6YQ7kNvwGGRyUy&_nc_oc=AdrUFy_WK_UOiwZkMiiVlEsbjITcqJIshJQ7JJdrquTnIBwIulRQmzAOQgmCcbKE-I4GRMQutXC3u41AAL43kUuC&_nc_zt=14&_nc_ht=scontent.fcps4-2.fna&_nc_gid=QLlE8PVoFDd3SCzJcKJwpQ&_nc_ss=7c289&oh=00_AQEqXl3Ukn5OseqPL-EyjCo9wLSIDoeSYfsjXwHqbddIZA&oe=6A90B2D1",
@@ -7676,7 +8772,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -7709,7 +8805,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Winchester, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-dfw5-1.xx.fbcdn.net/v/t39.84726-6/780909944_1676397013927634_621619169377114636_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=111&ccb=1-7&_nc_sid=92e707&_nc_ohc=S3plv-4ZFZ8Q7kNvwE5uaFJ&_nc_oc=AdonGnseRNDE3AFXKzogiralJuy0D55utEZfhV7SSskw8oTk4Mqbbvln9PRc_ydpscic0DY7Fh7IszUl23pB0bnJ&_nc_zt=14&_nc_ht=scontent-dfw5-1.xx&_nc_gid=NOt2pWvYZbYLYGlxs0T_PQ&_nc_ss=72289&oh=00_AQEcmDgiAQf3t_Aru1darMD6dCcw2Xd9lA7en9lEtw2nGg&oe=6A90D12E"
@@ -7848,6 +8944,39 @@
    "url": "https://www.facebook.com/marketplace/item/1709295653307302/",
    "was_price_cents": null
   },
+  "1711568236810410": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1711568236810410",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1711568236810410",
+   "was_price_cents": null
+  },
   "1711730903246604": {
    "appraisal": {
     "comps": [],
@@ -7885,7 +9014,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Nancy, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1711730903246604.jpg",
    "photo_urls": [
     "https://scontent-lax3-1.xx.fbcdn.net/v/t39.84726-6/784748344_1970089764408911_916207080212300911_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=92e707&_nc_ohc=mMMcM1eHm6UQ7kNvwF6jC0S&_nc_oc=AdrDfeVNYEsCELYD9gP7G-zh1sYXpP0cllZvPqD9-uEI6a_Ku4_h_buJv90l9ZbKnl1_2x6hq55W7ssgJzdkQ1A1&_nc_zt=14&_nc_ht=scontent-lax3-1.xx&_nc_gid=Y5ufL7cMZBikV-LmTpRuqg&_nc_ss=72289&oh=00_AQE2HsfEsn0UHYBiGTqRO7p_flV4ClqbZyGS55yX3VmWEA&oe=6A90D4C7",
@@ -8101,6 +9230,39 @@
    "url": "https://www.facebook.com/marketplace/item/1723344768790855/",
    "was_price_cents": null
   },
+  "1728004731746052": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1728004731746052",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1728004731746052",
+   "was_price_cents": null
+  },
   "1728247504987505": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -8163,6 +9325,65 @@
    "state": "gone",
    "title": "Mid Century Modern, Natural Wood Dresser",
    "url": "https://www.facebook.com/marketplace/item/1728890758307628/",
+   "was_price_cents": null
+  },
+  "1729031448347332": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Already refinished per listing; finish looks even and glossy in photos with no obvious veneer lifting, water rings, or cracked drawer fronts visible. Turned front feet appear mismatched in profile/turning style to the rest of the case, suggesting a prior repair or non-original foot replacement. No maker's mark, paper label, or stamp visible in any photo. Drawer interiors/joinery (dovetails) are not shown, so construction quality can't be confirmed beyond the visible veneer case work and applied carved drawer medallion.",
+    "confidence": 0.3,
+    "deal_score": 35.0,
+    "est_asis_value_cents": 15000,
+    "est_restoration_cost_cents": 6000,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 22000,
+    "identified_item": "Depression-era (Jacobean/Colonial Revival) walnut-veneer four-drawer chest, mass-produced American factory furniture",
+    "maker_guess": null,
+    "materials": [
+     "walnut veneer over secondary wood (likely poplar/gumwood) case and drawer fronts",
+     "solid wood drawer sides/case frame (typical of era)",
+     "replacement or later turned feet (style doesn't match the shaped apron, suggesting a repair/marriage)",
+     "pressed glass knobs (period-style, possibly replaced)"
+    ],
+    "reasoning": "No maker, label, or stamp is identifiable in any of the three photos, so this is generic factory-made Depression-era/Revival-style bedroom furniture rather than a named workshop piece \u2014 per the valuation rules I'm keeping confidence low (0.3) rather than reasoning from 'quality of the era.' This style (shaped drawer fronts, applied fretwork drawer pull, waterfall-adjacent case with veneer panels) was produced in huge volume by dozens of American factories 1920s-1940s and realized prices for unmarked examples at auction and on eBay sold listings are typically modest \u2014 commonly $75-250 depending on condition and whether the buyer needs a matching bedroom set. Since the piece has already been refinished (per the listing description), the $299 ask already includes labor that doesn't add much resale premium for an unmarked piece \u2014 refinishing a generic dresser usually does not return its cost dollar-for-dollar at resale. The mismatched-looking front feet also suggest a repair that a careful buyer would flag, capping upside. As-is I'd value it around $150 (a fair flea-market/antique-mall realized price for this class of piece), with modest room to push to ~$220 if hardware is upgraded to period-correct pulls and the feet are corrected/matched \u2014 but I have no specific realized comps for a named maker to anchor a higher number, so I'm erring toward the lower, more defensible figure per the guidance to prefer the smaller estimate when uncertain.",
+    "style_era": "c. 1920s-1930s American Depression/Waterfall-adjacent Revival"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 29900,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 29900,
+   "description": "Refinished Antique Dresser\n32W x 17D x 44-1/2H\nAvailable for pick up at Middletown Peddlers Mall\n12405 Shelbyville Road",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1729031448347332_1.jpg",
+    "photos/1729031448347332_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1729031448347332",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Louisville, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1729031448347332.jpg",
+   "photo_urls": [
+    "https://scontent-mia5-1.xx.fbcdn.net/v/t39.84726-6/785364130_1587777163072283_7399165945468022653_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=92e707&_nc_ohc=z45GlWa6ayUQ7kNvwEGJaf_&_nc_oc=AdrBvxedvDr7BxTl7bB7EWDu57z0Mgjmo_nk5NzAUVBl6EtbYHb0aLBB2XfOPTH3I7A&_nc_zt=14&_nc_ht=scontent-mia5-1.xx&_nc_gid=RJCmR4qHza1iiPtw_oGvnA&_nc_ss=7c289&oh=00_AQHvC-7YhS6xpgaZlUYmp6KhU3c9iDAspdV3liaCbEZK1g&oe=6A922A93",
+    "https://scontent-mia3-1.xx.fbcdn.net/v/t45.5328-4/782730705_1079538988060122_7991545362662322575_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=111&ccb=1-7&_nc_sid=247b10&_nc_ohc=ff9xInjidusQ7kNvwFQJyAS&_nc_oc=AdpGvlZ4dRnA2OHDJG8t_zp_UMphDORL35dN3bl9Uogk8IsdZDcGZcIHDNC7G3UaD0Y&_nc_zt=23&_nc_ht=scontent-mia3-1.xx&_nc_gid=RJCmR4qHza1iiPtw_oGvnA&_nc_ss=7c289&oh=00_AQHgIu6_GNsSB2RiXnwfGLiuWOhARpax4JGd1gn4Ab0esQ&oe=6A921C33",
+    "https://scontent-mia3-3.xx.fbcdn.net/v/t45.5328-4/784748993_4436002023309188_8128298572921317871_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=247b10&_nc_ohc=2ZcNx4m8Kj8Q7kNvwEWAm3N&_nc_oc=Adp-AWogcC366YwB_POkL4Wc2sd2rHcsBYNsabLTrnpPg2BFPr5vXwMPUuIVkabO2jw&_nc_zt=23&_nc_ht=scontent-mia3-3.xx&_nc_gid=RJCmR4qHza1iiPtw_oGvnA&_nc_ss=7c289&oh=00_AQFxeA1yuTxGIMVuTmk5U3v0A_xQQakchklTNRPWQYPHsw&oe=6A9226C3"
+   ],
+   "posted_at": "2026-08-24T02:52:39Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 29900
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Antique 4 Drawer Dresser",
+   "url": "https://www.facebook.com/marketplace/item/1729031448347332/",
    "was_price_cents": null
   },
   "1730695141585130": {
@@ -8299,7 +9520,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Nicholasville, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1738178217305063.jpg",
    "photo_urls": [
     "https://scontent-ord5-1.xx.fbcdn.net/v/t39.84726-6/782144663_1778608596496132_8611669094855710074_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=92e707&_nc_ohc=jHsGyNzFRycQ7kNvwHKTLm3&_nc_oc=AdqJWliVwYQUSyXGWnMBACH7XOUyA7CEoHIjv02icoJJaVoelNf4zUGct_yCHsIAwrs&_nc_zt=14&_nc_ht=scontent-ord5-1.xx&_nc_gid=IKkLVHh7_Ovngabea6R-hA&_nc_ss=7c289&oh=00_AQGH3Nj_cIk1Vzci0s1P1WAZ97l9CT9aZX-j2j05iqXavw&oe=6A90E30F",
@@ -8594,7 +9815,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -8750,7 +9971,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Somerset, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-det1-1.xx.fbcdn.net/v/t39.84726-6/784005667_1087828937033770_3763206667335292746_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=caMjuRIq928Q7kNvwHMFBX6&_nc_oc=AdqUalJZvo4QuXHBQlBRvF1_33lMI2ZK5MgKlxxpUAOzFbtpouT_XBSwnHCDebzusytfCxyEtXpQ1eVySqpAVTlY&_nc_zt=14&_nc_ht=scontent-det1-1.xx&_nc_gid=Z_I4wo3f6CvcmslxjNnSAA&_nc_ss=72289&oh=00_AQHln_bJj6OnLJ34hWsr_kiRzqQmxfBNLQbw9Eh2fQzEWA&oe=6A90C159"
@@ -8806,6 +10027,41 @@
    "url": "https://www.facebook.com/marketplace/item/1785190922664753/",
    "was_price_cents": null
   },
+  "1788609295661216": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 16000,
+   "description": "White 6 drawer dresser\n55 in x 15.5in x 32 in\n No asking $160",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1788609295661216",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Floyds Knobs, IN",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-atl3-2.xx.fbcdn.net/v/t39.84726-6/784427151_1430750295680968_1134678702582098214_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=102&ccb=1-7&_nc_sid=92e707&_nc_ohc=O_Ru3vyFMRMQ7kNvwEMlJZ-&_nc_oc=AdqXJKik-j6yoR3xEjRq7-fzyzCfS40fb7uEf5J9OzjxBXOOH99pAiWbQek97keiIhJB_lqq2NV_Qco3VrM2v4i2&_nc_zt=14&_nc_ht=scontent-atl3-2.xx&_nc_gid=_aLn0C5hNxo79GUiaxb0-g&_nc_ss=7c289&oh=00_AQHogK8ztL3dv6F_sq8Gvh2-s6IjvQwBnjgIhzjNG66JfA&oe=6A921E70"
+   ],
+   "posted_at": "2026-08-24T12:18:51Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 16000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "White 6-Drawer Dresser",
+   "url": "https://www.facebook.com/marketplace/item/1788609295661216/",
+   "was_price_cents": null
+  },
   "1795520344787725": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -8822,7 +10078,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -8872,6 +10128,65 @@
    "state": "gone",
    "title": "8-Drawer Fabric Dresser",
    "url": "https://www.facebook.com/marketplace/item/1799018564413823/",
+   "was_price_cents": null
+  },
+  "1807779200382178": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Already refinished by the seller (dark gel-stain style finish that emphasizes/highlights grain, a common flip technique that can also mask veneer seams or lower-grade wood), with replacement modern brass bar pulls and brass leg caps, and contact-paper drawer liners rather than original hardware/finish. No maker's mark, label, or dovetail joinery visible in the photos provided \u2014 drawer box construction and case material (solid wood vs. veneer over particleboard) cannot be confirmed from the exterior shots. Seller discloses imperfections visible in certain light. Overall a clean, presentable, already-market-ready set rather than a raw restoration candidate.",
+    "confidence": 0.3,
+    "deal_score": 50.0,
+    "est_asis_value_cents": 50000,
+    "est_restoration_cost_cents": 4000,
+    "est_restoration_effort_hours": 2.0,
+    "est_restored_resale_value_cents": 60000,
+    "identified_item": "Mid-century-style dark-stained bedroom set: 3-drawer dresser, matching vertical mirror, and two 2-drawer nightstands, with tapered wood legs and brass sabots",
+    "maker_guess": null,
+    "materials": [
+     "wood (species unconfirmed, likely oak/pine veneer or solid secondary wood)",
+     "wood veneer or heavily grain-filled solid wood top",
+     "brass-toned metal hardware (replacement pulls, leg sabots)",
+     "contact paper drawer liners"
+    ],
+    "reasoning": "No maker's mark or label is visible in any of the three photos, and no dovetail or mortise-and-tenon joinery is visible (drawer boxes aren't shown) \u2014 so this is priced as unattributed mid-tier vintage/MCM-style furniture, not a named-maker piece, and confidence is capped accordingly per the valuation rules. The piece has already been refinished/flipped: original hardware was swapped for generic modern brass bar pulls, drawers were relined with contact paper, and the dark stain heavily 'pops' the grain \u2014 a hallmark of budget flips that can also be used to visually dress up plain-grain wood or veneer. Because the restoration work is already done, there is little additional value to unlock; est_asis_value is set close to (but modestly below) the $625 ask, reflecting a full 5-piece set (dresser, mirror, 2 nightstands) that is complete and usable but generic and unattributed. No sold comps are reported because no identifiable maker was found and I do not have verified realized-auction data for this specific unmarked set on hand \u2014 reporting fabricated comps would violate the no-invention rule. Market judgment: unmarked, already-refinished mid-century-style bedroom sets like this commonly transact in the $400-700 range on secondary marketplaces, supporting a modest-but-not-exceptional deal score.",
+    "style_era": "Mid-century modern influenced, likely 1970s-1980s per seller's '40+ years old' claim"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 62500,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 62500,
+   "description": "Refinished bedroom set includes a three-drawer dresser with a matching vertical mirror and two two-drawer nightstands. The set is constructed from wood with a dark brown stained finish that highlights the grain. Each piece has modern cylindrical brass-toned drawer pulls and matching brass-capped tapered legs. The drawers are lined with a patterned botanical contact paper.This would be the perfect set for a smaller bedroom or even split between using the night stands in a bedroom and the dresser in a small entrance. \n\nI require a 20% non-refundable deposit to hold these items for up to 48 hours",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/1807779200382178_1.jpg",
+    "photos/1807779200382178_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1807779200382178",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Shelbyville, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/1807779200382178.jpg",
+   "photo_urls": [
+    "https://scontent-lga3-3.xx.fbcdn.net/v/t39.84726-6/785602584_1343900197826606_5059242649657947291_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=102&ccb=1-7&_nc_sid=92e707&_nc_ohc=OJlRGoFr3KgQ7kNvwEoJg0I&_nc_oc=AdotURNaxvGRJxpXoiS1Ddk7OfclIgEEP5gz6F8I28WmDoTRfQvN0PHY0g2YN1H7w4ZSFtNosW0qtvljFvLGnQ5A&_nc_zt=14&_nc_ht=scontent-lga3-3.xx&_nc_gid=9ntLe12dKHIWZIJJIeXI0w&_nc_ss=72289&oh=00_AQEwbaoN-AGVWgpynZ2hwilRhRSmJXCvT2D_4h1WIu6jKg&oe=6A9218E5",
+    "https://scontent-lga3-3.xx.fbcdn.net/v/t45.5328-4/784541886_28407372322214519_2593685990442069445_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=104&ccb=1-7&_nc_sid=247b10&_nc_ohc=n-8mTFSnnRIQ7kNvwEyTWRM&_nc_oc=AdqaqfTLQWJlulJJFyySE3zhg6vX2qt-fPJ8jIyUTces9DTFhTnnWaj48Hx3u7ybKToq3khqUbcvmUOlRb6Lzoo9&_nc_zt=23&_nc_ht=scontent-lga3-3.xx&_nc_gid=9ntLe12dKHIWZIJJIeXI0w&_nc_ss=72289&oh=00_AQH2N-pY-021ae541tNYAJGwXy7IY8_G1aJ9j6yngj-uYQ&oe=6A922D31",
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t45.5328-4/784961417_1545195793486943_5585444943009038633_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=109&ccb=1-7&_nc_sid=247b10&_nc_ohc=baCTJHuyHV4Q7kNvwGmzrrR&_nc_oc=AdrtT2uvbVHQVgPVNEhLDmx3icZ8XvUCX48Fp3_e_6JTHAnaeEioRP5t_wplVsa_TKZp1ZjTW3PdiUQOgPBUOPn7&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=9ntLe12dKHIWZIJJIeXI0w&_nc_ss=72289&oh=00_AQFFBb6RjeySGzB1ctRbW2MMiXE4odZWJnjsvrqWgvjn3A&oe=6A922E8B"
+   ],
+   "posted_at": "2026-08-24T11:22:18Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 62500
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Dark Wood Bedroom Set with Dresser, Mirror, and Two Nightstands",
+   "url": "https://www.facebook.com/marketplace/item/1807779200382178/",
    "was_price_cents": null
   },
   "1830927941216071": {
@@ -9189,7 +10504,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Louisville, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1951771022165310.jpg",
    "photo_urls": [
     "https://scontent-lax3-2.xx.fbcdn.net/v/t39.84726-6/784352251_1130140229448487_5732914955868767171_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=92e707&_nc_ohc=msBC7c4wqiwQ7kNvwGWXGzd&_nc_oc=AdpCiveuY50BPEpYJjtQjmfVnAvE4FVf6pnj6AK74i-YzZyz4VHM91RZ_m8d3kI_Ki6Cv-yTkYF4kL6mcaPZTg-0&_nc_zt=14&_nc_ht=scontent-lax3-2.xx&_nc_gid=ojpUhXmU-tSsHLMxB8Npqw&_nc_ss=72289&oh=00_AQElxIXHdNTXOE7Gflal6qqTmPvyCvsiLbCE8I-CYWr76A&oe=6A90AE25",
@@ -9277,7 +10592,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Berea, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/1974591896566474.jpg",
    "photo_urls": [
     "https://scontent-atl3-3.xx.fbcdn.net/v/t39.84726-6/784426833_1607803684043347_5200694970209617580_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=4sU3nExMeHYQ7kNvwF773w9&_nc_oc=AdrDSSTbW3EQP7BiaaHcsa_8lKzJ8Au_PSmaiIopE9dNqXXbtEOxOBHdhj-3vtx-QEGon0I1W9rxek4PdLlBrIWJ&_nc_zt=14&_nc_ht=scontent-atl3-3.xx&_nc_gid=nKVhDPwFDh-60BE_SywbQg&_nc_ss=72289&oh=00_AQFmeqMZnJpvocv4RGW0XDvIXdekG7VRFPKToYEbW4H-4A&oe=6A90AC96",
@@ -9360,6 +10675,72 @@
    "url": "https://www.facebook.com/marketplace/item/1980161782685557/",
    "was_price_cents": null
   },
+  "1980480719291252": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1980480719291252",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1980480719291252",
+   "was_price_cents": null
+  },
+  "1987961371868635": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1987961371868635",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1987961371868635",
+   "was_price_cents": null
+  },
   "1991846584827847": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -9376,7 +10757,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -9428,6 +10809,39 @@
    "state": "gone",
    "title": "Queen size bed frame and dresser",
    "url": "https://www.facebook.com/marketplace/item/1995294111143008/",
+   "was_price_cents": null
+  },
+  "1996035628448888": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "1996035628448888",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/1996035628448888",
    "was_price_cents": null
   },
   "1996891167635468": {
@@ -9526,6 +10940,97 @@
    "url": "https://www.facebook.com/marketplace/item/2006403393382000/",
    "was_price_cents": 25000
   },
+  "2017960692216443": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2017960692216443",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2017960692216443",
+   "was_price_cents": null
+  },
+  "2034399083866385": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Overall solid and presentable: finish shows moderate sheen with light scratching and some UV fading on top surfaces, drawers appear to operate, no visible structural damage, cracking, or water staining in photos. No maker's label or stamp visible in any shot. Construction is mass-market (butt-jointed/stapled drawer boxes, likely on metal glides) rather than fine cabinetmaking \u2014 no dovetails or mortise-and-tenon joinery visible.",
+    "confidence": 0.35,
+    "deal_score": 45.0,
+    "est_asis_value_cents": 25000,
+    "est_restoration_cost_cents": 7500,
+    "est_restoration_effort_hours": 4.0,
+    "est_restored_resale_value_cents": 40000,
+    "identified_item": "Mid-century (1960s\u201370s) knotty/aromatic cedar bedroom suite: headboard, footboard, 2 nightstands, dresser with mirror, chest, and bookcase-style piece",
+    "maker_guess": null,
+    "materials": [
+     "Solid aromatic red cedar (tongue-and-groove plank fronts/tops)",
+     "likely plywood/composite drawer sides, backs and case interiors typical of the era",
+     "chrome/metal drawer pulls"
+    ],
+    "reasoning": "No maker mark or brand is visible in any photo, so I cannot name a specific manufacturer whose realized auction results would anchor this estimate \u2014 per the valuation rules, confidence is capped low as a result. This is a generic, mass-produced solid knotty cedar bedroom suite typical of 1960s\u201370s American furniture (often marketed for its moth-repellent cedar-closet qualities rather than as fine furniture). Joinery is basic (butt/staple construction visible on drawer boxes), not dovetailed or mortise-and-tenon, which rules out a high-end cabinetmaker origin. Full 6-piece bedroom suites like this are common at estate sales and typically undersell relative to per-piece value because of bulk/moving-cost friction \u2014 buyers for a complete matching suite are a narrower pool than buyers for a single cedar chest. Realistically this class of furniture clears in the $150\u2013350 range as-is at auction or estate sale, with condition here on the better end (clean, no obvious damage) supporting the higher end of that range. The $300 ask is close to fair market value for the full set, not a steal \u2014 deal score reflects a roughly break-even proposition. Restoration would be light (cleaning, oil/wax refresh, tightening hardware, maybe re-gluing a drawer or two) rather than a rebuild, so the resale upside after ~4 hours of work and modest materials cost is modest, not dramatic. I found no specific 'sold' comps I can verify for this exact maker/style to cite, so comps is left empty rather than inventing figures \u2014 this absence itself is why confidence is capped at 0.35.",
+    "style_era": "1960s\u20131970s American 'cedar closet' bedroom furniture, mass-produced knotty cedar plank style"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 30000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 30000,
+   "description": "Estate Sale: Bedroom Set includes: Full Size Headboard, Footboard, 2 night stands, Dresser with Mirror, Dresser, Bookcase. Cedar finish",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/2034399083866385_1.jpg",
+    "photos/2034399083866385_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2034399083866385",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Eminence, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/2034399083866385.jpg",
+   "photo_urls": [
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t39.84726-6/783777181_2471506563259877_6513763324981948075_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=92e707&_nc_ohc=TtDWh0-KUgEQ7kNvwHiw-nK&_nc_oc=AdqKbEeMAUu6_bkvsA4Ig7vfi5_8kpOsUyvhifnh6ndCURR4MGXBHIeQVtRQSzPgb2k&_nc_zt=14&_nc_ht=scontent-lga3-1.xx&_nc_gid=DwKbVJ8ObGkFKk9AK6e8DA&_nc_ss=72289&oh=00_AQFz0e9lsmu1ofX4Z7TyF4xb48cDITwhETfNNGL_0xGvUg&oe=6A92218A",
+    "https://scontent-lga3-2.xx.fbcdn.net/v/t45.5328-4/784796767_840152659187023_4965579485621657472_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=g9j3AFeZEdAQ7kNvwEOPnSK&_nc_oc=AdodYWROZSi_gx1LXKFzjqpdeetNCra8uVmoLTG3VT9bhYAv_XVzu5ySYVzS3PA6-30&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=DwKbVJ8ObGkFKk9AK6e8DA&_nc_ss=72289&oh=00_AQH0cRQs2WEu4AH568imf71NAIeCKY3CTGTrHrjqLkf5Uw&oe=6A922A84",
+    "https://scontent-lga3-2.xx.fbcdn.net/v/t45.5328-4/784428045_1270859606111743_4154575509683844595_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=247b10&_nc_ohc=sfzd0gTXPgcQ7kNvwHWEcRK&_nc_oc=Adr4ns5StDEyNalKPSaT-e4ivIlbWl9_Hnzz0VHpxqiRfZQU4CGhEqo_HNiVnRepeWM&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=DwKbVJ8ObGkFKk9AK6e8DA&_nc_ss=72289&oh=00_AQGGocqR81PCKVYan60-0B4uVhuisVZKPkkpLuqgGkBgfw&oe=6A921A35"
+   ],
+   "posted_at": "2026-08-24T01:27:54Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 30000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Bedroom Set Full",
+   "url": "https://www.facebook.com/marketplace/item/2034399083866385/",
+   "was_price_cents": null
+  },
   "2041175570097021": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -9542,7 +11047,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -9722,6 +11227,39 @@
    "url": "https://www.facebook.com/marketplace/item/2064439784503210/",
    "was_price_cents": null
   },
+  "2066750594202182": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2066750594202182",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2066750594202182",
+   "was_price_cents": null
+  },
   "2073599049857278": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -9882,7 +11420,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -10121,6 +11659,65 @@
    "url": "https://www.facebook.com/marketplace/item/2105305880334082/",
    "was_price_cents": null
   },
+  "2124868041401926": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Important caveat: all three supplied images are Ashley's own manufacturer/catalog stock photography (studio white background, official dimension diagram, watermarked 'Copyright Ashley Furniture Industries'), not photos of the actual physical item being sold. True as-is condition \u2014 scratches, water rings, drawer glide function, veneer chipping, missing hardware, odors \u2014 cannot be verified from what was provided, which is itself a red flag on a used-furniture listing. Assuming typical condition for a used piece of this type (some finish wear, drawer sticking, possible loose joinery) is the only reasonable baseline.",
+    "confidence": 0.3,
+    "deal_score": 22.0,
+    "est_asis_value_cents": 30000,
+    "est_restoration_cost_cents": 6000,
+    "est_restoration_effort_hours": 2.0,
+    "est_restored_resale_value_cents": 45000,
+    "identified_item": "Ashley Furniture 'Havalance' 8-Drawer Dresser with Door (model B814-31), rustic gray/whitewash finish with contrasting stained plank top",
+    "maker_guess": "Ashley Furniture Industries \u2014 mass-market factory manufacturer, not an artisan, workshop, or named maker whose work commands a collector/auction market",
+    "materials": [
+     "Solid pine frame, top, and drawer/door fronts (heavily wire-brushed and distressed for a rustic texture)",
+     "Engineered wood (MDF/particleboard) drawer boxes, backs, and case panels typical of this Ashley price tier",
+     "Cast/stamped dark bronze-finish metal knob hardware",
+     "Turned solid-wood bun feet"
+    ],
+    "reasoning": "This is not an antique, artist-made, or maker-marked piece \u2014 it's a current-production, mass-manufactured Ashley Furniture case good (the 'Havalance' line), built primarily from solid pine faces over engineered-wood (MDF/particleboard) drawer boxes and backs, assembled with dowel/staple/glue joinery rather than hand-cut dovetails or mortise-and-tenon work. There is no artisan or workshop name to value against per instruction #1 \u2014 Ashley is a factory brand, so I'm valuing it as ordinary used household furniture rather than reasoning from 'quality of maker,' and I have no specific recalled realized (sold) comps for this exact SKU on marketplaces or auction, so comps is empty and confidence is capped low per the guidance for an unverifiable name/market. Instruction #2 also matters here: the $1,249.99 'original price' cited in the listing is a manufacturer MSRP/inflated reference price, not a realized transaction \u2014 used Ashley rustic-finish case goods of this size and construction typically resell in the low-to-mid hundreds (roughly 25-40% of retail) on marketplaces once actual condition and delivery hassle are factored in, well below the $600 ask. Because the photos are stock/catalog images rather than photos of the actual item, buyers should also discount for unknown real-world condition until it's inspected in person. Restoration needs, if condition is only lightly worn, would be modest: cleaning, tightening drawer hardware/glides, minor touch-up staining on the distressed finish \u2014 a few hours and modest materials cost, not a full refinish, since the whitewash/gray treatment is meant to look worn. Given the gap between the $600 ask and realistic resale, and the unverified condition, this is a below-average flip candidate unless it can be acquired well under asking.",
+    "style_era": "Modern farmhouse / rustic-industrial reproduction style; current mass-production catalog piece (Ashley Havalance collection, introduced ~2019-2020s), not an antique or vintage item"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 60000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 60000,
+   "description": " Original price $1,249.99 Rustic wooden dresser has a weathered gray finish. This piece is constructed from solid wood and veneers with eight drawers and one central cabinet door. It has dark metal knob hardware and turned bun feet.\n\nEstimated (WxDxH): 60 x 18 x 40 in ",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/2124868041401926_1.jpg",
+    "photos/2124868041401926_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2124868041401926",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Florence, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/2124868041401926.jpg",
+   "photo_urls": [
+    "https://scontent-ord5-2.xx.fbcdn.net/v/t39.84726-6/780203514_1414182377267371_2917699762532410060_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=110&ccb=1-7&_nc_sid=92e707&_nc_ohc=5i-OMfVOb-QQ7kNvwGkkuh0&_nc_oc=AdpaBS-riRjXL7lzjQWc-_sUbEcJD6qMBJ0UTaAjyUJmv7snAMzDmSalorpnalPFGByS9_tJGLGkpOV9vv_rB264&_nc_zt=14&_nc_ht=scontent-ord5-2.xx&_nc_gid=W0qvgq7fr9PLAHW7uofoUw&_nc_ss=7c289&oh=00_AQHtCkkzTeyVS7FC5sX_2i1kxByOWkK5P6ZEnnDEOhbAww&oe=6A920560",
+    "https://scontent-ord5-1.xx.fbcdn.net/v/t45.5328-4/784817891_1083153584294669_7591889952206022949_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=IKz5d6yVAFYQ7kNvwH5uRXs&_nc_oc=AdobWCaif3Cmcni5s5ByzeeW1BFxD3MdXovkELhmalDohPswPXk8SMDuRZMuyeHyGU-RnE9bdLQAYG9F1M7el1mm&_nc_zt=23&_nc_ht=scontent-ord5-1.xx&_nc_gid=W0qvgq7fr9PLAHW7uofoUw&_nc_ss=7c289&oh=00_AQFi5VWIM9LjwGdW-7UWScUbFMogrPgMpFMmWYvu6dsx0Q&oe=6A921128",
+    "https://scontent-ord5-2.xx.fbcdn.net/v/t45.5328-4/783352062_1644092673949052_8958688998698021594_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=102&ccb=1-7&_nc_sid=247b10&_nc_ohc=a046Zv0QoZUQ7kNvwFQYjNp&_nc_oc=Adq5W2b7RDIdUShbn3pS5N2vn-ABuj3RT2NmtNHeETSO7gNZkMLSI73gKMoA5Pal2CreevKUEdoSMpia-iaQbzEc&_nc_zt=23&_nc_ht=scontent-ord5-2.xx&_nc_gid=W0qvgq7fr9PLAHW7uofoUw&_nc_ss=7c289&oh=00_AQEk7X-f3sVzuRH9LX39CYsTXq60FZsp9PII13J3k_C7kQ&oe=6A922679"
+   ],
+   "posted_at": "2026-08-24T00:48:54Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 60000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Rustic Gray Wood Dresser with Cabinet Ashley\u2019s furniture Havalance 8 Drawer Dresser with Door",
+   "url": "https://www.facebook.com/marketplace/item/2124868041401926/",
+   "was_price_cents": null
+  },
   "2126103204983198": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -10237,7 +11834,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -10252,6 +11849,72 @@
    "state": "live",
    "title": "",
    "url": "https://www.facebook.com/marketplace/item/2135589004052389",
+   "was_price_cents": null
+  },
+  "2136192053630516": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2136192053630516",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2136192053630516",
+   "was_price_cents": null
+  },
+  "2143984433170892": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2143984433170892",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2143984433170892",
    "was_price_cents": null
   },
   "2144666309594475": {
@@ -10387,7 +12050,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -10435,6 +12098,39 @@
    "title": "Chest and nightstand set - Handles come with",
    "url": "https://www.facebook.com/marketplace/item/2179354536197524/",
    "was_price_cents": 25000
+  },
+  "2186719591899695": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2186719591899695",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2186719591899695",
+   "was_price_cents": null
   },
   "2206067993525689": {
    "appraisal": null,
@@ -10545,6 +12241,43 @@
    "state": "gone",
    "title": "Mid-Century Modern Sofa",
    "url": "https://www.facebook.com/marketplace/item/2228502754613114/",
+   "was_price_cents": null
+  },
+  "2237376450373816": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 15000,
+   "description": "Few minor Knicks in good condition ",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2237376450373816",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Georgetown, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t39.84726-6/778972493_1411571820829225_2936135572943786533_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=111&ccb=1-7&_nc_sid=92e707&_nc_ohc=EnT28cULW8YQ7kNvwEj7YnX&_nc_oc=AdpSRp7sAk1mAlvsercRy_vvzEoV7OzRvN0EeJremoJ_z-foXJuMo4owVniuJrmq6Lk&_nc_zt=14&_nc_ht=scontent-lga3-1.xx&_nc_gid=aec7ss69S3Twby397LObNQ&_nc_ss=72289&oh=00_AQFzFLViAa5Piew9Q9gCGEhVCKgbZh1xwZHQNidsanHXJQ&oe=6A923536",
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t45.5328-4/784733968_1096057362824985_3157029929588405983_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=111&ccb=1-7&_nc_sid=247b10&_nc_ohc=IvAu6mtm4RMQ7kNvwH81eto&_nc_oc=Adp1CS4-waG6J177bfFLeSabjf6-JYpp8Xb4VHt7bE1eJ0tR5JxgfEDElTH0hYwx5Ps&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=aec7ss69S3Twby397LObNQ&_nc_ss=72289&oh=00_AQHOBvkFfSzqGpfWlFxp5Y0zispCtkfjjdXskhHTZ8EUag&oe=6A9207D6",
+    "https://scontent-lga3-1.xx.fbcdn.net/v/t45.5328-4/784961417_1682356586793218_5542776623643403867_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=109&ccb=1-7&_nc_sid=247b10&_nc_ohc=FJtH2WJ2oK0Q7kNvwFj5sRz&_nc_oc=Ado1-9luDNu1LOoKZnnp3cbwtdbv2D7Thz_d25ofh7Wz5UgYAcEx_Z01SD8j-gkL7wE&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=aec7ss69S3Twby397LObNQ&_nc_ss=72289&oh=00_AQERz_3q57xsrnk-zJxKhV3Z6Rp1Uf_9NZl50kGNAUXeiA&oe=6A920FB3"
+   ],
+   "posted_at": "2026-08-24T00:39:32Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 15000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Queen bed with mattress",
+   "url": "https://www.facebook.com/marketplace/item/2237376450373816/",
    "was_price_cents": null
   },
   "2246798129421071": {
@@ -10673,7 +12406,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -10750,6 +12483,39 @@
    "state": "gone",
    "title": "Tall dreser",
    "url": "https://www.facebook.com/marketplace/item/2348150136584077/",
+   "was_price_cents": null
+  },
+  "2406387103103641": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2406387103103641",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/2406387103103641",
    "was_price_cents": null
   },
   "2428993480844970": {
@@ -10878,6 +12644,65 @@
    "url": "https://www.facebook.com/marketplace/item/2432627677218403/",
    "was_price_cents": null
   },
+  "2460785171083804": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Already refinished/repainted in glossy black enamel; drawers reported to operate smoothly; visible wear/scuffing on nightstand base and drawer front edges (chipped paint at corners); no maker's label, stamp, or manufacturer mark visible in any photo; drawer interiors and joinery (claimed dovetails) are not shown in any image so joinery cannot be visually confirmed; hardware appears mismatched in style across drawer rows (bar pulls on top drawers vs. oval knobs below), suggesting possible non-original or added hardware despite the 'original hardware' claim.",
+    "confidence": 0.3,
+    "deal_score": 42.0,
+    "est_asis_value_cents": 30000,
+    "est_restoration_cost_cents": 2000,
+    "est_restoration_effort_hours": 1.0,
+    "est_restored_resale_value_cents": 37500,
+    "identified_item": "Mid-Century Modern 6-drawer dresser and matching nightstand set, refinished in black enamel",
+    "maker_guess": null,
+    "materials": [
+     "Solid wood drawer fronts (grain visible through paint)",
+     "Likely wood veneer or solid case sides (obscured by paint)",
+     "Painted with Wise Owl mineral/chalk-style enamel (Jet Black)",
+     "Brass/gold-tone pulls (mix of bar and oval knob styles)"
+    ],
+    "reasoning": "No maker mark, label, or stamp is visible in any of the three photos, and the case design (curved/waterfall drawer fronts, plinth base, boxy nightstand with open lower shelf) is a generic American MCM production style used by many mid-tier manufacturers (e.g. Bassett, Broyhill, Dixie, Lane clones) \u2014 I cannot attach this to a specific named maker's auction record, so per the valuation rules I'm not inventing comps and confidence is capped low. The piece has already been fully refinished (repainted) by the seller using a known furniture-flipper product (Wise Owl enamel), so there is essentially no restoration upside left for a reseller to add \u2014 the labor is already spent and baked into the asking price. As-is, painted MCM dresser+nightstand sets in secondary markets (Nicholasville/Lexington, KY) typically transact in the $250-400 range depending on photos and buyer urgency; $350 for the pair is a fair, unremarkable market price rather than a steal. Because joinery (dovetails) is not visible in any photo and could not be verified, and hardware style is inconsistent across drawer rows, I'm treating the 'dovetail'/'original hardware' claims as unverified seller description rather than confirmed fact. Restoration cost assumed minimal (felt pads, drawer glide check, minor touch-up paint) since the cosmetic work is already done. This is a moderate, unexciting flip candidate \u2014 buy only if the margin over $350 plus resale effort clears typical local resale friction; it is not a piece where a name or joinery discovery would materially change the number.",
+    "style_era": "American Mid-Century Modern, likely c. 1960s-1970s mass-market case goods"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 35000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 35000,
+   "description": "Vintage Mid Century Modern solid wood dresser with dovetail drawers. Matching nightstand. \n\nDresser has been refinished with Wise Owl Furniture enamel paint. Color is Jet Black. Original hardware. All drawers open smoothly. \n\nDresser:\n50\u201d wide\n32\u201d tall\n18\u201d deep\n\n Nightstand:\n18\u201d wide\n27\u201d tall\n15\u201d deep \n\nPickup in Nicholasville. Delivery is available for $50 to Nicholasville and Lexington.",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/2460785171083804_1.jpg",
+    "photos/2460785171083804_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2460785171083804",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Lexington, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/2460785171083804.jpg",
+   "photo_urls": [
+    "https://scontent-lax3-2.xx.fbcdn.net/v/t39.84726-6/784182168_1782888282884059_9098142063080576054_n.jpg?stp=dst-jpg_p960x960_tt6&_nc_cat=103&ccb=1-7&_nc_sid=92e707&_nc_ohc=mkPM2_MXcmcQ7kNvwEB1xdb&_nc_oc=AdpUaibrkt8yCY_DE-4yn57lQHO-1gOH-BQPdDN_D8SP_amfdwVrHtVAPcXja0-ObF4&_nc_zt=14&_nc_ht=scontent-lax3-2.xx&_nc_gid=oBnk_-avGxOnwCduMjeLWw&_nc_ss=72289&oh=00_AQEF5f4kC4S_Kpfoxreixu3DFpGIthgB_UwCXEE9Whu0Gw&oe=6A9212A9",
+    "https://scontent-lax3-2.xx.fbcdn.net/v/t45.5328-4/782583558_1470386021565220_2760612060113788794_n.jpg?stp=dst-jpg_p960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=247b10&_nc_ohc=5ctF_l6-cDsQ7kNvwFt1QMR&_nc_oc=Ado5m6eODViS2KXtdLltup-0GhnEDAFJiuHGWz7QvcmTQ5M499KpJ3pGGAiz6zAyDpg&_nc_zt=23&_nc_ht=scontent-lax3-2.xx&_nc_gid=oBnk_-avGxOnwCduMjeLWw&_nc_ss=72289&oh=00_AQExnoKHzky-z3iFwDEqza9e1gS_zoBvWew4qzb2KDmbIg&oe=6A920A50",
+    "https://scontent-lax3-1.xx.fbcdn.net/v/t45.5328-4/785759808_2544963079339697_8330810302463516470_n.jpg?stp=dst-jpg_p960x960_tt6&_nc_cat=102&ccb=1-7&_nc_sid=247b10&_nc_ohc=A7U7NmukzDkQ7kNvwHSNR0f&_nc_oc=AdqkRam8_KckPKboq4Erp6m_qwJ6tNoUZz16TtNanntbPmTglWgt0Zif95tL2CTkN4E&_nc_zt=23&_nc_ht=scontent-lax3-1.xx&_nc_gid=oBnk_-avGxOnwCduMjeLWw&_nc_ss=72289&oh=00_AQGgUc3DLHcLV-GL_Doj98xUy4PS5j1zfY-A7T33UzyuTA&oe=6A921164"
+   ],
+   "posted_at": "2026-08-24T12:45:39Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 35000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Dresser and Nightstand MCM Vintage Refinished Solid Wood Black",
+   "url": "https://www.facebook.com/marketplace/item/2460785171083804/",
+   "was_price_cents": null
+  },
   "2466590910530171": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -10926,7 +12751,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -10959,7 +12784,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11047,7 +12872,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Georgetown, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/2528554104326784.jpg",
    "photo_urls": [
     "https://scontent-iad3-2.xx.fbcdn.net/v/t39.84726-6/780076468_1771905503824129_3694888605189561173_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=92e707&_nc_ohc=K94H770YxugQ7kNvwGCBGJt&_nc_oc=AdpFunNyb5vX0lMNFlNWoKR6SZajNm9F_i5jxIfVO4m7L9Bhw_Ms5UjL5bKCrsMJOQw&_nc_zt=14&_nc_ht=scontent-iad3-2.xx&_nc_gid=OwaLl6KIfGiQ6L_X_Iwqjg&_nc_ss=72289&oh=00_AQH1UNbjoCQTpiDp97frWeiFLuy6YwryVZZarXz6pc6o6A&oe=6A90AE69",
@@ -11128,6 +12953,64 @@
    "state": "gone",
    "title": "Dresser",
    "url": "https://www.facebook.com/marketplace/item/2537018430466236/",
+   "was_price_cents": null
+  },
+  "2544718485974546": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Appears fully assembled and essentially new/like-new in the two actual photos \u2014 clean surfaces, no visible chips, scratches, veneer lifting, or drawer misalignment. Third supplied image is the seller's original catalog/stock photo, not an independent condition photo, so real-world wear can't be fully confirmed beyond what's shown.",
+    "confidence": 0.55,
+    "deal_score": 32.0,
+    "est_asis_value_cents": 16000,
+    "est_restoration_cost_cents": 1000,
+    "est_restoration_effort_hours": 0.5,
+    "est_restored_resale_value_cents": 21000,
+    "identified_item": "Contemporary flat-pack 6-drawer dresser, 'Furologee' brand, mid-century-modern-style with fluted/reeded side panels and rounded plinth base",
+    "maker_guess": null,
+    "materials": [
+     "engineered wood / MDF or particleboard core",
+     "wood veneer or high-quality laminate skin (light oak finish)",
+     "metal drawer pulls (rose-gold-toned plated finish)"
+    ],
+    "reasoning": "No identifiable maker or vintage attribution \u2014 'Furologee' is a contemporary online furniture brand, not a name with an established secondary/auction market, so per the naming rule I'm not inventing a calibre-based estimate. Construction is consistent with mass-produced flat-pack case goods: fluted panels achieved via molded/veneered MDF rather than solid-wood reeding, rounded plinth base typical of engineered-panel construction, and no dovetail or mortise-and-tenon joinery visible anywhere in the photos (drawer fronts show no through- or half-blind dovetail pins, and the carcass lines look like glued/stapled sheet-good boxes with metal drawer slides). This is a reproduction of MCM aesthetics, not an actual mid-century piece \u2014 the description's 'Mid Century Modern' is a style label, not an era claim I can verify. Because it's a modern manufactured item rather than an antique, there is no refinishing/veneer-repair restoration story here; at most a flip would involve cleaning, tightening pulls/screws, and staging. Used-market resale for this class of furniture (Amazon/Wayfair MCM-style dressers, new retail typically $300-450) generally lands well under half of original retail once secondhand, and I have no specific realized eBay/auction comps for this exact brand to cite, so confidence is capped and comps are left empty rather than fabricated. At the $190 ask, margin for a reseller is thin \u2014 as-is resale is plausibly close to or slightly below asking, making this a mediocre flip candidate rather than a clear buy.",
+    "style_era": "Contemporary reproduction in Mid-Century Modern styling (not a vintage MCM piece) \u2014 current mass-market import, likely sold new via Amazon/Wayfair-type retailers"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 19000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 19000,
+   "description": "Modern 6-drawer dresser is constructed from light oak-finished wood with fluted side panels. This chest has six spacious drawers with slim rose gold-toned metal pulls. The unit sits on a matching plinth base and features rounded corners for a contemporary aesthetic. Assembled \n\nEstimated (WxDxH): 47 x 16 x 27 in",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/2544718485974546_1.jpg",
+    "photos/2544718485974546_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "2544718485974546",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Lexington, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/2544718485974546.jpg",
+   "photo_urls": [
+    "https://scontent-xxc1-1.xx.fbcdn.net/v/t39.84726-6/778972374_968369809607852_2134973308877601976_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=92e707&_nc_ohc=BEfpQPNl1tkQ7kNvwGtHeEA&_nc_oc=Adqsy9raGGhrS-dRSPvE_lWxsQiC2hWT1WMuNbb5TsK-kWK0eSTmUNkFZFJY9glNWIe3umSuNnXyaHN8rdjV0S1D&_nc_zt=14&_nc_ht=scontent-xxc1-1.xx&_nc_gid=lHN2N4Jn1i3NVrwxCcpbMQ&_nc_ss=72289&oh=00_AQHwYC684f-yrlz6diQV_xW7PrsZdtENOp4Gcvyqm9D9Lw&oe=6A920104",
+    "https://scontent-xxc1-1.xx.fbcdn.net/v/t45.5328-4/784078676_1034697629403970_7804635870676171319_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=247b10&_nc_ohc=Um4788t981QQ7kNvwHefev7&_nc_oc=Adof_Qu8-BVH2kPa7-vEhDImsXVmob_HIM_8BgQL3cxnZooqs_aPfUY_B16H_5CMw1frxONwms0UWmCR0cRALYz8&_nc_zt=23&_nc_ht=scontent-xxc1-1.xx&_nc_gid=lHN2N4Jn1i3NVrwxCcpbMQ&_nc_ss=72289&oh=00_AQEimiDEuBvy1VT65CM73CRRkPBj7jvVv4W6ZvtTSVBOUQ&oe=6A921BBD",
+    "https://scontent-xxc1-1.xx.fbcdn.net/v/t45.5328-4/784233122_1092086373352054_2155024497906726749_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=102&ccb=1-7&_nc_sid=247b10&_nc_ohc=1El43rrsvisQ7kNvwE594bC&_nc_oc=AdqMNEcaQbq7n_VOa9u5EupnBsQEmho2NjY0zDJAYQ1h6klh9-OIv-IMVpEzPJeWwmzWoXxFOhl6egWyq7H_VFvR&_nc_zt=23&_nc_ht=scontent-xxc1-1.xx&_nc_gid=lHN2N4Jn1i3NVrwxCcpbMQ&_nc_ss=72289&oh=00_AQGbjg2XndzkW6KToPsNjpPSROK50BB2nqUVkDNbnP616w&oe=6A92209D"
+   ],
+   "posted_at": "2026-08-24T03:35:55Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 19000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Furologee 6 Drawer Dresser Mid Century Modern Fluted Wood Chest",
+   "url": "https://www.facebook.com/marketplace/item/2544718485974546/",
    "was_price_cents": null
   },
   "25473054865692868": {
@@ -11313,7 +13196,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11378,7 +13261,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11495,6 +13378,42 @@
    "url": "https://www.facebook.com/marketplace/item/27925330173725688/",
    "was_price_cents": 7500
   },
+  "28085121744481637": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 50000,
+   "description": "Brown and Beige Bed Room Set\nIncluded ( 6 Drawer Dresser, One-Two Drawer Night Stand, and Bed Frame With Two Bottom Drawers ) \nBought For $1,000 and Want $500 OBO\n\ufffc\n",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "28085121744481637",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Lexington, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-mia3-2.xx.fbcdn.net/v/t39.84726-6/784816716_4709273606061553_219362113866533753_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=105&ccb=1-7&_nc_sid=92e707&_nc_ohc=tfV0lB1uOzcQ7kNvwFQ-k1R&_nc_oc=AdrNMofWioeWqRTwgx89vtq9sseF6v0xWQe-4chCyAfkWkug9tSg2DuLOkWqOa1SJ3jvGBg5WptnL6JDi2-ko167&_nc_zt=14&_nc_ht=scontent-mia3-2.xx&_nc_gid=8F6CwuHG0HB2yOnsuE-TgA&_nc_ss=7c289&oh=00_AQGfoIcUorDfvMPZ5tUWnAQ_9mnyJ2RbAnyh_UOI1B2mPg&oe=6A920B55",
+    "https://scontent-mia3-3.xx.fbcdn.net/v/t45.5328-4/784251963_1371215838516837_4474325058644107836_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=108&ccb=1-7&_nc_sid=247b10&_nc_ohc=vzpvJnENVfgQ7kNvwFatx6f&_nc_oc=Adp2Jpsnm2Dihgo4dd7JWNXgs41q2RcqAkreyCezorLtGShaGCd3CXJ2ZpeWtbUVtz1dbryhXB8ak8qHsfgyXgHS&_nc_zt=23&_nc_ht=scontent-mia3-3.xx&_nc_gid=8F6CwuHG0HB2yOnsuE-TgA&_nc_ss=7c289&oh=00_AQEGTFrLUBWMTHVdEB9jeXC5PvtoEhZalkAyJMbwCjrg8g&oe=6A922298"
+   ],
+   "posted_at": "2026-08-24T00:54:04Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 50000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Bed Room Set",
+   "url": "https://www.facebook.com/marketplace/item/28085121744481637/",
+   "was_price_cents": null
+  },
   "28094412643476782": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -11543,7 +13462,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Charlestown, IN",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-sea5-1.xx.fbcdn.net/v/t39.84726-6/784619718_1662656172243017_5099188371676449211_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=cQo9Oznu-JoQ7kNvwEw398p&_nc_oc=Adrfxp_D9bSPHAUjFYH70TDFqpZwnshTSdqmCResU93AG2WUoBuVBx4XIEx7wgXmnK4&_nc_zt=14&_nc_ht=scontent-sea5-1.xx&_nc_gid=M0c0ncSX4Ty450WWVExRFw&_nc_ss=72289&oh=00_AQGA8ZvTM7XR4NIHVU7HwGjIUzg2lWCpxlbQhn1xlf5RRA&oe=6A90BFAB"
@@ -11578,7 +13497,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11818,7 +13737,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Scottsburg, IN",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-iad6-1.xx.fbcdn.net/v/t39.84726-6/782418651_1808420100326447_5056065262230389391_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=107&ccb=1-7&_nc_sid=92e707&_nc_ohc=bxe7Ju1iLFsQ7kNvwFcnVV1&_nc_oc=Adr3gR3GuFa9qhwR4KZCGpvi5YOQc0VN2LFClDjrUC1Pbz6JcIm3BN8QEFoocuRHh70&_nc_zt=14&_nc_ht=scontent-iad6-1.xx&_nc_gid=qnNbXNAwRChCVkC15UV_6A&_nc_ss=7c289&oh=00_AQEfd9UY_4bo-6sDA-g0BvHjo7Q4k0qO6lKVL7Bwx7lzUA&oe=6A90E33A"
@@ -11835,6 +13754,39 @@
    "state": "live",
    "title": "Dresser",
    "url": "https://www.facebook.com/marketplace/item/28525967596994774/",
+   "was_price_cents": null
+  },
+  "28589756320630333": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "28589756320630333",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/28589756320630333",
    "was_price_cents": null
   },
   "28810804025176674": {
@@ -11885,7 +13837,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11900,6 +13852,39 @@
    "state": "live",
    "title": "",
    "url": "https://www.facebook.com/marketplace/item/29042875985301976",
+   "was_price_cents": null
+  },
+  "29296611276589020": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "29296611276589020",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/29296611276589020",
    "was_price_cents": null
   },
   "2930475833966982": {
@@ -11950,7 +13935,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -11997,6 +13982,39 @@
    "state": "gone",
    "title": "VTG  40s Hand Embroidered Linen Dresser Scarf Runner Pillowcase Set Cottagecore",
    "url": "https://www.facebook.com/marketplace/item/2997725340573867/",
+   "was_price_cents": null
+  },
+  "3029389610749060": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "3029389610749060",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/3029389610749060",
    "was_price_cents": null
   },
   "3031345417203185": {
@@ -12138,6 +14156,39 @@
    "state": "gone",
    "title": "Entertainment center / wardrobe",
    "url": "https://www.facebook.com/marketplace/item/3316276492012811/",
+   "was_price_cents": null
+  },
+  "3322051861322858": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "3322051861322858",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/3322051861322858",
    "was_price_cents": null
   },
   "3328682244097166": {
@@ -12395,7 +14446,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Lawrenceburg, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [
     "https://scontent-hou1-1.xx.fbcdn.net/v/t39.84726-6/784252271_4548002542143343_7470769914173175305_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=92e707&_nc_ohc=MR8mPCq8kWUQ7kNvwF8BKgg&_nc_oc=AdozJqstQK--ZPh0lXAudk6ZB6xEKMLyGflZVDRAJZzBppPwWzbpXKgmaWAXTKVFPiM&_nc_zt=14&_nc_ht=scontent-hou1-1.xx&_nc_gid=YbwhcHMK_CrS1mHIWpeB5g&_nc_ss=7f289&oh=00_AQEpU8tlZThGdJ7EHs4GsSIIZAjz1ZdRzKgpeiaM0ZRseQ&oe=6A90B927",
@@ -12431,7 +14482,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -12676,6 +14727,105 @@
    "url": "https://www.facebook.com/marketplace/item/4438555766366295/",
    "was_price_cents": null
   },
+  "4450776935165553": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "4450776935165553",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/4450776935165553",
+   "was_price_cents": null
+  },
+  "4459199554331608": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "4459199554331608",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/4459199554331608",
+   "was_price_cents": null
+  },
+  "4460273734197455": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "4460273734197455",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/4460273734197455",
+   "was_price_cents": null
+  },
   "4475296949391172": {
    "appraisal": {
     "comps": [],
@@ -12807,7 +14957,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -12840,7 +14990,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -12905,7 +15055,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": null,
    "photo_urls": [],
    "posted_at": null,
@@ -12956,6 +15106,39 @@
    "state": "gone",
    "title": "Rowe Nantucket White Slipcovered Sofa | $800 OBO",
    "url": "https://www.facebook.com/marketplace/item/4607758362826607/",
+   "was_price_cents": null
+  },
+  "4687917181437033": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "4687917181437033",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/4687917181437033",
    "was_price_cents": null
   },
   "790721437464808": {
@@ -13239,7 +15422,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Lexington, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/891051050461401.jpg",
    "photo_urls": [
     "https://scontent-bos5-1.xx.fbcdn.net/v/t39.84726-6/780543520_1715580082893358_2138737719653480453_n.jpg?stp=dst-jpg_p720x720_tt6&_nc_cat=109&ccb=1-7&_nc_sid=92e707&_nc_ohc=oq7GfSSL2tEQ7kNvwFhFT_s&_nc_oc=AdpeuNZGxBWhsE7lZkkMsy3iH4STt8ibMQSgR8KItnY4pjK1DdfjeYkWqlGFM2-sJHw&_nc_zt=14&_nc_ht=scontent-bos5-1.xx&_nc_gid=uE0bMGtd-3OJTSKPdEcPZw&_nc_ss=72289&oh=00_AQE1pEPazNRNsyqoEyUS3mT-Lg5Vz8MouXvdf4sx5faBUQ&oe=6A90AEF3",
@@ -13258,6 +15441,66 @@
    "state": "live",
    "title": "Distressed Light Blue Dresser must be gone tonight",
    "url": "https://www.facebook.com/marketplace/item/891051050461401/",
+   "was_price_cents": null
+  },
+  "895373756665463": {
+   "appraisal": {
+    "comps": [],
+    "condition_assessment": "Listing dimensions (51H x 42W x 19D) match the IKEA HEMNES 6-drawer chest almost exactly, and the drawer interior (fiberboard box, striped-paper lining, cam-lock corner construction) confirms it. This is flat-pack furniture, not a hand-joined antique \u2014 there are no dovetails, no solid secondary-wood drawer construction, and no maker's mark to speak of beyond the IKEA hardware itself. The red paint job looks reasonably even in photos with only minor brush texture; drawers appear square and operable; no veneer to worry about since HEMNES fronts are solid pine. 'Custom painted' here is a repaint of a $300-400 retail item, not a value-adding restoration.",
+    "confidence": 0.55,
+    "deal_score": 35.0,
+    "est_asis_value_cents": 12000,
+    "est_restoration_cost_cents": 0,
+    "est_restoration_effort_hours": 0.5,
+    "est_restored_resale_value_cents": 18000,
+    "identified_item": "6-drawer chest, custom-painted \u2014 matches IKEA HEMNES 6-drawer chest (2+4 drawer layout)",
+    "maker_guess": "IKEA (HEMNES line) \u2014 mass-produced, not an artisan or workshop piece",
+    "materials": [
+     "solid pine frame, legs and drawer fronts (HEMNES construction)",
+     "fiberboard/particleboard drawer bottoms and backs, lined with striped wallpaper (visible in open-drawer photo, a HEMNES hallmark)",
+     "cam-and-dowel knockdown joinery \u2014 no dovetails or mortise-and-tenon visible or expected",
+     "brush-applied red paint over the original clear/stain finish",
+     "turned wood knobs (appear later replacements, not the original HEMNES ball knobs)"
+    ],
+    "reasoning": "This is not a maker's/artist's piece with an identifiable secondary market \u2014 it's an IKEA HEMNES chest, a current-production item that retails new for roughly $350-380 depending on finish. I don't have specific realized eBay/auction sold comps memorized for this exact SKU, so per the valuation rules I'm keeping confidence low (0.55) rather than inventing figures. What I can anchor on: used HEMNES dressers routinely trade on Facebook Marketplace/Craigslist in the $100-200 range regardless of cosmetic condition, because buyers know it's replaceable flat-pack furniture, not because of quality. A non-original paint job is a mixed factor \u2014 it can appeal to buyers wanting a finished 'shabby-chic' piece but repels buyers who prefer the natural pine or want to choose their own color, and repainting is not reversible without stripping. There's effectively no 'restoration' upside available here (it's already painted and described as clean); the after-restore number reflects best-case resale to the right buyer in a strong local market, not any real work performed. At $200 asking, the seller is pricing close to or above realistic secondhand IKEA value; a reseller should expect to buy meaningfully under ask (~$100-130) to leave any margin, since there's no rarity or craftsmanship premium to unlock through resale styling alone.",
+    "style_era": "Contemporary Scandinavian flat-pack, IKEA HEMNES line (in continuous production since mid-2000s); repainted red by current owner, likely farmhouse/cottage-style redo"
+   },
+   "appraisal_prompt_version": 1,
+   "appraised_at": "2026-08-24T13:46:40.228087Z",
+   "appraised_price_cents": 20000,
+   "appraised_with_photos": true,
+   "appraiser": "claude-code",
+   "asking_price_cents": 20000,
+   "description": "Custom painted. In perfect condition, super\nclean. Non-smoking household, no pets. \n\nCash or Venmo @mynameiswilson\n\nFirst come first serve\n\n51\" H x 42\" W x 19\" D",
+   "detail_fetched": true,
+   "extra_photo_rels": [
+    "photos/895373756665463_1.jpg",
+    "photos/895373756665463_2.jpg"
+   ],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "895373756665463",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Louisville, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": "photos/895373756665463.jpg",
+   "photo_urls": [
+    "https://scontent-atl3-3.xx.fbcdn.net/v/t39.84726-6/786757582_1959516694739905_7316769528446780992_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=110&ccb=1-7&_nc_sid=92e707&_nc_ohc=XcsJqlYZfI4Q7kNvwE40Pfc&_nc_oc=Adq5n7rW76Zz83EYkxFQaw0eXREqQuvdKfg3BvpiQ_8u59_v7_uNEOFkY6IV7-5A_Srkp96An05FtsApjjd-Vb1V&_nc_zt=14&_nc_ht=scontent-atl3-3.xx&_nc_gid=g0cSGW13PpzqdqEGjpX5eQ&_nc_ss=72289&oh=00_AQGix62JeOC48gEWUij5aMtOHSJYvw_Xx5XEw5kEoY2jzA&oe=6A92101C",
+    "https://scontent-atl3-1.xx.fbcdn.net/v/t45.5328-4/786391844_1758233858649298_6922223938148263814_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=106&ccb=1-7&_nc_sid=247b10&_nc_ohc=9tAtn_xZ9GcQ7kNvwFgpLOl&_nc_oc=AdryDUbG7NfGAQlY7rN4b1cgrQrIfWUgc6zl5kH43-D5wVUQu1xh-Vqu_YSIh4o7Uuoq5QfPBFUoxCIymhKYzjgv&_nc_zt=23&_nc_ht=scontent-atl3-1.xx&_nc_gid=g0cSGW13PpzqdqEGjpX5eQ&_nc_ss=72289&oh=00_AQH0064q2FW0g_syRiA67a3kMGvzwYcFEZPhNwewjaPFUQ&oe=6A921B22",
+    "https://scontent-atl3-3.xx.fbcdn.net/v/t45.5328-4/785945168_1238304288439472_5849156455949083618_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=110&ccb=1-7&_nc_sid=247b10&_nc_ohc=NZR8aqaFIB8Q7kNvwHdc1P-&_nc_oc=AdovutL8HvSpnfT6ZLGSup9Lp_-ncqzqWs7xCYCkw3Gyr8I8R6VB3Z_TSzlD5Ix1XxzTH_iqnpg7UY_4LgoHiPsx&_nc_zt=23&_nc_ht=scontent-atl3-3.xx&_nc_gid=g0cSGW13PpzqdqEGjpX5eQ&_nc_ss=72289&oh=00_AQE2t42iRRt7VnHP_Ag3VY4sxH5BKPWk1a0LNGKzcgiX5w&oe=6A92071B"
+   ],
+   "posted_at": "2026-08-24T12:42:09Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 20000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "6 Drawer Dresser",
+   "url": "https://www.facebook.com/marketplace/item/895373756665463/",
    "was_price_cents": null
   },
   "899438812627398": {
@@ -13547,6 +15790,76 @@
    "url": "https://www.facebook.com/marketplace/item/918933197152129/",
    "was_price_cents": null
   },
+  "924802180065925": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": null,
+   "description": "",
+   "detail_fetched": false,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "924802180065925",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [],
+   "posted_at": null,
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": null
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "",
+   "url": "https://www.facebook.com/marketplace/item/924802180065925",
+   "was_price_cents": null
+  },
+  "926766153808674": {
+   "appraisal": null,
+   "appraisal_prompt_version": 0,
+   "appraised_at": null,
+   "appraised_price_cents": null,
+   "appraised_with_photos": false,
+   "appraiser": "",
+   "asking_price_cents": 80000,
+   "description": "Ashley Furniture King Bedroom Set in a beautiful rustic brown/gray distressed finish.\n\nIncludes:\n\u2022 King storage bed frame with headboard, footboard & rails\n\u2022 6-drawer dresser with mirror\n\u2022 5-drawer chest\n\u2022 Nightstand\n\nEverything is in great condition and has been well cared for. Only selling because we are moving.\n\nMattress, box spring, TV, and decorative/display items shown in the photos are NOT included.\n\n**$800 for the complete set**\nPickup only.",
+   "detail_fetched": true,
+   "extra_photo_rels": [],
+   "first_seen": "2026-08-24T13:37:35.219131Z",
+   "id": "926766153808674",
+   "last_seen": "2026-08-24T13:37:35.219131Z",
+   "location_text": "Irvine, KY",
+   "market_supply": null,
+   "misses": 0,
+   "photo_rel": null,
+   "photo_urls": [
+    "https://scontent-atl3-3.xx.fbcdn.net/v/t39.84726-6/782208529_1387862816764852_4075177961861021411_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=109&ccb=1-7&_nc_sid=92e707&_nc_ohc=O4in-T8UIF4Q7kNvwHfkFqn&_nc_oc=AdpX4LK2Lo7auWQXkZLBWfDBKSDDxxnCX7vEhRs7TsjFta2K8kr8zdJd1fg-bVrLGIQVQW9NfkAWzcDhTwL3e9MB&_nc_zt=14&_nc_ht=scontent-atl3-3.xx&_nc_gid=DQ78yQVpWF9EJsk8Q3KRUg&_nc_ss=72289&oh=00_AQGXXCCnsLOb7y9f6VL06uz9x9TgWHw-5c-JY49elsJ3Gw&oe=6A923558",
+    "https://scontent-atl3-2.xx.fbcdn.net/v/t45.5328-4/785858247_1729746958238499_7664180431101507903_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=htomGQRX5OsQ7kNvwEU2JsY&_nc_oc=AdpLurp4Gcq1jO7ugSMbyGpGpai4U0HQVTNhaW5aJd54ymKMgUcJDovk11wtc8WE1rA8voRhPIO_it_MG0Gpx-F1&_nc_zt=23&_nc_ht=scontent-atl3-2.xx&_nc_gid=DQ78yQVpWF9EJsk8Q3KRUg&_nc_ss=72289&oh=00_AQFopGQUfaugT5CYVJ0hkiAuAAmI7qnyvJmwThSSnsxGkg&oe=6A9207D2",
+    "https://scontent-atl3-2.xx.fbcdn.net/v/t45.5328-4/784619513_1593584772778235_7819583640217032613_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=101&ccb=1-7&_nc_sid=247b10&_nc_ohc=ReaD1s0QNagQ7kNvwHfBsDX&_nc_oc=AdoAiD8USb9MuvDaBfFZpM8vFg87m5CH1aPbz3VwdsL-ya6utOk6YZUNO7cz4ySOvG5EyGoZlmKqBceufzQS6Mho&_nc_zt=23&_nc_ht=scontent-atl3-2.xx&_nc_gid=DQ78yQVpWF9EJsk8Q3KRUg&_nc_ss=72289&oh=00_AQFLo6LS3YzFl9_5fg8j1Ih70vW6UdMFTyXhfHOGfTexcg&oe=6A91FFE9"
+   ],
+   "posted_at": "2026-08-24T03:02:59Z",
+   "price_history": [
+    {
+     "at": "2026-08-24T13:37:35.219131Z",
+     "cents": 80000
+    }
+   ],
+   "sold_at": null,
+   "sold_price_cents": null,
+   "state": "live",
+   "title": "Bedroom Set",
+   "url": "https://www.facebook.com/marketplace/item/926766153808674/",
+   "was_price_cents": null
+  },
   "928437016952461": {
    "appraisal": null,
    "appraisal_prompt_version": 0,
@@ -13617,7 +15930,7 @@
    "last_seen": "2026-08-23T13:29:37.706942Z",
    "location_text": "Campbellsville, KY",
    "market_supply": null,
-   "misses": 0,
+   "misses": 1,
    "photo_rel": "photos/942149678912658.jpg",
    "photo_urls": [
     "https://scontent-phl2-1.xx.fbcdn.net/v/t39.84726-6/784433149_1063599446072175_2230330505264819422_n.jpg?stp=dst-jpg_s960x960_tt6&_nc_cat=100&ccb=1-7&_nc_sid=92e707&_nc_ohc=GTfnlVFaiQYQ7kNvwFiiN3M&_nc_oc=Adq5axy1N2fwaTHbhLFEP67mi1NntBtXheSOflDGT18LHF2ZTpfWbaV7WPqYgw90Sog&_nc_zt=14&_nc_ht=scontent-phl2-1.xx&_nc_gid=XMHjp48ZDzv-n603vgAsEQ&_nc_ss=7c289&oh=00_AQGrKu-L6-e96Xabn2mDHkdbBbwhmJsMqka484Ze7TH7rQ&oe=6A90B49D",
@@ -14162,16 +16475,16 @@
  },
  "meta": {
   "detail_fetch_supported": true,
-  "last_probe_at": "2026-08-23T13:29:37.706657Z",
+  "last_probe_at": "2026-08-24T13:37:35.218821Z",
   "searches": {
    "https://www.facebook.com/marketplace/lexington/search/?query=dresser": {
     "last_count": 60,
-    "last_ok_at": "2026-08-23T13:29:19.977867Z",
+    "last_ok_at": "2026-08-24T13:37:12.023538Z",
     "truncated": true,
     "url": "https://www.facebook.com/marketplace/lexington/search/?query=dresser"
    }
   }
  },
- "updated_at": "2026-08-23T13:37:00.564254Z",
+ "updated_at": "2026-08-24T13:46:40.347332Z",
  "version": 1
 }
