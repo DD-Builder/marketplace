@@ -1,9 +1,6 @@
 {
- "state": "ok",
- "generated_at": "2026-08-26T13:09:07.543006+00:00",
- "lots": 7596,
- "watched": 150,
- "ending_soon": 87,
- "appraised": 1,
- "actionable": 5
+ "state": "appraisals_failed",
+ "generated_at": "2026-08-26T14:05:02.356607+00:00",
+ "failed": 1,
+ "reason": "claude CLI failed: You've hit your session limit \u00b7 resets 3pm (UTC)"
 }
