@@ -1,9 +1,9 @@
 {
  "state": "ok",
- "generated_at": "2026-08-29T22:48:22.747053+00:00",
- "lots": 9335,
+ "generated_at": "2026-08-29T23:55:44.462052+00:00",
+ "lots": 9329,
  "watched": 150,
- "ending_soon": 99,
- "appraised": 0,
+ "ending_soon": 107,
+ "appraised": 11,
  "actionable": 2
 }
