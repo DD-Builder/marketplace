@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment / secrets
+.env
+*.env
+!.env.example
+
+# Working photo downloads (only the cover images ship with the site)
+docs/_photos/
+
+# Local pilot inputs/outputs (your own scraped data — never commit)
+pilot/*.json
+pilot/*.csv
+
+# OS
+.DS_Store

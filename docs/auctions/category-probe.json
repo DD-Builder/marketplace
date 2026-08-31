@@ -1,0 +1,218 @@
+{
+ "probed_at": "2026-08-18T23:48:50.657240+00:00",
+ "question": "which query parameter narrows /browse to a single category?",
+ "trials": [
+  {
+   "url": "https://www.ebth.com/browse",
+   "total_items": 6133,
+   "applied": {
+    "category": null,
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {}
+   },
+   "label": "baseline",
+   "narrowed": false
+  },
+  {
+   "url": "https://www.ebth.com/browse?category_id=3313",
+   "total_items": 6133,
+   "applied": {
+    "category": null,
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {
+     "category_id": [
+      "3313"
+     ]
+    }
+   },
+   "label": "category_id (control)",
+   "narrowed": false
+  },
+  {
+   "url": "https://www.ebth.com/browse?category_slug=jewelry-and-watches",
+   "total_items": 2271,
+   "applied": {
+    "category": {
+     "id": 3313,
+     "name": "Jewelry and Watches",
+     "active": true,
+     "parent_id": null,
+     "sort_order": 14,
+     "legacy": false,
+     "description": "<p>Explore a captivating collection of jewelry and watches at EBTH, where history and luxury meet. From timeless pieces by renowned brands like Rolex, Tiffany & Co., and Cartier to eclectic retro costume jewelry, our selection promises something for every taste and occasion. Each item in our catalog has been meticulously curated and authenticated, ensuring you discover not just jewelry but a piece of history, most starting at bids of just $1.</p>\r\n\r\n<h3>Used Jewelry for Sale</h3>\r\n<p>Our diverse selection of used jewelry features everything from antique engagement rings that tell tales of past romances to bold brooches that enhance any outfit. You'll find a variety of used rings, from classic solitaires to intricate vintage designs, each boasting its own unique story and allure. Our vintage jewelry collection also includes delicate necklaces, statement jewelry, beautiful tennis bracelets, and so much more. \r\nOur jewelry consignment collection goes beyond the accessories you'll find at a typical store; here, each piece has a unique story and style. Whether you're dressing up for a special occasion or adding a splash of personality to your everyday wardrobe, these jewelry pieces are perfect for making a statement or finding that new family heirloom.</p>\r\n<p>EBTH provides an extensive range of choices, catering to both collectors seeking exceptional pieces and fashion enthusiasts looking to add timeless elegance and distinctiveness to their style repertoire. Explore our selection, and you might find the perfect piece that resonates with your personal style and becomes a cherished part of your story.</p>\r\n<h3>Used Watches for Sale</h3>\r\n<p>Discover an impressive array of used wristwatches at EBTH, where luxury meets legacy in our ever-evolving collection. Featuring esteemed brands like Omega, Breitling, and Rolex, our watches represent the ultimate in quality and style. Each vintage watch in our selection is not only a reflection of masterful craftsmanship but also a symbol of enduring elegance that stands the test of time.</p>\r\n<p>These timepieces make perfect gifts, offering a sophisticated touch that complements any wardrobe. Treat yourself to something special or find a wonderful gift for someone important; a vintage watch from EBTH serves as a timeless choice that can be cherished for generations. Ideal for marking significant milestones or celebrating special occasions, each watch carries its own history and prestige, making it a truly personal and thoughtful present.</p>\r\n<p>Purchasing a vintage watch is an investment in lasting style. These watches are staples that not only enhance your personal collection but also maintain their value over time.</p>\r\n<h3>Jewelry Consignment</h3>\r\n<p>Do you have antique jewelry that needs to find a new home? Our easy consignment process makes it simple to bring your unique pieces to a global audience of jewelry enthusiasts. EBTH simplifies the consignment experience, ensuring your items reach buyers who appreciate their history and value.</p>\r\n<h3>Watch Consignment</h3>\r\n<p>EBTH also offers consignment services for fine watches, providing a reliable and efficient platform to reach buyers invested in high-quality timepieces. Our respected reputation, detailed listings, and strategic auctions help maximize returns, connecting your watches with a dedicated community of collectors and enthusiasts.</p>\r\n<h3>Shop Vintage Jewelry and Watches for Sale at EBTH</h3>\r\n<p>Whether you\u2019re a collector or simply looking to accessorize uniquely, EBTH\u2019s selection of vintage jewelry and watches offers unparalleled variety. Here, you can shop for pieces that stand out due to their beauty and craftsmanship, each chosen to complement modern styles. Our auctions offer the thrill of discovery, providing a chance to own artistry in the form of luxury watches and jewelry that have been cherished across generations.</p>\r\n<p>Join the excitement at EBTH, where every item tells a story, and every bid offers a chance to own a part of history. Explore our vintage jewelry collections today and place your bid on items that capture your imagination.</p>",
+     "sensitive": false,
+     "is_leaf": false,
+     "lineage": "Jewelry and Watches",
+     "shiphawk_item_id": 1776,
+     "wordsmith_slug": null,
+     "created_at": "2016-01-06T01:15:55.000-05:00",
+     "updated_at": "2026-06-30T14:32:48.000-04:00",
+     "merchandising_image_uid": "2021/11/17/10/30/23/b47c33a6-c99d-484a-9351-78420df713b6/jewerly_L1_category.jpg",
+     "meta_keywords": "vintage jewelry, antique jewelry",
+     "meta_description": "Discover a treasure trove of uniquely curated & carefully authenticated jewelry and watches. Find unreal value with most auction items starting at just $1. Bid now.",
+     "meta_title": "Online Jewelry Auctions | Antique Jewelry Auctions | Fine Jewelry",
+     "measurements_required": true,
+     "short_description": "Antique treasures, statement sparklers, rare gems and elegant timepieces \u2014 we\u2019ve got a little something for everyone.",
+     "root_id": 3313,
+     "sidebar_filters": [
+      "materials",
+      "style"
+     ],
+     "short_name": "",
+     "slug": "jewelry-and-watches",
+     "full_slug_path": "/jewelry-and-watches",
+     "version": 1,
+     "category_id_v2": null,
+     "surcharge_fee_type": 0,
+     "surcharge_fee_amount": 0,
+     "one_rate_eligible": true,
+     "ai_provider_id": 3,
+     "show_public_measurements": true,
+     "category_normalization_score": 0.449251,
+     "manual_score_multiplier": 1.0,
+     "default_image_uid": null,
+     "require_condition_details": "not_required",
+     "manually_hide_seel": false,
+     "auto_virtual_parcel_enabled": true
+    },
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {}
+   },
+   "label": "category_slug",
+   "narrowed": true
+  },
+  {
+   "url": "https://www.ebth.com/browse?category_name=Jewelry and Watches",
+   "total_items": 6133,
+   "applied": {
+    "category": null,
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {
+     "category_name": [
+      "Jewelry%20and%20Watches"
+     ]
+    }
+   },
+   "label": "category_name",
+   "narrowed": false
+  },
+  {
+   "url": "https://www.ebth.com/browse?path_slug=/jewelry-and-watches",
+   "total_items": 6133,
+   "applied": {
+    "category": null,
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {
+     "path_slug": [
+      "/jewelry-and-watches"
+     ]
+    }
+   },
+   "label": "path_slug (leading /)",
+   "narrowed": false
+  },
+  {
+   "url": "https://www.ebth.com/browse?path_slug=jewelry-and-watches",
+   "total_items": 6133,
+   "applied": {
+    "category": null,
+    "boutique": null,
+    "sort": "recommended",
+    "props": {},
+    "page": 1,
+    "per_page": "48",
+    "miles": null,
+    "zip_code": null,
+    "status": null,
+    "days_left": null,
+    "delivery_options": [],
+    "q": null,
+    "sale": null,
+    "applicable": {},
+    "seller_id": null,
+    "cid": null,
+    "additional": {
+     "path_slug": [
+      "jewelry-and-watches"
+     ]
+    }
+   },
+   "label": "path_slug (bare)",
+   "narrowed": false
+  }
+ ],
+ "baseline_total": 6133,
+ "winners": [
+  "category_slug"
+ ]
+}

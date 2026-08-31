@@ -1,0 +1,261 @@
+"""The engine: one call runs the whole funnel and hands back a ranked, priced board.
+
+``run_valuation`` composes every piece built so far —
+
+    records -> cost-control plan (dedup / seen-diff / cap)
+            -> appraise the survivors (via the configured provider)
+            -> deterministic deal score
+            -> authenticity check
+            -> provisional resale suggestion (if you bought at ask and restored it)
+            -> liquidity / heat / priority / badges
+            -> sorted board + a full audit of what it cost to get here
+
+It is provider-agnostic (pass any ``ValuationProvider``) and source-agnostic (pass Apify
+records or already-built listings), so it is exercised end-to-end in tests with a stub
+provider on synthetic data — no network, no AI spend.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Callable, Collection, Iterable, Mapping
+from dataclasses import dataclass, field
+
+from dealfinder.appraiser import ValuationProvider
+from dealfinder.authenticity import AuthenticityAssessment, assess_authenticity
+from dealfinder.core.schemas import AppraisalResult, RawListing
+from dealfinder.logging import get_logger
+from dealfinder.ranking import (
+    Badge,
+    badges,
+    heat_score,
+    is_killer_deal,
+    liquidity_score,
+    price_tier,
+    roi_to_score,
+    viewing_priority,
+)
+from dealfinder.prescreen import prescreen
+from dealfinder.resale import PieceCosts, ResalePlan, price_piece
+from dealfinder.restoration import clamp_restoration
+from dealfinder.selection import AppraisalPlan, plan_appraisals
+from dealfinder.sources.apify import records_to_listings
+from dealfinder.valuation.scoring import compute_deal_score
+from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
+
+log = get_logger(__name__)
+
+
+@dataclass
+class EvaluatedPiece:
+    listing: RawListing
+    appraisal: AppraisalResult
+    authenticity: AuthenticityAssessment
+    deal_score: float
+    cash_margin_cents: int
+    resale: ResalePlan
+    liquidity: float
+    heat: float
+    priority: float
+    is_killer: bool
+    price_dropped: bool
+    out_of_radius: bool
+    days_since_seen: float = 0.0
+    tier: str = "mid"
+    restoration_notes: list[str] = field(default_factory=list)
+    badges: list[Badge] = field(default_factory=list)
+    #: The appraisal exactly as the model returned it, before :mod:`restoration` clamped
+    #: it. ``appraisal`` above carries the clamped numbers so the card's figures agree
+    #: with its scores — but this is what gets persisted, because the catalogue must hold
+    #: the model's own answer. Storing the clamped copy would destroy the original on the
+    #: first write (it exists nowhere else), freeze every stored piece at whatever the
+    #: bounds happened to be that day, and leave the board re-clamping already-clamped
+    #: numbers — which is a no-op, so no card would ever show that it had been corrected.
+    appraisal_raw: AppraisalResult | None = None
+    #: Competing supply behind ``liquidity``, when a comps source measured it. Persisted
+    #: for the same reason the appraisal is: it's an observation about the market, not a
+    #: score, so re-ranking from the catalogue shouldn't have to re-query eBay for it.
+    market_supply: int | None = None
+
+
+@dataclass
+class RunResult:
+    pieces: list[EvaluatedPiece]      # sorted by viewing priority, best first
+    plan: AppraisalPlan               # cost-control audit (what was scraped/skipped/appraised)
+    #: Why appraisals failed, in the order they failed. The board's failure banner used to
+    #: guess ("usually an expired token") because this was logged and dropped on the floor.
+    #: A real run then failed on a spent subscription quota and the guess sent the operator
+    #: to regenerate a credential that was working fine.
+    failures: list[str] = field(default_factory=list)
+
+    @property
+    def killers(self) -> list[EvaluatedPiece]:
+        return [p for p in self.pieces if p.is_killer]
+
+
+def _price_dropped(listing: RawListing) -> bool:
+    was = listing.raw_json.get("_was_price_cents")
+    cur = listing.asking_price_cents
+    return bool(was) and cur is not None and cur < was
+
+
+def run_valuation(
+    source: Iterable[dict] | Iterable[RawListing],
+    seen: Mapping[str, int | None] | None = None,
+    *,
+    provider: ValuationProvider,
+    vertical: Vertical = DEFAULT_VERTICAL,
+    hourly_rate_cents: int = 3000,
+    top_n: int = 20,
+    wildcards: int = 5,
+    in_radius: Callable[[str], bool] | None = None,
+    image_paths_by_id: Mapping[str, list] | None = None,
+    backfill: Iterable[RawListing] = (),
+    already_valued: Collection[str] = (),
+    comps_source=None,
+) -> RunResult:
+    """Run the funnel over a batch and return a ranked, priced board.
+
+    ``source`` may be raw Apify records or ready ``RawListing`` objects. ``seen`` is the
+    cross-run ledger (``{id: last_price_cents}``) so already-evaluated pieces are skipped.
+    ``in_radius(location_text) -> bool`` flags distance; omit to treat everything as in-range.
+    ``image_paths_by_id`` supplies already-downloaded photo files per listing — required by
+    the subscription (Claude Code) appraiser, which reads images off disk.
+    """
+    items = list(source)
+    listings = (
+        records_to_listings(items) if items and isinstance(items[0], dict) else list(items)
+    )
+
+    plan = plan_appraisals(
+        listings, seen or {}, vertical=vertical, top_n=top_n, wildcards=wildcards,
+        backfill=backfill, already_valued=already_valued,
+    )
+
+    pieces: list[EvaluatedPiece] = []
+    failures: list[str] = []
+    for listing in plan.to_appraise:
+        try:
+            imgs = (image_paths_by_id or {}).get(listing.fb_listing_id)
+            # Market comparables, when a source is configured. Never fatal: an appraisal
+            # without comps is exactly what shipped before, so a comps outage degrades
+            # the estimate rather than losing the listing.
+            comps = []
+            supply = None
+            if comps_source is not None:
+                try:
+                    comps = comps_source.get_comps(listing.title)
+                    supply = getattr(comps_source, "last_total", None)
+                except Exception as exc:  # noqa: BLE001
+                    log.warning("comps_failed", listing=listing.fb_listing_id,
+                                error=str(exc)[:160])
+            appr = provider.appraise(listing, vertical, image_paths=imgs, comps=comps)
+        except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
+            log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
+            failures.append(str(exc))
+            continue
+        pieces.append(
+            evaluate_piece(
+                listing, appr, hourly_rate_cents=hourly_rate_cents, in_radius=in_radius,
+                vertical=vertical, market_supply=supply,
+            )
+        )
+
+    pieces.sort(key=lambda p: p.priority, reverse=True)
+    return RunResult(pieces=pieces, plan=plan, failures=failures)
+
+
+def evaluate_piece(
+    listing: RawListing,
+    appraisal: AppraisalResult,
+    *,
+    hourly_rate_cents: int = 3000,
+    in_radius: Callable[[str], bool] | None = None,
+    logged_costs: PieceCosts | None = None,
+    days_since_seen: float = 0.0,
+    vertical: Vertical = DEFAULT_VERTICAL,
+    market_supply: int | None = None,
+) -> EvaluatedPiece:
+    """Score one listing against an appraisal — no AI, no I/O, pure computation.
+
+    Separating this from :func:`run_valuation` is what makes a stored appraisal reusable:
+    an appraisal answers "what is this object and what is it worth restored", which does
+    not change when the seller cuts the price. So a price drop can be re-ranked against
+    today's asking price for zero cost, and improvements to scoring or resale logic apply
+    retroactively to every piece already in the catalogue.
+    """
+    auth = assess_authenticity(listing)
+    ask = listing.asking_price_cents or 0
+
+    # Restoration cost and effort are two unconstrained numbers the model invents from a
+    # photograph, and both feed the score directly — cost comes off the margin, hours are
+    # multiplied by your rate and come off it again. Clamping happens HERE, not at
+    # appraisal time, so published cost reality applies to every piece already in the
+    # catalogue rather than only to whatever is valued next.
+    bounds = clamp_restoration(
+        appraisal.est_restoration_cost_cents,
+        appraisal.est_restoration_effort_hours,
+        restored_value_cents=appraisal.est_restored_resale_value_cents,
+    )
+    appraisal_raw = appraisal
+    if bounds.adjusted:
+        appraisal = appraisal.model_copy(update={
+            "est_restoration_cost_cents": bounds.cost_cents,
+            "est_restoration_effort_hours": bounds.effort_hours,
+        })
+        log.info("restoration_clamped", listing=listing.fb_listing_id,
+                 changes="; ".join(bounds.adjustments))
+
+    deal = compute_deal_score(appraisal, listing.asking_price_cents, hourly_rate_cents)
+    cash_margin = (
+        appraisal.est_restored_resale_value_cents - ask - appraisal.est_restoration_cost_cents
+    )
+    dropped = _price_dropped(listing)
+    oor = bool(in_radius) and not in_radius(listing.location_text)
+
+    # Both resale answers: the market's number (independent of you) and what it means
+    # for your books. ``logged_costs`` arrives once you've actually bought and worked on
+    # the piece; until then tier 2 is estimated as "bought at ask, restored per estimate".
+    resale = price_piece(
+        appraisal,
+        asking_price_cents=ask,
+        logged_costs=logged_costs,
+        hourly_rate_cents=hourly_rate_cents,
+    )
+
+    liq = liquidity_score(
+        maker_guess=appraisal.maker_guess, confidence=appraisal.confidence,
+        identified_item=appraisal.identified_item, authenticity=auth,
+        market_supply=market_supply,
+    )
+    # The pre-screen score is free and already encodes the vertical's hot signals —
+    # it was previously computed during selection, discarded, and hardcoded 0 here,
+    # which quietly made the "Hot" badge a synonym for "price drop".
+    pre = prescreen(listing, vertical, require_photo=False)
+    heat = heat_score(
+        text=f"{listing.title} {listing.description}",
+        prescreen_score=pre.score, price_dropped=dropped,
+    )
+    roi = roi_to_score(
+        appraisal.est_restored_resale_value_cents, ask + appraisal.est_restoration_cost_cents
+    )
+    killer = is_killer_deal(
+        deal_score=deal, confidence=appraisal.confidence, authenticity=auth,
+        net_margin_cents=cash_margin, asking_price_cents=listing.asking_price_cents,
+    )
+    prio = viewing_priority(
+        deal_score=deal, liquidity=liq, heat=heat, authenticity=auth,
+        roi_score=roi, out_of_radius=oor, days_since_seen=days_since_seen,
+    )
+    return EvaluatedPiece(
+        listing=listing, appraisal=appraisal, authenticity=auth, deal_score=deal,
+        cash_margin_cents=cash_margin, resale=resale, liquidity=liq, heat=heat,
+        priority=prio, is_killer=killer, price_dropped=dropped, out_of_radius=oor,
+        days_since_seen=days_since_seen,
+        tier=price_tier(appraisal.est_restored_resale_value_cents),
+        restoration_notes=bounds.adjustments,
+        appraisal_raw=appraisal_raw,
+        market_supply=market_supply,
+        badges=badges(killer=killer, heat=heat, liquidity=liq, price_dropped=dropped,
+                      authenticity=auth, out_of_radius=oor,
+                      days_since_seen=days_since_seen),
+    )

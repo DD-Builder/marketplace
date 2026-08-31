@@ -1,0 +1,52 @@
+name: EBTH category-parameter probe
+
+# One question, one workflow: which query parameter actually narrows /browse to a single
+# category? Split out of the full structure probe because that probe does a lot of other
+# work first, and two attempts to fold this into it were killed on the job clock without
+# publishing a byte. A step-level timeout SIGKILLs the process, so no except or finally
+# clause runs — the only durable answer is to write each trial to disk as it lands, and
+# to keep the run small enough that it finishes.
+on:
+  push:
+    paths:
+      - ".github/category-probe-request"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ebth-category-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the app
+        run: pip install -e '.[browser]'
+      - name: Install Chromium for Playwright
+        timeout-minutes: 6
+        run: python -m playwright install --with-deps chromium
+      - name: Probe the category parameter
+        # Six navigations. A browse URL that renders no lots costs the full navigation
+        # timeout plus a hydration wait, so the worst case is ~5 minutes; 9 leaves room
+        # without letting a hang eat the publish step.
+        timeout-minutes: 9
+        env:
+          EBTH_FETCH: ${{ vars.EBTH_FETCH || 'browser' }}
+        run: |
+          python -u -m dealfinder.run_auctions --probe-categories \
+            --out docs/auctions --catalog docs/auctions/catalog.json || true
+      - name: Publish the findings
+        # always(), because partial trials are the point — see above.
+        if: always()
+        run: |
+          git config user.name "ebth-probe"
+          git config user.email "ebth-probe@users.noreply.github.com"
+          bash .github/scripts/publish.sh "EBTH category probe [skip ci]" \
+            docs/auctions/category-probe.json
