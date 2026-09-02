@@ -5,9 +5,14 @@ name: EBTH structure probe
 # API-tokenless way to ask a runner (which, unlike the dev sandbox, can reach ebth.com)
 # what the site actually serves. The report lands in docs/auctions/probe.json.
 on:
-  push:
-    paths:
-      - ".github/probe-request"
+  workflow_dispatch:
+  # PAUSED 2026-09-02 at the user's request. Nothing here scrapes, values or spends on
+  # its own any more: both the clock and the marker-file hook are off. workflow_dispatch
+  # is deliberately left live so a run can still be started by hand. To resume, uncomment
+  # the block below — nothing else was changed.
+  # push:
+  #   paths:
+  #     - ".github/probe-request"
 
 permissions:
   contents: write
