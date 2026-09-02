@@ -17,16 +17,20 @@ on:
         type: boolean
         required: false
         default: false
-  schedule:
-    # :43 — GitHub's scheduler is congested on the hour and drops on-the-hour jobs.
-    - cron: "43 * * * *"
-  push:
-    # The GitHub App driving development can't call workflow_dispatch (403), so an
-    # on-demand run is requested the same tokenless way the EBTH probe is: push a
-    # marker file. Its content ("dry" or anything else) picks the mode, read in the
-    # "Determine run mode" step below since `if:` conditions can't read file content.
-    paths:
-      - ".github/auction-run-request"
+  # PAUSED 2026-09-02 at the user's request. Nothing here scrapes, values or spends on
+  # its own any more: both the clock and the marker-file hook are off. workflow_dispatch
+  # is deliberately left live so a run can still be started by hand. To resume, uncomment
+  # the block below — nothing else was changed.
+  # schedule:
+  #   # :43 — GitHub's scheduler is congested on the hour and drops on-the-hour jobs.
+  #   - cron: "43 * * * *"
+  # push:
+  #   # The GitHub App driving development can't call workflow_dispatch (403), so an
+  #   # on-demand run is requested the same tokenless way the EBTH probe is: push a
+  #   # marker file. Its content ("dry" or anything else) picks the mode, read in the
+  #   # "Determine run mode" step below since `if:` conditions can't read file content.
+  #   paths:
+  #     - ".github/auction-run-request"
 
 permissions:
   contents: write

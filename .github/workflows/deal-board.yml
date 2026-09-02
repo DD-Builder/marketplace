@@ -20,22 +20,22 @@ on:
         type: boolean
         required: false
         default: false
-  push:
-    # Same tokenless on-demand hook the auction workflows use: the GitHub App driving
-    # development can't call workflow_dispatch (403), so touching a marker file asks for
-    # a run. The board is rebuilt from the committed catalogue even when the scrape is
-    # quota-blocked, so this is also how docs/board.html gets regenerated on demand.
-    paths:
-      - ".github/board-run-request"
-  schedule:
-    # Daily, ~8-9am Eastern. Counter-intuitively daily is the *cheap* cadence: measured
-    # on a real export, a daily re-run finds ~30% new listings and ~70% already seen, and
-    # the two-stage scrape only pays for the 30%. Twice a week means a bigger new-fraction
-    # each time for the same index cost.
-    #
-    # :17 rather than :00 — GitHub's scheduler is heavily congested on the hour, where
-    # runs are routinely delayed 10-30 minutes and are sometimes dropped outright.
-    - cron: "17 13 * * *"
+  # PAUSED 2026-09-02 at the user's request. Nothing here scrapes, values or spends on
+  # its own any more: both the clock and the marker-file hook are off. workflow_dispatch
+  # is deliberately left live so a run can still be started by hand. To resume, uncomment
+  # the block below — nothing else was changed.
+  # push:
+  #   # Same tokenless on-demand hook the auction workflows use: the GitHub App driving
+  #   # development can't call workflow_dispatch (403), so touching a marker file asks for
+  #   # a run. The board is rebuilt from the committed catalogue even when the scrape is
+  #   # quota-blocked, so this is also how docs/board.html gets regenerated on demand.
+  #   paths:
+  #     - ".github/board-run-request"
+  # schedule:
+  #   # Daily, ~8-9am Eastern. Counter-intuitively daily is the *cheap* cadence: measured
+  #   # on a real export, a daily re-run finds ~30% new listings and ~70% already seen, and
+  #   # the two-stage scrape only pays for the 30%.
+  #   - cron: "17 13 * * *"
 
 # Let the job commit the regenerated site back to the branch.
 permissions:
