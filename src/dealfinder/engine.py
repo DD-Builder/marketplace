@@ -10,8 +10,8 @@
             -> liquidity / heat / priority / badges
             -> sorted board + a full audit of what it cost to get here
 
-It is provider-agnostic (pass any ``ValuationProvider``) and source-agnostic (pass Apify
-records or already-built listings), so it is exercised end-to-end in tests with a stub
+It is provider-agnostic (pass any ``ValuationProvider``) and takes plain ``RawListing``
+objects however you assembled them, so it is exercised end-to-end in tests with a stub
 provider on synthetic data — no network, no AI spend.
 """
 
@@ -38,7 +38,6 @@ from dealfinder.prescreen import prescreen
 from dealfinder.resale import PieceCosts, ResalePlan, price_piece
 from dealfinder.restoration import clamp_restoration
 from dealfinder.selection import AppraisalPlan, plan_appraisals
-from dealfinder.sources.apify import records_to_listings
 from dealfinder.valuation.scoring import compute_deal_score
 from dealfinder.verticals import DEFAULT_VERTICAL, Vertical
 
@@ -80,7 +79,7 @@ class EvaluatedPiece:
 @dataclass
 class RunResult:
     pieces: list[EvaluatedPiece]      # sorted by viewing priority, best first
-    plan: AppraisalPlan               # cost-control audit (what was scraped/skipped/appraised)
+    plan: AppraisalPlan               # cost-control audit (what was supplied/skipped/appraised)
     #: Why appraisals failed, in the order they failed. The board's failure banner used to
     #: guess ("usually an expired token") because this was logged and dropped on the floor.
     #: A real run then failed on a spent subscription quota and the guess sent the operator
@@ -115,16 +114,13 @@ def run_valuation(
 ) -> RunResult:
     """Run the funnel over a batch and return a ranked, priced board.
 
-    ``source`` may be raw Apify records or ready ``RawListing`` objects. ``seen`` is the
+    ``source`` is an iterable of ``RawListing`` objects. ``seen`` is the
     cross-run ledger (``{id: last_price_cents}``) so already-evaluated pieces are skipped.
     ``in_radius(location_text) -> bool`` flags distance; omit to treat everything as in-range.
     ``image_paths_by_id`` supplies already-downloaded photo files per listing — required by
     the subscription (Claude Code) appraiser, which reads images off disk.
     """
-    items = list(source)
-    listings = (
-        records_to_listings(items) if items and isinstance(items[0], dict) else list(items)
-    )
+    listings = list(source)
 
     plan = plan_appraisals(
         listings, seen or {}, vertical=vertical, top_n=top_n, wildcards=wildcards,
@@ -135,7 +131,7 @@ def run_valuation(
     failures: list[str] = []
     for listing in plan.to_appraise:
         try:
-            imgs = (image_paths_by_id or {}).get(listing.fb_listing_id)
+            imgs = (image_paths_by_id or {}).get(listing.listing_id)
             # Market comparables, when a source is configured. Never fatal: an appraisal
             # without comps is exactly what shipped before, so a comps outage degrades
             # the estimate rather than losing the listing.
@@ -146,11 +142,11 @@ def run_valuation(
                     comps = comps_source.get_comps(listing.title)
                     supply = getattr(comps_source, "last_total", None)
                 except Exception as exc:  # noqa: BLE001
-                    log.warning("comps_failed", listing=listing.fb_listing_id,
+                    log.warning("comps_failed", listing=listing.listing_id,
                                 error=str(exc)[:160])
             appr = provider.appraise(listing, vertical, image_paths=imgs, comps=comps)
         except Exception as exc:  # noqa: BLE001 — one bad item shouldn't sink the run
-            log.warning("appraisal_failed", listing=listing.fb_listing_id, error=str(exc))
+            log.warning("appraisal_failed", listing=listing.listing_id, error=str(exc))
             failures.append(str(exc))
             continue
         pieces.append(
@@ -202,7 +198,7 @@ def evaluate_piece(
             "est_restoration_cost_cents": bounds.cost_cents,
             "est_restoration_effort_hours": bounds.effort_hours,
         })
-        log.info("restoration_clamped", listing=listing.fb_listing_id,
+        log.info("restoration_clamped", listing=listing.listing_id,
                  changes="; ".join(bounds.adjustments))
 
     deal = compute_deal_score(appraisal, listing.asking_price_cents, hourly_rate_cents)

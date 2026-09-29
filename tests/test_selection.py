@@ -14,7 +14,7 @@ from dealfinder.selection import (
 
 def _l(id_, title="", desc="", price=5000, photos=1):
     return RawListing(
-        fb_listing_id=id_,
+        listing_id=id_,
         title=title,
         description=desc,
         asking_price_cents=price,
@@ -26,7 +26,7 @@ def test_dedup_collapses_cross_search_overlap():
     # Same id surfaced by 'dresser', 'mcm', and 'walnut' searches -> one record.
     listings = [_l("A"), _l("B"), _l("A"), _l("A")]
     out = dedup_listings(listings)
-    assert {x.fb_listing_id for x in out} == {"A", "B"}
+    assert {x.listing_id for x in out} == {"A", "B"}
 
 
 def test_dedup_keeps_richest_record():
@@ -45,7 +45,7 @@ def test_diff_flags_new_and_price_drops_only():
         _l("C", price=3000),   # new -> actionable
     ]
     diff = diff_new_and_changed(listings, seen)
-    ids = lambda xs: {x.fb_listing_id for x in xs}
+    ids = lambda xs: {x.listing_id for x in xs}
     assert ids(diff.new) == {"C"}
     assert ids(diff.price_dropped) == {"A"}
     assert ids(diff.unchanged) == {"B"}
@@ -81,7 +81,7 @@ def test_plan_reports_full_funnel_counts():
         + [_l("junk", title="IKEA Malm", desc="particle board")]        # junked by prescreen
     )
     plan = plan_appraisals(listings, seen, top_n=20, wildcards=5)
-    assert plan.total_scraped == 5
+    assert plan.total_supplied == 5
     assert plan.skipped_seen == 1          # the 'old' listing, not re-appraised
     assert plan.new == 4                   # 3 oak + junk are both "new" ids
     assert plan.dropped_by_prescreen == 1  # the IKEA one

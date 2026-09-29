@@ -29,7 +29,7 @@ class StubProvider:
 
 def _l(id_, title="solid oak dresser", price=4000, photos=1, was=None):
     r = RawListing(
-        fb_listing_id=id_, title=title, asking_price_cents=price,
+        listing_id=id_, title=title, asking_price_cents=price,
         photos=[RawPhoto(remote_url="u")] * photos,
     )
     if was is not None:
@@ -58,7 +58,7 @@ def test_engine_skips_already_seen():
     listings = [_l("a", price=4000), _l("b", price=5000)]
     seen = {"a": 4000}  # 'a' seen at same price -> skip; 'b' is new
     res = run_valuation(listings, seen=seen, provider=StubProvider())
-    ids = {p.listing.fb_listing_id for p in res.pieces}
+    ids = {p.listing.listing_id for p in res.pieces}
     assert ids == {"b"}
     assert res.plan.skipped_seen == 1
 
@@ -70,17 +70,6 @@ def test_engine_flags_out_of_radius():
         in_radius=lambda loc: False,  # everything out of range
     )
     assert res.pieces[0].out_of_radius
-
-
-def test_engine_accepts_apify_records():
-    records = [{
-        "id": "z", "listingTitle": "solid walnut dresser",
-        "listingPrice": {"amount": "40.00"}, "listingPhotos": [{"image": {"uri": "u"}}],
-        "locationText": {"text": "Lexington, KY"},
-    }]
-    res = run_valuation(records, seen={}, provider=StubProvider())
-    assert len(res.pieces) == 1
-    assert res.pieces[0].listing.title == "solid walnut dresser"
 
 
 def test_provider_factory():
@@ -113,17 +102,6 @@ def test_price_drop_rescores_without_any_ai_call():
     after = evaluate_piece(cheaper, appraisal)
     assert after.cash_margin_cents > before.cash_margin_cents
     assert after.priority >= before.priority
-
-
-def test_thin_and_full_records_are_distinguishable():
-    from dealfinder.sources.apify import record_to_listing
-    thin = record_to_listing({"id": "a", "listingTitle": "Dresser",
-                              "primaryListingPhoto": {"photo_image_url": "u"}})
-    full = record_to_listing({"id": "a", "listingTitle": "Dresser",
-                              "description": {"text": "solid oak"},
-                              "listingPhotos": [{"image": {"uri": "u"}}]})
-    assert not thin.detail_fetched and full.detail_fetched
-    assert thin.photos  # primary photo fallback still gives prescreen something to keep
 
 
 def test_the_board_headline_is_the_market_price_not_your_cost_basis():

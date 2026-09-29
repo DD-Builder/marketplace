@@ -53,7 +53,7 @@ def test_it_accepts_a_vertical_key_or_an_object_or_nothing():
 
 
 def test_every_figure_is_overridable_from_the_environment(monkeypatch):
-    monkeypatch.setenv("EBTH_SHIP_CENTS", "1200")
+    monkeypatch.setenv("LOT_SHIP_CENTS", "1200")
     assert acquisition_cost(JEWELRY).cost_cents == 1200
 
     monkeypatch.setenv("PICKUP_ONE_WAY_MILES", "10")
@@ -64,7 +64,7 @@ def test_every_figure_is_overridable_from_the_environment(monkeypatch):
 
 
 def test_garbage_env_values_fall_back_instead_of_crashing_the_run(monkeypatch):
-    monkeypatch.setenv("EBTH_SHIP_CENTS", "not-a-number")
+    monkeypatch.setenv("LOT_SHIP_CENTS", "not-a-number")
     monkeypatch.setenv("PICKUP_ONE_WAY_MILES", "")
     assert acquisition_cost(JEWELRY).cost_cents == 3500
     assert acquisition_cost(FURNITURE).cost_cents > 0

@@ -7,7 +7,7 @@ from dealfinder.core.schemas import RawListing
 
 
 def _l(title="", desc=""):
-    return RawListing(fb_listing_id="x", title=title, description=desc)
+    return RawListing(listing_id="x", title=title, description=desc)
 
 
 def test_eames_esque_is_a_red_flag():

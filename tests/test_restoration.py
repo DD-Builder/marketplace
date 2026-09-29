@@ -83,7 +83,7 @@ def test_the_clamp_reaches_pieces_already_in_the_catalogue():
     from dealfinder.core.schemas import AppraisalResult, RawListing
     from dealfinder.engine import evaluate_piece
 
-    listing = RawListing(fb_listing_id="x", title="walnut credenza", asking_price_cents=20000)
+    listing = RawListing(listing_id="x", title="walnut credenza", asking_price_cents=20000)
     absurd = AppraisalResult(
         identified_item="credenza", est_asis_value_cents=20000,
         est_restored_resale_value_cents=90000, est_restoration_cost_cents=5000,

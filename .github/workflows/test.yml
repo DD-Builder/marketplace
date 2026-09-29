@@ -29,4 +29,6 @@ jobs:
       - run: python -m pytest -q
       # A broken console script would go unnoticed otherwise — the workflows
       # invoke the modules directly.
-      - run: dealfinder-board --help && dealfinder-negotiate --help
+      # The console entry points were pipeline runners over acquired data and are
+      # gone; this is a library, so the import surface is what there is to smoke-test.
+      - run: python -c "import dealfinder, dealfinder.engine, dealfinder.auctions.bidding"

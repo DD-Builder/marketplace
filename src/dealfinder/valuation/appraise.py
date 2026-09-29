@@ -80,7 +80,7 @@ def appraise(
     """Return (appraisal, input_tokens, output_tokens).
 
     Provide ``image_paths`` (local files, used by the live pipeline) and/or ``image_urls``
-    (remote, used by the measurement pilot straight off the scraper's JSON). ``guidance`` is
+    (remote, for images already hosted somewhere you can link to). ``guidance`` is
     the active vertical's category-specific instruction, appended to the system prompt.
     """
     client = get_client()

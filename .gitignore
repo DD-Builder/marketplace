@@ -19,7 +19,7 @@ venv/
 # Working photo downloads (only the cover images ship with the site)
 docs/_photos/
 
-# Local pilot inputs/outputs (your own scraped data — never commit)
+# Local inputs/outputs (your own working data — never commit)
 pilot/*.json
 pilot/*.csv
 

@@ -8,7 +8,7 @@ from dealfinder.prescreen import prescreen
 
 def _listing(title="", desc="", price=5000, photos=1):
     return RawListing(
-        fb_listing_id="x",
+        listing_id="x",
         title=title,
         description=desc,
         asking_price_cents=price,
@@ -48,7 +48,7 @@ def test_rejects_out_of_range_price():
 
 def test_molding_is_not_a_mold_reject():
     # "crown molding" is a desirable antique feature; the substring "mold" must
-    # not trip the NEGATIVE filter. (Regression: real Lexington scrape, 2026.)
+    # not trip the NEGATIVE filter. (Regression from real listing text, 2026.)
     r = prescreen(_listing(title="Oak cabinet", desc="fluted pilasters and crown molding"))
     assert r.keep
 

@@ -13,7 +13,7 @@ from dealfinder.ranking import (
 )
 
 CLEAR = AuthenticityAssessment(verdict="clear", is_red_flag=False, value_basis="genuine_ok")
-FAKE = assess_authenticity(RawListing(fb_listing_id="x", title="Eames style chair"))
+FAKE = assess_authenticity(RawListing(listing_id="x", title="Eames style chair"))
 
 
 def test_maker_piece_is_more_liquid_than_noname():

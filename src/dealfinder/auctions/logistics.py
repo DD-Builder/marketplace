@@ -31,8 +31,8 @@ from dealfinder.verticals import Vertical, get_vertical
 #: be right enough to keep a marginal bid honest.
 DEFAULT_SHIP_CENTS = 3500
 
-#: Lexington, KY → Cincinnati, OH, one way. EBTH's operation is Cincinnati-based, so a
-#: bulky win is this drive twice.
+#: One way to the saleroom you collect from, as a default. A bulky win is this drive
+#: twice; override both numbers for your own route.
 DEFAULT_ONE_WAY_MILES = 83.0
 DEFAULT_ONE_WAY_HOURS = 1.45
 
@@ -81,7 +81,7 @@ def acquisition_cost(
     v = vertical if isinstance(vertical, Vertical) else get_vertical(vertical or "")
 
     if not v.bulky:
-        cents = _env_int("EBTH_SHIP_CENTS", DEFAULT_SHIP_CENTS)
+        cents = _env_int("LOT_SHIP_CENTS", DEFAULT_SHIP_CENTS)
         return Logistics(
             cost_cents=cents,
             pickup=False,

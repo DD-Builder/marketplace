@@ -1,23 +1,24 @@
-"""Cost-control funnel: turn many overlapping scrapes into the smallest paid workload.
+"""Cost control: turn a batch of items you supply into the smallest paid workload.
 
-Three distinct leaks this plugs, in order:
+The only metered step in this codebase is the AI valuation, so the job here is to reach it
+as few times as possible. Three distinct leaks, in order:
 
-1. **Cross-scrape overlap** — searching ``dresser``, ``mcm``, ``walnut`` returns the same
-   pieces. :func:`dedup_listings` unions every search into one block keyed by listing id,
-   so a piece is only ever considered once per run no matter how many searches hit it.
+1. **Overlap within a batch** — the same piece can arrive more than once when a batch is
+   assembled from several overlapping lists. :func:`dedup_listings` unions them into one
+   block keyed by listing id, so a piece is only ever considered once.
 
-2. **Cross-run repeats** — Monday's 1,000 results shouldn't be re-appraised on Thursday.
-   :func:`diff_new_and_changed` compares against a *seen ledger* and advances only listings
-   that are genuinely new or whose price has dropped (a price drop is itself a buy signal).
+2. **Repeats across batches** — something valued on Monday should not be valued again on
+   Thursday. :func:`diff_new_and_changed` compares against a *seen ledger* and advances
+   only items that are genuinely new, or whose price has dropped (a price drop is itself a
+   buy signal, and worth re-scoring even though the appraisal stands).
 
-3. **Appraisal blowout** — even the new pieces are capped. :func:`select_for_appraisal`
+3. **Valuation blowout** — even the new pieces are capped. :func:`select_for_appraisal`
    ranks the pre-screen survivors and forwards only the top ``N`` plus ``K`` "wildcards"
-   (ambiguous/mistitled pieces with no keyword signal but real photos) to the paid vision
-   model.
+   (ambiguous or badly-titled pieces with no keyword signal but real photos) to the model.
 
-Everything here is pure functions over plain data — no I/O, no AI — so it is cheap to test
-and cheap to reason about. The seen ledger is a plain ``{listing_id: last_price_cents}``
-map; persistence wires into the repository at the pipeline layer.
+Everything here is pure functions over plain data — no I/O, no AI, no network — so it is
+cheap to test and cheap to reason about. The seen ledger is a plain
+``{listing_id: last_price_cents}`` map, and where it is persisted is the caller's business.
 """
 
 from __future__ import annotations
@@ -43,9 +44,9 @@ def dedup_listings(listings: Iterable[RawListing]) -> list[RawListing]:
     """
     best: dict[str, RawListing] = {}
     for lst in listings:
-        cur = best.get(lst.fb_listing_id)
+        cur = best.get(lst.listing_id)
         if cur is None or _richness(lst) > _richness(cur):
-            best[lst.fb_listing_id] = lst
+            best[lst.listing_id] = lst
     return list(best.values())
 
 
@@ -71,10 +72,10 @@ def diff_new_and_changed(
     """
     out = DiffResult()
     for lst in listings:
-        if lst.fb_listing_id not in seen:
+        if lst.listing_id not in seen:
             out.new.append(lst)
             continue
-        prev = seen[lst.fb_listing_id]
+        prev = seen[lst.listing_id]
         cur = lst.asking_price_cents
         if prev is not None and cur is not None and cur < prev:
             out.price_dropped.append(lst)
@@ -90,7 +91,7 @@ def update_seen(
     """Return a new seen-ledger folding in this run's observed prices."""
     merged = dict(seen)
     for lst in listings:
-        merged[lst.fb_listing_id] = lst.asking_price_cents
+        merged[lst.listing_id] = lst.asking_price_cents
     return merged
 
 
@@ -157,7 +158,7 @@ class AppraisalPlan:
     to_appraise: list[RawListing] = field(default_factory=list)
     strong: list[RawListing] = field(default_factory=list)
     wildcards: list[RawListing] = field(default_factory=list)
-    total_scraped: int = 0
+    total_supplied: int = 0
     after_dedup: int = 0
     new: int = 0
     price_dropped: int = 0
@@ -174,7 +175,7 @@ class AppraisalPlan:
             else ""
         )
         return (
-            f"{self.total_scraped} scraped -> {self.after_dedup} after dedup -> "
+            f"{self.total_supplied} supplied -> {self.after_dedup} after dedup -> "
             f"{self.new} new + {self.price_dropped} price-drops "
             f"({self.skipped_seen} already-seen, skipped{valued}) -> "
             f"{len(self.to_appraise)} appraised "
@@ -211,7 +212,7 @@ def plan_appraisals(
     diff = diff_new_and_changed(deduped, seen)
 
     valued = set(already_valued)
-    actionable = [lst for lst in diff.actionable if lst.fb_listing_id not in valued]
+    actionable = [lst for lst in diff.actionable if lst.listing_id not in valued]
     skipped_valued = len(diff.actionable) - len(actionable)
 
     sel = select_for_appraisal(
@@ -222,8 +223,8 @@ def plan_appraisals(
     backfilled = 0
     budget = (top_n + wildcards) - len(chosen)
     if budget > 0:
-        already = {lst.fb_listing_id for lst in chosen} | valued
-        pool = [lst for lst in backfill if lst.fb_listing_id not in already]
+        already = {lst.listing_id for lst in chosen} | valued
+        pool = [lst for lst in backfill if lst.listing_id not in already]
         # Strong signal first, then wildcards — passing the full budget to both and
         # truncating keeps that order while making sure leftover budget is actually used.
         # With ``wildcards=0`` the backfill stalled once the signalled pieces ran out, and
@@ -238,7 +239,7 @@ def plan_appraisals(
         to_appraise=chosen,
         strong=sel.strong,
         wildcards=sel.wildcards,
-        total_scraped=len(raw),
+        total_supplied=len(raw),
         after_dedup=len(deduped),
         new=len(diff.new),
         price_dropped=len(diff.price_dropped),

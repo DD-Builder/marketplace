@@ -1,4 +1,4 @@
-"""Pydantic DTOs used at layer boundaries (scraper output, valuation I/O, API)."""
+"""Pydantic DTOs used at layer boundaries (item input, valuation I/O, API)."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ class RawPhoto(BaseModel):
 
 
 class RawListing(BaseModel):
-    """A listing as extracted by the scraper, before persistence.
+    """One item to be valued, as supplied to the pipeline.
 
     A record may be *thin* (from a cheap search-grid scan) or *full* (from a paid detail
     page). Only ``description`` and the full photo set require the detail page; everything
@@ -21,7 +21,7 @@ class RawListing(BaseModel):
     pipeline can avoid paying twice for the same listing.
     """
 
-    fb_listing_id: str
+    listing_id: str
     title: str = ""
     description: str = ""
     asking_price_cents: int | None = None
@@ -38,9 +38,9 @@ class RawListing(BaseModel):
     is_sold: bool | None = None
     is_live: bool | None = None
     posted_at: datetime | None = None
-    #: When this record was actually observed on Marketplace. A live scrape leaves it
-    #: None (meaning "now"); a dataset recovered from an old run sets it to that run's
-    #: time, so three-day-old evidence cannot masquerade as a fresh sighting.
+    #: When this record was actually observed. None means "now"; set it explicitly when
+    #: the details come from an older record, so stale evidence cannot masquerade as a
+    #: fresh sighting.
     observed_at: datetime | None = None
 
 

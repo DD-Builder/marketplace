@@ -26,7 +26,7 @@ log = get_logger(__name__)
 
 SYSTEM = (
     "You are helping a furniture-restoration reseller negotiate with a private seller "
-    "over Facebook Marketplace messenger. Write natural, concise, human messages — never "
+    "to a private seller. Write natural, concise, human messages — never "
     "robotic or template-like. Use only the leverage you're given (real condition flaws, "
     "the buyer's walk-away price). Never invent facts about the item or claim to have seen "
     "it in person unless the conversation says so."

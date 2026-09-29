@@ -21,9 +21,8 @@ from dealfinder.auctions.bidding import (
     max_bid_cents,
     projected_final_cents,
 )
-from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry, BidPoint, observe_auctions
+from dealfinder.auctions.lot import BidPoint, Lot
 from dealfinder.core.schemas import AppraisalResult
-from dealfinder.sources.ebth import AuctionItem
 
 NOW = datetime(2026, 8, 17, 12, 0, tzinfo=timezone.utc)
 
@@ -43,11 +42,9 @@ def _appraisal(asis=60000, restored=90000, cost=5000, hours=4.0, conf=0.8):
 def _entry(bid=10000, ends_in_h=10.0, appraisal=None, vertical="jewelry", **kw):
     """Defaults to a *shippable* vertical so the arithmetic tests carry a flat $35 rather
     than a round-trip drive; the pickup path is exercised explicitly below."""
-    entry = AuctionEntry(
-        id="1-lot", first_seen=NOW - timedelta(days=2), last_seen=NOW,
-        ends_at=NOW + timedelta(hours=ends_in_h), vertical=vertical,
-        current_bid_cents=bid, appraisal=appraisal, watch=True,
-        state="ending" if ends_in_h <= 24 else "live", **kw,
+    entry = Lot(
+        id="1-lot", ends_at=NOW + timedelta(hours=ends_in_h), vertical=vertical,
+        current_bid_cents=bid, appraisal=appraisal, **kw,
     )
     entry.bid_history = [BidPoint(at=NOW - timedelta(days=2), bid_cents=bid // 2),
                          BidPoint(at=NOW, bid_cents=bid)]
@@ -245,28 +242,18 @@ def test_thin_calibration_is_said_out_loud():
     assert any("1 observed" in n for n in g.notes)
 
 
-# --- integration with the catalogue -----------------------------------------------------
+# --- calibration -----------------------------------------------------------------------
 
-def test_calibration_flows_from_observed_endings_into_guidance():
-    """End-to-end: watch a lot, see it close, and the next lot's projection uses what
-    the first one taught."""
-    cat = AuctionCatalog()
-    ends = NOW + timedelta(hours=30)
+def test_an_observed_close_pulls_the_multiplier_off_its_prior():
+    """The multiplier starts as a prior and learns from closes you record yourself. This
+    used to run through a harvested catalogue; the arithmetic it was checking is the same.
+    """
+    pairs = [(1000, 3000)]          # a lot at $10 with a day left hammered at $30
 
-    def item(bid):
-        return AuctionItem(item_id="cal-1", title="Teak Desk",
-                           current_bid_cents=bid, ends_at=ends)
-
-    observe_auctions(cat, [item(1000)], now=NOW)
-    observe_auctions(cat, [item(1000)], now=ends - timedelta(hours=25))
-    observe_auctions(cat, [item(3000)], now=ends + timedelta(minutes=30))
-
-    from dealfinder.auctions.catalog import calibration_pairs
-
-    pairs = calibration_pairs(cat)
-    assert pairs == [(1000, 3000)]
     m = endgame_multiplier(pairs)
-    assert m > DEFAULT_ENDGAME_MULTIPLIER * 0.9   # 3.0 observation pulls the 2.0 prior up
+
+    assert m > DEFAULT_ENDGAME_MULTIPLIER * 0.9
+    assert endgame_multiplier([]) == DEFAULT_ENDGAME_MULTIPLIER
 
 
 # --- the market gets a vote ---------------------------------------------------------

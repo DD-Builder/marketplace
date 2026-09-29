@@ -168,4 +168,4 @@ def upsert(ledger: Ledger, entry: PieceLog) -> PieceLog:
 
 def titles_from(pieces: Iterable) -> dict[str, str]:
     """Listing id -> title, so a logged piece keeps a readable name after it delists."""
-    return {p.listing.fb_listing_id: p.listing.title for p in pieces}
+    return {p.listing.listing_id: p.listing.title for p in pieces}

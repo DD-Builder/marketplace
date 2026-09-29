@@ -122,129 +122,6 @@ def test_no_walk_away_means_nothing_to_flag():
 
 # --- the publish path -----------------------------------------------------------------
 
-def _seed_catalog(tmp_path):
-    from dealfinder import catalog as cat
-    from dealfinder.core.schemas import AppraisalResult, RawListing
-
-    c = cat.Catalog()
-    cat.observe(c, [RawListing(
-        fb_listing_id="abc", title="Lane walnut credenza", asking_price_cents=25000,
-    )])
-    c.listings["abc"].appraisal = AppraisalResult(
-        identified_item="credenza", est_asis_value_cents=25000,
-        est_restored_resale_value_cents=90000, est_restoration_cost_cents=5000,
-        est_restoration_effort_hours=6.0, confidence=0.8, deal_score=70.0,
-        condition_assessment="veneer lifting on the left door",
-    )
-    path = tmp_path / "catalog.json"
-    cat.save_catalog(c, path)
-    return path
-
-
-def test_negotiate_writes_drafts_the_page_can_poll(tmp_path, monkeypatch):
-    from dealfinder import negotiate
-
-    catalog_path = _seed_catalog(tmp_path)
-    stub = StubDrafter()
-    monkeypatch.setattr(negotiate, "get_drafter", lambda name: stub)
-
-    rc = negotiate.main([
-        "--listing-id", "abc", "--posture", "20", "--conversation", "Seller: still here",
-        "--catalog", str(catalog_path), "--pieces", str(tmp_path / "pieces.json"),
-        "--out", str(tmp_path / "drafts"),
-    ])
-    assert rc == 0
-
-    data = json.loads((tmp_path / "drafts" / "abc.json").read_text())
-    assert data["status"] == "ok"
-    assert data["posture_label"] == "aggressive"
-    assert data["drafts"][0]["text"] == "Would you take $80?"
-    # NEVER above ask — you can always simply pay the asking price. The original
-    # assertion here was `X > Y or True`, which is unconditionally true; it spent its
-    # life hiding a formula that told the model to offer MORE than the seller asked.
-    assert data["walkaway_price_cents"] <= data["asking_price_cents"]
-    assert "generated_at" in data
-    # The stored appraisal supplied the leverage without anyone typing it.
-    assert "veneer lifting" in stub.prompt
-
-
-def test_a_failed_draft_still_writes_a_reason_so_the_page_stops_waiting(tmp_path, monkeypatch):
-    from dealfinder import negotiate
-
-    catalog_path = _seed_catalog(tmp_path)
-    monkeypatch.setattr(
-        negotiate, "get_drafter", lambda name: StubDrafter(boom="CLI not authenticated")
-    )
-    rc = negotiate.main([
-        "--listing-id", "abc", "--catalog", str(catalog_path),
-        "--pieces", str(tmp_path / "p.json"), "--out", str(tmp_path / "drafts"),
-    ])
-    assert rc == 1
-    data = json.loads((tmp_path / "drafts" / "abc.json").read_text())
-    assert data["status"] == "error" and "not authenticated" in data["error"]
-
-
-def test_an_unknown_listing_reports_itself_rather_than_hanging(tmp_path):
-    from dealfinder import negotiate
-
-    rc = negotiate.main([
-        "--listing-id", "nope", "--catalog", str(tmp_path / "missing.json"),
-        "--pieces", str(tmp_path / "p.json"), "--out", str(tmp_path / "drafts"),
-    ])
-    assert rc == 2
-    data = json.loads((tmp_path / "drafts" / "nope.json").read_text())
-    assert data["status"] == "error" and "catalogue" in data["error"]
-
-
-def test_drafts_flag_an_over_walkaway_offer_in_the_published_file(tmp_path, monkeypatch):
-    from dealfinder import negotiate
-
-    catalog_path = _seed_catalog(tmp_path)
-    monkeypatch.setattr(negotiate, "get_drafter", lambda name: StubDrafter(
-        drafts=NegotiationDrafts(drafts=[NegotiationDraft(text="I'll pay $9,000 flat")])
-    ))
-    negotiate.main([
-        "--listing-id", "abc", "--catalog", str(catalog_path),
-        "--pieces", str(tmp_path / "p.json"), "--out", str(tmp_path / "drafts"),
-    ])
-    data = json.loads((tmp_path / "drafts" / "abc.json").read_text())
-    assert data["drafts"][0]["over_walkaway_cents"] == [900000]
-
-
-def test_the_walkaway_is_the_price_at_which_the_flip_stops_paying(tmp_path):
-    """walkaway = restored − restoration − labour − required margin, capped at ask.
-
-    The formula this replaces was ask + margin/2 — ABOVE the asking price for every
-    profitable piece, so the prompt told the model 'the most I will pay is $550' about a
-    $250 listing, and offers_above() (comparing against the same number) could not fire.
-    """
-    from dealfinder.catalog import CatalogEntry
-    from dealfinder.core.schemas import AppraisalResult
-    from dealfinder.negotiate import _walkaway_cents
-
-    def entry(ask, restored, resto=5000, hours=2.0):
-        from datetime import datetime, timezone
-        now = datetime.now(timezone.utc)
-        return CatalogEntry(
-            id="x", first_seen=now, last_seen=now, asking_price_cents=ask,
-            appraisal=AppraisalResult(
-                identified_item="dresser", est_asis_value_cents=ask,
-                est_restored_resale_value_cents=restored,
-                est_restoration_cost_cents=resto,
-                est_restoration_effort_hours=hours, confidence=0.8, deal_score=50.0,
-            ),
-        )
-
-    # Marginal piece: $400 restored − $50 resto − 2h@$30 − $150 floor = $140 max offer.
-    assert _walkaway_cents(entry(25000, 40000), 3000) == 14000
-
-    # A screaming deal caps at the ask — never signals paying more than the seller wants.
-    assert _walkaway_cents(entry(25000, 90000, hours=6.0), 3000) == 25000
-
-    # A loser: restoring it costs more than it returns. No number beats a wrong number.
-    assert _walkaway_cents(entry(25000, 20000), 3000) is None
-
-
 def test_deal_score_and_killer_gate_agree_a_real_margin_is_a_killer():
     """The old gate (score>=70 @ conf>=0.65) was unreachable: score = base x conf with
     base < 100, so at the confidence floor it topped out at 65. Every star came from the
@@ -294,19 +171,19 @@ def test_a_genuine_knoll_is_not_flagged_for_the_word_after():
     from dealfinder.core.schemas import RawListing
 
     genuine = assess_authenticity(RawListing(
-        fb_listing_id="1", title="Knoll desk",
+        listing_id="1", title="Knoll desk",
         description="Selling after moving to a smaller place.",
     ))
     assert genuine.is_red_flag is False
 
     fake = assess_authenticity(RawListing(
-        fb_listing_id="2", title="Desk styled after Florence Knoll",
+        listing_id="2", title="Desk styled after Florence Knoll",
     ))
     assert fake.is_red_flag is True and fake.verdict == "styled_after"
 
     # Hedges are no longer swallowed by a stray style word.
     hedged = assess_authenticity(RawListing(
-        fb_listing_id="3", title="Danish style dresser",
+        listing_id="3", title="Danish style dresser",
         description="Unmarked, no markings anywhere. Solid teak.",
     ))
     assert hedged.verdict == "hedged" and hedged.value_basis == "unconfirmed"

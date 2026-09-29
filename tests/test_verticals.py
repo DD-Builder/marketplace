@@ -16,7 +16,7 @@ from dealfinder.verticals import (
 
 def _l(title="", desc="", price=5000):
     return RawListing(
-        fb_listing_id="x", title=title, description=desc,
+        listing_id="x", title=title, description=desc,
         asking_price_cents=price, photos=[RawPhoto(remote_url="u")],
     )
 
@@ -82,7 +82,7 @@ def test_every_vertical_is_reachable_by_key():
 
 
 def test_the_art_vertical_recognises_how_auction_houses_title_paintings():
-    """Measured against 154 live EBTH art lots, the original keyword list scored 139 of
+    """Measured against 154 real art lots, the original keyword list scored 139 of
     them at zero — it named techniques ("serigraph", "oil on canvas") but not the plain
     nouns real lot titles use, so not one art lot could clear the watchlist gate and the
     board carried no art at all despite art being explicitly asked for."""
@@ -98,7 +98,7 @@ def test_the_art_vertical_recognises_how_auction_houses_title_paintings():
     ]
     for title in titles:
         listing = RawListing(
-            external_id="a", fb_listing_id="a", source="ebth", url="",
+            external_id="a", listing_id="a", source="auction", url="",
             title=title, description="",
         )
         result = prescreen(listing, ART, require_photo=False)
@@ -115,7 +115,7 @@ def test_the_art_vertical_still_rejects_mass_market_reproductions():
     for title in ("Framed Canvas Print Reproduction of a Landscape Painting",
                   "Hobby Lobby Wall Decor Abstract Painting Poster"):
         listing = RawListing(
-            external_id="a", fb_listing_id="a", source="ebth", url="",
+            external_id="a", listing_id="a", source="auction", url="",
             title=title, description="",
         )
         assert not prescreen(listing, ART, require_photo=False).keep, title

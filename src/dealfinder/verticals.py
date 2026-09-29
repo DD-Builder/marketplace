@@ -6,8 +6,8 @@ handed to the AI appraiser. Furniture is the first, but art / electronics / plan
 whatever are just another :class:`Vertical` in the registry — nothing downstream
 (dedup, selection, scoring, resale) is furniture-specific.
 
-Add a vertical by defining it and dropping it in ``_REGISTRY``; the scrape target then
-names it by ``key``.
+Add a vertical by defining it and dropping it in ``_REGISTRY``; callers name it by
+``key``.
 """
 
 from __future__ import annotations
@@ -67,7 +67,7 @@ FURNITURE = Vertical(
 ART = Vertical(
     key="art",
     label="Art & prints",
-    # Measured against 154 live EBTH art lots, the original list scored 139 of them at
+    # Measured against 154 real art lots, the original list scored 139 of them at
     # zero: it named techniques ("serigraph", "oil on canvas") but not the words auction
     # houses actually title paintings with. "Bernard Lennon Oil Portrait of Young Girl"
     # matched nothing at all, so no art lot could ever clear the watchlist gate and the

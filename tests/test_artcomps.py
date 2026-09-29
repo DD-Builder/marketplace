@@ -19,9 +19,9 @@ def _pippa_comps() -> list[SoldComp]:
     """The artist's actual realised results, plus his artist-direct asking price."""
     return [
         SoldComp(price_cents=40100, title="Tuscany Wild Flowers", medium="oil on board",
-                 width_in=12, height_in=16, year_sold=2025, venue="EBTH"),
+                 width_in=12, height_in=16, year_sold=2025, venue="regional auction"),
         SoldComp(price_cents=11100, title="Venice Side Canal", medium="oil on board",
-                 width_in=9, height_in=12, year_sold=2025, venue="EBTH"),
+                 width_in=9, height_in=12, year_sold=2025, venue="regional auction"),
         SoldComp(price_cents=38000, medium="oil on board",
                  width_in=12, height_in=16, year_sold=2024),
         SoldComp(price_cents=15000, medium="oil on board",
