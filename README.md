@@ -1,19 +1,24 @@
 # The Bench
 
-Finds underpriced furniture on Facebook Marketplace, values it with AI, and helps you price
-and negotiate the resale — from an iPad, for as close to free as this can be built.
+Finds underpriced furniture in Facebook Marketplace listings, values it with AI, and helps
+you price and negotiate the resale — from an iPad, for as close to free as this can be built.
 
 It runs entirely on GitHub: **Actions** for compute, **Pages** for hosting, and your
 **Claude subscription** for the valuations, driven through the Claude Code CLI so there's no
-metered API bill. The only thing that costs money is the scrape itself.
+metered API bill. The only thing that costs money is the listing data.
 
 ## ⚠️ Read this first
 
-- **There is no official Facebook Marketplace API.** Listings are obtained through a
-  third-party scraping service (Apify), which is a breach of Meta's Terms of Service even
-  though the data is public. Running this is your decision and your risk. Nothing here logs
-  into Facebook or touches your account — but the underlying activity is still against
-  Meta's terms.
+- **Where the listing data comes from.** There is no official Facebook Marketplace API, so
+  this project buys its data from a third-party provider (Apify) that collects and sells
+  marketplace data commercially. That was a deliberate choice over building a scraper: the
+  app is a *customer* of a data vendor, not a collector. It never logs into Facebook and
+  never touches your account. You will find `facebook.com` URLs in the source, and they are
+  worth being precise about: they are links for *you* to tap, and search strings handed to
+  the provider to say which listings you want. Nothing in this codebase ever issues a
+  request to them — the only hosts it contacts are the provider's API, eBay's public comps
+  API, ebth.com for the auction board, and GitHub. What the vendor does upstream is
+  governed by the vendor's own terms, which you accept when you sign up with them.
 - **Valuations are estimates from photos and text.** Verify condition in person before
   handing over money.
 - **Nothing is ever sent to a seller.** The app drafts messages; you read, edit, and send
@@ -24,19 +29,20 @@ metered API bill. The only thing that costs money is the scrape itself.
 ## How it works
 
 ```
-search grid (cheap)  ->  detail pages for new/cheaper listings only
-                     ->  pre-screen (free, keyword + photo signal)
-                     ->  AI appraisal of the survivors, capped per run
-                     ->  deterministic scoring, authenticity check, resale pricing
-                     ->  a ranked static page committed to docs/
+index request (cheap)  ->  detail records for new/cheaper listings only
+                       ->  pre-screen (free, keyword + photo signal)
+                       ->  AI appraisal of the survivors, capped per run
+                       ->  deterministic scoring, authenticity check, resale pricing
+                       ->  a ranked static page committed to docs/
 ```
 
 Three ideas carry the whole design:
 
-**Never pay twice for the same listing.** Apify bills when it fetches, so the run does a
-cheap index scan first and only opens the detail pages of listings that are new or newly
-cheaper. Measured on a real 91-listing export, a daily re-run finds ~30% new and ~70%
-already seen — which is why *daily* is the cheap cadence, not the expensive one.
+**Never pay twice for the same listing.** The data provider bills per record delivered, so
+the run requests a cheap index first and only pays for the detail records of listings that
+are new or newly cheaper. Measured on a real 91-listing export, a daily re-run finds ~30%
+new and ~70% already seen — which is why *daily* is the cheap cadence, not the expensive
+one.
 
 **Value the object once, score it every run.** An appraisal answers "what is this and what
 is it worth restored", which doesn't change when the seller cuts the price. So appraisals
@@ -58,7 +64,9 @@ radius). Look-alike detection reads the listing for tells like "Eames-*esque*" o
 
 Paste a fine-grained GitHub token into **Connection** once, and the page can also write:
 
-- **Scrape now** — runs the pipeline on demand.
+- **Scrape now** — runs the pipeline on demand: requests a fresh batch of listings from the
+  data provider, then appraises and republishes. (The button label predates the wording
+  here; it triggers a data pull, not a crawl.)
 - **Log this piece** — price paid, materials, hours, sold-for; writes `docs/pieces.json`,
   which feeds your personal resale numbers and your realised profit history.
 - **Draft a message to the seller** — a posture slider from *ready to walk* to *pay asking
@@ -128,13 +136,14 @@ the shape on demand.
 1. **Fork or clone**, then enable Pages: *Settings → Pages → Deploy from branch → `docs/`*.
 2. **Secrets** (*Settings → Secrets and variables → Actions → Secrets*):
    - `CLAUDE_CODE_OAUTH_TOKEN` — from `claude setup-token`. This is what makes the AI free.
-   - `APIFY_TOKEN` — from apify.com. The free tier is $5/month of credit.
+   - `APIFY_TOKEN` — your account with the data provider, from apify.com. The free tier is
+     $5/month of credit.
 3. **Variables** (same page, *Variables* tab) — all optional:
 
    | Variable | Default | What it does |
    |---|---|---|
-   | `SEARCH_URLS` | one dresser search | Marketplace search URLs, one per line. Each is a separate bill. |
-   | `RESULTS_LIMIT` | 60 | Listings per search. The main scrape-cost lever. |
+   | `SEARCH_URLS` | one dresser search | Marketplace search URLs, one per line — they tell the provider which listings to return. Each is a separate bill. |
+   | `RESULTS_LIMIT` | 60 | Listings per search. The main data-cost lever. |
    | `MAX_APPRAISALS` | 12 | Hard cap on AI calls per run. |
    | `MIN_PRICE_DOLLARS` / `MAX_PRICE_DOLLARS` | unset | Pushed into the search URL, so out-of-range listings are never billed. |
    | `DAYS_SINCE_LISTED` | unset | Same, for recency. |
@@ -155,7 +164,7 @@ the shape on demand.
 |---|---|
 | GitHub Actions + Pages | free on public repos |
 | Valuations | your existing Claude subscription — no API bill |
-| Scraping | the only real cost; Apify's free tier is $5/month |
+| Listing data | the only real cost; the provider's free tier is $5/month |
 
 The defaults (one search, 60 results, 12 appraisals) are sized to sit inside the free tier.
 Earlier defaults burned a month's credit in two runs, which is why they're deliberately
@@ -167,10 +176,10 @@ small now — widen them once you know what a run costs you.
 pip install -e '.[dev]'
 python -m pytest                                   # no network, no spend
 
-# A full offline run over a saved Apify export (any dataset JSON you've downloaded):
+# A full offline run over a saved data export (any dataset JSON you've downloaded):
 python -m dealfinder.run_board --from-json my_export.json --out /tmp/site --dry-run
 
-# Verify the two-stage scrape against Apify for a few cents:
+# Verify the two-stage fetch against the provider's API for a few cents:
 python -m dealfinder.sources.scrape
 ```
 
@@ -178,9 +187,9 @@ python -m dealfinder.sources.scrape
 
 | Path | |
 |---|---|
-| `run_board.py` | the whole run: scrape → appraise → rank → publish |
-| `sources/scrape.py` | two-stage scrape + the fallback ladder |
-| `sources/apify.py` | Apify REST client and record adapter |
+| `run_board.py` | the whole run: fetch → appraise → rank → publish |
+| `sources/scrape.py` | two-stage fetch from the data provider + the fallback ladder |
+| `sources/apify.py` | REST client for the data provider, and its record adapter |
 | `catalog.py` | persistent listings + stored appraisals |
 | `selection.py` | cost control: dedup, seen-diff, cap |
 | `prescreen.py` / `verticals.py` | the free junk filter and its per-niche knowledge |
@@ -201,10 +210,14 @@ python -m dealfinder.sources.scrape
 
 ## Honest limits
 
-- **Item-detail fetching through the Apify actor is unverified.** It's isolated behind one
+- **Item-detail retrieval from the provider is unverified.** It's isolated behind one
   function with a three-rung fallback (two-stage → single-stage → thin records), and the
   verdict is remembered, so finding out costs at most one run.
-- **Search-URL filters are Facebook's own parameters**, passed through verbatim. If
-  Facebook renames one it's silently ignored — a lost saving, not a broken run.
+- **Search-URL filters are Marketplace's own query parameters**, handed to the provider
+  verbatim. If one is renamed upstream it's silently ignored — a lost saving, not a broken
+  run.
+- **The data is only as fresh and as complete as the provider's.** Coverage, latency and
+  field accuracy are theirs, not ours, and nothing here can verify a listing still exists
+  or that a price is current.
 - **1stDibs and similar dealer listings are treated as heavily-discounted ceilings**, not
   comparables, because they systematically overprice.
