@@ -20,11 +20,6 @@ metered API bill.
   for you. Public visibility is not the test.
 - **Valuations are estimates from photos and text.** Verify condition in person before
   bidding real money.
-- **This project previously also covered Facebook Marketplace.** That half has been removed
-  in full — the third-party data vendor that collected the listings, the pipeline, the
-  board, and every byte of listing data it produced, including from git history. Meta's
-  terms prohibit collecting Marketplace data by automated means, and buying it from a
-  vendor who does the collecting does not change that. It is not coming back.
 
 ## How it works
 
