@@ -21,7 +21,8 @@ from dealfinder.auctions.bidding import (
     max_bid_cents,
     projected_final_cents,
 )
-from dealfinder.auctions.lot import BidPoint, Lot
+from dealfinder.auctions.catalog import AuctionCatalog, AuctionEntry, BidPoint, observe_auctions
+from dealfinder.sources.ebth import AuctionItem
 from dealfinder.core.schemas import AppraisalResult
 
 NOW = datetime(2026, 8, 17, 12, 0, tzinfo=timezone.utc)
@@ -42,9 +43,11 @@ def _appraisal(asis=60000, restored=90000, cost=5000, hours=4.0, conf=0.8):
 def _entry(bid=10000, ends_in_h=10.0, appraisal=None, vertical="jewelry", **kw):
     """Defaults to a *shippable* vertical so the arithmetic tests carry a flat $35 rather
     than a round-trip drive; the pickup path is exercised explicitly below."""
-    entry = Lot(
-        id="1-lot", ends_at=NOW + timedelta(hours=ends_in_h), vertical=vertical,
-        current_bid_cents=bid, appraisal=appraisal, **kw,
+    entry = AuctionEntry(
+        id="1-lot", first_seen=NOW - timedelta(days=2), last_seen=NOW,
+        ends_at=NOW + timedelta(hours=ends_in_h), vertical=vertical,
+        current_bid_cents=bid, appraisal=appraisal, watch=True,
+        state="ending" if ends_in_h <= 24 else "live", **kw,
     )
     entry.bid_history = [BidPoint(at=NOW - timedelta(days=2), bid_cents=bid // 2),
                          BidPoint(at=NOW, bid_cents=bid)]

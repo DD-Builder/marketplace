@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from statistics import median
 
-from dealfinder.auctions.lot import ENDGAME_HOURS, Lot
+from dealfinder.auctions.catalog import ENDGAME_HOURS, AuctionEntry
 from dealfinder.auctions.logistics import acquisition_cost
 from dealfinder.core.schemas import AppraisalResult
 
@@ -72,7 +72,7 @@ def endgame_multiplier(
 
 
 def projected_final_cents(
-    entry: Lot,
+    entry: AuctionEntry,
     *,
     multiplier: float,
     now: datetime | None = None,
@@ -97,7 +97,7 @@ def projected_final_cents(
 
 
 def bid_velocity_cents_per_hour(
-    entry: Lot, *, window_hours: float = 6.0, now: datetime | None = None
+    entry: AuctionEntry, *, window_hours: float = 6.0, now: datetime | None = None
 ) -> float | None:
     """How fast the price is moving over the recent window. None until two points."""
     now = now or datetime.now(timezone.utc)
@@ -131,7 +131,7 @@ def resale_value_cents(appraisal: AppraisalResult) -> int:
     return asis or max(0, appraisal.est_restored_resale_value_cents)
 
 
-def price_discovery(entry: Lot, *, now: datetime | None = None) -> float:
+def price_discovery(entry: AuctionEntry, *, now: datetime | None = None) -> float:
     """How much this lot's own auction has already revealed its price, 0..1.
 
     Bidder depth is the signal and lateness is the weight. One bid at $10 with two days
@@ -156,7 +156,7 @@ _MAX_MARKET_WEIGHT = 0.85
 
 
 def market_anchored_value_cents(
-    entry: Lot, *, multiplier: float, now: datetime | None = None
+    entry: AuctionEntry, *, multiplier: float, now: datetime | None = None
 ) -> int:
     """The as-is value, pulled toward what this lot is actually clearing at.
 
@@ -241,7 +241,7 @@ class BidGuidance:
 
 
 def guide(
-    entry: Lot,
+    entry: AuctionEntry,
     *,
     multiplier: float,
     calibration_n: int = 0,

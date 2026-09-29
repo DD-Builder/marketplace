@@ -354,7 +354,7 @@ def _appraise_model() -> str:
     raw = raw.strip()
     # An unset repository variable arrives as "" in Actions, which must not be read as a
     # deliberate "use the CLI default" — that's the same empty-string trap _env() exists
-    # for on the run_board side.
+    # for on the runtime side.
     return raw or DEFAULT_APPRAISE_MODEL
 
 

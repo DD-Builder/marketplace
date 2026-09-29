@@ -1,7 +1,7 @@
 [project]
 name = "dealfinder"
 version = "0.1.0"
-description = "AI valuation, resale pricing and max-bid math for second-hand furniture, art and collectibles"
+description = "EBTH auction watch: AI valuation, resale pricing and max-bid math"
 readme = "README.md"
 requires-python = ">=3.11"
 # Deliberately small. The pipeline runs on GitHub Actions with the stdlib for HTTP,
@@ -20,10 +20,18 @@ api = [
     "anthropic>=0.40",
     "pydantic-settings>=2.6",
 ]
+# The auction source. ebth.com serves no data in its HTML, so its lots are only
+# reachable by running the site's own application.
+browser = [
+    "playwright>=1.44",
+]
 dev = [
     "pytest>=8.3",
     "dealfinder[api]",
 ]
+
+[project.scripts]
+dealfinder-auctions = "dealfinder.run_auctions:main"
 
 [build-system]
 requires = ["hatchling"]

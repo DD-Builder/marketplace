@@ -1,135 +1,143 @@
-# The Bench
+# The Gavel
 
-Valuation and resale maths for second-hand furniture, art and collectibles. You supply the
-item — title, description, photos, asking price — and it appraises it, scores the deal,
-prices the resale, and works out the most you can bid at auction before the flip stops
-paying.
+An auction watch for [Everything But The House](https://www.ebth.com). It tracks lots,
+values them with AI, and works out the most you should bid before the endgame decides it
+for you.
 
-It is a **library**, not a crawler. It has no data acquisition of any kind.
+It runs on GitHub: **Actions** for compute, **Pages** for hosting, and your **Claude
+subscription** for the valuations, driven through the Claude Code CLI so there is no
+metered API bill.
 
-## What this project no longer does
+> **Paused.** Nothing runs on a schedule. Every workflow is `workflow_dispatch` only, so
+> the tracker does nothing at all unless you start it by hand.
 
-This started as an automated deal finder: it bought Facebook Marketplace listings from a
-third-party data vendor and read an auction house's lots by driving a headless browser
-against their single-page app.
+## ⚠️ Read this first
 
-Both are gone. Not disabled, not behind a flag — **removed**, along with every line of code
-that reached them and every byte of data they produced.
+- **Check EBTH's terms before you run this.** It reads the site by running the site's own
+  application in a headless browser and keeping the data the app fetches for itself. That
+  is automated access, however politely it is done, and whether it is permitted is
+  EBTH's decision to state and yours to comply with — not something this README can settle
+  for you. Public visibility is not the test.
+- **Valuations are estimates from photos and text.** Verify condition in person before
+  bidding real money.
+- **This project previously also covered Facebook Marketplace.** That half has been removed
+  in full — the third-party data vendor that collected the listings, the pipeline, the
+  board, and every byte of listing data it produced, including from git history. Meta's
+  terms prohibit collecting Marketplace data by automated means, and buying it from a
+  vendor who does the collecting does not change that. It is not coming back.
 
-The reason is simple. Meta's terms prohibit collecting Marketplace data by automated means,
-and a vendor selling that data does not change what was collected or how. The auction house
-likewise does not permit automated access to its site, and driving its app to capture the
-JSON it fetches for itself is exactly that, however politely it is done. Whether the data is
-publicly visible is not the test; whether the terms permit taking it programmatically is.
-
-Removed in full:
-
-| Removed | Why |
-|---|---|
-| The third-party Marketplace data vendor client and its two-stage fetch | Buying automatically-collected Marketplace data |
-| The auction-house source and its headless-browser fetcher | Automated access to a site whose terms forbid it |
-| Both pipeline runners, the published boards, and the site they were served on | Existed only to drive and display the above |
-| ~44 MB of committed listings, lot histories and downloaded photos | The product of that collection |
-| Every workflow that ran any of it on a schedule | Nothing should collect anything on a timer |
-
-The one network client that remains is **eBay's official Browse API**, used with your own
-credentials under eBay's developer terms — a sanctioned interface, which is the whole
-distinction.
-
-> **Note on git history.** Deleting these files removes them from the working tree and from
-> every future checkout, but earlier commits still contain them. If that matters for your
-> purposes, the history needs rewriting (`git filter-repo`) and a force-push; that is
-> destructive and has not been done here.
-
-## What it does now
+## How it works
 
 ```
-your items  ->  pre-screen (free, keyword + photo signal)
-            ->  AI appraisal of the survivors, capped
-            ->  scoring, authenticity check, resale pricing
-            ->  for auctions: max bid, projected close, stance
+discover lots by category  ->  refresh bids on everything still in results
+                           ->  pre-screen (free, keyword + photo signal)
+                           ->  one AI appraisal per lot, ever
+                           ->  max bid, projected close, stance
+                           ->  a static page committed to docs/auctions/
 ```
 
-Everything is a pure function over data you already hold. No network calls except the
-appraiser (your Claude subscription) and, optionally, eBay comps.
+Auctions invert the usual problem. Nobody names a price; the price finds itself, and most
+of the money arrives in the closing hours. So the discipline that makes money is deciding
+your ceiling *before* the endgame and never chasing past it.
 
-### Valuation
+**Value the lot once.** An appraisal answers "what is this and what is it worth", which
+does not change when someone outbids you. Appraisals are stored and the *guidance* is
+recomputed every run, so a rising bid re-advises for free.
 
-`run_valuation(listings, provider=...)` takes `RawListing` objects and returns ranked,
-priced, scored pieces. Appraisals are valued once and *scored* every time, so a price change
-re-ranks for free.
+**Discovery is by EBTH's own categories.** `category_slug` is the parameter that actually
+narrows a browse — measured, because `category_id`, which the site's own filter block
+advertises, leaves the result count untouched. Lots are tagged with the vertical of the
+category that found them and appraised against that vertical's rules, so a sterling ring
+is not judged by furniture's keyword list.
 
-**Art is valued from realised sales, not from a single asserted number.** The model's job is
-narrowed to finding comparable sales; the arithmetic happens in `valuation/artcomps.py`,
-which returns a weighted median with a low/high band. Weighting is by medium (an original
-and a giclée of it are different objects with the same title), area on a log scale, and
-recency. Asking prices count for little and can never lift an estimate above anything
-actually realised. Too little evidence returns nothing rather than a confident guess.
+## What it tells you
 
-This exists because the old point-estimate approach valued a painting at $1,200 whose
-artist's work realises $111–$401, and set a maximum bid of $690 against it.
+- **Your max bid** — worked back from the appraisal: resale value, minus your margin,
+  freight or the round trip to collect, and the buyer's premium riding the hammer.
+- **Projected close** — the endgame multiplier says what T-24h prices become by the hammer.
+  It starts as a prior and is learned from this catalogue's own closed lots.
+- **Stance** — `BID LATE`, `WATCH` (never bid early; it only feeds the price), `OUTPRICED`,
+  `PASS`.
 
-### Resale pricing
+### The room gets a vote
 
-The headline sell target is what a piece fetches regionally, independent of you. Your hours
-and materials produce a *second* number — profit and effective hourly wage. Folding your
-weekend into the ask is how a $450 table gets listed at $978 and never sells.
+A lot with twenty-six bids and minutes left has been priced by people who can see it, and
+an appraisal that disagrees is likelier to be wrong than they are. So the ceiling is pulled
+toward the live price in proportion to how much bidding has actually happened, capped so a
+well-evidenced valuation always keeps some weight. A quiet lot — the undiscovered one worth
+hunting — is untouched.
 
-### Auction maths
+This exists because a painting was valued at $1,200 and given a $690 maximum bid while 26
+bidders had it at $250 and the artist's work realises $111–$401.
 
-`auctions/bidding.py` turns an appraisal into a ceiling: resale value, minus your margin,
-freight or the round trip to collect, and the buyer's premium riding the hammer. Decided
-before the endgame so the endgame cannot decide it for you.
+### Art is valued from realised sales
 
-It also anchors to the room. A lot with twenty-six bids and minutes left has been priced by
-people who can see it, and an appraisal that disagrees is likelier to be wrong than they
-are — so the ceiling is pulled toward the live price in proportion to how much bidding has
-actually happened. A quiet lot keeps its full appraised value.
+The model's job is narrowed to *finding comparable sales*; the arithmetic happens in
+`valuation/artcomps.py`, which returns a weighted median with a low/high band rather than a
+single asserted number. Weighting is by medium (an original and a giclée of it are
+different objects with the same title), area on a log scale, and recency. Asking prices
+count for little and can never lift an estimate above anything actually realised. Too
+little evidence returns nothing rather than a confident guess.
 
-Describe the lot yourself with `auctions.lot.Lot`; nothing fetches it for you.
+## Setup
 
-## Install and test
+1. **Fork or clone**, then enable Pages: *Settings → Pages → Deploy from branch → `docs/`*.
+2. **Secret** (*Settings → Secrets and variables → Actions*): `CLAUDE_CODE_OAUTH_TOKEN`,
+   from `claude setup-token`. This is what makes the valuations free.
+3. **Variables** (*Variables* tab) — all optional:
+
+   | Variable | Default | What it does |
+   |---|---|---|
+   | `APPRAISE_MODEL` | `claude-sonnet-5` | Model for the valuation call. |
+   | `MAX_AUCTION_APPRAISALS` | 20 | Cap on AI valuations per run. |
+   | `EBTH_MAX_WATCH` | 150 | Watchlist size — the real ceiling on how many lots get valued. |
+   | `EBTH_CATEGORIES` | the priceable set | EBTH categories to trawl, by name, slug or id. |
+   | `EBTH_DECIDE_WITHIN_DAYS` | 2 | Only value lots closing inside this window. |
+   | `EBTH_PREMIUM_PCT` | 0.15 | Buyer's premium. Check the terms of the sale. |
+   | `LOT_SHIP_CENTS` | 3500 | Flat parcel cost for a shippable lot. |
+   | `HOURLY_RATE_CENTS` | 3000 | What your time is worth, for the collection trip. |
+
+   Two optional secrets unlock eBay comparables: `EBAY_CLIENT_ID` and `EBAY_CLIENT_SECRET`
+   (their official Browse API). Without them the appraiser estimates unaided.
+
+4. **Run it**: *Actions → Auction watch → Run workflow*. Nothing runs on a schedule.
+
+## Running it locally
 
 ```bash
 pip install -e '.[dev]'
-python -m pytest          # 177 tests, no network, no spend
+python -m pytest              # 253 tests, no network, no spend
 ```
-
-Optional extras: `.[api]` for the metered Anthropic API path (the default uses your Claude
-subscription through the Claude Code CLI instead, so there is no API bill).
-
-Two optional secrets unlock eBay comparables: `EBAY_CLIENT_ID` and `EBAY_CLIENT_SECRET`
-(free Browse API). Without them the appraiser estimates unaided.
 
 ## Layout
 
 | Path | |
 |---|---|
-| `engine.py` | `run_valuation` / `evaluate_piece` — the funnel over items you supply |
-| `selection.py` | cost control: dedup, seen-diff, valuation cap |
-| `prescreen.py` / `verticals.py` | the free junk filter and its per-category knowledge |
-| `appraiser.py` | provider seam: subscription CLI, metered API, or your own |
-| `valuation/artcomps.py` | comp-weighted median over realised sales, with a band |
-| `ranking.py` | priority, liquidity, heat, badges |
-| `authenticity.py` | look-alike and knockoff detection |
-| `resale.py` | market price and your-numbers pricing |
-| `restoration.py` | bounds on the model's cost/effort estimate, from published survey data |
-| `auctions/lot.py` | a lot you describe yourself |
-| `auctions/bidding.py` | max bid, endgame projection, stance |
+| `run_auctions.py` | the run: discover → snapshot → appraise → advise → publish |
+| `runtime.py` | shared plumbing: env, credentials, photo fetch, exit reasons |
+| `sources/ebth.py` | layered parsing + the CI structure probe |
+| `sources/ebth_browser.py` | headless-Chromium fetcher |
+| `auctions/catalog.py` | lot catalogue with full bid history |
+| `auctions/bidding.py` | max bid, endgame projection, the market anchor, stance |
 | `auctions/logistics.py` | parcel rate vs the round trip to collect |
+| `auctions/categories.py` | EBTH's category tree and sort presets |
+| `auctions/board.py` | the Gavel page |
+| `valuation/artcomps.py` | comp-weighted median over realised sales, with a band |
+| `appraiser.py` | provider seam: subscription CLI, metered API, or your own |
+| `prescreen.py` / `verticals.py` | the free junk filter and its per-category knowledge |
+| `engine.py` / `ranking.py` / `resale.py` | scoring and resale pricing |
+| `authenticity.py` | look-alike and knockoff detection |
 | `pieces.py` | your books: costs, sales, realised hourly wage |
-| `negotiation/` | posture and message drafting — you read, edit and send |
 | `sources/ebay.py` | official Browse API comps |
 
 ## Honest limits
 
-- **Valuations are estimates from photos and text.** Verify condition in person before
-  handing over money.
-- **Nothing is ever sent to a seller.** The app drafts messages; you send them yourself.
 - **Art comps depend on the appraiser finding real sales.** For an unlisted maker it
-  returns nothing, and the lot is valued thinly or not at all. That is the honest answer,
-  but it is a gap.
-- **There is no data source.** Getting items in front of this is now your problem, and any
-  source you add is your responsibility to license or collect lawfully.
+  returns nothing and the lot is valued thinly. That is the honest answer, but it is a gap.
+- **The price-history chart plots only closes this tracker has watched.** There is no
+  public feed of long-run realised prices, so it fills in from your own observations rather
+  than drawing a trend line from data nobody has.
+- **The endgame multiplier is mostly prior until lots have closed under it.** The page says
+  how many observations are behind it.
 - **Dealer listings (1stDibs and similar) are treated as heavily-discounted ceilings**, not
   comparables, because they systematically overprice.

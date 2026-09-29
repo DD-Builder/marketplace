@@ -2,7 +2,7 @@
 
 Almost nothing is configured here any more. The pipeline runs in GitHub Actions, so its
 knobs are plain environment variables read where they're used (see
-:mod:`dealfinder.run_board`), and its state is JSON committed next to the site rather than
+:mod:`dealfinder.run_auctions`), and its state is JSON committed next to the site rather than
 a database. What's left is the handful of values the ``claude-api`` provider needs when you
 choose to pay per token instead of leaning on your subscription.
 """
